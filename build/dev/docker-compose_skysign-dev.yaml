@@ -1,0 +1,45 @@
+# Brings up a full stand-alone DSS sandbox environment with locally-built dss
+# and dummy-oauth InterUSS images.
+
+# To bring up this system:
+# docker-compose -f docker-compose_skysign-dev.yaml -p skysign-dev up
+
+version: '3.7'
+
+services:
+
+  skysign-communication-db-for-debugging:
+    container_name: skysign-communication-db
+    hostname: skysign-communication-db
+    build:
+      context: ../../skysign-db/communication-db
+      dockerfile: Dockerfile
+
+  skysign-communication-backend-for-debugging:
+    container_name: skysign-communication-backend
+    hostname: skysign-communication-backend
+    build:
+      context: ../../communication
+      dockerfile: Dockerfile
+      args: 
+        DB_HOST: skysign-communication-db
+    depends_on:
+      - skysign-communication-db-for-debugging
+
+  skysign-communication-gateway-for-debugging:
+    container_name: skysign-communication-gateway
+    hostname: skysign-communication-gateway
+    build:
+      context: ../../http_gateway
+      dockerfile: Dockerfile
+      args: 
+        BACKEND_HOST: skysign-communication-backend
+    ports:
+      - "5000:5000"
+
+networks:
+  default:
+    ipam:
+      config:
+        - subnet: 192.168.5.0/24
+      
