@@ -30,6 +30,14 @@ func run() error {
 	if err != nil {
 		return err
 	}
+	err = gw.RegisterCommunicationUserServiceHandlerFromEndpoint(ctx, mux, endpoint, opts)
+	if err != nil {
+		return err
+	}
+	err = gw.RegisterCommunicationVehicleServiceHandlerFromEndpoint(ctx, mux, endpoint, opts)
+	if err != nil {
+		return err
+	}
 
 	return http.ListenAndServe(":5000", mux)
 }

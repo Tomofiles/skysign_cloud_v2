@@ -1,0 +1,43 @@
+syntax = "proto3";
+
+package skysign_proto;
+
+import "google/api/annotations.proto";
+
+option java_package = "proto.skysign";
+option java_multiple_files = true;
+
+service CommunicationVehicleService {
+    rpc PushTelemetry (PushTelemetryRequest) returns (PushTelemetryResponse) {
+        option (google.api.http) = {
+          post: "/api/v1/communications/{id}/telemetries"
+          body: "*"
+        };
+    };
+
+    rpc PullCommand (PullCommandRequest) returns (PullCommandResponse) {
+        option (google.api.http) = {
+          post: "/api/v1/communications/{commId}/commands/{id}"
+          body: "*"
+        };
+    };
+
+}
+
+message PushTelemetryRequest {
+    string id = 1;
+}
+
+message PushTelemetryResponse {
+    string id = 1;
+}
+
+message PullCommandRequest {
+    string commId = 1;
+    string id = 2;
+}
+
+message PullCommandResponse {
+    string commId = 1;
+    string id = 2;
+}

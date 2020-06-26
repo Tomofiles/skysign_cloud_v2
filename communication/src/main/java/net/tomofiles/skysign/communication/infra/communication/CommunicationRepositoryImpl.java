@@ -27,7 +27,7 @@ public class CommunicationRepositoryImpl implements CommunicationRepository {
             isCreate = true;
         }
 
-        record.setMissionId(communication.getMissionId().getId());
+        record.setMissionId(communication.getMissionId() == null ? null : communication.getMissionId().getId());
         record.setVersion(communication.getVersion().getVersion());
 
         if (isCreate) {

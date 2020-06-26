@@ -21,7 +21,7 @@ public class ManageVehicleService {
     private Publisher publisher;
 
     @Transactional
-    public void createVehicle(String name, String commId) {
+    public String createVehicle(String name, String commId) {
         VehicleId id = VehicleId.newId();
         Vehicle vehicle = VehicleFactory.newInstance(id);
 
@@ -31,5 +31,7 @@ public class ManageVehicleService {
         vehicle.giveCommId(new CommunicationId(commId));
 
         this.vehicleRepository.save(vehicle);
+
+        return id.getId();
     }
 }

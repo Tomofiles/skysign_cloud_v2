@@ -17,12 +17,16 @@ public class ManageCommunicationService {
 
     @Transactional
     public void recreateCommunication(CommunicationId beforeId, CommunicationId afterId) {
-        Communication communication = this.communicationRepository.getById(beforeId);
+        Communication communication;
 
-        if (communication != null) {
-            this.communicationRepository.remove(beforeId, communication.getVersion());
+        if (beforeId != null) {
+            communication = this.communicationRepository.getById(beforeId);
+
+            if (communication != null) {
+                this.communicationRepository.remove(beforeId, communication.getVersion());
+            }    
         }
-
+        
         communication = CommunicationFactory.newInstance(afterId);
 
         this.communicationRepository.save(communication);
