@@ -18,6 +18,6 @@ public class CommunicationIdChangedEventHandler {
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     @Async
     public void processCommunicationIdChangedEvent(CommunicationIdChangedEvent event) {
-        this.manageCommunicationService.recreateCommunication(event.getBeforeId(), event.getAfterId());
+        this.manageCommunicationService.recreateCommunication(event.getBeforeId().getId(), event.getAfterId().getId());
     }
 }

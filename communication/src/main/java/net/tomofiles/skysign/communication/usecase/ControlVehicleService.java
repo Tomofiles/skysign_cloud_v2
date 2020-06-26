@@ -12,6 +12,7 @@ import net.tomofiles.skysign.communication.domain.communication.MissionId;
 import net.tomofiles.skysign.communication.domain.vehicle.Vehicle;
 import net.tomofiles.skysign.communication.domain.vehicle.VehicleId;
 import net.tomofiles.skysign.communication.domain.vehicle.VehicleRepository;
+import net.tomofiles.skysign.communication.usecase.dto.ControlCommandType;
 
 @Component
 public class ControlVehicleService {
@@ -38,6 +39,46 @@ public class ControlVehicleService {
         }
 
         communication.standBy(new MissionId(missionId));
+
+        this.communicationRepository.save(communication);
+    }
+
+    @Transactional
+    public void cancel(String vehicleId) {
+        VehicleId id = new VehicleId(vehicleId);
+        Vehicle vehicle = this.vehicleRepository.getById(id);
+
+        if (vehicle == null) {
+            throw new NoSuchElementException("vehicle-idに合致するVehicleが存在しません。");
+        }
+
+        Communication communication = this.communicationRepository.getById(vehicle.getCommId());
+
+        if (communication == null) {
+            throw new IllegalStateException("vehicleにcommunication-idが設定されていません。");
+        }
+
+        communication.cancel();
+
+        this.communicationRepository.save(communication);
+    }
+
+    @Transactional
+    public void commandSend(String vehicleId, ControlCommandType commandType) {
+        VehicleId id = new VehicleId(vehicleId);
+        Vehicle vehicle = this.vehicleRepository.getById(id);
+
+        if (vehicle == null) {
+            throw new NoSuchElementException("vehicle-idに合致するVehicleが存在しません。");
+        }
+
+        Communication communication = this.communicationRepository.getById(vehicle.getCommId());
+
+        if (communication == null) {
+            throw new IllegalStateException("vehicleにcommunication-idが設定されていません。");
+        }
+
+        communication.pushCommand(commandType.getType());
 
         this.communicationRepository.save(communication);
     }

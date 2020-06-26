@@ -1,12 +1,17 @@
 package net.tomofiles.skysign.communication.infra.vehicle;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import net.tomofiles.skysign.communication.domain.common.Version;
 import net.tomofiles.skysign.communication.domain.vehicle.Vehicle;
 import net.tomofiles.skysign.communication.domain.vehicle.VehicleFactory;
 import net.tomofiles.skysign.communication.domain.vehicle.VehicleId;
 import net.tomofiles.skysign.communication.domain.vehicle.VehicleRepository;
+import net.tomofiles.skysign.communication.infra.common.DeleteCondition;
 
 @Component
 public class VehicleRepositoryImpl implements VehicleRepository {
@@ -38,6 +43,16 @@ public class VehicleRepositoryImpl implements VehicleRepository {
     }
 
     @Override
+    public void remove(VehicleId id, Version version) {
+        DeleteCondition condition = new DeleteCondition();
+
+        condition.setId(id.getId());
+        condition.setVersion(version.getVersion());
+        
+        this.vehicleMapper.delete(condition);
+    }
+
+    @Override
     public Vehicle getById(VehicleId id) {
         VehicleRecord record = this.vehicleMapper.find(id.getId());
 
@@ -45,10 +60,17 @@ public class VehicleRepositoryImpl implements VehicleRepository {
             return null;
         }
 
-        return VehicleFactory.rebuild(
-            id, 
-            record.getName(), 
-            record.getCommId(), 
-            record.getVersion());
+        return VehicleFactory.rebuild(id, record.getName(), record.getCommId(), record.getVersion());
+    }
+
+    @Override
+    public List<Vehicle> getAll() {
+        List<VehicleRecord> records = this.vehicleMapper.findAll();
+
+        List<Vehicle> results = records.stream()
+                .map(record -> VehicleFactory.rebuild(new VehicleId(record.getId()), record.getName(), record.getCommId(), record.getVersion()))
+                .collect(Collectors.toList());
+
+        return results;
     }
 }

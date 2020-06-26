@@ -8,6 +8,7 @@ import net.tomofiles.skysign.communication.domain.communication.Communication;
 import net.tomofiles.skysign.communication.domain.communication.CommunicationFactory;
 import net.tomofiles.skysign.communication.domain.communication.CommunicationId;
 import net.tomofiles.skysign.communication.domain.communication.CommunicationRepository;
+import net.tomofiles.skysign.communication.infra.common.DeleteCondition;
 
 @Component
 public class CommunicationRepositoryImpl implements CommunicationRepository {
@@ -40,8 +41,10 @@ public class CommunicationRepositoryImpl implements CommunicationRepository {
     @Override
     public void remove(CommunicationId id, Version version) {
         DeleteCondition condition = new DeleteCondition();
+        
         condition.setId(id.getId());
         condition.setVersion(version.getVersion());
+        
         this.communicationMapper.delete(condition);
     }
 

@@ -16,18 +16,18 @@ public class ManageCommunicationService {
     private CommunicationRepository communicationRepository;
 
     @Transactional
-    public void recreateCommunication(CommunicationId beforeId, CommunicationId afterId) {
+    public void recreateCommunication(String beforeId, String afterId) {
         Communication communication;
 
         if (beforeId != null) {
-            communication = this.communicationRepository.getById(beforeId);
+            communication = this.communicationRepository.getById(new CommunicationId(beforeId));
 
             if (communication != null) {
-                this.communicationRepository.remove(beforeId, communication.getVersion());
+                this.communicationRepository.remove(new CommunicationId(beforeId), communication.getVersion());
             }    
         }
         
-        communication = CommunicationFactory.newInstance(afterId);
+        communication = CommunicationFactory.newInstance(new CommunicationId(afterId));
 
         this.communicationRepository.save(communication);
     }

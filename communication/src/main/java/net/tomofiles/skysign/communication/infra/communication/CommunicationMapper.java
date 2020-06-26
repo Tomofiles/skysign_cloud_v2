@@ -5,6 +5,8 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
 
+import net.tomofiles.skysign.communication.infra.common.DeleteCondition;
+
 @Mapper
 public interface CommunicationMapper {
     @Select("SELECT id, mission_id as missionId, version FROM communication WHERE id = #{id}")

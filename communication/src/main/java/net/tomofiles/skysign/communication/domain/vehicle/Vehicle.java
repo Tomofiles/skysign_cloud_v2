@@ -31,7 +31,7 @@ public class Vehicle {
     @Setter
     private Publisher publisher = new EmptyPublisher();
     
-    public void namedVehicle(String name) {
+    public void nameVehicle(String name) {
         this.vehicleName = name;
     }
 

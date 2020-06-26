@@ -1,4 +1,4 @@
-package net.tomofiles.skysign.communication.infra.communication;
+package net.tomofiles.skysign.communication.infra.common;
 
 import lombok.Data;
 
