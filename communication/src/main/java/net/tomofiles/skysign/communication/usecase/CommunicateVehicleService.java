@@ -1,16 +1,22 @@
 package net.tomofiles.skysign.communication.usecase;
 
+import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import net.tomofiles.skysign.communication.domain.communication.CommandId;
+import net.tomofiles.skysign.communication.domain.communication.CommandType;
 import net.tomofiles.skysign.communication.domain.communication.Communication;
-import net.tomofiles.skysign.communication.domain.communication.CommunicationFactory;
 import net.tomofiles.skysign.communication.domain.communication.CommunicationId;
 import net.tomofiles.skysign.communication.domain.communication.CommunicationRepository;
+import net.tomofiles.skysign.communication.domain.communication.MissionId;
+import net.tomofiles.skysign.communication.usecase.dto.ControlCommandDto;
+import net.tomofiles.skysign.communication.usecase.dto.ControlCommandType;
+import net.tomofiles.skysign.communication.usecase.dto.TelemetryDto;
 
 @Component
 public class CommunicateVehicleService {
@@ -19,7 +25,7 @@ public class CommunicateVehicleService {
     private CommunicationRepository communicationRepository;
 
     @Transactional
-    public void pushTelemetry(String commId) {
+    public List<String> pushTelemetry(String commId, TelemetryDto telemetry) {
         CommunicationId id = new CommunicationId(commId);
         Communication communication = this.communicationRepository.getById(id);
 
@@ -27,13 +33,26 @@ public class CommunicateVehicleService {
             throw new NoSuchElementException("communication-idに合致するCommunicationが存在しません。");
         }
 
-        communication.pushTelemetry(0, 0);
+        communication.pushTelemetry(
+                telemetry.getLatitude(),
+                telemetry.getLongitude(),
+                telemetry.getAltitude(),
+                telemetry.getSpeed(),
+                telemetry.isArmed(),
+                telemetry.getFlightMode(),
+                telemetry.getOrientation());
         
+        List<String> commandIds = communication.getCommandId().stream()
+                .map(CommandId::getId)
+                .collect(Collectors.toList());
+
         this.communicationRepository.save(communication);
+
+        return commandIds;
     }
 
     @Transactional
-    public void pullCommand(String commId, String commandId) {
+    public ControlCommandDto pullCommand(String commId, String commandId) {
         CommunicationId id = new CommunicationId(commId);
         CommandId cid = new CommandId(commandId);
 
@@ -43,8 +62,18 @@ public class CommunicateVehicleService {
             throw new NoSuchElementException("communication-idに合致するCommunicationが存在しません。");
         }
 
-        communication.pullCommandById(cid);
+        CommandType type = communication.pullCommandById(cid);
         
+        if (type == null) {
+            throw new NoSuchElementException("command-idに合致するCommandが存在しません。");
+        }
+
         this.communicationRepository.save(communication);
+
+        if (type == CommandType.UPLOAD) {
+            MissionId missionId = communication.getMissionId();
+            return new ControlCommandDto(ControlCommandType.valueOf(type), missionId.getId());
+        }
+        return new ControlCommandDto(ControlCommandType.valueOf(type), null);
     }
 }

@@ -1,5 +1,7 @@
 package net.tomofiles.skysign.communication.usecase.dto;
 
+import java.util.Arrays;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import net.tomofiles.skysign.communication.domain.communication.CommandType;
@@ -11,4 +13,11 @@ public enum ControlCommandType {
     NONE(CommandType.NONE);
 
     private CommandType type;
+
+    public static ControlCommandType valueOf(CommandType type) {
+        return Arrays.asList(ControlCommandType.values()).stream()
+                .filter(t -> t.type == type)
+                .findAny()
+                .orElse(null);
+    }
 }

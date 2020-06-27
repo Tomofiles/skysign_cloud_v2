@@ -1,11 +1,100 @@
 package net.tomofiles.skysign.communication.domain.communication;
 
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
-@AllArgsConstructor
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Getter
 class Telemetry {
+    private Position position;
+    private double speed;
+    private boolean armed;
+    private String flightMode;
+    private Orientation orientation;
+
+    public static Telemetry newInstance() {
+        return new Telemetry(
+                new Position(
+                        0.0,
+                        0.0,
+                        0.0),
+                0.0,
+                false,
+                "NONE",
+                new Orientation(
+                        0.0,
+                        0.0,
+                        0.0,
+                        0.0)
+        );
+    }
+
+    public Telemetry setPosition(
+            double latitude,
+            double longitude,
+            double altitude,
+            double speed) {
+        return new Telemetry(
+                new Position(
+                        latitude,
+                        longitude,
+                        altitude),
+                speed,
+                this.armed,
+                this.flightMode,
+                this.orientation
+        );
+    }
+
+    public Telemetry setArmed(boolean armed) {
+        return new Telemetry(
+                this.position,
+                this.speed,
+                armed,
+                this.flightMode,
+                this.orientation
+        );
+    }
+
+    public Telemetry setFlightMode(String flightMode) {
+        return new Telemetry(
+                this.position,
+                this.speed,
+                this.armed,
+                flightMode,
+                this.orientation
+        );
+    }
+
+    public Telemetry setOrientation(double[] orientation) {
+        return new Telemetry(
+                this.position,
+                this.speed,
+                this.armed,
+                this.flightMode,
+                new Orientation(
+                        orientation[0],
+                        orientation[1],
+                        orientation[2],
+                        orientation[3])
+        );
+    }
+}
+
+@AllArgsConstructor
+@Getter
+class Position {
     private final double latitude;
     private final double longitude;
+    private final double altitude;
+}
+
+@AllArgsConstructor
+@Getter
+class Orientation {
+    private final double x;
+    private final double y;
+    private final double z;
+    private final double w;
 }

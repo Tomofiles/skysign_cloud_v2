@@ -1,6 +1,7 @@
 package net.tomofiles.skysign.communication.domain.communication;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
@@ -27,8 +28,25 @@ public class Communication {
     @Setter(value = AccessLevel.PACKAGE)
     private Version version;
 
-    public void pushTelemetry(double latitude, double longitude) {
-        this.telemetry = new Telemetry(latitude, longitude);
+    public void pushTelemetry(
+            double latitude,
+            double longitude,
+            double altitude,
+            double speed,
+            boolean armed,
+            String flightMode,
+            double[] orientation) {
+        this.telemetry = Telemetry.newInstance()
+                .setPosition(latitude, longitude, altitude, speed)
+                .setArmed(armed)
+                .setFlightMode(flightMode)
+                .setOrientation(orientation);
+    }
+
+    public List<CommandId> getCommandId() {
+        return this.commands.stream()
+                .map(Command::getId)
+                .collect(Collectors.toList());
     }
 
     public void standBy(MissionId missionId) {
@@ -45,10 +63,15 @@ public class Communication {
         return id;
     }
 
-    public Command pullCommandById(CommandId id) {
-        return this.commands.stream()
+    public CommandType pullCommandById(CommandId id) {
+        Command command = this.commands.stream()
                 .filter(c -> c.equals(new Command(id, CommandType.NONE)))
                 .findAny()
                 .orElse(null);
+        if (command == null) {
+            return null;
+        }
+        this.commands.remove(command);
+        return command.getType();
     }
 }
