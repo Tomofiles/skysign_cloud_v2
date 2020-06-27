@@ -26,16 +26,29 @@ services:
     depends_on:
       - skysign-communication-db-for-debugging
 
-  skysign-communication-gateway-for-debugging:
-    container_name: skysign-communication-gateway
-    hostname: skysign-communication-gateway
+  skysign-communication-user-gateway-for-debugging:
+    container_name: skysign-communication-user-gateway
+    hostname: skysign-communication-user-gateway
     build:
       context: ../../http_gateway
       dockerfile: Dockerfile
-      args: 
-        BACKEND_HOST: skysign-communication-backend
+    command: /go/bin/comm-user-gateway -backend_host skysign-communication-backend -port 8888
     ports:
-      - "5000:5000"
+      - "8888:8888"
+    depends_on:
+      - skysign-communication-backend-for-debugging
+
+  skysign-communication-vehicle-gateway-for-debugging:
+    container_name: skysign-communication-vehicle-gateway
+    hostname: skysign-communication-vehicle-gateway
+    build:
+      context: ../../http_gateway
+      dockerfile: Dockerfile
+    command: /go/bin/comm-vehicle-gateway -backend_host skysign-communication-backend -port 8889
+    ports:
+      - "8889:8889"
+    depends_on:
+      - skysign-communication-backend-for-debugging
 
 networks:
   default:

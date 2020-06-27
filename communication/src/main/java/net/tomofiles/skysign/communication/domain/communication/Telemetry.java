@@ -67,17 +67,21 @@ class Telemetry {
         );
     }
 
-    public Telemetry setOrientation(double[] orientation) {
+    public Telemetry setOrientation(
+            double orientationX,
+            double orientationY,
+            double orientationZ,
+            double orientationW) {
         return new Telemetry(
                 this.position,
                 this.speed,
                 this.armed,
                 this.flightMode,
                 new Orientation(
-                        orientation[0],
-                        orientation[1],
-                        orientation[2],
-                        orientation[3])
+                        orientationX,
+                        orientationY,
+                        orientationZ,
+                        orientationW)
         );
     }
 }

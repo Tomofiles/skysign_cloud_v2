@@ -10,15 +10,15 @@ option java_multiple_files = true;
 service CommunicationVehicleService {
     rpc PushTelemetry (PushTelemetryRequest) returns (PushTelemetryResponse) {
         option (google.api.http) = {
-          post: "/api/v1/communications/{id}/telemetries"
-          body: "*"
+            post: "/api/v1/communications/{id}/telemetries"
+            body: "*"
         };
     };
 
     rpc PullCommand (PullCommandRequest) returns (PullCommandResponse) {
         option (google.api.http) = {
-          post: "/api/v1/communications/{commId}/commands/{id}"
-          body: "*"
+            post: "/api/v1/communications/{commId}/commands/{id}"
+            body: "*"
         };
     };
 
@@ -26,10 +26,21 @@ service CommunicationVehicleService {
 
 message PushTelemetryRequest {
     string id = 1;
+    double latitude = 2;
+    double longitude = 3;
+    double altitude = 4;
+    double speed = 5;
+    bool armed = 6;
+    string flightMode = 7;
+    double orientationX = 8;
+    double orientationY = 9;
+    double orientationZ = 10;
+    double orientationW = 11;
 }
 
 message PushTelemetryResponse {
     string id = 1;
+    repeated string commIds = 2;
 }
 
 message PullCommandRequest {

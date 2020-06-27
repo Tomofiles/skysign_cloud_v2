@@ -40,7 +40,10 @@ public class CommunicateVehicleService {
                 telemetry.getSpeed(),
                 telemetry.isArmed(),
                 telemetry.getFlightMode(),
-                telemetry.getOrientation());
+                telemetry.getOrientationX(),
+                telemetry.getOrientationY(),
+                telemetry.getOrientationZ(),
+                telemetry.getOrientationW());
         
         List<String> commandIds = communication.getCommandId().stream()
                 .map(CommandId::getId)

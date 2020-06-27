@@ -29,12 +29,12 @@ public class CommunicationFactory {
                         componentDto.getTelemetry().getSpeed())
                 .setArmed(componentDto.getTelemetry().isArmed())
                 .setFlightMode(componentDto.getTelemetry().getFlightMode())
-                .setOrientation(new double[] {
+                .setOrientation(
                         componentDto.getTelemetry().getOriX(),
                         componentDto.getTelemetry().getOriY(),
                         componentDto.getTelemetry().getOriZ(),
                         componentDto.getTelemetry().getOriW()
-                }));
+                ));
         communication.getCommands().addAll(
                 componentDto.getCommands().stream()
                         .map(c -> {

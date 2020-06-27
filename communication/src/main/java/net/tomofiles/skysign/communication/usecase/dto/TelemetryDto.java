@@ -10,5 +10,8 @@ public class TelemetryDto {
     private double speed;
     private boolean armed;
     private String flightMode;
-    private double[] orientation;
+    private double orientationX;
+    private double orientationY;
+    private double orientationZ;
+    private double orientationW;
 }

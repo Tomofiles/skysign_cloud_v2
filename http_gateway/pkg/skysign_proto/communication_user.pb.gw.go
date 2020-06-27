@@ -101,6 +101,60 @@ func local_request_CommunicationUserService_PushCommand_0(ctx context.Context, m
 
 }
 
+func request_CommunicationUserService_PullTelemetry_0(ctx context.Context, marshaler runtime.Marshaler, client CommunicationUserServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var protoReq PullTelemetryRequest
+	var metadata runtime.ServerMetadata
+
+	var (
+		val string
+		ok  bool
+		err error
+		_   = err
+	)
+
+	val, ok = pathParams["id"]
+	if !ok {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "id")
+	}
+
+	protoReq.Id, err = runtime.String(val)
+
+	if err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "id", err)
+	}
+
+	msg, err := client.PullTelemetry(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
+	return msg, metadata, err
+
+}
+
+func local_request_CommunicationUserService_PullTelemetry_0(ctx context.Context, marshaler runtime.Marshaler, server CommunicationUserServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var protoReq PullTelemetryRequest
+	var metadata runtime.ServerMetadata
+
+	var (
+		val string
+		ok  bool
+		err error
+		_   = err
+	)
+
+	val, ok = pathParams["id"]
+	if !ok {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "id")
+	}
+
+	protoReq.Id, err = runtime.String(val)
+
+	if err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "id", err)
+	}
+
+	msg, err := server.PullTelemetry(ctx, &protoReq)
+	return msg, metadata, err
+
+}
+
 func request_CommunicationUserService_StandBy_0(ctx context.Context, marshaler runtime.Marshaler, client CommunicationUserServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq StandByRequest
 	var metadata runtime.ServerMetadata
@@ -197,6 +251,26 @@ func RegisterCommunicationUserServiceHandlerServer(ctx context.Context, mux *run
 
 	})
 
+	mux.Handle("GET", pattern_CommunicationUserService_PullTelemetry_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+		ctx, cancel := context.WithCancel(req.Context())
+		defer cancel()
+		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req)
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		resp, md, err := local_request_CommunicationUserService_PullTelemetry_0(rctx, inboundMarshaler, server, req, pathParams)
+		ctx = runtime.NewServerMetadataContext(ctx, md)
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+
+		forward_CommunicationUserService_PullTelemetry_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
+	})
+
 	mux.Handle("POST", pattern_CommunicationUserService_StandBy_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
@@ -278,6 +352,26 @@ func RegisterCommunicationUserServiceHandlerClient(ctx context.Context, mux *run
 
 	})
 
+	mux.Handle("GET", pattern_CommunicationUserService_PullTelemetry_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+		ctx, cancel := context.WithCancel(req.Context())
+		defer cancel()
+		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		rctx, err := runtime.AnnotateContext(ctx, mux, req)
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		resp, md, err := request_CommunicationUserService_PullTelemetry_0(rctx, inboundMarshaler, client, req, pathParams)
+		ctx = runtime.NewServerMetadataContext(ctx, md)
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+
+		forward_CommunicationUserService_PullTelemetry_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
+	})
+
 	mux.Handle("POST", pattern_CommunicationUserService_StandBy_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
@@ -304,11 +398,15 @@ func RegisterCommunicationUserServiceHandlerClient(ctx context.Context, mux *run
 var (
 	pattern_CommunicationUserService_PushCommand_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3, 2, 4}, []string{"api", "v1", "vehicles", "id", "commands"}, "", runtime.AssumeColonVerbOpt(true)))
 
+	pattern_CommunicationUserService_PullTelemetry_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3, 2, 4}, []string{"api", "v1", "vehicles", "id", "telemetries"}, "", runtime.AssumeColonVerbOpt(true)))
+
 	pattern_CommunicationUserService_StandBy_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3, 2, 4}, []string{"api", "v1", "vehicles", "id", "standby"}, "", runtime.AssumeColonVerbOpt(true)))
 )
 
 var (
 	forward_CommunicationUserService_PushCommand_0 = runtime.ForwardResponseMessage
+
+	forward_CommunicationUserService_PullTelemetry_0 = runtime.ForwardResponseMessage
 
 	forward_CommunicationUserService_StandBy_0 = runtime.ForwardResponseMessage
 )

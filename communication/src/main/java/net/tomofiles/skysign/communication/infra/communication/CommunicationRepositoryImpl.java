@@ -67,7 +67,7 @@ public class CommunicationRepositoryImpl implements CommunicationRepository {
 
         List<CommandRecord> commands = componentDto.getCommands().stream()
                 .map(c -> {
-                        return new CommandRecord();
+                        return new CommandRecord(c.getId(), componentDto.getId(), c.getType());
                 })
                 .collect(Collectors.toList());
 

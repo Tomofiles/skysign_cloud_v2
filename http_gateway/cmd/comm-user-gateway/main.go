@@ -16,6 +16,7 @@ import (
 var (
 	backendHost *string
 	backendPort *string
+	port        *string
 )
 
 func run() error {
@@ -34,17 +35,14 @@ func run() error {
 	if err != nil {
 		return err
 	}
-	err = gw.RegisterCommunicationVehicleServiceHandlerFromEndpoint(ctx, mux, endpoint, opts)
-	if err != nil {
-		return err
-	}
 
-	return http.ListenAndServe(":5000", mux)
+	return http.ListenAndServe(":"+*port, mux)
 }
 
 func main() {
 	backendHost = flag.String("backend_host", "localhost", "backend host")
 	backendPort = flag.String("backend_port", "5001", "backend port")
+	port = flag.String("port", "5000", "backend port")
 	flag.Parse()
 	defer glog.Flush()
 

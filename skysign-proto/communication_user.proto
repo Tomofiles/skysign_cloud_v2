@@ -7,11 +7,22 @@ import "google/api/annotations.proto";
 option java_package = "proto.skysign";
 option java_multiple_files = true;
 
+enum CommandType {
+    UPLOAD = 0;
+    NONE = 99;
+}
+
 service CommunicationUserService {
     rpc PushCommand (PushCommandRequest) returns (PushCommandResponse) {
         option (google.api.http) = {
             post: "/api/v1/vehicles/{id}/commands"
             body: "*"
+        };
+    };
+
+    rpc PullTelemetry (PullTelemetryRequest) returns (PullTelemetryResponse) {
+        option (google.api.http) = {
+            get: "/api/v1/vehicles/{id}/telemetries"
         };
     };
 
@@ -25,10 +36,30 @@ service CommunicationUserService {
 
 message PushCommandRequest {
     string id = 1;
+    CommandType type = 2;
 }
 
 message PushCommandResponse {
     string id = 1;
+    CommandType type = 2;
+}
+
+message PullTelemetryRequest {
+    string id = 1;
+}
+
+message PullTelemetryResponse {
+    string id = 1;
+    double latitude = 2;
+    double longitude = 3;
+    double altitude = 4;
+    double speed = 5;
+    bool armed = 6;
+    string flightMode = 7;
+    double orientationX = 8;
+    double orientationY = 9;
+    double orientationZ = 10;
+    double orientationW = 11;
 }
 
 message StandByRequest {

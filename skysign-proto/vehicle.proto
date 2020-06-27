@@ -10,26 +10,32 @@ option java_multiple_files = true;
 service VehicleService {
     rpc ListVehicles (ListVehiclesRequest) returns (ListVehiclesResponses) {
         option (google.api.http) = {
-          get: "/api/v1/vehicles"
+            get: "/api/v1/vehicles"
         };
     };
 
     rpc GetVehicle (GetVehicleRequest) returns (Vehicle) {
         option (google.api.http) = {
-          get: "/api/v1/vehicles/{id}"
+            get: "/api/v1/vehicles/{id}"
         };
     };
 
     rpc CreateVehicle (CreateVehicleRequest) returns (Vehicle) {
         option (google.api.http) = {
-          post: "/api/v1/vehicles"
-          body: "*"
+            post: "/api/v1/vehicles"
+            body: "*"
+        };
+    };
+
+    rpc UpdateVehicle (UpdateVehicleRequest) returns (Vehicle) {
+        option (google.api.http) = {
+            put: "/api/v1/vehicles/{id}"
         };
     };
 
     rpc DeleteVehicle (DeleteVehicleRequest) returns (Empty) {
         option (google.api.http) = {
-          delete: "/api/v1/vehicles/{id}"
+            delete: "/api/v1/vehicles/{id}"
         };
     };
 }
@@ -47,6 +53,12 @@ message GetVehicleRequest {
 message CreateVehicleRequest {
     string name = 1;
     string commId = 2;
+}
+
+message UpdateVehicleRequest {
+    string id = 1;
+    string name = 2;
+    string commId = 3;
 }
 
 message DeleteVehicleRequest {

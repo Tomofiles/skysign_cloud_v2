@@ -38,12 +38,30 @@ public class Communication {
             double speed,
             boolean armed,
             String flightMode,
-            double[] orientation) {
+            double orientationX,
+            double orientationY,
+            double orientationZ,
+            double orientationW) {
         this.telemetry = Telemetry.newInstance()
                 .setPosition(latitude, longitude, altitude, speed)
                 .setArmed(armed)
                 .setFlightMode(flightMode)
-                .setOrientation(orientation);
+                .setOrientation(orientationX, orientationY, orientationZ, orientationW);
+    }
+
+    public TelemetrySnapshot pullTelemetry() {
+        return new TelemetrySnapshot(
+                this.telemetry.getPosition().getLatitude(),
+                this.telemetry.getPosition().getLongitude(),
+                this.telemetry.getPosition().getAltitude(),
+                this.telemetry.getSpeed(),
+                this.telemetry.isArmed(),
+                this.telemetry.getFlightMode(),
+                this.telemetry.getOrientation().getX(),
+                this.telemetry.getOrientation().getY(),
+                this.telemetry.getOrientation().getZ(),
+                this.telemetry.getOrientation().getW()
+        );
     }
 
     public List<CommandId> getCommandId() {
