@@ -20,8 +20,11 @@ public class Communication {
     @Setter(value = AccessLevel.PACKAGE)
     private MissionId missionId;
 
+    @Getter(value = AccessLevel.PACKAGE)
+    @Setter(value = AccessLevel.PACKAGE)
     private Telemetry telemetry = null;
 
+    @Getter(value = AccessLevel.PACKAGE)
     private final List<Command> commands;
 
     @Getter

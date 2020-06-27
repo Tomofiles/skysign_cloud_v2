@@ -4,4 +4,5 @@ CREATE TABLE vehicle (
     comm_id character varying(36) NOT NULL,
     version integer NOT NULL,
     CONSTRAINT vehicle_pkey PRIMARY KEY (id)
-)
+);
+CREATE INDEX vehicle_upd_del_idx ON vehicle (id, version);
