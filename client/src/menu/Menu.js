@@ -35,7 +35,6 @@ const list = (classes, missionOpen, assetsOpen, toggleMissions, toggleAssets) =>
           </Badge>
         </ListItemIcon>
         <ListItemText >Missions</ListItemText>
-        
       </ListItem>
       <ListItem button onClick={toggleAssets}>
         <ListItemIcon>

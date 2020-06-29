@@ -20,7 +20,7 @@ const useStyles = makeStyles(theme => ({
     flexShrink: 0,
   },
   menuPaper: {
-    background: 'black',
+    background: '#080808',
     color: '#fafafa',
     width: menuWidth,
   },
@@ -43,7 +43,7 @@ const useStyles = makeStyles(theme => ({
     flexShrink: 0,
   },
   missionsPaper: {
-    background: 'rgba(0, 0, 0, 0.5)',
+    background: 'rgba(0, 0, 0, 0.7)',
     color: '#fafafa',
     width: missionsWidth,
   },
@@ -52,9 +52,49 @@ const useStyles = makeStyles(theme => ({
     flexShrink: 0,
   },
   assetsPaper: {
-    background: 'rgba(0, 0, 0, 0.5)',
+    background: 'rgba(0, 0, 0, 0.7)',
     color: '#fafafa',
     width: assetsWidth,
+  },
+  myVehicleRoot: {
+    background: 'transparent',
+  },
+  myVehicleSummary: {
+    background: '#303437',
+    color: '#fafafa',
+  },
+  myVehiclePaper: {
+    background: '#303437',
+    color: '#fafafa',
+    "&:hover": {
+      background: 'rgba(0, 173, 181, 1.0)'
+    }
+  },
+  myVehicleList: {
+    maxHeight: '300px',
+    overflow: 'auto',
+    width: '100%',
+    color: '#fafafa',
+  },
+  myVehicleButton: {
+    background: '#303437',
+    color: '#fafafa',
+    "&:hover": {
+      background: 'rgba(0, 173, 181, 1.0)'
+    }
+  },
+  editVehicleInput: {
+    color: '#fafafa',
+  },
+  editVehicleInputText: {
+    background: '#fafafa',
+  },
+  editVehicleButton: {
+    background: '#303437',
+    color: '#fafafa',
+    "&:hover": {
+      background: 'rgba(0, 173, 181, 1.0)'
+    }
   },
 }));
 
