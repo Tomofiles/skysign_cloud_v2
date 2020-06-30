@@ -10,18 +10,32 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 
 import VehiclesList from './VehiclesList'
 import VehiclesEdit from './VehiclesEdit'
+import VehiclesNew from './VehiclesNew'
+import VehiclesDetail from './VehiclesDetail'
+
+const VEHICLE_MODE = Object.freeze({"NEW":1, "EDIT":2, "DETAIL":3, "LIST":4});
 
 const Vehicles = (props) => {
-  const [edit, setEdit] = useState(false);
+  const [mode, setMode] = useState(VEHICLE_MODE.LIST);
   const [selected, setSelected] = useState({id: undefined});
 
   const openEdit = (id) => {
-    setEdit(true);
+    setMode(VEHICLE_MODE.EDIT);
     setSelected(id);
   }
 
-  const closeEdit = () => {
-    setEdit(false);
+  const openNew = () => {
+    setMode(VEHICLE_MODE.NEW);
+    setSelected(undefined);
+  }
+
+  const openDetail = (id) => {
+    setMode(VEHICLE_MODE.DETAIL);
+    setSelected(id);
+  }
+
+  const openList = () => {
+    setMode(VEHICLE_MODE.LIST);
     setSelected(undefined);
   }
 
@@ -37,10 +51,17 @@ const Vehicles = (props) => {
       >
         <Typography>My Vehicles</Typography>
       </ExpansionPanelSummary>
-      {edit ?
-        <VehiclesEdit classes={props.classes} closeEdit={closeEdit} id={selected} />
-      :
-        <VehiclesList classes={props.classes} openEdit={openEdit} />
+      {mode === VEHICLE_MODE.EDIT &&
+        <VehiclesEdit classes={props.classes} openList={openList} openDetail={openDetail} id={selected} />
+      }
+      {mode === VEHICLE_MODE.NEW &&
+        <VehiclesNew classes={props.classes} openList={openList} />
+      }
+      {mode === VEHICLE_MODE.DETAIL &&
+        <VehiclesDetail classes={props.classes} openList={openList} openEdit={openEdit} id={selected} />
+      }
+      {mode === VEHICLE_MODE.LIST &&
+        <VehiclesList classes={props.classes} openDetail={openDetail} openNew={openNew} id={selected} />
       }
     </ExpansionPanel>
   );

@@ -1,4 +1,6 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+
+import axios from 'axios';
 
 import {
   Typography,
@@ -15,48 +17,34 @@ import {
 import { grey } from '@material-ui/core/colors';
 import Flight from '@material-ui/icons/Flight';
 
-function createData(id, name, commId) {
-  return { id, name, commId };
+async function getVehicles() {
+  try {
+    const res = await axios
+      .get('/api/v1/vehicles', {
+        params: {}
+      })
+    return res.data;
+  } catch(error) {
+    console.log(error);
+  }
 }
 
-const rows = [
-  createData('4be63402-91cb-4527-a434-e55696e760b3', 'Pixhawk 4', '4be63402-91cb-4527-a434-e55696e760b3'),
-  createData('ad26b04d-e23b-4f58-93d1-7b47bbb9e608', 'Pixhawk 4 mini', 'ad26b04d-e23b-4f58-93d1-7b47bbb9e608'),
-  createData('3521ee11-ce86-4daf-b13a-bddfbce9267d', 'Phantom 4', '3521ee11-ce86-4daf-b13a-bddfbce9267d'),
-  createData('2da9c8c7-e7d4-4d46-bc72-09210303d223', 'Matrice 300', '2da9c8c7-e7d4-4d46-bc72-09210303d223'),
-  // createData('4be63402-91cb-4527-a434-e55696e760b3', 'Pixhawk 4', '4be63402-91cb-4527-a434-e55696e760b3'),
-  // createData('ad26b04d-e23b-4f58-93d1-7b47bbb9e608', 'Pixhawk 4 mini', 'ad26b04d-e23b-4f58-93d1-7b47bbb9e608'),
-  // createData('3521ee11-ce86-4daf-b13a-bddfbce9267d', 'Phantom 4', '3521ee11-ce86-4daf-b13a-bddfbce9267d'),
-  // createData('2da9c8c7-e7d4-4d46-bc72-09210303d223', 'Matrice 300', '2da9c8c7-e7d4-4d46-bc72-09210303d223'),
-  // createData('4be63402-91cb-4527-a434-e55696e760b3', 'Pixhawk 4', '4be63402-91cb-4527-a434-e55696e760b3'),
-  // createData('ad26b04d-e23b-4f58-93d1-7b47bbb9e608', 'Pixhawk 4 mini', 'ad26b04d-e23b-4f58-93d1-7b47bbb9e608'),
-  // createData('3521ee11-ce86-4daf-b13a-bddfbce9267d', 'Phantom 4', '3521ee11-ce86-4daf-b13a-bddfbce9267d'),
-  // createData('2da9c8c7-e7d4-4d46-bc72-09210303d223', 'Matrice 300', '2da9c8c7-e7d4-4d46-bc72-09210303d223'),
-  // createData('4be63402-91cb-4527-a434-e55696e760b3', 'Pixhawk 4', '4be63402-91cb-4527-a434-e55696e760b3'),
-  // createData('ad26b04d-e23b-4f58-93d1-7b47bbb9e608', 'Pixhawk 4 mini', 'ad26b04d-e23b-4f58-93d1-7b47bbb9e608'),
-  // createData('3521ee11-ce86-4daf-b13a-bddfbce9267d', 'Phantom 4', '3521ee11-ce86-4daf-b13a-bddfbce9267d'),
-  // createData('2da9c8c7-e7d4-4d46-bc72-09210303d223', 'Matrice 300', '2da9c8c7-e7d4-4d46-bc72-09210303d223'),
-  // createData('4be63402-91cb-4527-a434-e55696e760b3', 'Pixhawk 4', '4be63402-91cb-4527-a434-e55696e760b3'),
-  // createData('ad26b04d-e23b-4f58-93d1-7b47bbb9e608', 'Pixhawk 4 mini', 'ad26b04d-e23b-4f58-93d1-7b47bbb9e608'),
-  // createData('3521ee11-ce86-4daf-b13a-bddfbce9267d', 'Phantom 4', '3521ee11-ce86-4daf-b13a-bddfbce9267d'),
-  // createData('2da9c8c7-e7d4-4d46-bc72-09210303d223', 'Matrice 300', '2da9c8c7-e7d4-4d46-bc72-09210303d223'),
-  // createData('4be63402-91cb-4527-a434-e55696e760b3', 'Pixhawk 4', '4be63402-91cb-4527-a434-e55696e760b3'),
-  // createData('ad26b04d-e23b-4f58-93d1-7b47bbb9e608', 'Pixhawk 4 mini', 'ad26b04d-e23b-4f58-93d1-7b47bbb9e608'),
-  // createData('3521ee11-ce86-4daf-b13a-bddfbce9267d', 'Phantom 4', '3521ee11-ce86-4daf-b13a-bddfbce9267d'),
-  // createData('2da9c8c7-e7d4-4d46-bc72-09210303d223', 'Matrice 300', '2da9c8c7-e7d4-4d46-bc72-09210303d223'),
-  // createData('4be63402-91cb-4527-a434-e55696e760b3', 'Pixhawk 4', '4be63402-91cb-4527-a434-e55696e760b3'),
-  // createData('ad26b04d-e23b-4f58-93d1-7b47bbb9e608', 'Pixhawk 4 mini', 'ad26b04d-e23b-4f58-93d1-7b47bbb9e608'),
-  // createData('3521ee11-ce86-4daf-b13a-bddfbce9267d', 'Phantom 4', '3521ee11-ce86-4daf-b13a-bddfbce9267d'),
-  // createData('2da9c8c7-e7d4-4d46-bc72-09210303d223', 'Matrice 300', '2da9c8c7-e7d4-4d46-bc72-09210303d223'),
-];
-
 const VehiclesList = (props) => {
+  const [rows, setRows] = useState([]);
+
+  useEffect(() => {
+    getVehicles()
+      .then(data => {
+        setRows(data.vehicles);
+      })
+  }, [])
+
   const onClickNew = () => {
-    props.openEdit(undefined);
+    props.openNew();
   }
 
   const onSelect = (id) => {
-    props.openEdit(id);
+    props.openDetail(id);
   }
 
   return (
