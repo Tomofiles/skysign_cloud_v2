@@ -1,7 +1,5 @@
 import React, { useState, useEffect } from 'react';
 
-import axios from 'axios';
-
 import {
   Typography,
   ExpansionPanelDetails,
@@ -13,17 +11,7 @@ import {
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import { grey } from '@material-ui/core/colors';
 
-async function getVehicle(id) {
-  try {
-    const res = await axios
-      .get(`/api/v1/vehicles/${id}`, {
-        params: {}
-      })
-    return res.data;
-  } catch(error) {
-    console.log(error);
-  }
-}
+import { getVehicle } from './VehicleUtils'
 
 const VehiclesDetail = (props) => {
   const [vehicle, setVehicle] = useState({id: "-", name: "-", commId: "-"});

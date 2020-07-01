@@ -1,7 +1,5 @@
 import React, { useEffect, useState } from 'react';
 
-import axios from 'axios';
-
 import {
   Typography,
   Box,
@@ -17,17 +15,7 @@ import {
 import { grey } from '@material-ui/core/colors';
 import Flight from '@material-ui/icons/Flight';
 
-async function getVehicles() {
-  try {
-    const res = await axios
-      .get('/api/v1/vehicles', {
-        params: {}
-      })
-    return res.data;
-  } catch(error) {
-    console.log(error);
-  }
-}
+import { getVehicles } from './VehicleUtils'
 
 const VehiclesList = (props) => {
   const [rows, setRows] = useState([]);

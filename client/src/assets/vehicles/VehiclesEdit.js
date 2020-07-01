@@ -1,6 +1,4 @@
-import React, { useState, useEffect } from 'react';
-
-import axios from 'axios';
+import React, { useEffect, useState } from 'react';
 
 import {
   Typography,
@@ -13,64 +11,29 @@ import {
 } from '@material-ui/core';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import { grey } from '@material-ui/core/colors';
-import { useForm } from 'react-hook-form';
+import { useForm, Controller } from 'react-hook-form';
 
-async function getVehicle(id) {
-  try {
-    const res = await axios
-      .get(`/api/v1/vehicles/${id}`, {
-        params: {}
-      })
-    return res.data;
-  } catch(error) {
-    console.log(error);
-  }
-}
-
-async function updateVehicle(id, data) {
-  try {
-    const res = await axios
-      .put(`/api/v1/vehicles/${id}`, {
-        name: data.vname,
-        commId: data.commId
-      })
-    return res.data;
-  } catch(error) {
-    console.log(error);
-  }
-}
-
-async function deleteVehicle(id) {
-  try {
-    const res = await axios
-      .delete(`/api/v1/vehicles/${id}`, {})
-    return res.data;
-  } catch(error) {
-    console.log(error);
-  }
-}
+import { getVehicle, updateVehicle, deleteVehicle } from './VehicleUtils'
 
 const VehiclesEdit = (props) => {
-  const { register, handleSubmit, errors } = useForm();
-  const [vehicle, setVehicle] = useState({id: "-", vname: "-", commId: "-"});
+  const [ id, setId ] = useState("");
+  const { control, handleSubmit, setValue } = useForm();
 
   useEffect(() => {
     getVehicle(props.id)
       .then(data => {
-        setVehicle({
-          id: data.id,
-          vname: data.name,
-          commId: data.commId
-        });
+        setId(data.id);
+        setValue("name", data.name);
+        setValue("commId", data.commId);
       })
-  }, [props.id])
+  }, [props.id, setValue])
 
   const onClickCancel = (id) => {
     props.openDetail(id);
   }
 
   const onClickSave = (data) => {
-    updateVehicle(vehicle.id, data)
+    updateVehicle(id, data)
       .then(ret => {
         props.openList();
       });
@@ -85,20 +48,6 @@ const VehiclesEdit = (props) => {
 
   const onClickReturn = () => {
     props.openList();  
-  }
-
-  const handleChangeVname = (event) => {
-    setVehicle({
-      vname: event.target.vname,
-      commId: vehicle.commId,
-    });
-  }
-
-  const handleChangeCommId = (event) => {
-    setVehicle({
-      vname: vehicle.vname,
-      commId: event.target.commId,
-    });
   }
 
   return (
@@ -117,31 +66,25 @@ const VehiclesEdit = (props) => {
             <Grid item xs={12}>
               <Box className={props.classes.editVehicleInputText}
                   p={1} m={1} borderRadius={7} >
-                <TextField
+                <Controller
+                  as={TextField}
                   label="Name"
-                  type="text"
-                  name="vname"
-                  fullWidth
-                  inputRef={register({ required: true, maxLength: 50 })}
-                  error={Boolean(errors.vname)}
-                  helperText={errors.vname}
-                  onChange={handleChangeVname}
-                  value={vehicle.vname} />
+                  name="name"
+                  control={control}
+                  defaultValue=""
+                  fullWidth />
               </Box>
             </Grid>
             <Grid item xs={12}>
               <Box className={props.classes.editVehicleInputText}
                   p={1} m={1} borderRadius={7} >
-                <TextField
+                <Controller
+                  as={TextField}
                   label="Communication ID"
-                  type="text"
                   name="commId"
-                  fullWidth
-                  inputRef={register({ required: true, maxLength: 50 })}
-                  error={Boolean(errors.commId)}
-                  helperText={errors.commId}
-                  onChange={handleChangeCommId}
-                  value={vehicle.commId} />
+                  control={control}
+                  defaultValue=""
+                  fullWidth />
               </Box>
             </Grid>
           </Grid>
@@ -149,12 +92,12 @@ const VehiclesEdit = (props) => {
         <ExpansionPanelActions >
           <Button
               className={props.classes.editVehicleButton}
-              onClick={() => onClickCancel(vehicle.id)}>
+              onClick={() => onClickCancel(id)}>
             Cancel
           </Button>
           <Button 
               className={props.classes.editVehicleButton}
-              onClick={() => onClickDelete(vehicle.id)}>
+              onClick={() => onClickDelete(id)}>
             Delete
           </Button>
           <Button

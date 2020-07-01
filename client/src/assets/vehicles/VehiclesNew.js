@@ -1,7 +1,5 @@
 import React from 'react';
 
-import axios from 'axios';
-
 import {
   Typography,
   ExpansionPanelDetails,
@@ -15,18 +13,7 @@ import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import { grey } from '@material-ui/core/colors';
 import { useForm } from 'react-hook-form';
 
-async function createVehicle(data) {
-  try {
-    const res = await axios
-      .post(`/api/v1/vehicles`, {
-        name: data.name,
-        commId: data.commId
-      })
-    return res.data;
-  } catch(error) {
-    console.log(error);
-  }
-}
+import { createVehicle } from './VehicleUtils'
 
 const VehiclesNew = (props) => {
   const { register, handleSubmit, errors } = useForm();
