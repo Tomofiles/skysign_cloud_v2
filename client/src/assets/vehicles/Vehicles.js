@@ -17,7 +17,7 @@ const VEHICLE_MODE = Object.freeze({"NEW":1, "EDIT":2, "DETAIL":3, "LIST":4});
 
 const Vehicles = (props) => {
   const [mode, setMode] = useState(VEHICLE_MODE.LIST);
-  const [selected, setSelected] = useState({id: undefined});
+  const [selected, setSelected] = useState(undefined);
 
   const openEdit = (id) => {
     setMode(VEHICLE_MODE.EDIT);
