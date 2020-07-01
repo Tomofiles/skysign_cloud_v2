@@ -30,6 +30,7 @@ service VehicleService {
     rpc UpdateVehicle (UpdateVehicleRequest) returns (Vehicle) {
         option (google.api.http) = {
             put: "/api/v1/vehicles/{id}"
+            body: "*"
         };
     };
 

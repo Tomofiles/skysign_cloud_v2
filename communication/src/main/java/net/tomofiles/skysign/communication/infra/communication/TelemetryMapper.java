@@ -21,7 +21,7 @@ public interface TelemetryMapper {
         + " orientation_w as oriW"
         + " FROM telemetry" 
         + " WHERE comm_id = #{commId}")
-    TelemetryRecord find(String id);
+    TelemetryRecord find(String commId);
 
     @Insert("INSERT INTO telemetry ("
         + " comm_id,"
@@ -65,7 +65,7 @@ public interface TelemetryMapper {
         + " comm_id = #{commId}")
     void update(TelemetryRecord communication);
 
-    @Update("DELETE FROM telemetry WHERE id = #{id}")
-    void delete(String id);
+    @Update("DELETE FROM telemetry WHERE comm_id = #{commId}")
+    void delete(String commId);
 }
 
