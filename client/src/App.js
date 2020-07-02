@@ -1,12 +1,9 @@
-import React, { useState } from 'react';
-import './App.css';
+import React from 'react';
 
 import { makeStyles } from "@material-ui/core/styles";
 
-import Menu from './menu/Menu'
 import Map from './map/Map'
-import Missions from './missions/Missions'
-import Assets from './assets/Assets'
+import Func from './Func'
 
 const menuWidth = 180;
 const missionsWidth = 320;
@@ -99,36 +96,12 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const App = () => {
-  const [missionOpen, setMissionOpen] = useState(false);
-  const [assetsOpen, setAssetsOpen] = useState(false);
-
   const classes = useStyles();
 
-  const toggleMissions = () => {
-    if (assetsOpen) {
-      setAssetsOpen(false);
-    }
-    setMissionOpen(!missionOpen);
-  }
-
-  const toggleAssets = () => {
-    if (missionOpen) {
-      setMissionOpen(false);
-    }
-    setAssetsOpen(!assetsOpen);
-  }
-
   return (
-    <div className={classes.root}>
-      <Menu
-        classes={classes}
-        missionOpen={missionOpen}
-        assetsOpen={assetsOpen}
-        toggleMissions={toggleMissions}
-        toggleAssets={toggleAssets} />
-      <Map  classes={classes} />
-      <Missions  classes={classes} open={missionOpen} />
-      <Assets  classes={classes} open={assetsOpen} />
+    <div>
+      <Func classes={classes} />
+      <Map classes={classes} />
     </div>
   );
 }

@@ -6,10 +6,13 @@ import {
   Camera,
   CameraFlyTo
 } from "resium";
-import { Cartesian3 } from "cesium"
+import { Cartesian3, createWorldTerrain, IonImageryProvider } from "cesium"
+
+import Drones from './Drones'
+import {} from './Key'
 
 const Map = (props) => {
-  const [position, setPosition] = useState({ cartesian3: Cartesian3.fromDegrees(145.5, 35.5, 1000) });
+  const [position, setPosition] = useState({ cartesian3: Cartesian3.fromDegrees(-73.7578307, 45.467115299999996, 1000) });
 
   useEffect(() => {
     getCurrentPosition();
@@ -18,8 +21,8 @@ const Map = (props) => {
   const getCurrentPosition = () => {
     navigator.geolocation.getCurrentPosition(p => {
       const { latitude, longitude } = p.coords;
-      const pos = Cartesian3.fromDegrees(longitude, latitude, 1000);
-      setPosition({ cartesian3: pos });
+      const pos = Cartesian3.fromDegrees(longitude, latitude, 2000);
+      // setPosition({ cartesian3: pos });
     });
   };
 
@@ -37,10 +40,13 @@ const Map = (props) => {
         timeline={false}
         fullscreenButton={false}
         className={props.classes.mapArea}
+        imageryProvider={new IonImageryProvider({ assetId: 2 })}
+        terrainProvider={createWorldTerrain()}
         >
           <Camera>
             <CameraFlyTo duration={0} destination={position.cartesian3} />
           </Camera>
+          <Drones />
       </Viewer>
     </div>
   );

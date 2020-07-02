@@ -19,7 +19,8 @@
     "react-hook-form": "^5.7.2",
     "react-hot-loader": "^4.12.21",
     "react-scripts": "3.4.1",
-    "resium": "^1.12.0-beta.2"
+    "resium": "^1.12.0-beta.2",
+    "use-interval": "^1.2.1"
   },
   "scripts": {
     "start": "craco start",

@@ -15,8 +15,9 @@ import { grey } from '@material-ui/core/colors';
 import Flight from '@material-ui/icons/Flight';
 import Send from '@material-ui/icons/Send';
 import Settings from '@material-ui/icons/Settings';
+import Games from '@material-ui/icons/Games';
 
-const list = (classes, missionOpen, assetsOpen, toggleMissions, toggleAssets) => (
+const list = (classes, controlsOpen, missionsOpen, assetsOpen, toggleControls, toggleMissions, toggleAssets) => (
   <div>
     <Card
         className={classes.menuLogoBackground}>
@@ -28,9 +29,17 @@ const list = (classes, missionOpen, assetsOpen, toggleMissions, toggleAssets) =>
     </Card>
     <Divider />
     <List>
+      <ListItem button onClick={toggleControls}>
+        <ListItemIcon>
+          <Badge color="secondary" variant="dot" invisible={!controlsOpen}>
+            <Games style={{ color: grey[50] }} fontSize="large" />
+          </Badge>
+        </ListItemIcon>
+        <ListItemText >Controls</ListItemText>
+      </ListItem>
       <ListItem button onClick={toggleMissions}>
         <ListItemIcon>
-          <Badge color="secondary" variant="dot" invisible={!missionOpen}>
+          <Badge color="secondary" variant="dot" invisible={!missionsOpen}>
             <Send style={{ color: grey[50] }} fontSize="large" />
           </Badge>
         </ListItemIcon>
@@ -62,7 +71,15 @@ const Menu = (props) => {
         paper: props.classes.menuPaper,
       }}
       open={true} >
-      {list(props.classes, props.missionOpen, props.assetsOpen, props.toggleMissions, props.toggleAssets)}
+      {list(
+        props.classes,
+        props.controlsOpen,
+        props.missionsOpen,
+        props.assetsOpen,
+        props.toggleControls,
+        props.toggleMissions,
+        props.toggleAssets
+      )}
     </Drawer>
   );
 }
