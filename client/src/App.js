@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { makeStyles } from "@material-ui/core/styles";
+import { makeStyles, createMuiTheme, MuiThemeProvider } from "@material-ui/core/styles";
 
 import Map from './map/Map'
 import Func from './Func'
@@ -95,14 +95,29 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
+const theme = createMuiTheme({
+  overrides: {
+    MuiListItem: {
+      "root": {
+        "&$selected": {
+          backgroundColor: 'rgba(0, 173, 181, 1.0)',
+          '&:hover': {
+            backgroundColor: 'rgba(0, 173, 181, 1.0)',
+          }
+        }
+      }
+    }
+  }
+});
+
 const App = () => {
   const classes = useStyles();
 
   return (
-    <div>
+    <MuiThemeProvider theme={theme}>
       <Func classes={classes} />
       <Map classes={classes} />
-    </div>
+    </MuiThemeProvider>
   );
 }
 

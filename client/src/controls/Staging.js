@@ -1,25 +1,57 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 
 import {
   Typography,
-  Box,
-  Paper,
-  List,
-  ListItem,
-  ListItemIcon,
-  ListItemText,
-  ExpansionPanelDetails,
-  ExpansionPanelActions,
-  Button,
   ExpansionPanel,
   ExpansionPanelSummary
 } from '@material-ui/core';
 import { grey } from '@material-ui/core/colors';
-import Flight from '@material-ui/icons/Flight';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import StagingList from './StagingList';
+import StagingNew from './StagingNew';
+
+import { getVehicle } from '../assets/vehicles/VehicleUtils'
+
+const STAGING_MODE = Object.freeze({"NEW":1, "LIST":2});
+
+const getVehicleName = async (id) => {
+  const vehicle = await getVehicle(id);
+  return vehicle.name;
+}
 
 const Staging = (props) => {
-  const [rows, setRows] = useState([]);
+  const [ mode, setMode ] = useState(STAGING_MODE.LIST);
+  const [ rows, setRows ] = useState([]);
+
+  const openNew = () => {
+    setMode(STAGING_MODE.NEW);
+  }
+
+  const openList = () => {
+    setMode(STAGING_MODE.LIST);
+  }
+
+  const addRow = async (data) => {
+    setMode(STAGING_MODE.LIST);
+    data.vehicleName = await getVehicleName(data.vehicle);
+    setRows([...rows, data]);
+  }
+
+  const toggleSelectRow = (id) => {
+    const newRows = [...rows];
+    for (let row of newRows) {
+      if (row.id === id) {
+        row.selected = !row.selected;
+      }
+    }
+    setRows(newRows);
+  }
+
+  const removeRows = () => {
+    const newRows = rows
+        .filter(row => !row.selected);
+    setRows(newRows);
+  }
 
   return (
     <ExpansionPanel
@@ -33,28 +65,17 @@ const Staging = (props) => {
       >
         <Typography>Staging</Typography>
       </ExpansionPanelSummary>
-      <ExpansionPanelDetails>
-        <List 
-          className={props.classes.myVehicleList} >
-          {rows.length === 0 &&
-            <Typography>No Vehicles</Typography>
-          }
-          {rows.map((row) => (
-            <Box key={row.id} pb={1} onClick={() => {}} >
-              <ListItem button component={Paper} className={props.classes.myVehiclePaper}>
-                <ListItemIcon>
-                  <Flight style={{ color: grey[50] }} />
-                </ListItemIcon>
-                <ListItemText >{row.name}</ListItemText>
-              </ListItem>
-            </Box>
-          ))}
-        </List>
-      </ExpansionPanelDetails>
-      <ExpansionPanelActions >
-        <Button className={props.classes.myVehicleButton} onClick={() => {}}>Add</Button>
-        <Button className={props.classes.myVehicleButton} onClick={() => {}}>Delete</Button>
-      </ExpansionPanelActions>
+      {mode === STAGING_MODE.NEW &&
+        <StagingNew classes={props.classes} openList={openList} addRow={addRow} />
+      }
+      {mode === STAGING_MODE.LIST &&
+        <StagingList
+          classes={props.classes}
+          openNew={openNew}
+          toggleSelectRow={toggleSelectRow}
+          removeRows={removeRows}
+          rows={rows} />
+      }
     </ExpansionPanel>
   );
 }

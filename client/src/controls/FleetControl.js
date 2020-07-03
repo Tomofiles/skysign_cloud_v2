@@ -6,7 +6,8 @@ import {
   ExpansionPanelActions,
   Button,
   ExpansionPanel,
-  ExpansionPanelSummary
+  ExpansionPanelSummary,
+  Grid
 } from '@material-ui/core';
 import { grey } from '@material-ui/core/colors';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
@@ -27,12 +28,33 @@ const FleetControl = (props) => {
       <ExpansionPanelDetails>
       </ExpansionPanelDetails>
       <ExpansionPanelActions >
-        <Button className={props.classes.myVehicleButton} onClick={() => {}}>Arm</Button>
-        <Button className={props.classes.myVehicleButton} onClick={() => {}}>Disarm</Button>
-        <Button className={props.classes.myVehicleButton} onClick={() => {}}>Upload</Button>
-        <Button className={props.classes.myVehicleButton} onClick={() => {}}>Start</Button>
-        <Button className={props.classes.myVehicleButton} onClick={() => {}}>Land</Button>
-        <Button className={props.classes.myVehicleButton} onClick={() => {}}>Return</Button>
+        <Grid container spacing={3} >
+          <Grid item xs={4} >
+            <Button className={props.classes.myVehicleButton} fullWidth onClick={() => {}}>Arm</Button>
+          </Grid>
+          <Grid item xs={4} >
+            <Button className={props.classes.myVehicleButton} fullWidth onClick={() => {}}>Disarm</Button>
+          </Grid>
+          <Grid item xs={4} />
+          <Grid item xs={4} >
+            <Button className={props.classes.myVehicleButton} fullWidth onClick={() => {}}>Upload</Button>
+          </Grid>
+          <Grid item xs={4} >
+            <Button className={props.classes.myVehicleButton} fullWidth onClick={() => {}}>Start</Button>
+          </Grid>
+          <Grid item xs={4} >
+            <Button className={props.classes.myVehicleButton} fullWidth onClick={() => {}}>Pause</Button>
+          </Grid>
+          <Grid item xs={4} >
+            <Button className={props.classes.myVehicleButton} fullWidth onClick={() => {}}>Take Off</Button>
+          </Grid>
+          <Grid item xs={4} >
+            <Button className={props.classes.myVehicleButton} fullWidth onClick={() => {}}>Land</Button>
+          </Grid>
+          <Grid item xs={4} >
+            <Button className={props.classes.myVehicleButton} fullWidth onClick={() => {}}>Return</Button>
+          </Grid>
+        </Grid>
       </ExpansionPanelActions>
     </ExpansionPanel>
   );
