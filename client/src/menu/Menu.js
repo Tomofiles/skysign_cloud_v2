@@ -9,7 +9,9 @@ import {
   Divider,
   Card,
   CardMedia,
-  Badge
+  Badge,
+  Typography,
+  Grid
 } from '@material-ui/core';
 import { grey } from '@material-ui/core/colors';
 import Flight from '@material-ui/icons/Flight';
@@ -21,41 +23,76 @@ const list = (classes, controlsOpen, missionsOpen, assetsOpen, toggleControls, t
   <div>
     <Card
         className={classes.menuLogoBackground}>
-      <CardMedia
-        className={classes.menuLogo}
-        image="logo_transparent.png"
-        title="Skysign Cloud"
-      />
+      <Grid container>
+        <Grid item xs={12}>
+          <CardMedia
+            className={classes.menuLogo}
+            image="logo_transparent.png"
+            title="Skysign Cloud"
+          />
+        </Grid>
+        <Grid item xs={12}>
+          <Typography align="center" style={{ color: grey[50], fontSize: "6px" }} >Skysign Cloud</Typography>
+        </Grid>
+      </Grid>
     </Card>
-    <Divider />
+    <Divider light />
     <List>
       <ListItem button onClick={toggleControls}>
-        <ListItemIcon>
-          <Badge color="secondary" variant="dot" invisible={!controlsOpen}>
-            <Games style={{ color: grey[50] }} fontSize="large" />
-          </Badge>
+        <ListItemIcon >
+          <Grid container className={classes.menuWidthItem} >
+            <Grid item xs={12} >
+              <Badge color="secondary" variant="dot" invisible={!controlsOpen}>
+                <Games style={{ color: grey[50] }} fontSize="large" />
+              </Badge>
+            </Grid>
+            <Grid item xs={12}>
+              <Typography align="center" style={{ color: grey[50], fontSize: "6px" }} >Controls</Typography>
+            </Grid>
+          </Grid>
         </ListItemIcon>
-        <ListItemText >Controls</ListItemText>
       </ListItem>
       <ListItem button onClick={toggleMissions}>
         <ListItemIcon>
-          <Badge color="secondary" variant="dot" invisible={!missionsOpen}>
-            <Send style={{ color: grey[50] }} fontSize="large" />
-          </Badge>
+          <Grid container className={classes.menuWidthItem} >
+            <Grid item xs={12}>
+              <Badge color="secondary" variant="dot" invisible={!missionsOpen}>
+                <Send style={{ color: grey[50] }} fontSize="large" />
+              </Badge>
+            </Grid>
+            <Grid item xs={12}>
+              <Typography align="center" style={{ color: grey[50], fontSize: "6px" }} >Missions</Typography>
+            </Grid>
+          </Grid>
         </ListItemIcon>
-        <ListItemText >Missions</ListItemText>
       </ListItem>
       <ListItem button onClick={toggleAssets}>
         <ListItemIcon>
-          <Badge color="secondary" variant="dot" invisible={!assetsOpen}>
-            <Flight style={{ color: grey[50] }} fontSize="large" />
-          </Badge>
+          <Grid container className={classes.menuWidthItem} >
+            <Grid item xs={12}>
+              <Badge color="secondary" variant="dot" invisible={!assetsOpen}>
+                <Flight style={{ color: grey[50] }} fontSize="large" />
+              </Badge>
+            </Grid>
+            <Grid item xs={12}>
+              <Typography align="center" style={{ color: grey[50], fontSize: "6px" }} >Assets</Typography>
+            </Grid>
+          </Grid>
         </ListItemIcon>
-        <ListItemText >Assets</ListItemText>
       </ListItem>
       <ListItem button>
-        <ListItemIcon><Settings style={{ color: grey[50] }} fontSize="large" /></ListItemIcon>
-        <ListItemText >Settings</ListItemText>
+        <ListItemIcon>
+          <Grid container className={classes.menuWidthItem} >
+            <Grid item xs={12}>
+              <Badge color="secondary" variant="dot" invisible>
+                <Settings style={{ color: grey[50] }} fontSize="large" />
+              </Badge>
+            </Grid>
+            <Grid item xs={12}>
+              <Typography align="center" style={{ color: grey[50], fontSize: "6px" }} >Settings</Typography>
+            </Grid>
+          </Grid>
+        </ListItemIcon>
       </ListItem>
     </List>
   </div>

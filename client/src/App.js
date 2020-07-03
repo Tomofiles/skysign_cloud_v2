@@ -5,7 +5,8 @@ import { makeStyles, createMuiTheme, MuiThemeProvider } from "@material-ui/core/
 import Map from './map/Map'
 import Func from './Func'
 
-const menuWidth = 180;
+const menuWidth = 70;
+const menuWidthItem = 38;
 const missionsWidth = 320;
 const assetsWidth = 320;
 
@@ -15,6 +16,9 @@ const useStyles = makeStyles(theme => ({
   menu: {
     width: menuWidth,
     flexShrink: 0,
+  },
+  menuWidthItem: {
+    width: menuWidthItem,
   },
   menuPaper: {
     background: '#080808',
@@ -105,6 +109,11 @@ const theme = createMuiTheme({
             backgroundColor: 'rgba(0, 173, 181, 1.0)',
           }
         }
+      }
+    },
+    MuiListItemIcon: {
+      "root": {
+        minWidth: 38,
       }
     }
   }

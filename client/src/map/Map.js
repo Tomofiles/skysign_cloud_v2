@@ -22,7 +22,7 @@ const Map = (props) => {
     navigator.geolocation.getCurrentPosition(p => {
       const { latitude, longitude } = p.coords;
       const pos = Cartesian3.fromDegrees(longitude, latitude, 2000);
-      // setPosition({ cartesian3: pos });
+      setPosition({ cartesian3: pos });
     });
   };
 
