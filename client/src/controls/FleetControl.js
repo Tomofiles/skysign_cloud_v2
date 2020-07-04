@@ -28,7 +28,7 @@ const FleetControl = (props) => {
       <ExpansionPanelDetails>
       </ExpansionPanelDetails>
       <ExpansionPanelActions >
-        <Grid container spacing={3} >
+        <Grid container spacing={2} >
           <Grid item xs={4} >
             <Button className={props.classes.myVehicleButton} fullWidth onClick={() => {}}>Arm</Button>
           </Grid>

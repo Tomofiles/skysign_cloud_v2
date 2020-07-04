@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useGlobal } from 'reactn';
 
 import {
   Typography,
@@ -21,7 +21,11 @@ const getVehicleName = async (id) => {
 
 const Staging = (props) => {
   const [ mode, setMode ] = useState(STAGING_MODE.LIST);
-  const [ rows, setRows ] = useState([]);
+  const [ rows, setRows ] = useGlobal("stagingRows");
+
+  useEffect(() => {
+    setRows([]);
+  }, [setRows])
 
   const openNew = () => {
     setMode(STAGING_MODE.NEW);

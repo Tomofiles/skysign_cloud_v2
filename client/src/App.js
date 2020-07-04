@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { setGlobal } from 'reactn';
 
 import { makeStyles, createMuiTheme, MuiThemeProvider } from "@material-ui/core/styles";
 
@@ -118,6 +118,8 @@ const theme = createMuiTheme({
     }
   }
 });
+
+setGlobal({ stagingRows: [] });
 
 const App = () => {
   const classes = useStyles();
