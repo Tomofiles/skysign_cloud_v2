@@ -1,64 +1,57 @@
 package edge
 
-import "encoding/json"
-
-// // Telemetry struct
-// type Telemetry struct {
-// 	VehicleID      string       `json:"vehicleID"`
-// 	Position       *Position    `json:"position,omitempty"`
-// 	Orientation    *Orientation `json:"orientation,omitempty"`
-// 	Armed          bool         `json:"armed"`
-// 	FlightMode     string       `json:"flightMode,omitempty"`
-// 	VideoStreaming bool         `json:"videoStreaming"`
-// }
+// ConnectionState struct
+type ConnectionState struct {
+	VehicleID string
+}
 
 // Position struct
 type Position struct {
-	CartographicDegrees []float64 `json:"cartographicDegrees"`
+	Latitude         float64
+	Longitude        float64
+	AbsoluteAltitude float64
+	RelativeAltitude float64
 }
 
-// Orientation struct
-type Orientation struct {
-	UnitQuaternion []float64 `json:"unitQuaternion"`
+// Quaternion struct
+type Quaternion struct {
+	X float64
+	Y float64
+	Z float64
+	W float64
 }
 
-// Command struct
-type Command struct {
-	VehicleID string          `json:"vehicleID"`
-	MessageID string          `json:"messageID"`
-	Payload   json.RawMessage `json:"payload"`
+// Velocity struct
+type Velocity struct {
+	North float64
+	East  float64
+	Down  float64
 }
 
-// Mission struct
-type Mission struct {
-	MissionItems []*MissionItem `json:"missionItems"`
+// Armed struct
+type Armed struct {
+	Armed bool
 }
 
-// MissionItem struct
-type MissionItem struct {
-	Lat   float64 `json:"lat"`
-	Lon   float64 `json:"lon"`
-	Alt   float32 `json:"alt"`
-	Speed float32 `json:"speed"`
+// FlightMode struct
+type FlightMode struct {
+	FlightMode string
 }
 
-// SignalingMessage .
-type SignalingMessage struct {
-	Type      string `json:"type"`
-	VehicleID string `json:"vehicleID"`
-}
-
-// Telemetry .
+// Telemetry struct
 type Telemetry struct {
-	ID           string  `json:"id"`
-	Latitude     float64 `json:"latitude"`
-	Longitude    float64 `json:"longitude"`
-	Altitude     float64 `json:"altitude"`
-	Speed        float64 `json:"speed"`
-	Armed        bool    `json:"armed"`
-	FlightMode   string  `json:"flightMode"`
-	OrientationX float64 `json:"orientationX"`
-	OrientationY float64 `json:"orientationY"`
-	OrientationZ float64 `json:"orientationZ"`
-	OrientationW float64 `json:"orientationW"`
+	ID               string  `json:"id"`
+	Latitude         float64 `json:"latitude"`
+	Longitude        float64 `json:"longitude"`
+	AbsoluteAltitude float64 `json:"absoluteAltitude"`
+	RelativeAltitude float64 `json:"relativeAltitude"`
+	SpeedNorth       float64 `json:"speedN"`
+	SpeedEast        float64 `json:"speedE"`
+	SpeedDown        float64 `json:"speedD"`
+	Armed            bool    `json:"armed"`
+	FlightMode       string  `json:"flightMode"`
+	OrientationX     float64 `json:"orientationX"`
+	OrientationY     float64 `json:"orientationY"`
+	OrientationZ     float64 `json:"orientationZ"`
+	OrientationW     float64 `json:"orientationW"`
 }

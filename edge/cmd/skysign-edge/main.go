@@ -1,13 +1,12 @@
 package main
 
 import (
-	"edge/pkg/edge"
+	"context"
+	"edge/pkg/edge/builder"
 	"log"
 	"os"
 	"os/signal"
 	"time"
-
-	"google.golang.org/grpc"
 )
 
 var (
@@ -26,16 +25,37 @@ func main() {
 		cloud = cloudAddressEnv
 	}
 
-	gr, err := grpc.Dial(mavsdk, grpc.WithInsecure())
-	if err != nil {
-		log.Fatal("grpc client connection error:", err)
-	}
-	defer gr.Close()
+	go func() {
+		for {
+			t := time.NewTimer(1 * time.Second)
+			select {
+			case <-t.C:
+				ctx := context.Background()
+				ctx, cancel := context.WithCancel(ctx)
 
-	mavlink := edge.NewMavlink(gr)
-	mavlink.Listen()
+				updateExit, telemetry, err := builder.MavlinkTelemetry(ctx, mavsdk)
+				if err != nil {
+					log.Println("Mavlink telemetry error:", err)
+					cancel()
+					continue
+				}
 
-	go mavlink.SendTelemetry(cloud)
+				builder.CloudlinkTelemetry(ctx, telemetry)
+
+				go func() {
+					t := time.NewTimer(5 * time.Second)
+					select {
+					case <-t.C:
+						cancel()
+					}
+				}()
+
+				<-updateExit
+				log.Println("update exit.")
+				cancel()
+			}
+		}
+	}()
 
 	stop := make(chan os.Signal)
 	signal.Notify(stop, os.Interrupt)
