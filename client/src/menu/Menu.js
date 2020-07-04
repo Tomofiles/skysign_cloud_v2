@@ -11,7 +11,8 @@ import {
   CardMedia,
   Badge,
   Typography,
-  Grid
+  Grid,
+  Box
 } from '@material-ui/core';
 import { grey } from '@material-ui/core/colors';
 import Flight from '@material-ui/icons/Flight';
@@ -36,7 +37,7 @@ const list = (classes, controlsOpen, missionsOpen, assetsOpen, toggleControls, t
         </Grid>
       </Grid>
     </Card>
-    <Divider light />
+    <Box px={1} py={2} />
     <List>
       <ListItem button onClick={toggleControls}>
         <ListItemIcon >
