@@ -9,7 +9,7 @@ type ConnectionState struct {
 type Position struct {
 	Latitude         float64
 	Longitude        float64
-	AbsoluteAltitude float64
+	Altitude         float64
 	RelativeAltitude float64
 }
 
@@ -43,11 +43,9 @@ type Telemetry struct {
 	ID               string  `json:"id"`
 	Latitude         float64 `json:"latitude"`
 	Longitude        float64 `json:"longitude"`
-	AbsoluteAltitude float64 `json:"absoluteAltitude"`
+	Altitude         float64 `json:"altitude"`
 	RelativeAltitude float64 `json:"relativeAltitude"`
-	SpeedNorth       float64 `json:"speedN"`
-	SpeedEast        float64 `json:"speedE"`
-	SpeedDown        float64 `json:"speedD"`
+	Speed            float64 `json:"speed"`
 	Armed            bool    `json:"armed"`
 	FlightMode       string  `json:"flightMode"`
 	OrientationX     float64 `json:"orientationX"`

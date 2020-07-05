@@ -40,15 +40,7 @@ func main() {
 					continue
 				}
 
-				builder.CloudlinkTelemetry(ctx, telemetry)
-
-				go func() {
-					t := time.NewTimer(5 * time.Second)
-					select {
-					case <-t.C:
-						cancel()
-					}
-				}()
+				builder.CloudlinkTelemetry(ctx, cloud, telemetry)
 
 				<-updateExit
 				log.Println("update exit.")

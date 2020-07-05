@@ -3,6 +3,7 @@ package telemetry
 import (
 	"edge/pkg/edge"
 	"log"
+	"math"
 	"sync"
 )
 
@@ -23,11 +24,9 @@ type telemetry struct {
 	id               string
 	latitude         float64
 	longitude        float64
-	absoluteAltitude float64
+	altitude         float64
 	relativeAltitude float64
-	speedNorth       float64
-	speedEast        float64
-	speedDown        float64
+	speed            float64
 	armed            bool
 	flightMode       string
 	orientationX     float64
@@ -76,7 +75,7 @@ func (t *telemetry) Updater(
 				rwm.Lock()
 				t.latitude = position.Latitude
 				t.longitude = position.Longitude
-				t.absoluteAltitude = position.AbsoluteAltitude
+				t.altitude = position.Altitude
 				t.relativeAltitude = position.RelativeAltitude
 				rwm.Unlock()
 			case quaternion, ok := <-quaternionStream:
@@ -96,9 +95,8 @@ func (t *telemetry) Updater(
 					return
 				}
 				rwm.Lock()
-				t.speedNorth = velosity.North
-				t.speedEast = velosity.East
-				t.speedDown = velosity.Down
+				// NEDフレームから速度の合成（GroundSpeed = √n^2+e^2）
+				t.speed = math.Sqrt(velosity.North*velosity.North + velosity.East*velosity.East)
 				rwm.Unlock()
 			case armed, ok := <-armedStream:
 				if !ok {
@@ -131,11 +129,9 @@ func (t *telemetry) Get() *edge.Telemetry {
 		ID:               t.id,
 		Latitude:         t.latitude,
 		Longitude:        t.longitude,
-		AbsoluteAltitude: t.absoluteAltitude,
+		Altitude:         t.altitude,
 		RelativeAltitude: t.relativeAltitude,
-		SpeedNorth:       t.speedNorth,
-		SpeedEast:        t.speedEast,
-		SpeedDown:        t.speedDown,
+		Speed:            t.speed,
 		Armed:            t.armed,
 		FlightMode:       t.flightMode,
 		OrientationX:     t.orientationX,

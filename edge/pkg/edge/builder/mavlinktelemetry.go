@@ -12,32 +12,32 @@ func MavlinkTelemetry(ctx context.Context, mavsdk string) (<-chan interface{}, t
 
 	connStateStream, err := mavlink.AdapterConnectionState(ctx, mavsdk)
 	if err != nil {
-		log.Println("Mavlink connState adapter error:", err)
+		log.Println("mavlink connState adapter error:", err)
 		return nil, nil, err
 	}
 	positionStream, err := mavlink.AdapterPosition(ctx, mavsdk)
 	if err != nil {
-		log.Println("Mavlink position adapter error:", err)
+		log.Println("mavlink position adapter error:", err)
 		return nil, nil, err
 	}
 	quaternionStream, err := mavlink.AdapterQuaternion(ctx, mavsdk)
 	if err != nil {
-		log.Println("Mavlink quaternion adapter error:", err)
+		log.Println("mavlink quaternion adapter error:", err)
 		return nil, nil, err
 	}
 	velocityStream, err := mavlink.AdapterVelocity(ctx, mavsdk)
 	if err != nil {
-		log.Println("Mavlink velocity adapter error:", err)
+		log.Println("mavlink velocity adapter error:", err)
 		return nil, nil, err
 	}
 	armedStream, err := mavlink.AdapterArmed(ctx, mavsdk)
 	if err != nil {
-		log.Println("Mavlink armed adapter error:", err)
+		log.Println("mavlink armed adapter error:", err)
 		return nil, nil, err
 	}
 	flightModeStream, err := mavlink.AdapterFlightMode(ctx, mavsdk)
 	if err != nil {
-		log.Println("Mavlink flightMode adapter error:", err)
+		log.Println("mavlink flightMode adapter error:", err)
 		return nil, nil, err
 	}
 

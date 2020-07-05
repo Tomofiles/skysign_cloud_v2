@@ -45,7 +45,7 @@ func AdapterPosition(ctx context.Context, url string) (<-chan *edge.Position, er
 			position := &edge.Position{
 				Latitude:         response.GetPosition().LatitudeDeg,
 				Longitude:        response.GetPosition().LongitudeDeg,
-				AbsoluteAltitude: float64(response.GetPosition().AbsoluteAltitudeM),
+				Altitude:         float64(response.GetPosition().AbsoluteAltitudeM),
 				RelativeAltitude: float64(response.GetPosition().RelativeAltitudeM),
 			}
 			positionStream <- position
