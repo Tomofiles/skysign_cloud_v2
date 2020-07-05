@@ -35,12 +35,28 @@ func main() {
 
 				updateExit, telemetry, err := builder.MavlinkTelemetry(ctx, mavsdk)
 				if err != nil {
-					log.Println("Mavlink telemetry error:", err)
+					log.Println("mavlink telemetry error:", err)
 					cancel()
 					continue
 				}
 
-				builder.CloudlinkTelemetry(ctx, cloud, telemetry)
+				commandStream := builder.Cloudlink(ctx, cloud, telemetry)
+
+				err = builder.MavlinkCommand(ctx, mavsdk, commandStream)
+				if err != nil {
+					log.Println("mavlink command error:", err)
+					cancel()
+					continue
+				}
+
+				// 障害時動作確認用
+				// go func() {
+				// 	t := time.NewTimer(5 * time.Second)
+				// 	select {
+				// 	case <-t.C:
+				// 		cancel()
+				// 	}
+				// }()
 
 				<-updateExit
 				log.Println("update exit.")

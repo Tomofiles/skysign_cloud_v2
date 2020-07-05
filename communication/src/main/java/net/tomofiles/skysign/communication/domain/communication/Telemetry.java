@@ -18,6 +18,7 @@ class Telemetry {
                 new Position(
                         0.0,
                         0.0,
+                        0.0,
                         0.0),
                 0.0,
                 false,
@@ -34,12 +35,14 @@ class Telemetry {
             double latitude,
             double longitude,
             double altitude,
+            double relativeAltitude,
             double speed) {
         return new Telemetry(
                 new Position(
                         latitude,
                         longitude,
-                        altitude),
+                        altitude,
+                        relativeAltitude),
                 speed,
                 this.armed,
                 this.flightMode,
@@ -92,6 +95,7 @@ class Position {
     private final double latitude;
     private final double longitude;
     private final double altitude;
+    private final double relativeAltitude;
 }
 
 @AllArgsConstructor

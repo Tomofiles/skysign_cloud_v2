@@ -1,5 +1,7 @@
 package net.tomofiles.skysign.communication.infra.communication;
 
+import java.time.LocalDateTime;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -13,4 +15,5 @@ public class CommandRecord {
     private String id;
     private String commId;
     private String type;
+    private LocalDateTime time;
 }

@@ -1,19 +1,21 @@
 package cloudlink
 
 import (
+	"edge/pkg/edge"
 	"edge/pkg/edge/telemetry"
 	"encoding/json"
+	"io/ioutil"
 	"log"
 	"net/http"
 	"strings"
 )
 
 // PushTelemetry .
-func PushTelemetry(cloud string, telemetry telemetry.Telemetry) error {
+func PushTelemetry(cloud string, telemetry telemetry.Telemetry) (string, *edge.CommandIDs, error) {
 	telem := telemetry.Get()
 	if telem.FlightMode == "" {
 		log.Println("no telemetry prepared.")
-		return nil
+		return telem.ID, &edge.CommandIDs{CommIds: make([]string, 0)}, nil
 	}
 
 	jsonData, _ := json.Marshal(telem)
@@ -25,18 +27,32 @@ func PushTelemetry(cloud string, telemetry telemetry.Telemetry) error {
 		strings.NewReader(string(jsonData)),
 	)
 	if err != nil {
-		log.Println("telemetry request error:", err)
-		return err
+		log.Println("cloud telemetry request error:", err)
+		return "", nil, err
 	}
 
 	client := &http.Client{}
 	resp, err := client.Do(req)
 	if err != nil {
-		log.Println("telemetry request error:", err)
-		return err
+		log.Println("cloud telemetry request error:", err)
+		return "", nil, err
 	}
 
+	requestBody, err := ioutil.ReadAll(resp.Body)
 	defer resp.Body.Close()
+	if err != nil {
+		log.Println("cloud telemetry response error:", err)
+		return "", nil, err
+	}
 
-	return nil
+	var commandIDs edge.CommandIDs
+	err = json.Unmarshal(requestBody, &commandIDs)
+	if err != nil {
+		log.Println("cloud telemetry response error:", err)
+		return "", nil, err
+	}
+
+	log.Printf("Receive CLOUD data=%s\n", requestBody)
+
+	return telem.ID, &commandIDs, nil
 }

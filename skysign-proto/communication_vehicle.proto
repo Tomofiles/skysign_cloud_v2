@@ -3,6 +3,7 @@ syntax = "proto3";
 package skysign_proto;
 
 import "google/api/annotations.proto";
+import "communication_common.proto";
 
 option java_package = "proto.skysign";
 option java_multiple_files = true;
@@ -17,7 +18,7 @@ service CommunicationVehicleService {
 
     rpc PullCommand (PullCommandRequest) returns (PullCommandResponse) {
         option (google.api.http) = {
-            post: "/api/v1/communications/{commId}/commands/{id}"
+            post: "/api/v1/communications/{id}/commands/{commandId}"
             body: "*"
         };
     };
@@ -29,13 +30,14 @@ message PushTelemetryRequest {
     double latitude = 2;
     double longitude = 3;
     double altitude = 4;
-    double speed = 5;
-    bool armed = 6;
-    string flightMode = 7;
-    double orientationX = 8;
-    double orientationY = 9;
-    double orientationZ = 10;
-    double orientationW = 11;
+    double relativeAltitude = 5;
+    double speed = 6;
+    bool armed = 7;
+    string flightMode = 8;
+    double orientationX = 9;
+    double orientationY = 10;
+    double orientationZ = 11;
+    double orientationW = 12;
 }
 
 message PushTelemetryResponse {
@@ -44,11 +46,12 @@ message PushTelemetryResponse {
 }
 
 message PullCommandRequest {
-    string commId = 1;
-    string id = 2;
+    string id = 1;
+    string commandId = 2;
 }
 
 message PullCommandResponse {
-    string commId = 1;
-    string id = 2;
+    string id = 1;
+    string commandId = 2;
+    CommandType type = 3;
 }

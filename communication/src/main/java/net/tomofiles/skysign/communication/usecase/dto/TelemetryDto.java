@@ -4,9 +4,11 @@ import lombok.Data;
 
 @Data
 public class TelemetryDto {
+    private String name;
     private double latitude;
     private double longitude;
     private double altitude;
+    private double relativeAltitude;
     private double speed;
     private boolean armed;
     private String flightMode;

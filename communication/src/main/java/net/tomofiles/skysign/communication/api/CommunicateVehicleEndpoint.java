@@ -10,6 +10,7 @@ import io.grpc.stub.StreamObserver;
 import net.tomofiles.skysign.communication.usecase.CommunicateVehicleService;
 import net.tomofiles.skysign.communication.usecase.dto.ControlCommandDto;
 import net.tomofiles.skysign.communication.usecase.dto.TelemetryDto;
+import proto.skysign.CommandType;
 import proto.skysign.PullCommandRequest;
 import proto.skysign.PullCommandResponse;
 import proto.skysign.PushTelemetryRequest;
@@ -29,6 +30,7 @@ public class CommunicateVehicleEndpoint extends CommunicationVehicleServiceImplB
         telemetry.setLatitude(request.getLatitude());
         telemetry.setLongitude(request.getLongitude());
         telemetry.setAltitude(request.getAltitude());
+        telemetry.setRelativeAltitude(request.getRelativeAltitude());
         telemetry.setSpeed(request.getSpeed());
         telemetry.setArmed(request.getArmed());
         telemetry.setFlightMode(request.getFlightMode());
@@ -46,10 +48,10 @@ public class CommunicateVehicleEndpoint extends CommunicationVehicleServiceImplB
 
     @Override
     public void pullCommand(PullCommandRequest request, StreamObserver<PullCommandResponse> responseObserver) {
-        ControlCommandDto command = this.service.pullCommand(request.getCommId(), request.getId());
-        System.out.println(command.getMissionId());
+        ControlCommandDto command = this.service.pullCommand(request.getId(), request.getCommandId());
 
-        PullCommandResponse r = PullCommandResponse.newBuilder().setCommId(request.getCommId()).setId(request.getId()).build();
+        CommandType type = CommandType.valueOf(command.getType().toString());
+        PullCommandResponse r = PullCommandResponse.newBuilder().setId(request.getId()).setCommandId(request.getCommandId()).setType(type).build();
         responseObserver.onNext(r); 
         responseObserver.onCompleted();
     }

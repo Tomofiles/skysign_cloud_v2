@@ -3,6 +3,7 @@ CREATE TABLE telemetry (
     latitude double precision NOT NULL,
     longitude double precision NOT NULL,
     altitude double precision NOT NULL,
+    relative_altitude double precision NOT NULL,
     speed double precision NOT NULL,
     armed boolean NOT NULL,
     flight_mode character varying(50) NOT NULL,

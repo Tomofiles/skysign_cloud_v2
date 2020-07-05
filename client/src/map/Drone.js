@@ -32,6 +32,7 @@ const Drone = (props) => {
   return (
     <Entity
       id={data.id}
+      name={unescape(data.name)}
       position={data.position}
       orientation={data.orientation}
       description={data.description} >

@@ -5,5 +5,7 @@ import lombok.Getter;
 @Getter
 public enum CommandType {
     UPLOAD,
+    ARM,
+    DISARM,
     NONE;
 }

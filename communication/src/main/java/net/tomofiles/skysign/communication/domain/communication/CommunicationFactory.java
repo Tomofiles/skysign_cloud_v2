@@ -26,6 +26,7 @@ public class CommunicationFactory {
                         componentDto.getTelemetry().getLatitude(),
                         componentDto.getTelemetry().getLongitude(),
                         componentDto.getTelemetry().getAltitude(),
+                        componentDto.getTelemetry().getRelativeAltitude(),
                         componentDto.getTelemetry().getSpeed())
                 .setArmed(componentDto.getTelemetry().isArmed())
                 .setFlightMode(componentDto.getTelemetry().getFlightMode())
@@ -40,7 +41,8 @@ public class CommunicationFactory {
                         .map(c -> {
                                 return new Command(
                                     new CommandId(c.getId()),
-                                    CommandType.valueOf(c.getType()));
+                                    CommandType.valueOf(c.getType()),
+                                    c.getTime());
                         })
                         .collect(Collectors.toList())
         );
@@ -56,6 +58,7 @@ public class CommunicationFactory {
                         communication.getTelemetry().getPosition().getLatitude(),
                         communication.getTelemetry().getPosition().getLongitude(),
                         communication.getTelemetry().getPosition().getAltitude(),
+                        communication.getTelemetry().getPosition().getRelativeAltitude(),
                         communication.getTelemetry().getSpeed(),
                         communication.getTelemetry().isArmed(),
                         communication.getTelemetry().getFlightMode(),
@@ -66,7 +69,8 @@ public class CommunicationFactory {
                 communication.getCommands().stream()
                         .map(c -> new CommandComponentDto(
                             c.getId().getId(),
-                            c.getType().toString()
+                            c.getType().toString(),
+                            c.getTime()
                         ))
                         .collect(Collectors.toList()));
     }

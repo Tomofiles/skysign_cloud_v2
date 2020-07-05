@@ -10,6 +10,8 @@ import net.tomofiles.skysign.communication.domain.communication.CommandType;
 @AllArgsConstructor
 public enum ControlCommandType {
     UPLOAD(CommandType.UPLOAD),
+    ARM(CommandType.ARM),
+    DISARM(CommandType.DISARM),
     NONE(CommandType.NONE);
 
     private CommandType type;

@@ -120,17 +120,6 @@ func request_CommunicationVehicleService_PullCommand_0(ctx context.Context, mars
 		_   = err
 	)
 
-	val, ok = pathParams["commId"]
-	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "commId")
-	}
-
-	protoReq.CommId, err = runtime.String(val)
-
-	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "commId", err)
-	}
-
 	val, ok = pathParams["id"]
 	if !ok {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "id")
@@ -140,6 +129,17 @@ func request_CommunicationVehicleService_PullCommand_0(ctx context.Context, mars
 
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "id", err)
+	}
+
+	val, ok = pathParams["commandId"]
+	if !ok {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "commandId")
+	}
+
+	protoReq.CommandId, err = runtime.String(val)
+
+	if err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "commandId", err)
 	}
 
 	msg, err := client.PullCommand(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
@@ -166,17 +166,6 @@ func local_request_CommunicationVehicleService_PullCommand_0(ctx context.Context
 		_   = err
 	)
 
-	val, ok = pathParams["commId"]
-	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "commId")
-	}
-
-	protoReq.CommId, err = runtime.String(val)
-
-	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "commId", err)
-	}
-
 	val, ok = pathParams["id"]
 	if !ok {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "id")
@@ -186,6 +175,17 @@ func local_request_CommunicationVehicleService_PullCommand_0(ctx context.Context
 
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "id", err)
+	}
+
+	val, ok = pathParams["commandId"]
+	if !ok {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "commandId")
+	}
+
+	protoReq.CommandId, err = runtime.String(val)
+
+	if err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "commandId", err)
 	}
 
 	msg, err := server.PullCommand(ctx, &protoReq)
@@ -326,7 +326,7 @@ func RegisterCommunicationVehicleServiceHandlerClient(ctx context.Context, mux *
 var (
 	pattern_CommunicationVehicleService_PushTelemetry_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3, 2, 4}, []string{"api", "v1", "communications", "id", "telemetries"}, "", runtime.AssumeColonVerbOpt(true)))
 
-	pattern_CommunicationVehicleService_PullCommand_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3, 2, 4, 1, 0, 4, 1, 5, 5}, []string{"api", "v1", "communications", "commId", "commands", "id"}, "", runtime.AssumeColonVerbOpt(true)))
+	pattern_CommunicationVehicleService_PullCommand_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3, 2, 4, 1, 0, 4, 1, 5, 5}, []string{"api", "v1", "communications", "id", "commands", "commandId"}, "", runtime.AssumeColonVerbOpt(true)))
 )
 
 var (

@@ -1,5 +1,6 @@
 package net.tomofiles.skysign.communication.domain.communication;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -35,6 +36,7 @@ public class Communication {
             double latitude,
             double longitude,
             double altitude,
+            double relativeAltitude,
             double speed,
             boolean armed,
             String flightMode,
@@ -43,7 +45,7 @@ public class Communication {
             double orientationZ,
             double orientationW) {
         this.telemetry = Telemetry.newInstance()
-                .setPosition(latitude, longitude, altitude, speed)
+                .setPosition(latitude, longitude, altitude, relativeAltitude, speed)
                 .setArmed(armed)
                 .setFlightMode(flightMode)
                 .setOrientation(orientationX, orientationY, orientationZ, orientationW);
@@ -54,6 +56,7 @@ public class Communication {
                 this.telemetry.getPosition().getLatitude(),
                 this.telemetry.getPosition().getLongitude(),
                 this.telemetry.getPosition().getAltitude(),
+                this.telemetry.getPosition().getRelativeAltitude(),
                 this.telemetry.getSpeed(),
                 this.telemetry.isArmed(),
                 this.telemetry.getFlightMode(),
@@ -80,13 +83,13 @@ public class Communication {
 
     public CommandId pushCommand(CommandType commandType) {
         CommandId id = CommandId.newId();
-        this.commands.add(new Command(id, commandType));
+        this.commands.add(new Command(id, commandType, LocalDateTime.now()));
         return id;
     }
 
     public CommandType pullCommandById(CommandId id) {
         Command command = this.commands.stream()
-                .filter(c -> c.equals(new Command(id, CommandType.NONE)))
+                .filter(c -> c.equals(Command.empty(id)))
                 .findAny()
                 .orElse(null);
         if (command == null) {

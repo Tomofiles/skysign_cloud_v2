@@ -37,6 +37,7 @@ public class CommunicateVehicleService {
                 telemetry.getLatitude(),
                 telemetry.getLongitude(),
                 telemetry.getAltitude(),
+                telemetry.getRelativeAltitude(),
                 telemetry.getSpeed(),
                 telemetry.isArmed(),
                 telemetry.getFlightMode(),

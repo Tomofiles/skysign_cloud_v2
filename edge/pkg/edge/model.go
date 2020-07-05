@@ -53,3 +53,13 @@ type Telemetry struct {
 	OrientationZ     float64 `json:"orientationZ"`
 	OrientationW     float64 `json:"orientationW"`
 }
+
+// CommandIDs .
+type CommandIDs struct {
+	CommIds []string `json:"commIds"`
+}
+
+// Command .
+type Command struct {
+	Type string `json:"type"`
+}

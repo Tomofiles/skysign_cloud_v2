@@ -32,7 +32,7 @@ export const convertDroneData = (vehicleID, telemetry) => {
                       '<tr><th>緯度(°)</th><td>' + dispFloor(telemetry.latitude, 10) + '</td></tr>' +
                       '<tr><th>経度(°)</th><td>' + dispFloor(telemetry.longitude, 10) + '</td></tr>' +
                       '<tr><th>海抜高度(m)</th><td>' + dispFloor(telemetry.altitude, 10) + '</td></tr>' +
-                      '<tr><th>相対高度(m)</th><td>' + dispFloor(telemetry.relativeHeight, 10) + '</td></tr>' +
+                      '<tr><th>相対高度(m)</th><td>' + dispFloor(telemetry.relativeAltitude, 10) + '</td></tr>' +
                       '<tr><th>対地速度(m/s)</th><td>' + dispFloor(telemetry.speed, 10) + '</td></tr>' +
                       '<tr><th>ヘディング(°)</th><td>' + dispFloor(CesiumMath.toDegrees(hpr.heading), 10) + '</td></tr>' +
                       '<tr><th>ピッチ(°)</th><td>' + dispFloor(CesiumMath.toDegrees(hpr.pitch), 10) + '</td></tr>' +

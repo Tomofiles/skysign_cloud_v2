@@ -103,6 +103,7 @@ public class ControlVehicleService {
         TelemetrySnapshot telemetry = communication.pullTelemetry();
 
         TelemetryDto dto = new TelemetryDto();
+        dto.setName(vehicle.getVehicleName());
         dto.setLatitude(telemetry.getLatitude());
         dto.setLongitude(telemetry.getLongitude());
         dto.setAltitude(telemetry.getAltitude());

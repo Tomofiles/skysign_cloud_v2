@@ -24,7 +24,11 @@ func run() error {
 	ctx, cancel := context.WithCancel(ctx)
 	defer cancel()
 
-	mux := runtime.NewServeMux()
+	smOpts := []runtime.ServeMuxOption{
+		runtime.WithMarshalerOption(runtime.MIMEWildcard, &runtime.JSONPb{OrigName: true, EmitDefaults: true}),
+	}
+
+	mux := runtime.NewServeMux(smOpts...)
 	opts := []grpc.DialOption{grpc.WithInsecure()}
 	endpoint := fmt.Sprintf(*backendHost + ":" + *backendPort)
 	err := gw.RegisterVehicleServiceHandlerFromEndpoint(ctx, mux, endpoint, opts)

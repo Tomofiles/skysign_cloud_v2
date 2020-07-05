@@ -37,9 +37,11 @@ public class ControlVehicleEndpoint extends CommunicationUserServiceImplBase {
         TelemetryDto telemetry = this.service.pullTelemetry(request.getId());
 
         PullTelemetryResponse r = PullTelemetryResponse.newBuilder()
+                .setName(telemetry.getName())
                 .setLatitude(telemetry.getLatitude())
                 .setLongitude(telemetry.getLongitude())
                 .setAltitude(telemetry.getAltitude())
+                .setRelativeAltitude(telemetry.getRelativeAltitude())
                 .setSpeed(telemetry.getSpeed())
                 .setArmed(telemetry.isArmed())
                 .setFlightMode(telemetry.getFlightMode())
