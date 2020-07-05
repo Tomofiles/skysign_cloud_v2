@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 
-import { Entity } from 'resium';
+import { Entity, ModelGraphics } from 'resium';
 import axios from 'axios';
 import useInterval from 'use-interval';
 
@@ -34,7 +34,14 @@ const Drone = (props) => {
       id={data.id}
       position={data.position}
       orientation={data.orientation}
-      model={data.model} />
+      description={data.description} >
+        <ModelGraphics
+          uri="CesiumDrone.gltf"
+          scale={0.05}
+          minimumPixelSize={100}
+          show
+          runAnimations={data.armed} />
+    </Entity>
   );
 }
   

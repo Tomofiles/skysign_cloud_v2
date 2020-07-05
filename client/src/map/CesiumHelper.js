@@ -1,4 +1,4 @@
-import { Cartesian3, Transforms, Matrix3, Matrix4, Quaternion, HeadingPitchRoll, Math } from "cesium";
+import { Cartesian3, Transforms, Matrix3, Matrix4, Quaternion, HeadingPitchRoll, Math as CesiumMath } from "cesium";
 
 export const convertDroneData = (vehicleID, telemetry) => {
   // 地球固定座標での回転を計算
@@ -17,7 +17,7 @@ export const convertDroneData = (vehicleID, telemetry) => {
     telemetry.orientationW);
   let quat90 = Quaternion.fromAxisAngle(
     new Cartesian3(0, 0, 1),
-    Math.toRadians(90)
+    CesiumMath.toRadians(90)
   );
   let quatlocalaft = Quaternion.multiply(quatlocal, quat90, new Quaternion());
   // 回転を掛け合わせる
@@ -32,23 +32,18 @@ export const convertDroneData = (vehicleID, telemetry) => {
                       '<tr><th>緯度(°)</th><td>' + dispFloor(telemetry.latitude, 10) + '</td></tr>' +
                       '<tr><th>経度(°)</th><td>' + dispFloor(telemetry.longitude, 10) + '</td></tr>' +
                       '<tr><th>海抜高度(m)</th><td>' + dispFloor(telemetry.altitude, 10) + '</td></tr>' +
-                      '<tr><th>ヘディング(°)</th><td>' + dispFloor(Math.toDegrees(hpr.heading), 10) + '</td></tr>' +
-                      '<tr><th>ピッチ(°)</th><td>' + dispFloor(Math.toDegrees(hpr.pitch), 10) + '</td></tr>' +
-                      '<tr><th>ロール(°)</th><td>' + dispFloor(Math.toDegrees(hpr.roll), 10) + '</td></tr>' +
+                      '<tr><th>相対高度(m)</th><td>' + dispFloor(telemetry.relativeHeight, 10) + '</td></tr>' +
+                      '<tr><th>対地速度(m/s)</th><td>' + dispFloor(telemetry.speed, 10) + '</td></tr>' +
+                      '<tr><th>ヘディング(°)</th><td>' + dispFloor(CesiumMath.toDegrees(hpr.heading), 10) + '</td></tr>' +
+                      '<tr><th>ピッチ(°)</th><td>' + dispFloor(CesiumMath.toDegrees(hpr.pitch), 10) + '</td></tr>' +
+                      '<tr><th>ロール(°)</th><td>' + dispFloor(CesiumMath.toDegrees(hpr.roll), 10) + '</td></tr>' +
                       '</tbody></table>';
 
   let entityID = "drone_" + vehicleID;
 
   let data = {
     id: entityID,
-    name: "drone " + vehicleID,
-    model: {
-      uri: "CesiumDrone.gltf",
-      scale: 0.05,
-      minimumPixelSize: 100,
-      show: true,
-      runAnimations: telemetry.armed
-    },
+    name: telemetry.name,
     description: description,
     position: Cartesian3.fromDegrees(
       telemetry.longitude,
@@ -61,6 +56,7 @@ export const convertDroneData = (vehicleID, telemetry) => {
       quat.z,
       quat.w
     ),
+    armed: telemetry.armed,
     properties: {
       vehicleID: vehicleID
     }
@@ -70,6 +66,5 @@ export const convertDroneData = (vehicleID, telemetry) => {
 }
 
 const dispFloor = (num, digit) => {
-  // return Math.floor(num * Math.pow(10, digit) ) / Math.pow(10, digit);
-  return num;
+  return Math.floor(num * Math.pow(10, digit) ) / Math.pow(10, digit);
 }

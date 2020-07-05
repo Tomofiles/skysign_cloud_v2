@@ -4,7 +4,8 @@ import { hot } from "react-hot-loader/root";
 import {
   Viewer,
   Camera,
-  CameraFlyTo
+  CameraFlyTo,
+  Clock
 } from "resium";
 import { Cartesian3, createWorldTerrain, IonImageryProvider } from "cesium"
 
@@ -43,6 +44,7 @@ const Map = (props) => {
         imageryProvider={new IonImageryProvider({ assetId: 2 })}
         terrainProvider={createWorldTerrain()}
         >
+          <Clock shouldAnimate />
           <Camera>
             <CameraFlyTo duration={0} destination={position.cartesian3} />
           </Camera>
