@@ -1,0 +1,33 @@
+'To render with PlantUML:
+'  http://plantuml.com/plantuml
+@startuml
+participant "User Client" as UC
+participant "Communication Server\n(Vehicles Entity)" as CSV
+participant "Communication Server\n(Communication Entity)" as CSC
+participant "Edge on Vehicle" as E
+
+UC -> CSV : POST /api/v1/vehicles\n(body communication-id)
+note left: User creates\nnew Vehicle
+CSV -> UC : Success, new Vehicle\n(including vehicle-id)
+CSV -> CSC : Async creates\nnew Communication\n(including communication-id)
+CSV -> CSV : 
+note left: Link vehicle-id and communication-id
+E -> CSC : POST /api/v1/communications/<communication-id>/telemetries\n(body Telemetry)
+note right: Edge sends Telemetry\nto server
+CSC -> E : Success, no Commands
+UC -> CSV : POST /api/v1/vehicles/<vehicle-id>/commands\n(body command-type)
+note left: User sends\ncommand to Vehicle
+CSV -> CSC : creates\nnew Command
+CSV -> UC : Success, sends to Vehicle
+E -> CSC : POST /api/v1/communications/<communication-id>/telemetries\n(body Telemetry)
+note right: Edge sends Telemetry\nto server
+CSC -> E : Existing Command for Vehicle\n(including command-id)
+note right: Edge discovers\npre-existing Command
+E -> CSC : POST /api/v1/communications/<communication-id>/commands/<command-id>
+CSC -> E : Server sends Command to Vehicle
+note right: Edge retrieves Command\nfrom server
+CSC -> CSC : 
+note left: Server removes Command
+E -> E : 
+note right: Edge executes Command
+@enduml
