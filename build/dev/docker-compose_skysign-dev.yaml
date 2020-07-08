@@ -50,6 +50,24 @@ services:
     depends_on:
       - skysign-communication-backend-for-debugging
 
+  skysign-frontend-for-debugging:
+    container_name: skysign-cloud-frontend
+    hostname: skysign-cloud-frontend
+    build:
+      context: ../../client
+      dockerfile: Dockerfile
+
+  skysign-gw-for-debugging:
+    container_name: skysign-cloud-user-gw
+    hostname: skysign-cloud-user-gw
+    image: nginx:alpine
+    volumes:
+      - ../../skysign-gw/nginx.conf:/etc/nginx/nginx.conf
+    ports:
+      - 8080:80
+    depends_on:
+      - skysign-communication-user-gateway-for-debugging
+
 networks:
   default:
     ipam:
