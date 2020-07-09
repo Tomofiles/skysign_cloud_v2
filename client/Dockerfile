@@ -1,7 +1,7 @@
-ARG NODE_TAG=12
+ARG NODE_TAG=12-alpine
 ARG APP_HOME=/home/node/app
 
-FROM node:${NODE_TAG}
+FROM node:${NODE_TAG} as builder
 ARG NODE_TAG
 ARG APP_HOME
 
@@ -19,8 +19,17 @@ COPY public ${APP_HOME}/public/
 RUN cp -r /usr/src/cesium/cesium-workshop-master/Source/SampleData/Models/CesiumDrone.gltf ${APP_HOME}/public/
 
 COPY craco.config.js ${APP_HOME}/
+COPY .env ${APP_HOME}/
 
 RUN npm run build
+
+FROM node:${NODE_TAG}
+ARG NODE_TAG
+ARG APP_HOME
+
+WORKDIR ${APP_HOME}
+
+COPY --from=builder ${APP_HOME}/build ./build
 
 EXPOSE 5000
 

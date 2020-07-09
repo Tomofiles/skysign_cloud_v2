@@ -32,7 +32,7 @@ services:
     build:
       context: ../../http_gateway
       dockerfile: Dockerfile
-    command: /go/bin/comm-user-gateway -backend_host skysign-communication-backend -port 8888
+    command: /app/comm-user-gateway -backend_host skysign-communication-backend -port 8888
     ports:
       - "8888:8888"
     depends_on:
@@ -44,7 +44,7 @@ services:
     build:
       context: ../../http_gateway
       dockerfile: Dockerfile
-    command: /go/bin/comm-vehicle-gateway -backend_host skysign-communication-backend -port 8889
+    command: /app/comm-vehicle-gateway -backend_host skysign-communication-backend -port 8889
     ports:
       - "8889:8889"
     depends_on:

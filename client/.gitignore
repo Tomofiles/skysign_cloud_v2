@@ -23,4 +23,5 @@ yarn-debug.log*
 yarn-error.log*
 
 public/CesiumDrone.gltf
-src/map/Key.js
+
+.env
