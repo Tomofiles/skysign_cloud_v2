@@ -25,7 +25,6 @@ jobs:
             apt-get install -qq -y gettext
             echo $GCLOUD_SERVICE_KEY > ${HOME}/gcloud-service-key.json
             gcloud auth activate-service-account --key-file=${HOME}/gcloud-service-key.json
-            gcloud container clusters get-credentials ${GOOGLE_CLUSTER_NAME} --zone $GOOGLE_COMPUTE_ZONE --project $GOOGLE_PROJECT_ID
       - setup_remote_docker
       - run: 
           name: http_gateway Docker build and push
