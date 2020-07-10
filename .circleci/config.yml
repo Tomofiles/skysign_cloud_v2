@@ -3,8 +3,6 @@ jobs:
   build_and_test_golang:
     docker:
       - image: circleci/golang:1.13
-    environment:
-      - GOPATH: /home/circleci/go
     working_directory: ~/http_gateway
     steps:
       - checkout
@@ -15,13 +13,13 @@ jobs:
             cd ./http_gateway
             go install ./...
       - store_artifacts:
-          path: ${GOPATH}/bin/comm-user-gateway
+          path: /go/bin/comm-user-gateway
       - store_artifacts:
-          path: ${GOPATH}/bin/comm-vehicle-gateway
+          path: /go/bin/comm-vehicle-gateway
       - save_cache:
           key: mod-{{ checksum "./http_gateway/go.sum" }}
           paths:
-            - ${GOPATH}/pkg/mod
+            - /go/pkg/mod
   build_and_test_java:
     docker:
       - image: circleci/openjdk:8-jdk-browsers
@@ -39,6 +37,10 @@ jobs:
           paths:
             - ~/.m2
           key: communication-{{ checksum "./communication/pom.xml" }}
+      - run:
+          command: |
+            cd ./skysign-proto
+            make cp_communication
       - run:
           command: |
             cd ./communication
