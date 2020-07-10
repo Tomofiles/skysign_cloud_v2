@@ -10,7 +10,10 @@ jobs:
       - checkout
       - restore_cache:
           key: mod-{{ checksum "./http_gateway/go.sum" }}
-      - run: go install ./...
+      - run:
+          command: |
+            cd ./http_gateway
+            go install ./...
       - store_artifacts:
           path: ${GOPATH}/bin/comm-user-gateway
       - store_artifacts:
@@ -23,14 +26,13 @@ jobs:
     docker:
       - image: circleci/openjdk:8-jdk-browsers
     environment:
-      - COMMUNICATION_NAME: "communication"
     working_directory: ~/communication
     steps:
       - checkout
       - restore_cache:
           key: communication-{{ checksum "./communication/pom.xml" }}
       - run:
-          command:
+          command: |
             cd ./communication
             mvn dependency:go-offline
       - save_cache:
@@ -38,7 +40,7 @@ jobs:
             - ~/.m2
           key: communication-{{ checksum "./communication/pom.xml" }}
       - run:
-          command:
+          command: |
             cd ./communication
             mvn package
       - store_artifacts:
