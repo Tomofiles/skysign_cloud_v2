@@ -39,12 +39,8 @@ jobs:
           key: communication-{{ checksum "./communication/pom.xml" }}
       - run:
           command: |
-            sudo apt-get install -qq -y make
-            cd ./skysign-proto
-            make cp_communication
-      - run:
-          command: |
             cd ./communication
+            make cp_communication
             mvn package
       - store_artifacts:
           path: ./communication/target/communication-0.0.1-SNAPSHOT.jar
