@@ -16,7 +16,7 @@
 
 	<properties>
 		<java.version>1.8</java.version>
-		<os.detected.classifier>linux-x86_64</os.detected.classifier>
+		<!-- <os.detected.classifier>linux-x86_64</os.detected.classifier> -->
 	</properties>
 
 	<dependencies>
