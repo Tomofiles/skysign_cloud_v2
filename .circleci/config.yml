@@ -27,9 +27,6 @@ jobs:
     working_directory: ~/communication
     steps:
       - checkout
-      - run:
-          command: |
-            sudo apt-get install -qq -y make
       - restore_cache:
           key: communication-{{ checksum "./communication/pom.xml" }}
       - run:
@@ -42,6 +39,7 @@ jobs:
           key: communication-{{ checksum "./communication/pom.xml" }}
       - run:
           command: |
+            sudo apt-get install -qq -y make
             cd ./skysign-proto
             make cp_communication
       - run:
