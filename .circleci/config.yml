@@ -1,0 +1,48 @@
+version: 2
+jobs:
+  build_and_test:
+    docker:
+      - image: circleci/golang:1.13
+    environment:
+      - HTTP_GATEWAY_NAME: "http_gateway"
+    steps:
+      - checkout
+      - run: 
+          name: Build http_gateway
+          command: |
+            cd ${HTTP_GATEWAY_NAME}
+            go build ./...
+  containerize_and_push:
+    docker:
+      - image: google/cloud-sdk
+    environment:
+      - HTTP_GATEWAY_NAME: "http_gateway"
+    steps:
+      - checkout
+      - run: 
+          name: Setup Google Cloud SDK
+          command: |
+            apt-get install -qq -y gettext
+            echo $GCLOUD_SERVICE_KEY > ${HOME}/gcloud-service-key.json
+            gcloud auth activate-service-account --key-file=${HOME}/gcloud-service-key.json
+            gcloud container clusters get-credentials ${GOOGLE_CLUSTER_NAME} --zone $GOOGLE_COMPUTE_ZONE --project $GOOGLE_PROJECT_ID
+      - setup_remote_docker
+      - run: 
+          name: http_gateway Docker build and push
+          command: |
+            cd ${HTTP_GATEWAY_NAME}
+            docker build -t ${HTTP_GATEWAY_NAME} .
+            docker tag ${HTTP_GATEWAY_NAME} eu.gcr.io/$GOOGLE_PROJECT_ID/${HTTP_GATEWAY_NAME}:${CIRCLE_SHA1}
+            gcloud auth print-access-token | docker login -u oauth2accesstoken --password-stdin https://eu.gcr.io
+            docker push eu.gcr.io/$GOOGLE_PROJECT_ID/${HTTP_GATEWAY_NAME}:${CIRCLE_SHA1}
+workflows:
+  version: 2
+  build_test_push:
+    jobs:
+      - build_and_test
+      - containerize_and_push:
+          requires:
+            - build_and_test
+          filters:
+            branches:
+              only: master
