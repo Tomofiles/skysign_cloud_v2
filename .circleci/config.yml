@@ -39,8 +39,8 @@ jobs:
           key: communication-{{ checksum "./communication/pom.xml" }}
       - run:
           command: |
+            mkdir -p ./communication/src/main/proto
             cd ./skysign-proto
-            mkdir ./communication/src/main/proto
             make cp_communication
             cd ../communication
             mvn package
