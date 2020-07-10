@@ -40,6 +40,7 @@ jobs:
       - run:
           command: |
             cd ./skysign-proto
+            mkdir ./communication/src/main/proto
             make cp_communication
             cd ../communication
             mvn package
