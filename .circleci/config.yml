@@ -12,9 +12,9 @@ jobs:
           key: mod-{{ checksum "./http_gateway/go.sum" }}
       - run: go install ./...
       - store_artifacts:
-          paths:
-            - ${GOPATH}/bin/comm-user-gateway
-            - ${GOPATH}/bin/comm-vehicle-gateway
+          path: ${GOPATH}/bin/comm-user-gateway
+      - store_artifacts:
+          path: ${GOPATH}/bin/comm-vehicle-gateway
       - save_cache:
           key: mod-{{ checksum "./http_gateway/go.sum" }}
           paths:
@@ -29,16 +29,18 @@ jobs:
       - checkout
       - restore_cache:
           key: communication-{{ checksum "./communication/pom.xml" }}
-      - run: |
-          cd communication |
-          mvn dependency:go-offline
+      - run:
+          command:
+            cd ./communication
+            mvn dependency:go-offline
       - save_cache:
           paths:
             - ~/.m2
           key: communication-{{ checksum "./communication/pom.xml" }}
-      - run: |
-          cd communication |
-          mvn package
+      - run:
+          command:
+            cd ./communication
+            mvn package
       - store_artifacts:
           path: ./communication/target/communication-0.0.1-SNAPSHOT.jar
   # containerize_and_push:
