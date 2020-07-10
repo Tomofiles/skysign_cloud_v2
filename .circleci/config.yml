@@ -8,6 +8,7 @@ jobs:
     working_directory: ~/http_gateway
     steps:
       - checkout
+      - run: cd ${HTTP_GATEWAY_NAME}
       - restore_cache:
           key: mod-{{ checksum "go.sum" }}
       - run: go install ./...
@@ -27,6 +28,7 @@ jobs:
     working_directory: ~/communication
     steps:
       - checkout
+      - run: cd ${COMMUNICATION_NAME}
       - restore_cache:
           key: communication-{{ checksum "pom.xml" }}
       - run: mvn dependency:go-offline
