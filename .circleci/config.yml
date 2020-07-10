@@ -1,47 +1,73 @@
 version: 2
 jobs:
-  build_and_test:
+  build_and_test_golang:
     docker:
       - image: circleci/golang:1.13
     environment:
       - HTTP_GATEWAY_NAME: "http_gateway"
+    working_directory: ~/${HTTP_GATEWAY_NAME}
     steps:
       - checkout
-      - run: 
-          name: Build http_gateway
-          command: |
-            cd ${HTTP_GATEWAY_NAME}
-            go build ./...
-  containerize_and_push:
+      - restore_cache:
+          key: mod-{{ checksum "go.sum" }}
+      - run: go install ./...
+      - store_artifacts:
+          path: $GOPATH/bin/comm-user-gateway
+      - store_artifacts:
+          path: $GOPATH/bin/comm-vehicle-gateway
+      - save_cache:
+          key: mod-{{ checksum "go.sum" }}
+          paths:
+            - $GOPATH/pkg/mod
+  build_and_test_java:
     docker:
-      - image: google/cloud-sdk
+      - image: circleci/openjdk:8-jdk-browsers
     environment:
-      - HTTP_GATEWAY_NAME: "http_gateway"
+      - COMMUNICATION_NAME: "communication"
+    working_directory: ~/${COMMUNICATION_NAME}
     steps:
       - checkout
-      - run: 
-          name: Setup Google Cloud SDK
-          command: |
-            apt-get install -qq -y gettext
-            echo $GCLOUD_SERVICE_KEY > ${HOME}/gcloud-service-key.json
-            gcloud auth activate-service-account --key-file=${HOME}/gcloud-service-key.json
-      - setup_remote_docker
-      - run: 
-          name: http_gateway Docker build and push
-          command: |
-            cd ${HTTP_GATEWAY_NAME}
-            docker build -t ${HTTP_GATEWAY_NAME} .
-            docker tag ${HTTP_GATEWAY_NAME} eu.gcr.io/$GOOGLE_PROJECT_ID/${HTTP_GATEWAY_NAME}:${CIRCLE_SHA1}
-            gcloud auth print-access-token | docker login -u oauth2accesstoken --password-stdin https://eu.gcr.io
-            docker push eu.gcr.io/$GOOGLE_PROJECT_ID/${HTTP_GATEWAY_NAME}:${CIRCLE_SHA1}
+      - restore_cache:
+          key: communication-{{ checksum "pom.xml" }}
+      - run: mvn dependency:go-offline
+      - save_cache:
+          paths:
+            - ~/.m2
+          key: communication-{{ checksum "pom.xml" }}
+      - run: mvn package
+      - store_artifacts:
+          path: target/communication-0.0.1-SNAPSHOT.jar
+  # containerize_and_push:
+  #   docker:
+  #     - image: google/cloud-sdk
+  #   environment:
+  #     - HTTP_GATEWAY_NAME: "http_gateway"
+  #   steps:
+  #     - checkout
+  #     - run: 
+  #         name: Setup Google Cloud SDK
+  #         command: |
+  #           apt-get install -qq -y gettext
+  #           echo $GCLOUD_SERVICE_KEY > ${HOME}/gcloud-service-key.json
+  #           gcloud auth activate-service-account --key-file=${HOME}/gcloud-service-key.json
+  #     - setup_remote_docker
+  #     - run: 
+  #         name: http_gateway Docker build and push
+  #         command: |
+  #           cd ${HTTP_GATEWAY_NAME}
+  #           docker build -t ${HTTP_GATEWAY_NAME} .
+  #           docker tag ${HTTP_GATEWAY_NAME} eu.gcr.io/$GOOGLE_PROJECT_ID/${HTTP_GATEWAY_NAME}:${CIRCLE_SHA1}
+  #           gcloud auth print-access-token | docker login -u oauth2accesstoken --password-stdin https://eu.gcr.io
+  #           docker push eu.gcr.io/$GOOGLE_PROJECT_ID/${HTTP_GATEWAY_NAME}:${CIRCLE_SHA1}
 workflows:
   version: 2
   build_test_push:
     jobs:
-      - build_and_test
-      - containerize_and_push:
-          requires:
-            - build_and_test
-          filters:
-            branches:
-              only: master
+      - build_and_test_golang
+      - build_and_test_java
+      # - containerize_and_push:
+      #     requires:
+      #       - build_and_test_golang
+      #     filters:
+      #       branches:
+      #         only: master
