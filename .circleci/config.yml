@@ -4,20 +4,19 @@ jobs:
     docker:
       - image: circleci/golang:1.13
     environment:
-      - HTTP_GATEWAY_NAME: "http_gateway"
+      - GOPATH: /home/circleci/go
     working_directory: ~/http_gateway
     steps:
       - checkout
-      - run: cd ${HTTP_GATEWAY_NAME}
       - restore_cache:
-          key: mod-{{ checksum "go.sum" }}
+          key: mod-{{ checksum "./http_gateway/go.sum" }}
       - run: go install ./...
       - store_artifacts:
-          path: ${GOPATH}/bin/comm-user-gateway
-      - store_artifacts:
-          path: ${GOPATH}/bin/comm-vehicle-gateway
+          paths:
+            - ${GOPATH}/bin/comm-user-gateway
+            - ${GOPATH}/bin/comm-vehicle-gateway
       - save_cache:
-          key: mod-{{ checksum "go.sum" }}
+          key: mod-{{ checksum "./http_gateway/go.sum" }}
           paths:
             - ${GOPATH}/pkg/mod
   build_and_test_java:
@@ -28,17 +27,20 @@ jobs:
     working_directory: ~/communication
     steps:
       - checkout
-      - run: cd ${COMMUNICATION_NAME}
       - restore_cache:
-          key: communication-{{ checksum "pom.xml" }}
-      - run: mvn dependency:go-offline
+          key: communication-{{ checksum "./communication/pom.xml" }}
+      - run: |
+          cd communication |
+          mvn dependency:go-offline
       - save_cache:
           paths:
             - ~/.m2
-          key: communication-{{ checksum "pom.xml" }}
-      - run: mvn package
+          key: communication-{{ checksum "./communication/pom.xml" }}
+      - run: |
+          cd communication |
+          mvn package
       - store_artifacts:
-          path: target/communication-0.0.1-SNAPSHOT.jar
+          path: ./communication/target/communication-0.0.1-SNAPSHOT.jar
   # containerize_and_push:
   #   docker:
   #     - image: google/cloud-sdk
