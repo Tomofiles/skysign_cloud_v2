@@ -39,8 +39,13 @@ jobs:
           key: communication-{{ checksum "./communication/pom.xml" }}
       - run:
           command: |
-            cd ./communication
+            cd ./skysign-proto
             make cp_communication
+      - run:
+          command: |
+            cd ./skysign-proto
+            make cp_communication
+            cd ../communication
             mvn package
       - store_artifacts:
           path: ./communication/target/communication-0.0.1-SNAPSHOT.jar
