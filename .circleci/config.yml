@@ -27,7 +27,7 @@ jobs:
     working_directory: ~/communication
     steps:
       - checkout
-    - run: apt-get install -qq -y make
+      - run: apt-get install -qq -y make
       - restore_cache:
           key: communication-{{ checksum "./communication/pom.xml" }}
       - run:
