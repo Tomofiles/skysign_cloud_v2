@@ -5,26 +5,26 @@ jobs:
       - image: circleci/golang:1.13
     environment:
       - HTTP_GATEWAY_NAME: "http_gateway"
-    working_directory: ~/${HTTP_GATEWAY_NAME}
+    working_directory: ~/http_gateway
     steps:
       - checkout
       - restore_cache:
           key: mod-{{ checksum "go.sum" }}
       - run: go install ./...
       - store_artifacts:
-          path: $GOPATH/bin/comm-user-gateway
+          path: ${GOPATH}/bin/comm-user-gateway
       - store_artifacts:
-          path: $GOPATH/bin/comm-vehicle-gateway
+          path: ${GOPATH}/bin/comm-vehicle-gateway
       - save_cache:
           key: mod-{{ checksum "go.sum" }}
           paths:
-            - $GOPATH/pkg/mod
+            - ${GOPATH}/pkg/mod
   build_and_test_java:
     docker:
       - image: circleci/openjdk:8-jdk-browsers
     environment:
       - COMMUNICATION_NAME: "communication"
-    working_directory: ~/${COMMUNICATION_NAME}
+    working_directory: ~/communication
     steps:
       - checkout
       - restore_cache:
