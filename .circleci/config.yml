@@ -9,12 +9,6 @@ jobs:
       - restore_cache:
           key: mod-{{ checksum "./http_gateway/go.sum" }}
       - run:
-          name: http_gateway protoc
-          command: |
-            cd ./skysign-proto
-            make compile_http_gateway/communication
-            make compile_gw_http_gateway/communication
-      - run:
           name: http_gateway test
           command: |
             cd ./http_gateway
@@ -55,12 +49,12 @@ jobs:
       - run:
           name: communication test
           command: |
-            cd ../communication
+            cd ./communication
             mvn test
       - run:
           name: communication compile
           command: |
-            cd ../communication
+            cd ./communication
             mvn compile
 
   containerize_and_push:
@@ -76,11 +70,9 @@ jobs:
             gcloud auth activate-service-account --key-file=${HOME}/gcloud-service-key.json
       - setup_remote_docker
       - run: 
-          name: http_gateway protoc
+          name: protoc
           command: |
             cd ./skysign-proto
-            make compile_http_gateway/communication
-            make compile_gw_http_gateway/communication
             make cp_communication
       - run: 
           name: http_gateway Docker build and push
