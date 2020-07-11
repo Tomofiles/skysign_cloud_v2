@@ -99,6 +99,7 @@ jobs:
             gcloud auth print-access-token | docker login -u oauth2accesstoken --password-stdin https://eu.gcr.io
             docker push eu.gcr.io/$GOOGLE_PROJECT_ID/communication:${CIRCLE_SHA1}
 
+workflows:
   version: 2
   build_test_push:
     jobs:
