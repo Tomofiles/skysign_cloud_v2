@@ -1,13 +1,13 @@
 version: 2
 jobs:
-  build_and_test_golang:
+  build_and_test_http_gateway:
     docker:
       - image: circleci/golang:1.13
     working_directory: ~/http_gateway
     steps:
       - checkout
       - restore_cache:
-          key: mod-{{ checksum "./http_gateway/go.sum" }}
+          key: http_gateway-{{ checksum "./http_gateway/go.sum" }}
       - run:
           name: http_gateway test
           command: |
@@ -19,11 +19,11 @@ jobs:
             cd ./http_gateway
             go build ./...
       - save_cache:
-          key: mod-{{ checksum "./http_gateway/go.sum" }}
+          key: http_gateway-{{ checksum "./http_gateway/go.sum" }}
           paths:
             - /go/pkg/mod
 
-  build_and_test_java:
+  build_and_test_communication:
     docker:
       - image: circleci/openjdk:8-jdk-browsers
     working_directory: ~/communication
@@ -57,7 +57,7 @@ jobs:
             cd ./communication
             mvn compile
 
-  build_and_test_node:
+  build_and_test_client:
     docker:
       - image: circleci/node
     working_directory: ~/client
@@ -89,6 +89,29 @@ jobs:
           command: |
             cd ./client
             npm build
+
+  build_and_test_edge:
+    docker:
+      - image: circleci/golang:1.13
+    working_directory: ~/edge
+    steps:
+      - checkout
+      - restore_cache:
+          key: edge-{{ checksum "./edge/go.sum" }}
+      - run:
+          name: edge test
+          command: |
+            cd ./edge
+            go test ./...
+      - run:
+          name: edge build
+          command: |
+            cd ./edge
+            go build ./...
+      - save_cache:
+          key: edge-{{ checksum "./edge/go.sum" }}
+          paths:
+            - /go/pkg/mod
 
   containerize_and_push:
     docker:
@@ -138,11 +161,13 @@ workflows:
   version: 2
   build_test_push:
     jobs:
-      - build_and_test_golang
-      - build_and_test_java
-      - build_and_test_node
+      - build_and_test_http_gateway
+      - build_and_test_communication
+      - build_and_test_client
+      - build_and_test_edge
       - containerize_and_push:
           requires:
-            - build_and_test_golang
-            - build_and_test_java
-            - build_and_test_node
+            - build_and_test_http_gateway
+            - build_and_test_communication
+            - build_and_test_client
+            - build_and_test_edge
