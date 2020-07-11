@@ -9,27 +9,36 @@ jobs:
       - restore_cache:
           key: mod-{{ checksum "./http_gateway/go.sum" }}
       - run:
+          name: http_gateway protoc
+          command: |
+            cd ./skysign-proto
+            make compile_http_gateway/communication
+            make compile_gw_http_gateway/communication
+      - run:
+          name: http_gateway test
           command: |
             cd ./http_gateway
-            go install ./...
-      - store_artifacts:
-          path: /go/bin/comm-user-gateway
-      - store_artifacts:
-          path: /go/bin/comm-vehicle-gateway
+            go test ./...
+      - run:
+          name: http_gateway build
+          command: |
+            cd ./http_gateway
+            go build ./...
       - save_cache:
           key: mod-{{ checksum "./http_gateway/go.sum" }}
           paths:
             - /go/pkg/mod
+
   build_and_test_java:
     docker:
       - image: circleci/openjdk:8-jdk-browsers
-    environment:
     working_directory: ~/communication
     steps:
       - checkout
       - restore_cache:
           key: communication-{{ checksum "./communication/pom.xml" }}
       - run:
+          name: communication dependency
           command: |
             cd ./communication
             mvn dependency:go-offline
@@ -38,45 +47,64 @@ jobs:
             - ~/.m2
           key: communication-{{ checksum "./communication/pom.xml" }}
       - run:
+          name: communication protoc
           command: |
             mkdir -p ./communication/src/main/proto
             cd ./skysign-proto
             make cp_communication
+      - run:
+          name: communication test
+          command: |
             cd ../communication
-            mvn package
-      - store_artifacts:
-          path: ./communication/target/communication-0.0.1-SNAPSHOT.jar
-  # containerize_and_push:
-  #   docker:
-  #     - image: google/cloud-sdk
-  #   environment:
-  #     - HTTP_GATEWAY_NAME: "http_gateway"
-  #   steps:
-  #     - checkout
-  #     - run: 
-  #         name: Setup Google Cloud SDK
-  #         command: |
-  #           apt-get install -qq -y gettext
-  #           echo $GCLOUD_SERVICE_KEY > ${HOME}/gcloud-service-key.json
-  #           gcloud auth activate-service-account --key-file=${HOME}/gcloud-service-key.json
-  #     - setup_remote_docker
-  #     - run: 
-  #         name: http_gateway Docker build and push
-  #         command: |
-  #           cd ${HTTP_GATEWAY_NAME}
-  #           docker build -t ${HTTP_GATEWAY_NAME} .
-  #           docker tag ${HTTP_GATEWAY_NAME} eu.gcr.io/$GOOGLE_PROJECT_ID/${HTTP_GATEWAY_NAME}:${CIRCLE_SHA1}
-  #           gcloud auth print-access-token | docker login -u oauth2accesstoken --password-stdin https://eu.gcr.io
-  #           docker push eu.gcr.io/$GOOGLE_PROJECT_ID/${HTTP_GATEWAY_NAME}:${CIRCLE_SHA1}
-workflows:
+            mvn test
+      - run:
+          name: communication compile
+          command: |
+            cd ../communication
+            mvn compile
+
+  containerize_and_push:
+    docker:
+      - image: google/cloud-sdk
+    steps:
+      - checkout
+      - run: 
+          name: Setup Google Cloud SDK
+          command: |
+            apt-get install -qq -y gettext
+            echo $GCLOUD_SERVICE_KEY > ${HOME}/gcloud-service-key.json
+            gcloud auth activate-service-account --key-file=${HOME}/gcloud-service-key.json
+      - setup_remote_docker
+      - run: 
+          name: http_gateway protoc
+          command: |
+            cd ./skysign-proto
+            make compile_http_gateway/communication
+            make compile_gw_http_gateway/communication
+            make cp_communication
+      - run: 
+          name: http_gateway Docker build and push
+          command: |
+            cd ./http_gateway
+            docker build -t http_gateway .
+            docker tag http_gateway eu.gcr.io/$GOOGLE_PROJECT_ID/http_gateway:${CIRCLE_SHA1}
+            gcloud auth print-access-token | docker login -u oauth2accesstoken --password-stdin https://eu.gcr.io
+            docker push eu.gcr.io/$GOOGLE_PROJECT_ID/http_gateway:${CIRCLE_SHA1}
+      - run: 
+          name: communication Docker build and push
+          command: |
+            cd ./communication
+            docker build -t communication .
+            docker tag communication eu.gcr.io/$GOOGLE_PROJECT_ID/communication:${CIRCLE_SHA1}
+            gcloud auth print-access-token | docker login -u oauth2accesstoken --password-stdin https://eu.gcr.io
+            docker push eu.gcr.io/$GOOGLE_PROJECT_ID/communication:${CIRCLE_SHA1}
+
   version: 2
   build_test_push:
     jobs:
       - build_and_test_golang
       - build_and_test_java
-      # - containerize_and_push:
-      #     requires:
-      #       - build_and_test_golang
-      #     filters:
-      #       branches:
-      #         only: master
+      - containerize_and_push:
+          requires:
+            - build_and_test_golang
+            - build_and_test_java
