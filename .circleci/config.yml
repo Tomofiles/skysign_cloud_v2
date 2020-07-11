@@ -72,6 +72,7 @@ jobs:
       - run: 
           name: protoc
           command: |
+            mkdir -p ./communication/src/main/proto
             cd ./skysign-proto
             make cp_communication
       - run: 
