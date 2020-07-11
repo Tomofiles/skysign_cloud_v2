@@ -57,6 +57,39 @@ jobs:
             cd ./communication
             mvn compile
 
+  build_and_test_node:
+    docker:
+      - image: circleci/node
+    working_directory: ~/client
+    steps:
+      - checkout
+      - run:
+          name: client env
+          command: |
+            cd ./client
+            echo REACT_APP_CESIUM_KEY=$CESIUM_KEY > ./.env
+      - restore_cache:
+          key: client-{{ checksum "./client/package.json" }}
+      - run:
+          name: client dependency
+          command: |
+            cd ./client
+            npm install
+      - save_cache:
+          paths:
+            - ~/.m2
+          key: client-{{ checksum "./client/package.json" }}
+      - run:
+          name: client test
+          command: |
+            cd ./client
+            npm test
+      - run:
+          name: client compile
+          command: |
+            cd ./client
+            npm build
+
   containerize_and_push:
     docker:
       - image: google/cloud-sdk
@@ -91,6 +124,15 @@ jobs:
             docker tag communication eu.gcr.io/$GOOGLE_PROJECT_ID/communication:${CIRCLE_SHA1}
             gcloud auth print-access-token | docker login -u oauth2accesstoken --password-stdin https://eu.gcr.io
             docker push eu.gcr.io/$GOOGLE_PROJECT_ID/communication:${CIRCLE_SHA1}
+      - run: 
+          name: client Docker build and push
+          command: |
+            cd ./client
+            echo REACT_APP_CESIUM_KEY=$CESIUM_KEY > ./.env
+            docker build -t client .
+            docker tag client eu.gcr.io/$GOOGLE_PROJECT_ID/client:${CIRCLE_SHA1}
+            gcloud auth print-access-token | docker login -u oauth2accesstoken --password-stdin https://eu.gcr.io
+            docker push eu.gcr.io/$GOOGLE_PROJECT_ID/client:${CIRCLE_SHA1}
 
 workflows:
   version: 2
@@ -98,7 +140,9 @@ workflows:
     jobs:
       - build_and_test_golang
       - build_and_test_java
+      - build_and_test_node
       - containerize_and_push:
           requires:
             - build_and_test_golang
             - build_and_test_java
+            - build_and_test_node
