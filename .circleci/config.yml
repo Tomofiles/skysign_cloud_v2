@@ -124,8 +124,7 @@ jobs:
             apt-get install -qq -y gettext
             echo $GCLOUD_SERVICE_KEY > ${HOME}/gcloud-service-key.json
             gcloud auth activate-service-account --key-file=${HOME}/gcloud-service-key.json
-      - setup_remote_docker:
-          docker_layer_caching: true
+      - setup_remote_docker
       - run: 
           name: protoc
           command: |
