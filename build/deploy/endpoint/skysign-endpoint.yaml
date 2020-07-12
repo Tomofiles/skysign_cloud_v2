@@ -1,0 +1,20 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: skysign-endpoint
+spec:
+  rules:
+  - http:
+      paths:
+      - path: /api/v1/vehicles
+        backend:
+          serviceName: skysign-http-gateway-user
+          servicePort: 8888
+      - path: /api/v1/communications
+        backend:
+          serviceName: skysign-http-gateway-vehicle
+          servicePort: 8889
+      - path: /
+        backend:
+          serviceName: skysign-client
+          servicePort: 5000

@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: skysign-http-gateway-vehicle
+  labels:
+    run: skysign-http-gateway-vehicle
+spec:
+  type: NodePort
+  ports:
+  - port: 8889
+    nodePort: 30038
+    protocol: TCP
+  selector:
+    run: skysign-http-gateway-vehicle-backend

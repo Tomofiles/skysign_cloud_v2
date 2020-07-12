@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: skysign-communication-backend
+spec:
+  selector:
+    matchLabels:
+      run: skysign-communication-backend
+  replicas: 3
+  template:
+    metadata:
+      labels:
+        run: skysign-communication-backend
+    spec:
+      containers:
+      - name: skysign-communication-backend
+        image: eu.gcr.io/${GOOGLE_PROJECT_ID}/communication:${BUILD_TAG}
+        env:
+        - name: DB_HOST
+          value: skysign-communication-database
+        ports:
+        - containerPort: 5001

@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: skysign-client-backend
+  labels:
+    run: skysign-client-backend
+spec:
+  selector:
+    matchLabels:
+      run: skysign-client-backend
+  replicas: 3
+  template:
+    metadata:
+      labels:
+        run: skysign-client-backend
+    spec:
+      containers:
+      - name: skysign-client-backend
+        image: eu.gcr.io/${GOOGLE_PROJECT_ID}/client:${BUILD_TAG}
+        ports:
+        - containerPort: 5000
