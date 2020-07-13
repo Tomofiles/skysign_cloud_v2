@@ -8,7 +8,7 @@ spec:
   selector:
     matchLabels:
       run: skysign-http-gateway-user-backend
-  replicas: 3
+  replicas: ${HTTP_GATEWAY_USER_REPLICAS}
   template:
     metadata:
       labels:

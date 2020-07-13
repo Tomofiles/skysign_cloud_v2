@@ -6,7 +6,7 @@ spec:
   selector:
     matchLabels:
       run: skysign-communication-backend
-  replicas: 3
+  replicas: ${COMMUNICATION_REPLICAS}
   template:
     metadata:
       labels:
