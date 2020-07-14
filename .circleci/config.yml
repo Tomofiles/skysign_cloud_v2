@@ -136,26 +136,26 @@ jobs:
           command: |
             cd ./http_gateway
             docker build -t http_gateway .
-            docker tag http_gateway eu.gcr.io/$GOOGLE_PROJECT_ID/http_gateway:${CIRCLE_SHA1}
-            gcloud auth print-access-token | docker login -u oauth2accesstoken --password-stdin https://eu.gcr.io
-            docker push eu.gcr.io/$GOOGLE_PROJECT_ID/http_gateway:${CIRCLE_SHA1}
+            docker tag http_gateway gcr.io/$GOOGLE_PROJECT_ID/http_gateway:${CIRCLE_SHA1}
+            gcloud auth print-access-token | docker login -u oauth2accesstoken --password-stdin https://gcr.io
+            docker push gcr.io/$GOOGLE_PROJECT_ID/http_gateway:${CIRCLE_SHA1}
       - run: 
           name: communication Docker build and push
           command: |
             cd ./communication
             docker build -t communication .
-            docker tag communication eu.gcr.io/$GOOGLE_PROJECT_ID/communication:${CIRCLE_SHA1}
-            gcloud auth print-access-token | docker login -u oauth2accesstoken --password-stdin https://eu.gcr.io
-            docker push eu.gcr.io/$GOOGLE_PROJECT_ID/communication:${CIRCLE_SHA1}
+            docker tag communication gcr.io/$GOOGLE_PROJECT_ID/communication:${CIRCLE_SHA1}
+            gcloud auth print-access-token | docker login -u oauth2accesstoken --password-stdin https://gcr.io
+            docker push gcr.io/$GOOGLE_PROJECT_ID/communication:${CIRCLE_SHA1}
       - run: 
           name: client Docker build and push
           command: |
             cd ./client
             echo REACT_APP_CESIUM_KEY=$CESIUM_KEY > ./.env
             docker build -t client .
-            docker tag client eu.gcr.io/$GOOGLE_PROJECT_ID/client:${CIRCLE_SHA1}
-            gcloud auth print-access-token | docker login -u oauth2accesstoken --password-stdin https://eu.gcr.io
-            docker push eu.gcr.io/$GOOGLE_PROJECT_ID/client:${CIRCLE_SHA1}
+            docker tag client gcr.io/$GOOGLE_PROJECT_ID/client:${CIRCLE_SHA1}
+            gcloud auth print-access-token | docker login -u oauth2accesstoken --password-stdin https://gcr.io
+            docker push gcr.io/$GOOGLE_PROJECT_ID/client:${CIRCLE_SHA1}
 
 workflows:
   version: 2
