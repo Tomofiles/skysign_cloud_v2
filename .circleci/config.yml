@@ -172,7 +172,7 @@ jobs:
       - run:
           name: install envsubst
           command: |
-            apt-get install -qq -y gettext
+            sudo apt-get install -qq -y gettext
       - run:
           name: git clone commit push create pull request
           command: |
