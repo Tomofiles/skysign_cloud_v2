@@ -170,6 +170,10 @@ jobs:
             sudo mv /tmp/bin/hub /usr/local/bin/hub
             hub --version
       - run:
+          name: install envsubst
+          command: |
+            apt-get install -qq -y gettext
+      - run:
           name: git clone commit push create pull request
           command: |
             git config --global user.name tomofiles-circleci
