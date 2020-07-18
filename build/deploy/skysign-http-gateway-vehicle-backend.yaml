@@ -8,7 +8,7 @@ spec:
   selector:
     matchLabels:
       run: skysign-http-gateway-vehicle-backend
-  replicas: ${HTTP_GATEWAY_VEHICLE_REPLICAS}
+  replicas: 1
   template:
     metadata:
       labels:
@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: skysign-http-gateway-vehicle-backend
-        image: eu.gcr.io/${GOOGLE_PROJECT_ID}/http_gateway:${BUILD_TAG}
+        image: gcr.io/${GOOGLE_PROJECT_ID}/http_gateway:${CIRCLE_SHA1}
         command: ["/app/comm-vehicle-gateway"]
         args: ["-port", "8889", "-backend_host", "skysign-communication", "-backend_port", "5001"]
         ports:

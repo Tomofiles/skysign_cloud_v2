@@ -8,7 +8,7 @@ spec:
   selector:
     matchLabels:
       run: skysign-client-backend
-  replicas: ${CLIENT_REPLICAS}
+  replicas: 1
   template:
     metadata:
       labels:
@@ -16,6 +16,6 @@ spec:
     spec:
       containers:
       - name: skysign-client-backend
-        image: eu.gcr.io/${GOOGLE_PROJECT_ID}/client:${BUILD_TAG}
+        image: gcr.io/${GOOGLE_PROJECT_ID}/client:${CIRCLE_SHA1}
         ports:
         - containerPort: 5000
