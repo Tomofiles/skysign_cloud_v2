@@ -157,7 +157,7 @@ jobs:
             gcloud auth print-access-token | docker login -u oauth2accesstoken --password-stdin https://gcr.io
             docker push gcr.io/${GOOGLE_PROJECT_ID}/client:${CIRCLE_SHA1}
 
-  create-pull-request:
+  create_pull_request:
     docker:
       - image: circleci/python:3.7.4-stretch
     steps:
@@ -206,7 +206,7 @@ workflows:
             - build_and_test_communication
             - build_and_test_client
             - build_and_test_edge
-      - create-pull-request:
+      - create_pull_request:
           requires:
             - containerize_and_push
           filters:
