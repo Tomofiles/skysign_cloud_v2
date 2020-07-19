@@ -1,8 +1,5 @@
-# Brings up a full stand-alone DSS sandbox environment with locally-built dss
-# and dummy-oauth InterUSS images.
-
 # To bring up this system:
-# docker-compose -f docker-compose_skysign-dev.yaml -p skysign-dev up
+# docker-compose -f docker-compose_skysign-cloud-dev.yaml -p skysign-cloud-dev up
 
 version: '3.7'
 

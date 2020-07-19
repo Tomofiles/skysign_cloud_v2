@@ -1,20 +1,14 @@
-# シンプルでスタンドアロンなテスト/評価/開発用のローカルインスタンス
+# シンプルでスタンドアロンなテスト/評価/開発用のローカル環境
 
 _備考： すべてのデプロイ方法はDockerを用いています。_
 
 ## アーキテクチャ
+アプリケーションの機能をテストしたい場合、Skysignはシンプルでスタンドアロンなサンドボックス環境を簡単に作成することができます。
 
-![Architecture diagram for running local processes](../../assets/generated/run_locally_architecture.png)
-
-シンプルでスタンドアロンなアプリケーションの実行をテストしたい場合、Skysignは以下から構成される簡単なサンドボックス環境を作成することができます。
-  * PostgreSQL: コンテナ上で実行されるPostgreSQLインスタンス。永続化のためのボリュームマウント等は考慮していないため、テスト/評価/開発以外の用途での使用は推奨されません。5432ポートでアクセスできます。
-  * Static contents: Reactベースで構築されたUIを提供するWEBサーバ。3D地図ライブラリのCesiumを使用しており、Skysignのすべての機能を利用するには、Cesium ionのアクセストークンが必要です。5000ポートでアクセスできます。
-  * Mission/Communication backend: Java（Spring Boot）で構築されたビジネスロジック・エンティティを提供するサーバ。5001ポートでgRPCアクセスができます。
-  * gRPC gateway: go（grpc-gateway）で構築された中継サーバ。SkysignへのHTTPリクエストをバックエンドサーバのgRPCに翻訳するだけの、シンプルな役割となっています。ユーザー向けが8888ポート、ドローン向けが8889でアクセスできます。
-  * Reverse proxy: nginxのリバースプロキシ機能を利用した、Pathベースの転送を提供するサーバ。8080ポートでアクセスできます。
+サンドボックス環境は、データベースや負荷分散などを含んだ揮発性な環境であり、DockerおよびDocker Composeを用いて、いくつかのステップでコマンドを実行するだけで、試すことができます。
 
 ## クイックスタート
-DockerおよびDocker Composeがインストール済みであれば、このフォルダ内で`docker-compose -f docker-compose_skysign-dev.yaml -p skysign-dev up`と実行するだけで、サンドボックス環境を起動することができます。
+DockerおよびDocker Composeがインストール済みであれば、このフォルダ内で`docker-compose -f docker-compose_skysign-cloud-dev.yaml -p skysign-cloud-dev up`と実行するだけで、クラウド機能のサンドボックス環境を起動することができます。
 
 なお、SkysignではUIの地図にCesiumを使用していますが、地形の表現に`Cesium World Terrain`というCesiumプロジェクトのサービスを使用しています。これは、Cesium ionというクラウドサービスの一部として提供されているもので、利用するにはアクセストークンを取得する必要があります。
 
@@ -24,11 +18,17 @@ Skysignでは、アクセストークンがなくてもサンドボックス環�
 
 [Terrain - cesium.com](https://cesium.com/docs/tutorials/terrain/)
 
-取得したアクセストークンは、`REACT_APP_CESIUM_KEY`というキーで環境変数に設定してから、ビルドしてください。
+取得したアクセストークンは、`REACT_APP_CESIUM_KEY`というキーで環境変数に設定してから、Docker Composeの起動コマンドを実行してください。
 
 ## エッジについて
 クラウド機能が構築できれば、エッジ機能からドローンをクラウドに接続できます。
 
-現在、エッジ機能を簡単に試す環境を構築する手順を整理できていません。
+ドローンとの接続は、Dronecodeプロジェクトの[Mavlink](https://github.com/mavlink/mavlink)のみが対応しており、[Mavsdk](https://github.com/mavlink/mavsdk)を用いたドローンとのアクセスが可能です。
 
-ドローンとの接続は、Dronecodeプロジェクトの[Mavlink](https://github.com/mavlink/mavlink)のみが対応しており、[Mavsdk](https://github.com/mavlink/mavsdk)を用いたドローンとのアクセスが可能です。Dronecodeプロジェクト推奨のフライトコントローラ（[Pixhawk](https://pixhawk.org/)など）をお持ちの方は、Mavsdkでアクセスすることでお試しいただけるかと思います。
+エッジ機能のサンドボックス環境は、このフォルダ内で`docker-compose -f docker-compose_skysign-edge-dev.yaml -p skysign-edge-dev up`と実行するだけで起動することができます。その際に、クラウドの接続先を環境変数から指定してあげる必要があります。
+
+Docker Composeの起動コマンドを実行する前に、各自の環境に合わせて`<ip>:<port>`の組み合わせで、`CLOUD_ADDRESS`というキーで環境変数を指定してください。
+
+なお、エッジ機能のサンドボックス環境を構築するにあたり、以下のPX4ガゼボシミュレータのDockerイメージを使用しています。
+
+[JonasVautherin/px4-gazebo-headless - github.com](https://github.com/JonasVautherin/px4-gazebo-headless)

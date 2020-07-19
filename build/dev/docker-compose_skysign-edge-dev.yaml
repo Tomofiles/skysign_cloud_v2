@@ -1,0 +1,47 @@
+# To bring up this system:
+# docker-compose -f docker-compose_skysign-edge-dev.yaml -p skysign-edge-dev up
+
+version: '3.7'
+
+services:
+
+  skysign-px4-gazebo-for-debugging:
+    container_name: skysign-px4-gazebo
+    hostname: skysign-px4-gazebo
+    image: jonasvautherin/px4-gazebo-headless:1.10.1
+    tty: true
+    ports:
+      - "14540:14540/udp"
+
+  skysign-mavsdk-grpc-server-for-debugging:
+    container_name: skysign-mavsdk-grpc-server
+    hostname: skysign-mavsdk-grpc-server
+    build:
+      context: ../../edge/mavsdk
+      dockerfile: Dockerfile
+    command: /mavsdk_server_manylinux1-x64 udp://skysign-px4-gazebo:14540 -p 50051
+    ports:
+      - "50051:50051"
+    restart: always
+    depends_on:
+      - skysign-px4-gazebo-for-debugging
+
+  skysign-edge-for-debugging:
+    container_name: skysign-edge
+    hostname: skysign-edge
+    build:
+      context: ../../edge
+      dockerfile: Dockerfile
+    environment:
+     - CLOUD_ADDRESS=${CLOUD_ADDRESS}
+     - MAVSDK_ADDRESS=skysign-mavsdk-grpc-server:50051
+    command: /app/skysign-edge
+    depends_on:
+      - skysign-mavsdk-grpc-server-for-debugging
+
+networks:
+  default:
+    ipam:
+      config:
+        - subnet: 192.168.6.0/24
+      
