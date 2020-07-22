@@ -2,10 +2,12 @@ package net.tomofiles.skysign.communication.domain.communication;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Getter
+@EqualsAndHashCode(of = {"position", "speed", "armed", "flightMode", "orientation"})
 class Telemetry {
     private Position position;
     private double speed;
@@ -91,6 +93,8 @@ class Telemetry {
 
 @AllArgsConstructor
 @Getter
+
+@EqualsAndHashCode(of = {"latitude", "longitude", "altitude", "relativeAltitude"})
 class Position {
     private final double latitude;
     private final double longitude;
@@ -100,6 +104,7 @@ class Position {
 
 @AllArgsConstructor
 @Getter
+@EqualsAndHashCode(of = {"x", "y", "z", "w"})
 class Orientation {
     private final double x;
     private final double y;
