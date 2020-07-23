@@ -11,6 +11,8 @@ services:
     build:
       context: ../../skysign-db/communication-db
       dockerfile: Dockerfile
+    ports:
+      - 5432:5432
 
   skysign-communication-backend-for-debugging:
     container_name: skysign-communication-backend
@@ -18,8 +20,11 @@ services:
     build:
       context: ../../communication
       dockerfile: Dockerfile
-      args: 
-        DB_HOST: skysign-communication-db
+    environment:
+     - db.host=skysign-communication-db
+    command: java -cp app:app/lib/* net.tomofiles.skysign.communication.CommunicationApplication
+    ports:
+      - 5001:5001
     depends_on:
       - skysign-communication-db-for-debugging
 
@@ -31,7 +36,7 @@ services:
       dockerfile: Dockerfile
     command: /app/comm-user-gateway -backend_host skysign-communication-backend -port 8888
     ports:
-      - "8888:8888"
+      - 8888:8888
     depends_on:
       - skysign-communication-backend-for-debugging
 
@@ -43,7 +48,7 @@ services:
       dockerfile: Dockerfile
     command: /app/comm-vehicle-gateway -backend_host skysign-communication-backend -port 8889
     ports:
-      - "8889:8889"
+      - 8889:8889
     depends_on:
       - skysign-communication-backend-for-debugging
 

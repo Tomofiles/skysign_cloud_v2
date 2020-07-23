@@ -22,11 +22,3 @@ ARG DEPENDENCY=/workspace/app/target/dependency
 COPY --from=build ${DEPENDENCY}/BOOT-INF/lib /app/lib
 COPY --from=build ${DEPENDENCY}/META-INF /app/META-INF
 COPY --from=build ${DEPENDENCY}/BOOT-INF/classes /app
-
-EXPOSE 5001
-
-ARG DB_HOST=localhost
-
-ENV DB_HOST=${DB_HOST}
-
-ENTRYPOINT ["sh", "-c", "exec java -cp app:app/lib/* net.tomofiles.skysign.communication.CommunicationApplication -Ddb.host ${DB_HOST}"]

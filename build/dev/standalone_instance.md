@@ -18,7 +18,7 @@ Skysignでは、アクセストークンがなくてもサンドボックス環�
 
 [Terrain - cesium.com](https://cesium.com/docs/tutorials/terrain/)
 
-取得したアクセストークンは、`REACT_APP_CESIUM_KEY`というキーで環境変数に設定してから、Docker Composeの起動コマンドを実行してください。
+取得したアクセストークンは、`/skysign_cloud_v2/client/.env`ファイルを作成し、ファイル内に１行、`REACT_APP_CESIUM_KEY=<アクセストークン>`と記載してから、Docker Composeのビルドコマンドを実行してください。
 
 ## エッジについて
 クラウド機能が構築できれば、エッジ機能からドローンをクラウドに接続できます。
