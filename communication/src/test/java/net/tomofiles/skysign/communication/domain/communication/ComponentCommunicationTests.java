@@ -7,7 +7,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 
-import net.tomofiles.skysign.communication.domain.common.Version;
 import net.tomofiles.skysign.communication.domain.communication.component.CommandComponentDto;
 import net.tomofiles.skysign.communication.domain.communication.component.CommunicationComponentDto;
 import net.tomofiles.skysign.communication.domain.communication.component.TelemetryComponentDto;
@@ -21,7 +20,6 @@ public class ComponentCommunicationTests {
     public void assembleIntoCommunicationTest() {
         CommunicationId id = CommunicationId.newId();
         MissionId missionId = new MissionId("new mission id");
-        Version version = new Version(1);
 
         double latitude = 0.0d;
         double longitude = 1.0d;
@@ -49,7 +47,6 @@ public class ComponentCommunicationTests {
                 new CommunicationComponentDto(
                         id.getId(),
                         missionId.getId(),
-                        version.getVersion(),
                         new TelemetryComponentDto(
                                 latitude,
                                 longitude,
@@ -91,7 +88,6 @@ public class ComponentCommunicationTests {
         assertEquals(communication.getCommands().get(1), new Command(commandId2, type2, time2));
         assertEquals(communication.getCommands().get(2), new Command(commandId3, type3, time3));
         assertEquals(communication.getTelemetry(), after);
-        assertEquals(communication.getVersion(), version);
     }
 
     /**
@@ -101,7 +97,6 @@ public class ComponentCommunicationTests {
     public void takeApartCommunicationTest() {
         CommunicationId id = CommunicationId.newId();
         MissionId missionId = new MissionId("new mission id");
-        Version version = new Version(1);
 
         double latitude = 0.0d;
         double longitude = 1.0d;
@@ -162,6 +157,5 @@ public class ComponentCommunicationTests {
         assertEquals(dto.getTelemetry().getOriY(), orientationY);
         assertEquals(dto.getTelemetry().getOriZ(), orientationZ);
         assertEquals(dto.getTelemetry().getOriW(), orientationW);
-        assertEquals(dto.getVersion(), version.getVersion());
     }
 }

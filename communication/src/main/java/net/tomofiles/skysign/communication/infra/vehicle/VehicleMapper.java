@@ -20,7 +20,7 @@ public interface VehicleMapper {
     @Insert("INSERT INTO vehicle (id, name, comm_id, version) VALUES (#{id}, #{name}, #{commId}, #{version})")
     void create(VehicleRecord vehicle);
 
-    @Update("UPDATE vehicle SET name = #{name}, comm_id = #{commId}, version = #{version} + 1 WHERE id = #{id} AND version = #{version}")
+    @Update("UPDATE vehicle SET name = #{name}, comm_id = #{commId}, version = #{newVersion} WHERE id = #{id} AND version = #{version}")
     void update(VehicleRecord vehicle);
 
     @Update("DELETE FROM vehicle WHERE id = #{id} AND version = #{version}")

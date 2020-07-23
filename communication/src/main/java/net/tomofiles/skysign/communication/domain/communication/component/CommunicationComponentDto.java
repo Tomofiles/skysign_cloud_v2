@@ -10,7 +10,6 @@ import lombok.Data;
 public class CommunicationComponentDto {
     private String id;
     private String missionId;
-    private int version;
     private TelemetryComponentDto telemetry;
     private List<CommandComponentDto> commands;
 }

@@ -10,8 +10,6 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
-import net.tomofiles.skysign.communication.domain.common.Version;
-
 public class UserCommunicationTests {
     
     @Mock
@@ -36,7 +34,6 @@ public class UserCommunicationTests {
         assertNull(communication.getMissionId());
         assertEquals(communication.getCommands().size(), 0);
         assertEquals(communication.getTelemetry(), Telemetry.newInstance());
-        assertEquals(communication.getVersion(), new Version(1));
     }
 
     /**
@@ -62,7 +59,6 @@ public class UserCommunicationTests {
         assertEquals(communication.getCommands().get(0).getType(), CommandType.ARM);
         assertNotNull(communication.getCommands().get(0).getTime());
         assertEquals(communication.getTelemetry(), Telemetry.newInstance());
-        assertEquals(communication.getVersion(), new Version(1));
     }
 
     /**

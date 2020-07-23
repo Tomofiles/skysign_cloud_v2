@@ -3,7 +3,6 @@ package net.tomofiles.skysign.communication.domain.communication;
 import java.util.ArrayList;
 import java.util.stream.Collectors;
 
-import net.tomofiles.skysign.communication.domain.common.Version;
 import net.tomofiles.skysign.communication.domain.communication.component.CommandComponentDto;
 import net.tomofiles.skysign.communication.domain.communication.component.CommunicationComponentDto;
 import net.tomofiles.skysign.communication.domain.communication.component.TelemetryComponentDto;
@@ -13,14 +12,12 @@ public class CommunicationFactory {
     public static Communication newInstance(CommunicationId id) {
         Communication communication = new Communication(id, new ArrayList<>());
         communication.setTelemetry(Telemetry.newInstance());
-        communication.setVersion(new Version(1));
         return communication;
     }
 
     public static Communication assembleFrom(CommunicationComponentDto componentDto) {
         Communication communication = new Communication(new CommunicationId(componentDto.getId()), new ArrayList<>());
         communication.setMissionId(new MissionId(componentDto.getMissionId()));
-        communication.setVersion(new Version(componentDto.getVersion()));
         communication.setTelemetry(Telemetry.newInstance()
                 .setPosition(
                         componentDto.getTelemetry().getLatitude(),
@@ -53,7 +50,6 @@ public class CommunicationFactory {
         return  new CommunicationComponentDto(
                 communication.getId().getId(),
                 communication.getMissionId() == null ? null : communication.getMissionId().getId(),
-                communication.getVersion().getVersion(),
                 new TelemetryComponentDto(
                         communication.getTelemetry().getPosition().getLatitude(),
                         communication.getTelemetry().getPosition().getLongitude(),

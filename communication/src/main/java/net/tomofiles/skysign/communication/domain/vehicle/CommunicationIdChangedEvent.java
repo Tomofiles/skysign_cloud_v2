@@ -12,4 +12,5 @@ import net.tomofiles.skysign.communication.event.Event;
 public class CommunicationIdChangedEvent implements Event {
     private final CommunicationId beforeId;
     private final CommunicationId afterId;
+    private final Version version;
 }

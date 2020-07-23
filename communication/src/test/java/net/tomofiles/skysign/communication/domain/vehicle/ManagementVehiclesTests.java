@@ -5,13 +5,14 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
-import net.tomofiles.skysign.communication.domain.common.Version;
 import net.tomofiles.skysign.communication.domain.communication.CommunicationId;
 import net.tomofiles.skysign.communication.event.Publisher;
 
@@ -41,7 +42,9 @@ public class ManagementVehiclesTests {
         assertEquals(vehicle.getId(), id);
         assertNull(vehicle.getVehicleName());
         assertNull(vehicle.getCommId());
-        assertEquals(vehicle.getVersion(), new Version(1));
+        assertNotNull(vehicle.getVersion());
+        assertNotNull(vehicle.getNewVersion());
+        assertEquals(vehicle.getVersion(), vehicle.getNewVersion());
     }
 
     /**
@@ -54,12 +57,13 @@ public class ManagementVehiclesTests {
 
         String oldVehicleName = "old vehicle";
         CommunicationId oldCommId = CommunicationId.newId();
-        Version version = new Version(1);
+        Version version = Version.newVersion();
 
         Vehicle before = new Vehicle(id);
         before.setVehicleName(oldVehicleName);
         before.setCommId(oldCommId);
         before.setVersion(version);
+        before.setNewVersion(version);
 
         when(repository.getById(id)).thenReturn(before);
 
@@ -72,6 +76,7 @@ public class ManagementVehiclesTests {
         assertEquals(vehicle.getVehicleName(), newVehicleName);
         assertEquals(vehicle.getCommId(), oldCommId);
         assertEquals(vehicle.getVersion(), version);
+        assertNotEquals(vehicle.getVersion(), vehicle.getNewVersion());
     }
 
     /**
@@ -94,13 +99,14 @@ public class ManagementVehiclesTests {
         CommunicationIdChangedEvent event
                 = new CommunicationIdChangedEvent(
                     null,
-                    newCommId
+                    newCommId,
+                    Version.newVersion()
                 );
 
         assertEquals(vehicle.getId(), id);
         assertNull(vehicle.getVehicleName());
         assertEquals(vehicle.getCommId(), newCommId);
-        assertEquals(vehicle.getVersion(), new Version(1));
+        assertNotEquals(vehicle.getVersion(), vehicle.getNewVersion());
 
         verify(publisher, times(1)).publish(event);
     }
@@ -118,12 +124,13 @@ public class ManagementVehiclesTests {
 
         String oldVehicleName = "old vehicle";
         CommunicationId oldCommId = CommunicationId.newId();
-        Version version = new Version(1);
+        Version version = Version.newVersion();
 
         Vehicle before = new Vehicle(id);
         before.setVehicleName(oldVehicleName);
         before.setCommId(oldCommId);
         before.setVersion(version);
+        before.setNewVersion(version);
 
         when(repository.getById(id)).thenReturn(before);
 
@@ -137,13 +144,15 @@ public class ManagementVehiclesTests {
         CommunicationIdChangedEvent event
                 = new CommunicationIdChangedEvent(
                     oldCommId,
-                    newCommId
+                    newCommId,
+                    Version.newVersion()
                 );
 
         assertEquals(vehicle.getId(), id);
         assertEquals(vehicle.getVehicleName(), oldVehicleName);
         assertEquals(vehicle.getCommId(), newCommId);
         assertEquals(vehicle.getVersion(), version);
+        assertNotEquals(vehicle.getVersion(), vehicle.getNewVersion());
 
         verify(publisher, times(1)).publish(event);
     }

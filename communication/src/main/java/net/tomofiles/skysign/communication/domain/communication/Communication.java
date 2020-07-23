@@ -10,7 +10,6 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
-import net.tomofiles.skysign.communication.domain.common.Version;
 
 @RequiredArgsConstructor(access = AccessLevel.PACKAGE)
 @EqualsAndHashCode(of = {"id"})
@@ -28,10 +27,6 @@ public class Communication {
 
     @Getter(value = AccessLevel.PACKAGE)
     private final List<Command> commands;
-
-    @Getter
-    @Setter(value = AccessLevel.PACKAGE)
-    private Version version;
 
     public void pushTelemetry(
             double latitude,

@@ -6,5 +6,4 @@ import lombok.Data;
 public class CommunicationRecord {
     private String id;
     private String missionId;
-    private int version;
 }

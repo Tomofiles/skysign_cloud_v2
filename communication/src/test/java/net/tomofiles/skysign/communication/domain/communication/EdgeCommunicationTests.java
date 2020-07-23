@@ -12,8 +12,6 @@ import static org.mockito.MockitoAnnotations.initMocks;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import net.tomofiles.skysign.communication.domain.common.Version;
-
 public class EdgeCommunicationTests {
     
     @Mock
@@ -140,7 +138,6 @@ public class EdgeCommunicationTests {
         assertNull(communication.getMissionId());
         assertEquals(communication.getCommands().size(), 0);
         assertEquals(communication.getTelemetry(), Telemetry.newInstance());
-        assertEquals(communication.getVersion(), new Version(1));
     }
 
     /**
@@ -164,6 +161,5 @@ public class EdgeCommunicationTests {
         assertNull(communication.getMissionId());
         assertEquals(communication.getCommands().size(), 0);
         assertEquals(communication.getTelemetry(), Telemetry.newInstance());
-        assertEquals(communication.getVersion(), new Version(1));
     }
 }

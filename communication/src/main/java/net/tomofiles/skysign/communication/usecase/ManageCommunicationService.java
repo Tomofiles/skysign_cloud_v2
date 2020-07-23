@@ -23,7 +23,7 @@ public class ManageCommunicationService {
             communication = this.communicationRepository.getById(new CommunicationId(beforeId));
 
             if (communication != null) {
-                this.communicationRepository.remove(new CommunicationId(beforeId), communication.getVersion());
+                this.communicationRepository.remove(new CommunicationId(beforeId));
             }    
         }
         

@@ -7,7 +7,6 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import net.tomofiles.skysign.communication.domain.common.Version;
 import net.tomofiles.skysign.communication.domain.communication.Communication;
 import net.tomofiles.skysign.communication.domain.communication.CommunicationFactory;
 import net.tomofiles.skysign.communication.domain.communication.CommunicationId;
@@ -15,7 +14,6 @@ import net.tomofiles.skysign.communication.domain.communication.CommunicationRep
 import net.tomofiles.skysign.communication.domain.communication.component.CommandComponentDto;
 import net.tomofiles.skysign.communication.domain.communication.component.CommunicationComponentDto;
 import net.tomofiles.skysign.communication.domain.communication.component.TelemetryComponentDto;
-import net.tomofiles.skysign.communication.infra.common.DeleteCondition;
 
 @Component
 public class CommunicationRepositoryImpl implements CommunicationRepository {
@@ -52,7 +50,6 @@ public class CommunicationRepositoryImpl implements CommunicationRepository {
         }
 
         communication.setMissionId(componentDto.getMissionId());
-        communication.setVersion(componentDto.getVersion());
 
         telemetry.setLatitude(componentDto.getTelemetry().getLatitude());
         telemetry.setLongitude(componentDto.getTelemetry().getLongitude());
@@ -92,13 +89,8 @@ public class CommunicationRepositoryImpl implements CommunicationRepository {
     }
 
     @Override
-    public void remove(CommunicationId id, Version version) {
-        DeleteCondition condition = new DeleteCondition();
-        
-        condition.setId(id.getId());
-        condition.setVersion(version.getVersion());
-        
-        this.communicationMapper.delete(condition);
+    public void remove(CommunicationId id) {
+        this.communicationMapper.delete(id.getId());
         this.telemetryMapper.delete(id.getId());
         this.commandMapper.deleteByCommId(id.getId());
     }
@@ -118,7 +110,6 @@ public class CommunicationRepositoryImpl implements CommunicationRepository {
                 new CommunicationComponentDto(
                         id.getId(),
                         communication.getMissionId(),
-                        communication.getVersion(),
                         new TelemetryComponentDto(
                                 telemetry.getLatitude(),
                                 telemetry.getLongitude(),
