@@ -15,7 +15,7 @@ spec:
           servicePort: 8888
       - path: /api/v1/communications
         backend:
-          serviceName: skysign-http-gateway-vehicle
+          serviceName: skysign-http-gateway-edge
           servicePort: 8889
       - path: /
         backend:

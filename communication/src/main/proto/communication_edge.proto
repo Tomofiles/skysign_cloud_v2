@@ -1,0 +1,57 @@
+syntax = "proto3";
+
+package skysign_proto;
+
+import "google/api/annotations.proto";
+import "communication_common.proto";
+
+option java_package = "proto.skysign";
+option java_multiple_files = true;
+
+service CommunicationEdgeService {
+    rpc PushTelemetry (PushTelemetryRequest) returns (PushTelemetryResponse) {
+        option (google.api.http) = {
+            post: "/api/v1/communications/{id}/telemetries"
+            body: "*"
+        };
+    };
+
+    rpc PullCommand (PullCommandRequest) returns (PullCommandResponse) {
+        option (google.api.http) = {
+            post: "/api/v1/communications/{id}/commands/{commandId}"
+            body: "*"
+        };
+    };
+
+}
+
+message PushTelemetryRequest {
+    string id = 1;
+    double latitude = 2;
+    double longitude = 3;
+    double altitude = 4;
+    double relativeAltitude = 5;
+    double speed = 6;
+    bool armed = 7;
+    string flightMode = 8;
+    double orientationX = 9;
+    double orientationY = 10;
+    double orientationZ = 11;
+    double orientationW = 12;
+}
+
+message PushTelemetryResponse {
+    string id = 1;
+    repeated string commIds = 2;
+}
+
+message PullCommandRequest {
+    string id = 1;
+    string commandId = 2;
+}
+
+message PullCommandResponse {
+    string id = 1;
+    string commandId = 2;
+    CommandType type = 3;
+}

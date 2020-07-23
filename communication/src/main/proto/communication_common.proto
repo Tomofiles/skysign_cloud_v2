@@ -1,0 +1,12 @@
+syntax = "proto3";
+
+package skysign_proto;
+
+option java_package = "proto.skysign";
+option java_multiple_files = true;
+
+enum CommandType {
+    ARM = 0;
+    DISARM = 1;
+    NONE = 99;
+}

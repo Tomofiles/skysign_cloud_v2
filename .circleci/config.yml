@@ -41,12 +41,6 @@ jobs:
             - ~/.m2
           key: communication-{{ checksum "./communication/pom.xml" }}
       - run:
-          name: communication protoc
-          command: |
-            mkdir -p ./communication/src/main/proto
-            cd ./skysign-proto
-            make cp_communication
-      - run:
           name: communication test
           command: |
             cd ./communication
@@ -126,12 +120,6 @@ jobs:
             gcloud auth activate-service-account --key-file=${HOME}/gcloud-service-key.json
       - setup_remote_docker
       - run: 
-          name: protoc
-          command: |
-            mkdir -p ./communication/src/main/proto
-            cd ./skysign-proto
-            make cp_communication
-      - run: 
           name: http_gateway Docker build and push
           command: |
             cd ./http_gateway
@@ -182,8 +170,8 @@ jobs:
             cd ${SKYSIGN_CONFIG_REPO}/
             git checkout -b release-${CIRCLE_SHA1}
             rm -f manifest/*
-            envsubst < ../build/deploy/skysign-http-gateway-vehicle.yaml > manifest/skysign-http-gateway-vehicle.yaml
-            envsubst < ../build/deploy/skysign-http-gateway-vehicle-backend.yaml > manifest/skysign-http-gateway-vehicle-backend.yaml
+            envsubst < ../build/deploy/skysign-http-gateway-edge.yaml > manifest/skysign-http-gateway-edge.yaml
+            envsubst < ../build/deploy/skysign-http-gateway-edge-backend.yaml > manifest/skysign-http-gateway-edge-backend.yaml
             envsubst < ../build/deploy/skysign-http-gateway-user.yaml > manifest/skysign-http-gateway-user.yaml
             envsubst < ../build/deploy/skysign-http-gateway-user-backend.yaml > manifest/skysign-http-gateway-user-backend.yaml
             envsubst < ../build/deploy/skysign-endpoint.yaml > manifest/skysign-endpoint.yaml

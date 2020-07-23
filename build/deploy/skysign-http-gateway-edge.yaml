@@ -1,9 +1,9 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: skysign-http-gateway-vehicle
+  name: skysign-http-gateway-edge
   labels:
-    run: skysign-http-gateway-vehicle
+    run: skysign-http-gateway-edge
 spec:
   type: NodePort
   ports:
@@ -11,4 +11,4 @@ spec:
     nodePort: 30038
     protocol: TCP
   selector:
-    run: skysign-http-gateway-vehicle-backend
+    run: skysign-http-gateway-edge-backend

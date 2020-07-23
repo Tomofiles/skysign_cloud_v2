@@ -8,7 +8,7 @@ import "communication_common.proto";
 option java_package = "proto.skysign";
 option java_multiple_files = true;
 
-service CommunicationVehicleService {
+service CommunicationEdgeService {
     rpc PushTelemetry (PushTelemetryRequest) returns (PushTelemetryResponse) {
         option (google.api.http) = {
             post: "/api/v1/communications/{id}/telemetries"

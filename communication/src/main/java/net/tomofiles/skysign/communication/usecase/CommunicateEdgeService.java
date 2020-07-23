@@ -19,7 +19,7 @@ import net.tomofiles.skysign.communication.usecase.dto.ControlCommandType;
 import net.tomofiles.skysign.communication.usecase.dto.TelemetryDto;
 
 @Component
-public class CommunicateVehicleService {
+public class CommunicateEdgeService {
 
     @Autowired
     private CommunicationRepository communicationRepository;

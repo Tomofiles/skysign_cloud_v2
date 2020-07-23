@@ -1,0 +1,71 @@
+syntax = "proto3";
+
+package skysign_proto;
+
+import "google/api/annotations.proto";
+import "communication_common.proto";
+
+option java_package = "proto.skysign";
+option java_multiple_files = true;
+
+service CommunicationUserService {
+    rpc PushCommand (PushCommandRequest) returns (PushCommandResponse) {
+        option (google.api.http) = {
+            post: "/api/v1/vehicles/{id}/commands"
+            body: "*"
+        };
+    };
+
+    rpc PullTelemetry (PullTelemetryRequest) returns (PullTelemetryResponse) {
+        option (google.api.http) = {
+            get: "/api/v1/vehicles/{id}/telemetries"
+        };
+    };
+
+    rpc StandBy (StandByRequest) returns (StandByResponse) {
+        option (google.api.http) = {
+            post: "/api/v1/vehicles/{id}/standby"
+            body: "*"
+        };
+    };
+}
+
+message PushCommandRequest {
+    string id = 1;
+    CommandType type = 2;
+}
+
+message PushCommandResponse {
+    string id = 1;
+    CommandType type = 2;
+}
+
+message PullTelemetryRequest {
+    string id = 1;
+}
+
+message PullTelemetryResponse {
+    string id = 1;
+    string name = 2;
+    double latitude = 3;
+    double longitude = 4;
+    double altitude = 5;
+    double relativeAltitude = 6;
+    double speed = 7;
+    bool armed = 8;
+    string flightMode = 9;
+    double orientationX = 10;
+    double orientationY = 11;
+    double orientationZ = 12;
+    double orientationW = 13;
+}
+
+message StandByRequest {
+    string id = 1;
+    string missionId = 2;
+}
+
+message StandByResponse {
+    string id = 1;
+    string missionId = 2;
+}

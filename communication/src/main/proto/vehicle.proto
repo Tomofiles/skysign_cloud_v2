@@ -1,0 +1,77 @@
+syntax = "proto3";
+
+package skysign_proto;
+
+import "google/api/annotations.proto";
+
+option java_package = "proto.skysign";
+option java_multiple_files = true;
+
+service VehicleService {
+    rpc ListVehicles (ListVehiclesRequest) returns (ListVehiclesResponses) {
+        option (google.api.http) = {
+            get: "/api/v1/vehicles"
+        };
+    };
+
+    rpc GetVehicle (GetVehicleRequest) returns (Vehicle) {
+        option (google.api.http) = {
+            get: "/api/v1/vehicles/{id}"
+        };
+    };
+
+    rpc CreateVehicle (CreateVehicleRequest) returns (Vehicle) {
+        option (google.api.http) = {
+            post: "/api/v1/vehicles"
+            body: "*"
+        };
+    };
+
+    rpc UpdateVehicle (UpdateVehicleRequest) returns (Vehicle) {
+        option (google.api.http) = {
+            put: "/api/v1/vehicles/{id}"
+            body: "*"
+        };
+    };
+
+    rpc DeleteVehicle (DeleteVehicleRequest) returns (Empty) {
+        option (google.api.http) = {
+            delete: "/api/v1/vehicles/{id}"
+        };
+    };
+}
+
+message Empty {
+}
+
+message ListVehiclesRequest {
+}
+
+message GetVehicleRequest {
+    string id = 1;
+}
+
+message CreateVehicleRequest {
+    string name = 1;
+    string commId = 2;
+}
+
+message UpdateVehicleRequest {
+    string id = 1;
+    string name = 2;
+    string commId = 3;
+}
+
+message DeleteVehicleRequest {
+    string id = 1;
+}
+
+message Vehicle {
+    string id = 1;
+    string name = 2;
+    string commId = 3;
+}
+
+message ListVehiclesResponses {
+    repeated Vehicle vehicles = 1;
+}
