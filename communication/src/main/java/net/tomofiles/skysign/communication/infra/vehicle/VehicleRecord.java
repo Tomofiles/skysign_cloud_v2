@@ -7,5 +7,6 @@ public class VehicleRecord {
     private String id;
     private String name;
     private String commId;
-    private int version;
+    private String version;
+    private String newVersion;
 }

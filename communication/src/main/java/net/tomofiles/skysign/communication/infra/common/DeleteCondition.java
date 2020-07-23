@@ -5,5 +5,5 @@ import lombok.Data;
 @Data
 public class DeleteCondition {
     private String id;
-    private int version;
+    private String version;
 }

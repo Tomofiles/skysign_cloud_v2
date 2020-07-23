@@ -16,8 +16,10 @@ spec:
       containers:
       - name: skysign-communication-backend
         image: gcr.io/${GOOGLE_PROJECT_ID}/communication:${CIRCLE_SHA1}
+        command: ["java"]
+        args: ["-cp", "app:app/lib/*", "net.tomofiles.skysign.communication.CommunicationApplication"]
         env:
-        - name: DB_HOST
+        - name: db.host
           valueFrom:
             secretKeyRef:
               name: skysign-db-connection

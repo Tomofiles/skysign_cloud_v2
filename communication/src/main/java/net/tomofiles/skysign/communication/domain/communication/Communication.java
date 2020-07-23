@@ -1,6 +1,7 @@
 package net.tomofiles.skysign.communication.domain.communication;
 
 import java.time.LocalDateTime;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -9,7 +10,6 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
-import net.tomofiles.skysign.communication.domain.common.Version;
 
 @RequiredArgsConstructor(access = AccessLevel.PACKAGE)
 @EqualsAndHashCode(of = {"id"})
@@ -27,10 +27,6 @@ public class Communication {
 
     @Getter(value = AccessLevel.PACKAGE)
     private final List<Command> commands;
-
-    @Getter
-    @Setter(value = AccessLevel.PACKAGE)
-    private Version version;
 
     public void pushTelemetry(
             double latitude,
@@ -67,8 +63,9 @@ public class Communication {
         );
     }
 
-    public List<CommandId> getCommandId() {
+    public List<CommandId> getCommandIds() {
         return this.commands.stream()
+                .sorted(Comparator.comparing(Command::getTime))
                 .map(Command::getId)
                 .collect(Collectors.toList());
     }

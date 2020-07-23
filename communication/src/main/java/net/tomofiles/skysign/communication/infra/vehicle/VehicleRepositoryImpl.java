@@ -6,11 +6,11 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import net.tomofiles.skysign.communication.domain.common.Version;
 import net.tomofiles.skysign.communication.domain.vehicle.Vehicle;
 import net.tomofiles.skysign.communication.domain.vehicle.VehicleFactory;
 import net.tomofiles.skysign.communication.domain.vehicle.VehicleId;
 import net.tomofiles.skysign.communication.domain.vehicle.VehicleRepository;
+import net.tomofiles.skysign.communication.domain.vehicle.Version;
 import net.tomofiles.skysign.communication.infra.common.DeleteCondition;
 
 @Component
@@ -34,6 +34,7 @@ public class VehicleRepositoryImpl implements VehicleRepository {
         record.setName(vehicle.getVehicleName());
         record.setCommId(vehicle.getCommId().getId());
         record.setVersion(vehicle.getVersion().getVersion());
+        record.setNewVersion(vehicle.getNewVersion().getVersion());
 
         if (isCreate) {
             this.vehicleMapper.create(record);

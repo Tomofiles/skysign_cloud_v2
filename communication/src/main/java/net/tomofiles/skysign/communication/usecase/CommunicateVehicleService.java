@@ -46,7 +46,7 @@ public class CommunicateVehicleService {
                 telemetry.getOrientationZ(),
                 telemetry.getOrientationW());
         
-        List<String> commandIds = communication.getCommandId().stream()
+        List<String> commandIds = communication.getCommandIds().stream()
                 .map(CommandId::getId)
                 .collect(Collectors.toList());
 
