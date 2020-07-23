@@ -22,7 +22,7 @@ import proto.skysign.VehicleServiceGrpc.VehicleServiceImplBase;
 
 @GRpcService
 @Controller
-public class VehicleEndpoint extends VehicleServiceImplBase {
+public class ManageVehicleEndpoint extends VehicleServiceImplBase {
     
     @Autowired
     private ManageVehicleService service;

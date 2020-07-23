@@ -40,13 +40,13 @@ services:
     depends_on:
       - skysign-communication-backend-for-debugging
 
-  skysign-communication-vehicle-gateway-for-debugging:
-    container_name: skysign-communication-vehicle-gateway
-    hostname: skysign-communication-vehicle-gateway
+  skysign-communication-edge-gateway-for-debugging:
+    container_name: skysign-communication-edge-gateway
+    hostname: skysign-communication-edge-gateway
     build:
       context: ../../http_gateway
       dockerfile: Dockerfile
-    command: /app/comm-vehicle-gateway -backend_host skysign-communication-backend -port 8889
+    command: /app/comm-edge-gateway -backend_host skysign-communication-backend -port 8889
     ports:
       - 8889:8889
     depends_on:
@@ -69,6 +69,8 @@ services:
       - 8080:80
     depends_on:
       - skysign-communication-user-gateway-for-debugging
+      - skysign-communication-edge-gateway-for-debugging
+      - skysign-frontend-for-debugging
 
 networks:
   default:

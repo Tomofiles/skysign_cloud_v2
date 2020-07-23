@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
 import io.grpc.stub.StreamObserver;
-import net.tomofiles.skysign.communication.usecase.CommunicateVehicleService;
+import net.tomofiles.skysign.communication.usecase.CommunicateEdgeService;
 import net.tomofiles.skysign.communication.usecase.dto.ControlCommandDto;
 import net.tomofiles.skysign.communication.usecase.dto.TelemetryDto;
 import proto.skysign.CommandType;
@@ -15,14 +15,14 @@ import proto.skysign.PullCommandRequest;
 import proto.skysign.PullCommandResponse;
 import proto.skysign.PushTelemetryRequest;
 import proto.skysign.PushTelemetryResponse;
-import proto.skysign.CommunicationVehicleServiceGrpc.CommunicationVehicleServiceImplBase;
+import proto.skysign.CommunicationEdgeServiceGrpc.CommunicationEdgeServiceImplBase;
 
 @GRpcService
 @Controller
-public class CommunicateVehicleEndpoint extends CommunicationVehicleServiceImplBase {
+public class CommunicateEdgeEndpoint extends CommunicationEdgeServiceImplBase {
 
     @Autowired
-    private CommunicateVehicleService service;
+    private CommunicateEdgeService service;
 
     @Override
     public void pushTelemetry(PushTelemetryRequest request, StreamObserver<PushTelemetryResponse> responseObserver) {

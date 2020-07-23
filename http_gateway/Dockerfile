@@ -10,4 +10,4 @@ FROM alpine:latest
 WORKDIR /app/
 
 COPY --from=builder /go/bin/comm-user-gateway .
-COPY --from=builder /go/bin/comm-vehicle-gateway .
+COPY --from=builder /go/bin/comm-edge-gateway .
