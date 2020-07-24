@@ -12,35 +12,50 @@ import {
 import { grey } from '@material-ui/core/colors';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 
-import { arm, disarm } from './FleetControlUtils'
+import { COMMAND_TYPE, controlVehicle } from './FleetControlUtils'
 
 const FleetControl = (props) => {
   const [ buttonState, setButtonState] = useState({
     arm: true,
-    disarm: true
+    disarm: true,
+    upload: true,
+    start: true,
+    pause: true,
+    takeoff: true,
+    land: true,
+    return: true,
   });
   const [ rows ] = useGlobal("stagingRows");
 
-  const onClickArm = () => {
-    rows.filter(row => row.selected)
-        .forEach(row => arm(row.vehicle));
-  }
-
-  const onClickDisarm = () => {
-    rows.filter(row => row.selected)
-        .forEach(row => disarm(row.vehicle));
+  const onClickControl = (type) => {
+    return () => {
+      rows.filter(row => row.selected)
+          .forEach(row => controlVehicle(type, row.vehicle));
+    }
   }
 
   useEffect(() => {
     if (rows.filter(row => row.selected).length === 0) {
       setButtonState({
         arm: true,
-        disarm: true
+        disarm: true,
+        upload: true,
+        start: true,
+        pause: true,
+        takeoff: true,
+        land: true,
+        return: true,
       });
     } else {
       setButtonState({
         arm: false,
-        disarm: false
+        disarm: false,
+        upload: false,
+        start: false,
+        pause: false,
+        takeoff: false,
+        land: false,
+        return: false,
       });
     }
   }, [rows]);
@@ -62,29 +77,77 @@ const FleetControl = (props) => {
       <ExpansionPanelActions >
         <Grid container spacing={2} >
           <Grid item xs={4} >
-            <Button disabled={buttonState.arm} className={props.classes.myVehicleButton} fullWidth onClick={onClickArm}>Arm</Button>
+            <Button
+              disabled={buttonState.arm}
+              className={props.classes.myVehicleButton}
+              fullWidth
+              onClick={onClickControl(COMMAND_TYPE.ARM)}>
+                Arm
+              </Button>
           </Grid>
           <Grid item xs={4} >
-            <Button disabled={buttonState.disarm} className={props.classes.myVehicleButton} fullWidth onClick={onClickDisarm}>Disarm</Button>
+            <Button
+              disabled={buttonState.disarm}
+              className={props.classes.myVehicleButton}
+              fullWidth
+              onClick={onClickControl(COMMAND_TYPE.DISARM)}>
+                Disarm
+              </Button>
           </Grid>
           <Grid item xs={4} />
           <Grid item xs={4} >
-            <Button disabled className={props.classes.myVehicleButton} fullWidth onClick={() => {}}>Upload</Button>
+            <Button
+              disabled={buttonState.upload}
+              className={props.classes.myVehicleButton}
+              fullWidth
+              onClick={onClickControl(COMMAND_TYPE.UPLOAD)}>
+                Upload
+              </Button>
           </Grid>
           <Grid item xs={4} >
-            <Button disabled className={props.classes.myVehicleButton} fullWidth onClick={() => {}}>Start</Button>
+            <Button
+              disabled={buttonState.start}
+              className={props.classes.myVehicleButton}
+              fullWidth
+              onClick={onClickControl(COMMAND_TYPE.START)}>
+                Start
+              </Button>
           </Grid>
           <Grid item xs={4} >
-            <Button disabled className={props.classes.myVehicleButton} fullWidth onClick={() => {}}>Pause</Button>
+            <Button
+              disabled={buttonState.pause}
+              className={props.classes.myVehicleButton}
+              fullWidth
+              onClick={onClickControl(COMMAND_TYPE.PAUSE)}>
+                Pause
+              </Button>
           </Grid>
           <Grid item xs={4} >
-            <Button disabled className={props.classes.myVehicleButton} fullWidth onClick={() => {}}>Take Off</Button>
+            <Button
+              disabled={buttonState.takeoff}
+              className={props.classes.myVehicleButton}
+              fullWidth
+              onClick={onClickControl(COMMAND_TYPE.TAKEOFF)}>
+                Take Off
+              </Button>
           </Grid>
           <Grid item xs={4} >
-            <Button disabled className={props.classes.myVehicleButton} fullWidth onClick={() => {}}>Land</Button>
+            <Button
+              disabled={buttonState.land}
+              className={props.classes.myVehicleButton}
+              fullWidth
+              onClick={onClickControl(COMMAND_TYPE.LAND)}>
+                Land
+              </Button>
           </Grid>
           <Grid item xs={4} >
-            <Button disabled className={props.classes.myVehicleButton} fullWidth onClick={() => {}}>Return</Button>
+            <Button
+              disabled={buttonState.return}
+              className={props.classes.myVehicleButton}
+              fullWidth
+              onClick={onClickControl(COMMAND_TYPE.RETURN)}>
+                Return
+              </Button>
           </Grid>
         </Grid>
       </ExpansionPanelActions>

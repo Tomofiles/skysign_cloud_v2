@@ -8,5 +8,11 @@ option java_multiple_files = true;
 enum CommandType {
     ARM = 0;
     DISARM = 1;
+    UPLOAD = 2;
+    START = 3;
+    PAUSE = 4;
+    TAKEOFF = 5;
+    LAND = 6;
+    RETURN = 7;
     NONE = 99;
 }
