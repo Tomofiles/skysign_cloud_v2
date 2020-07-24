@@ -25,6 +25,18 @@ func MavlinkCommand(ctx context.Context, mavsdk string, commandStream <-chan *ed
 					mavlink.AdapterArm(ctx, mavsdk)
 				case "DISARM":
 					mavlink.AdapterDisarm(ctx, mavsdk)
+				case "UPLOAD":
+					mavlink.AdapterUpload(ctx, mavsdk)
+				case "START":
+					mavlink.AdapterStart(ctx, mavsdk)
+				case "PAUSE":
+					mavlink.AdapterPause(ctx, mavsdk)
+				case "TAKEOFF":
+					mavlink.AdapterTakeOff(ctx, mavsdk)
+				case "LAND":
+					mavlink.AdapterLand(ctx, mavsdk)
+				case "RETURN":
+					mavlink.AdapterReturn(ctx, mavsdk)
 				default:
 					continue
 				}

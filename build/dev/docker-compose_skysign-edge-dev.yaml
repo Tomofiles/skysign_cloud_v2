@@ -10,6 +10,10 @@ services:
     hostname: skysign-px4-gazebo
     image: jonasvautherin/px4-gazebo-headless:1.10.1
     tty: true
+    environment: 
+      - PX4_HOME_LAT=${PX4_HOME_LAT}
+      - PX4_HOME_LON=${PX4_HOME_LON}
+      - PX4_HOME_ALT=${PX4_HOME_ALT}
     ports:
       - "14540:14540/udp"
 

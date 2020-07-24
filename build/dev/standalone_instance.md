@@ -29,6 +29,9 @@ Skysignでは、アクセストークンがなくてもサンドボックス環�
 
 Docker Composeの起動コマンドを実行する前に、各自の環境に合わせて`<ip>:<port>`の組み合わせで、`CLOUD_ADDRESS`というキーで環境変数を指定してください。
 
-なお、エッジ機能のサンドボックス環境を構築するにあたり、以下のPX4ガゼボシミュレータのDockerイメージを使用しています。
+## OSSの使用について
+エッジ機能のサンドボックス環境を構築するにあたり、以下のPX4ガゼボシミュレータのDockerイメージを使用しています。
 
 [JonasVautherin/px4-gazebo-headless - github.com](https://github.com/JonasVautherin/px4-gazebo-headless)
+
+PX4ガゼボシミュレータのホームポジションを環境変数で指定できるようになっています。`PX4_HOME_LAT`、`PX4_HOME_LON`、`PX4_HOME_ALT`を、それぞれ環境変数に設定してください。
