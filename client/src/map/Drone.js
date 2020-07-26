@@ -24,7 +24,7 @@ const Drone = (props) => {
   useInterval(() => {
     getTelemetry(props.data.vehicle)
       .then(data => {
-        setData(convertDroneData(props.data.vehicle, data));
+        setData(convertDroneData(props.data.vehicle, data.name, data.telemetry));
       });
   },
   1000);

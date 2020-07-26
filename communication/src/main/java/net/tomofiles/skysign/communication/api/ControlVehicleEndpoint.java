@@ -15,6 +15,7 @@ import proto.skysign.PullTelemetryRequest;
 import proto.skysign.PullTelemetryResponse;
 import proto.skysign.PushCommandRequest;
 import proto.skysign.PushCommandResponse;
+import proto.skysign.Telemetry;
 import proto.skysign.CommunicationUserServiceGrpc.CommunicationUserServiceImplBase;
 
 @GRpcService
@@ -47,17 +48,19 @@ public class ControlVehicleEndpoint extends CommunicationUserServiceImplBase {
 
         PullTelemetryResponse r = PullTelemetryResponse.newBuilder()
                 .setName(telemetry.getName())
-                .setLatitude(telemetry.getLatitude())
-                .setLongitude(telemetry.getLongitude())
-                .setAltitude(telemetry.getAltitude())
-                .setRelativeAltitude(telemetry.getRelativeAltitude())
-                .setSpeed(telemetry.getSpeed())
-                .setArmed(telemetry.isArmed())
-                .setFlightMode(telemetry.getFlightMode())
-                .setOrientationX(telemetry.getOrientationX())
-                .setOrientationY(telemetry.getOrientationY())
-                .setOrientationZ(telemetry.getOrientationZ())
-                .setOrientationW(telemetry.getOrientationW())
+                .setTelemetry(Telemetry.newBuilder()
+                    .setLatitude(telemetry.getLatitude())
+                    .setLongitude(telemetry.getLongitude())
+                    .setAltitude(telemetry.getAltitude())
+                    .setRelativeAltitude(telemetry.getRelativeAltitude())
+                    .setSpeed(telemetry.getSpeed())
+                    .setArmed(telemetry.isArmed())
+                    .setFlightMode(telemetry.getFlightMode())
+                    .setOrientationX(telemetry.getOrientationX())
+                    .setOrientationY(telemetry.getOrientationY())
+                    .setOrientationZ(telemetry.getOrientationZ())
+                    .setOrientationW(telemetry.getOrientationW())
+                )
                 .build();
         responseObserver.onNext(r); 
         responseObserver.onCompleted();

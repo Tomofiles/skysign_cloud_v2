@@ -20,12 +20,12 @@ import proto.skysign.ListVehiclesRequest;
 import proto.skysign.ListVehiclesResponses;
 import proto.skysign.UpdateVehicleRequest;
 import proto.skysign.Vehicle;
-import proto.skysign.VehicleServiceGrpc.VehicleServiceImplBase;
+import proto.skysign.ManageVehicleServiceGrpc.ManageVehicleServiceImplBase;
 
 @GRpcService
 @Controller
 @AllArgsConstructor
-public class ManageVehicleEndpoint extends VehicleServiceImplBase {
+public class ManageVehicleEndpoint extends ManageVehicleServiceImplBase {
 
     private final ManageVehicleService service;
 

@@ -29,17 +29,17 @@ public class CommunicateEdgeEndpoint extends CommunicationEdgeServiceImplBase {
     @Override
     public void pushTelemetry(PushTelemetryRequest request, StreamObserver<PushTelemetryResponse> responseObserver) {
         TelemetryDto telemetry = new TelemetryDto();
-        telemetry.setLatitude(request.getLatitude());
-        telemetry.setLongitude(request.getLongitude());
-        telemetry.setAltitude(request.getAltitude());
-        telemetry.setRelativeAltitude(request.getRelativeAltitude());
-        telemetry.setSpeed(request.getSpeed());
-        telemetry.setArmed(request.getArmed());
-        telemetry.setFlightMode(request.getFlightMode());
-        telemetry.setOrientationX(request.getOrientationX());
-        telemetry.setOrientationY(request.getOrientationY());
-        telemetry.setOrientationZ(request.getOrientationZ());
-        telemetry.setOrientationW(request.getOrientationW());
+        telemetry.setLatitude(request.getTelemetry().getLatitude());
+        telemetry.setLongitude(request.getTelemetry().getLongitude());
+        telemetry.setAltitude(request.getTelemetry().getAltitude());
+        telemetry.setRelativeAltitude(request.getTelemetry().getRelativeAltitude());
+        telemetry.setSpeed(request.getTelemetry().getSpeed());
+        telemetry.setArmed(request.getTelemetry().getArmed());
+        telemetry.setFlightMode(request.getTelemetry().getFlightMode());
+        telemetry.setOrientationX(request.getTelemetry().getOrientationX());
+        telemetry.setOrientationY(request.getTelemetry().getOrientationY());
+        telemetry.setOrientationZ(request.getTelemetry().getOrientationZ());
+        telemetry.setOrientationW(request.getTelemetry().getOrientationW());
 
         List<String> commandIds;
         try {

@@ -3,15 +3,16 @@ syntax = "proto3";
 package skysign_proto;
 
 import "google/api/annotations.proto";
-import "communication_common.proto";
+import "common.proto";
 
 option java_package = "proto.skysign";
 option java_multiple_files = true;
+option go_package = ".;skysign_proto";
 
 service CommunicationEdgeService {
     rpc PushTelemetry (PushTelemetryRequest) returns (PushTelemetryResponse) {
         option (google.api.http) = {
-            post: "/api/v1/communications/{id}/telemetries"
+            post: "/api/v1/communications/{id}/telemetry"
             body: "*"
         };
     };
@@ -27,17 +28,7 @@ service CommunicationEdgeService {
 
 message PushTelemetryRequest {
     string id = 1;
-    double latitude = 2;
-    double longitude = 3;
-    double altitude = 4;
-    double relativeAltitude = 5;
-    double speed = 6;
-    bool armed = 7;
-    string flightMode = 8;
-    double orientationX = 9;
-    double orientationY = 10;
-    double orientationZ = 11;
-    double orientationW = 12;
+    Telemetry telemetry = 2;
 }
 
 message PushTelemetryResponse {

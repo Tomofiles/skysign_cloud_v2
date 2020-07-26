@@ -31,7 +31,11 @@ func run() error {
 	mux := runtime.NewServeMux(smOpts...)
 	opts := []grpc.DialOption{grpc.WithInsecure()}
 	endpoint := fmt.Sprintf(*backendHost + ":" + *backendPort)
-	err := gw.RegisterVehicleServiceHandlerFromEndpoint(ctx, mux, endpoint, opts)
+	err := gw.RegisterManageVehicleServiceHandlerFromEndpoint(ctx, mux, endpoint, opts)
+	if err != nil {
+		return err
+	}
+	err = gw.RegisterManageMissionServiceHandlerFromEndpoint(ctx, mux, endpoint, opts)
 	if err != nil {
 		return err
 	}
@@ -46,7 +50,7 @@ func run() error {
 func main() {
 	backendHost = flag.String("backend_host", "localhost", "backend host")
 	backendPort = flag.String("backend_port", "5001", "backend port")
-	port = flag.String("port", "5000", "backend port")
+	port = flag.String("port", "5000", "http gateway port")
 	flag.Parse()
 	defer glog.Flush()
 
