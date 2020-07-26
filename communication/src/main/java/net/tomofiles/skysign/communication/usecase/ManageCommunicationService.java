@@ -1,19 +1,19 @@
 package net.tomofiles.skysign.communication.usecase;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import lombok.AllArgsConstructor;
 import net.tomofiles.skysign.communication.domain.communication.Communication;
 import net.tomofiles.skysign.communication.domain.communication.CommunicationFactory;
 import net.tomofiles.skysign.communication.domain.communication.CommunicationId;
 import net.tomofiles.skysign.communication.domain.communication.CommunicationRepository;
 
 @Component
+@AllArgsConstructor
 public class ManageCommunicationService {
 
-    @Autowired
-    private CommunicationRepository communicationRepository;
+    private final CommunicationRepository communicationRepository;
 
     @Transactional
     public void recreateCommunication(String beforeId, String afterId) {

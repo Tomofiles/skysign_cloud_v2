@@ -4,10 +4,10 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import lombok.AllArgsConstructor;
 import net.tomofiles.skysign.communication.domain.communication.CommandId;
 import net.tomofiles.skysign.communication.domain.communication.CommandType;
 import net.tomofiles.skysign.communication.domain.communication.Communication;
@@ -19,10 +19,10 @@ import net.tomofiles.skysign.communication.usecase.dto.ControlCommandType;
 import net.tomofiles.skysign.communication.usecase.dto.TelemetryDto;
 
 @Component
+@AllArgsConstructor
 public class CommunicateEdgeService {
 
-    @Autowired
-    private CommunicationRepository communicationRepository;
+    private final CommunicationRepository communicationRepository;
 
     @Transactional
     public List<String> pushTelemetry(String commId, TelemetryDto telemetry) {
