@@ -61,7 +61,7 @@ const Vehicles = (props) => {
         <VehiclesDetail classes={props.classes} openList={openList} openEdit={openEdit} id={selected} />
       }
       {mode === VEHICLE_MODE.LIST &&
-        <VehiclesList classes={props.classes} openDetail={openDetail} openNew={openNew} id={selected} />
+        <VehiclesList classes={props.classes} openDetail={openDetail} openNew={openNew} id={selected} open={props.open} />
       }
     </ExpansionPanel>
   );

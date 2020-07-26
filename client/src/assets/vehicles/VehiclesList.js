@@ -21,11 +21,13 @@ const VehiclesList = (props) => {
   const [rows, setRows] = useState([]);
 
   useEffect(() => {
-    getVehicles()
-      .then(data => {
-        setRows(data.vehicles);
-      })
-  }, [])
+    if (props.open) {
+      getVehicles()
+        .then(data => {
+          setRows(data.vehicles);
+        })
+    }
+  }, [props.open])
 
   const onClickNew = () => {
     props.openNew();
