@@ -1,6 +1,6 @@
 import { Cartesian3, Transforms, Matrix3, Matrix4, Quaternion, HeadingPitchRoll, Math as CesiumMath } from "cesium";
 
-export const convertDroneData = (vehicleID, telemetry) => {
+export const convertDroneData = (vehicleID, name, telemetry) => {
   // 地球固定座標での回転を計算
   let pos = Cartesian3.fromDegrees(
     telemetry.longitude,
@@ -43,7 +43,7 @@ export const convertDroneData = (vehicleID, telemetry) => {
 
   let data = {
     id: entityID,
-    name: telemetry.name,
+    name: name,
     description: description,
     position: Cartesian3.fromDegrees(
       telemetry.longitude,

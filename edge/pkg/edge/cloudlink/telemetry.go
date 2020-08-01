@@ -13,7 +13,7 @@ import (
 // PushTelemetry .
 func PushTelemetry(cloud string, telemetry telemetry.Telemetry) (string, *edge.CommandIDs, error) {
 	telem := telemetry.Get()
-	if telem.FlightMode == "" {
+	if telem.State.FlightMode == "" {
 		log.Println("no telemetry prepared.")
 		return telem.ID, &edge.CommandIDs{CommIds: make([]string, 0)}, nil
 	}
@@ -23,7 +23,7 @@ func PushTelemetry(cloud string, telemetry telemetry.Telemetry) (string, *edge.C
 
 	req, err := http.NewRequest(
 		"POST",
-		"http://"+cloud+"/api/v1/communications/"+telem.ID+"/telemetries",
+		"http://"+cloud+"/api/v1/communications/"+telem.ID+"/telemetry",
 		strings.NewReader(string(jsonData)),
 	)
 	if err != nil {

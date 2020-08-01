@@ -3,10 +3,11 @@ syntax = "proto3";
 package skysign_proto;
 
 import "google/api/annotations.proto";
-import "communication_common.proto";
+import "common.proto";
 
 option java_package = "proto.skysign";
 option java_multiple_files = true;
+option go_package = ".;skysign_proto";
 
 service CommunicationUserService {
     rpc PushCommand (PushCommandRequest) returns (PushCommandResponse) {
@@ -47,17 +48,7 @@ message PullTelemetryRequest {
 message PullTelemetryResponse {
     string id = 1;
     string name = 2;
-    double latitude = 3;
-    double longitude = 4;
-    double altitude = 5;
-    double relativeAltitude = 6;
-    double speed = 7;
-    bool armed = 8;
-    string flightMode = 9;
-    double orientationX = 10;
-    double orientationY = 11;
-    double orientationZ = 12;
-    double orientationW = 13;
+    Telemetry telemetry = 3;
 }
 
 message StandByRequest {

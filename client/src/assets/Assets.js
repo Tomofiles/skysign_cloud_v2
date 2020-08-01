@@ -37,7 +37,7 @@ const Assets = (props) => {
           </Grid>
         </Box>
       </Box>
-      <Vehicles classes={props.classes} />
+      <Vehicles classes={props.classes} open={props.open} />
     </Drawer>
   );
 }

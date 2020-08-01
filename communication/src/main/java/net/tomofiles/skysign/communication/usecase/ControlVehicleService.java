@@ -2,10 +2,10 @@ package net.tomofiles.skysign.communication.usecase;
 
 import java.util.NoSuchElementException;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import lombok.AllArgsConstructor;
 import net.tomofiles.skysign.communication.domain.communication.Communication;
 import net.tomofiles.skysign.communication.domain.communication.CommunicationRepository;
 import net.tomofiles.skysign.communication.domain.communication.MissionId;
@@ -17,13 +17,11 @@ import net.tomofiles.skysign.communication.usecase.dto.ControlCommandType;
 import net.tomofiles.skysign.communication.usecase.dto.TelemetryDto;
 
 @Component
+@AllArgsConstructor
 public class ControlVehicleService {
 
-    @Autowired
-    private VehicleRepository vehicleRepository;
-
-    @Autowired
-    private CommunicationRepository communicationRepository;
+    private final VehicleRepository vehicleRepository;
+    private final CommunicationRepository communicationRepository;
 
     @Transactional
     public void standBy(String vehicleId, String missionId) {
@@ -34,11 +32,11 @@ public class ControlVehicleService {
             throw new NoSuchElementException("vehicle-idに合致するVehicleが存在しません。");
         }
 
-        Communication communication = this.communicationRepository.getById(vehicle.getCommId());
-
-        if (communication == null) {
+        if (vehicle.getCommId() == null) {
             throw new IllegalStateException("vehicleにcommunication-idが設定されていません。");
         }
+
+        Communication communication = this.communicationRepository.getById(vehicle.getCommId());
 
         communication.standBy(new MissionId(missionId));
 
@@ -54,11 +52,11 @@ public class ControlVehicleService {
             throw new NoSuchElementException("vehicle-idに合致するVehicleが存在しません。");
         }
 
-        Communication communication = this.communicationRepository.getById(vehicle.getCommId());
-
-        if (communication == null) {
+        if (vehicle.getCommId() == null) {
             throw new IllegalStateException("vehicleにcommunication-idが設定されていません。");
         }
+
+        Communication communication = this.communicationRepository.getById(vehicle.getCommId());
 
         communication.cancel();
 
@@ -74,11 +72,11 @@ public class ControlVehicleService {
             throw new NoSuchElementException("vehicle-idに合致するVehicleが存在しません。");
         }
 
-        Communication communication = this.communicationRepository.getById(vehicle.getCommId());
-
-        if (communication == null) {
+        if (vehicle.getCommId() == null) {
             throw new IllegalStateException("vehicleにcommunication-idが設定されていません。");
         }
+
+        Communication communication = this.communicationRepository.getById(vehicle.getCommId());
 
         communication.pushCommand(commandType.getType());
 
@@ -94,11 +92,11 @@ public class ControlVehicleService {
             throw new NoSuchElementException("vehicle-idに合致するVehicleが存在しません。");
         }
 
-        Communication communication = this.communicationRepository.getById(vehicle.getCommId());
-
-        if (communication == null) {
+        if (vehicle.getCommId() == null) {
             throw new IllegalStateException("vehicleにcommunication-idが設定されていません。");
         }
+
+        Communication communication = this.communicationRepository.getById(vehicle.getCommId());
 
         TelemetrySnapshot telemetry = communication.pullTelemetry();
 

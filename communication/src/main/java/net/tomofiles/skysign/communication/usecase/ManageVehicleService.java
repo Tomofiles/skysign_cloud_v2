@@ -4,10 +4,10 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import lombok.AllArgsConstructor;
 import net.tomofiles.skysign.communication.domain.communication.CommunicationId;
 import net.tomofiles.skysign.communication.domain.vehicle.Vehicle;
 import net.tomofiles.skysign.communication.domain.vehicle.VehicleFactory;
@@ -17,13 +17,11 @@ import net.tomofiles.skysign.communication.event.Publisher;
 import net.tomofiles.skysign.communication.usecase.dto.VehicleDto;
 
 @Component
+@AllArgsConstructor
 public class ManageVehicleService {
 
-    @Autowired
-    private VehicleRepository vehicleRepository;
-
-    @Autowired
-    private Publisher publisher;
+    private final VehicleRepository vehicleRepository;
+    private final Publisher publisher;
 
     @Transactional
     public String createVehicle(String name, String commId) {

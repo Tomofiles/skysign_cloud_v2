@@ -40,7 +40,12 @@ type FlightMode struct {
 
 // Telemetry struct
 type Telemetry struct {
-	ID               string  `json:"id"`
+	ID    string `json:"id"`
+	State *State `json:"telemetry"`
+}
+
+// State struct
+type State struct {
 	Latitude         float64 `json:"latitude"`
 	Longitude        float64 `json:"longitude"`
 	Altitude         float64 `json:"altitude"`

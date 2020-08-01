@@ -126,18 +126,20 @@ func (t *telemetry) Get() *edge.Telemetry {
 	rwmLocker.Lock()
 
 	telemetry := &edge.Telemetry{
-		ID:               t.id,
-		Latitude:         t.latitude,
-		Longitude:        t.longitude,
-		Altitude:         t.altitude,
-		RelativeAltitude: t.relativeAltitude,
-		Speed:            t.speed,
-		Armed:            t.armed,
-		FlightMode:       t.flightMode,
-		OrientationX:     t.orientationX,
-		OrientationY:     t.orientationY,
-		OrientationZ:     t.orientationZ,
-		OrientationW:     t.orientationW,
+		ID: t.id,
+		State: &edge.State{
+			Latitude:         t.latitude,
+			Longitude:        t.longitude,
+			Altitude:         t.altitude,
+			RelativeAltitude: t.relativeAltitude,
+			Speed:            t.speed,
+			Armed:            t.armed,
+			FlightMode:       t.flightMode,
+			OrientationX:     t.orientationX,
+			OrientationY:     t.orientationY,
+			OrientationZ:     t.orientationZ,
+			OrientationW:     t.orientationW,
+		},
 	}
 
 	rwmLocker.Unlock()
