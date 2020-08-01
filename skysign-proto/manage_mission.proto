@@ -22,14 +22,14 @@ service ManageMissionService {
         };
     };
 
-    rpc CreateMission (CreateMissionRequest) returns (Mission) {
+    rpc CreateMission (Mission) returns (Mission) {
         option (google.api.http) = {
             post: "/api/v1/missions"
             body: "*"
         };
     };
 
-    rpc UpdateMission (UpdateMissionRequest) returns (Mission) {
+    rpc UpdateMission (Mission) returns (Mission) {
         option (google.api.http) = {
             put: "/api/v1/missions/{id}"
             body: "*"
@@ -48,15 +48,6 @@ message ListMissionsRequest {
 
 message GetMissionRequest {
     string id = 1;
-}
-
-message CreateMissionRequest {
-    Mission mission = 1;
-}
-
-message UpdateMissionRequest {
-    string id = 1;
-    Mission mission = 2;
 }
 
 message DeleteMissionRequest {

@@ -11,7 +11,7 @@ import org.apache.ibatis.annotations.Update;
 public interface WaypointMapper {
     @Select("SELECT "
             + "mission_id as missionId, "
-            + "order, "
+            + "point_order as order, "
             + "latitude, "
             + "longitude, "
             + "height_wgs84_ellipsoid_m as heightWGS84EllipsoidM, "
@@ -20,7 +20,7 @@ public interface WaypointMapper {
     List<WaypointRecord> find(String id);
 
     @Insert("INSERT INTO waypoint "
-            + "(mission_id, order, latitude, longitude, height_wgs84_ellipsoid_m, speed_m_s) "
+            + "(mission_id, point_order, latitude, longitude, height_wgs84_ellipsoid_m, speed_m_s) "
             + "VALUES (#{missionId}, #{order}, #{latitude}, #{longitude}, #{heightWGS84EllipsoidM}, #{speedMS})")
     void create(WaypointRecord waypoint);
 

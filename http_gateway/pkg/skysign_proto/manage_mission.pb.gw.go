@@ -104,7 +104,7 @@ func local_request_ManageMissionService_GetMission_0(ctx context.Context, marsha
 }
 
 func request_ManageMissionService_CreateMission_0(ctx context.Context, marshaler runtime.Marshaler, client ManageMissionServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq CreateMissionRequest
+	var protoReq Mission
 	var metadata runtime.ServerMetadata
 
 	newReader, berr := utilities.IOReaderFactory(req.Body)
@@ -121,7 +121,7 @@ func request_ManageMissionService_CreateMission_0(ctx context.Context, marshaler
 }
 
 func local_request_ManageMissionService_CreateMission_0(ctx context.Context, marshaler runtime.Marshaler, server ManageMissionServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq CreateMissionRequest
+	var protoReq Mission
 	var metadata runtime.ServerMetadata
 
 	newReader, berr := utilities.IOReaderFactory(req.Body)
@@ -138,7 +138,7 @@ func local_request_ManageMissionService_CreateMission_0(ctx context.Context, mar
 }
 
 func request_ManageMissionService_UpdateMission_0(ctx context.Context, marshaler runtime.Marshaler, client ManageMissionServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq UpdateMissionRequest
+	var protoReq Mission
 	var metadata runtime.ServerMetadata
 
 	newReader, berr := utilities.IOReaderFactory(req.Body)
@@ -173,7 +173,7 @@ func request_ManageMissionService_UpdateMission_0(ctx context.Context, marshaler
 }
 
 func local_request_ManageMissionService_UpdateMission_0(ctx context.Context, marshaler runtime.Marshaler, server ManageMissionServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq UpdateMissionRequest
+	var protoReq Mission
 	var metadata runtime.ServerMetadata
 
 	newReader, berr := utilities.IOReaderFactory(req.Body)
