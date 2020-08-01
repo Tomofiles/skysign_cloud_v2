@@ -12,5 +12,6 @@ public class MissionComponentDto {
     private String name;
     private double takeoffPointGroundHeightWGS84M;
     private String version;
+    private String newVersion;
     private List<WaypointComponentDto> waypoints;
 }

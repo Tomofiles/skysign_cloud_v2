@@ -11,9 +11,12 @@ import lombok.Setter;
 @EqualsAndHashCode(of = {"takeoffPointGroundHeight", "waypoints"})
 public class Navigation {
 
+    /** 現在の順序 */
+    private int currentOrder;
+
     /** Takeoffポイントの地表高度（WGS84楕円体高） */
     @Getter
-    @Setter(value = AccessLevel.PACKAGE)
+    @Setter
     private Height takeoffPointGroundHeight;
 
     @Getter
@@ -21,12 +24,14 @@ public class Navigation {
     private List<Waypoint> waypoints;
 
     public Navigation() {
+        this.currentOrder = 1;
         this.waypoints = new ArrayList<>();
     }
     
     public void pushNextWaypoint(GeodesicCoordinates coordinates, Height relativeHeight, Speed speed) {
         this.waypoints.add(
             new Waypoint(
+                this.currentOrder++,
                 coordinates.getLatitude(),
                 coordinates.getLongitude(),
                 relativeHeight.getHeightM(),

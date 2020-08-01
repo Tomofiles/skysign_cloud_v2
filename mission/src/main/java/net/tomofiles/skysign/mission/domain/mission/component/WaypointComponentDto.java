@@ -6,6 +6,7 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 public class WaypointComponentDto {
+    private int order;
     private double latitude;
     private double longitude;
     private double heightWGS84M;

@@ -25,14 +25,14 @@ public class ComponentMissionTests {
         double longitude1 = 1.0d;
         double heightWGS84M1 = 2.0d;
         double speedMS1 = 4.0d;
-        double latitude2 = 0.0d;
-        double longitude2 = 1.0d;
-        double heightWGS84M2 = 2.0d;
-        double speedMS2 = 4.0d;
-        double latitude3 = 0.0d;
-        double longitude3 = 1.0d;
-        double heightWGS84M3 = 2.0d;
-        double speedMS3 = 4.0d;
+        double latitude2 = 10.0d;
+        double longitude2 = 11.0d;
+        double heightWGS84M2 = 12.0d;
+        double speedMS2 = 14.0d;
+        double latitude3 = 20.0d;
+        double longitude3 = 21.0d;
+        double heightWGS84M3 = 22.0d;
+        double speedMS3 = 24.0d;
 
         Mission mission = MissionFactory.assembleFrom(
                 new MissionComponentDto(
@@ -40,18 +40,22 @@ public class ComponentMissionTests {
                         missionName,
                         takeoffPointGroundHeight.getHeightM(),
                         version.getVersion(),
+                        version.getVersion(),
                         Arrays.asList(new WaypointComponentDto[] {
                                 new WaypointComponentDto(
+                                        1,
                                         latitude1,
                                         longitude1,
                                         heightWGS84M1,
                                         speedMS1),
                                 new WaypointComponentDto(
+                                        2,
                                         latitude2,
                                         longitude2,
                                         heightWGS84M2,
                                         speedMS2),
                                 new WaypointComponentDto(
+                                        3,
                                         latitude3,
                                         longitude3,
                                         heightWGS84M3,
@@ -96,14 +100,14 @@ public class ComponentMissionTests {
         double longitude1 = 1.0d;
         double heightWGS84M1 = 2.0d;
         double speedMS1 = 4.0d;
-        double latitude2 = 0.0d;
-        double longitude2 = 1.0d;
-        double heightWGS84M2 = 2.0d;
-        double speedMS2 = 4.0d;
-        double latitude3 = 0.0d;
-        double longitude3 = 1.0d;
-        double heightWGS84M3 = 2.0d;
-        double speedMS3 = 4.0d;
+        double latitude2 = 10.0d;
+        double longitude2 = 11.0d;
+        double heightWGS84M2 = 12.0d;
+        double speedMS2 = 14.0d;
+        double latitude3 = 20.0d;
+        double longitude3 = 21.0d;
+        double heightWGS84M3 = 22.0d;
+        double speedMS3 = 24.0d;
 
         Mission mission = MissionFactory.newInstance(id);
         mission.setMissionName(missionName);
@@ -130,14 +134,17 @@ public class ComponentMissionTests {
         assertEquals(dto.getId(), id.getId());
         assertEquals(dto.getName(), missionName);
         assertEquals(dto.getTakeoffPointGroundHeightWGS84M(), takeoffPointGroundHeight.getHeightM());
+        assertEquals(dto.getWaypoints().get(0).getOrder(), 1);
         assertEquals(dto.getWaypoints().get(0).getLatitude(), latitude1);
         assertEquals(dto.getWaypoints().get(0).getLongitude(), longitude1);
         assertEquals(dto.getWaypoints().get(0).getHeightWGS84M(), heightWGS84M1);
         assertEquals(dto.getWaypoints().get(0).getSpeedMS(), speedMS1);
+        assertEquals(dto.getWaypoints().get(1).getOrder(), 2);
         assertEquals(dto.getWaypoints().get(1).getLatitude(), latitude2);
         assertEquals(dto.getWaypoints().get(1).getLongitude(), longitude2);
         assertEquals(dto.getWaypoints().get(1).getHeightWGS84M(), heightWGS84M2);
         assertEquals(dto.getWaypoints().get(1).getSpeedMS(), speedMS2);
+        assertEquals(dto.getWaypoints().get(2).getOrder(), 3);
         assertEquals(dto.getWaypoints().get(2).getLatitude(), latitude3);
         assertEquals(dto.getWaypoints().get(2).getLongitude(), longitude3);
         assertEquals(dto.getWaypoints().get(2).getHeightWGS84M(), heightWGS84M3);

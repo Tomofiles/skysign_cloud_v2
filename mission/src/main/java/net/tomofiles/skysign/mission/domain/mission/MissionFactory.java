@@ -45,9 +45,11 @@ public class MissionFactory {
                 mission.getMissionName(),
                 mission.getNavigation().getTakeoffPointGroundHeight().getHeightM(),
                 mission.getVersion().getVersion(),
+                mission.getNewVersion().getVersion(),
                 mission.getNavigation().getWaypoints().stream()
                         .map(waypoint -> {
                             return new WaypointComponentDto(
+                                    waypoint.getOrder(),
                                     waypoint.getLatitude(),
                                     waypoint.getLongitude(),
                                     Height.plus(

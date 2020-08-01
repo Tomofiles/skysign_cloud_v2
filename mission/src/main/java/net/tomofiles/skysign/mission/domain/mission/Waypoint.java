@@ -6,8 +6,10 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-@EqualsAndHashCode(of = {"latitude", "longitude", "relativeHeightM", "speedMS"})
+@EqualsAndHashCode(of = {"order", "latitude", "longitude", "relativeHeightM", "speedMS"})
 public class Waypoint {
+    /** 順序 */
+    private final int order;
     /** 緯度（WGS84） */
     private final double latitude;
     /** 経度（WGS84） */
