@@ -7,8 +7,10 @@ import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 @EqualsAndHashCode(of = {"takeoffPointGroundHeight", "waypoints"})
+@ToString
 public class Navigation {
 
     /** 現在の順序 */

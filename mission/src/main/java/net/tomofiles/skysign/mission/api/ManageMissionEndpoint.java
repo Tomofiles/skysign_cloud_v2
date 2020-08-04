@@ -11,6 +11,8 @@ import org.springframework.transaction.annotation.Transactional;
 import io.grpc.Status;
 import io.grpc.stub.StreamObserver;
 import lombok.AllArgsConstructor;
+import net.tomofiles.skysign.mission.domain.mission.Generator;
+import net.tomofiles.skysign.mission.domain.mission.GeneratorUUID;
 import net.tomofiles.skysign.mission.domain.mission.GeodesicCoordinates;
 import net.tomofiles.skysign.mission.domain.mission.Height;
 import net.tomofiles.skysign.mission.domain.mission.MissionFactory;
@@ -34,45 +36,33 @@ public class ManageMissionEndpoint extends ManageMissionServiceImplBase {
 
     private MissionRepository missionRepository;
 
+    private final Generator generator = new GeneratorUUID();
+
     @Override
     @Transactional
     public void listMissions(ListMissionsRequest request, StreamObserver<ListMissionsResponses> responseObserver) {
         List<net.tomofiles.skysign.mission.domain.mission.Mission> missions;
-        
+
         try {
             missions = missionRepository.getAll();
         } catch (Exception e) {
-            responseObserver.onError(Status
-                    .INTERNAL
-                    .withCause(e)
-                    .asRuntimeException());
+            responseObserver.onError(Status.INTERNAL.withCause(e).asRuntimeException());
             return;
         }
 
-        List<Mission> r = missions.stream()
-                .map(mission -> {
-                    return Mission.newBuilder()
-                            .setId(mission.getId().getId())
-                            .setName(mission.getMissionName())
-                            .setTakeoffPointGroundHeight(mission.getNavigation().getTakeoffPointGroundHeight().getHeightM())
-                            .addAllItems(
-                                mission.getNavigation().getWaypoints().stream()
-                                        .map(waypoint -> {
-                                            return MissionItem.newBuilder()
-                                                    .setLatitude(waypoint.getLatitude())
-                                                    .setLongitude(waypoint.getLatitude())
-                                                    .setRelativeHeight(waypoint.getRelativeHeightM())
-                                                    .setSpeed(waypoint.getSpeedMS())
-                                                    .build();
-                                        })
-                                        .collect(Collectors.toList())
-                                
-                            )
-                            .build();
-                })
-                .collect(Collectors.toList());
+        List<Mission> r = missions.stream().map(mission -> {
+            return Mission.newBuilder().setId(mission.getId().getId()).setName(mission.getMissionName())
+                    .setTakeoffPointGroundHeight(mission.getNavigation().getTakeoffPointGroundHeight().getHeightM())
+                    .addAllItems(mission.getNavigation().getWaypoints().stream().map(waypoint -> {
+                        return MissionItem.newBuilder().setLatitude(waypoint.getLatitude())
+                                .setLongitude(waypoint.getLatitude()).setRelativeHeight(waypoint.getRelativeHeightM())
+                                .setSpeed(waypoint.getSpeedMS()).build();
+                    }).collect(Collectors.toList())
 
-        responseObserver.onNext(ListMissionsResponses.newBuilder().addAllMissions(r).build()); 
+                    ).build();
+        }).collect(Collectors.toList());
+
+        responseObserver.onNext(ListMissionsResponses.newBuilder().addAllMissions(r).build());
         responseObserver.onCompleted();
     }
 
@@ -81,53 +71,37 @@ public class ManageMissionEndpoint extends ManageMissionServiceImplBase {
     public void getMission(GetMissionRequest request, StreamObserver<Mission> responseObserver) {
         MissionId id = new MissionId(request.getId());
         net.tomofiles.skysign.mission.domain.mission.Mission mission;
-        
+
         try {
             mission = missionRepository.getById(id);
         } catch (Exception e) {
-            responseObserver.onError(Status
-                    .INTERNAL
-                    .withCause(e)
-                    .asRuntimeException());
+            responseObserver.onError(Status.INTERNAL.withCause(e).asRuntimeException());
             return;
         }
 
         if (mission == null) {
-            responseObserver.onError(Status
-                    .NOT_FOUND
-                    .withCause(new NoSuchElementException())
-                    .withDescription("mission-idに合致するMissionが存在しません。")
-                    .asRuntimeException());
+            responseObserver.onError(Status.NOT_FOUND.withCause(new NoSuchElementException())
+                    .withDescription("mission-idに合致するMissionが存在しません。").asRuntimeException());
             return;
         }
 
-        Mission r = Mission.newBuilder()
-                .setId(mission.getId().getId())
-                .setName(mission.getMissionName())
+        Mission r = Mission.newBuilder().setId(mission.getId().getId()).setName(mission.getMissionName())
                 .setTakeoffPointGroundHeight(mission.getNavigation().getTakeoffPointGroundHeight().getHeightM())
-                .addAllItems(
-                    mission.getNavigation().getWaypoints().stream()
-                            .map(waypoint -> {
-                                return MissionItem.newBuilder()
-                                        .setLatitude(waypoint.getLatitude())
-                                        .setLongitude(waypoint.getLatitude())
-                                        .setRelativeHeight(waypoint.getRelativeHeightM())
-                                        .setSpeed(waypoint.getSpeedMS())
-                                        .build();
-                            })
-                            .collect(Collectors.toList())
-                    
-                )
-                .build();
-        responseObserver.onNext(r); 
+                .addAllItems(mission.getNavigation().getWaypoints().stream().map(waypoint -> {
+                    return MissionItem.newBuilder().setLatitude(waypoint.getLatitude())
+                            .setLongitude(waypoint.getLatitude()).setRelativeHeight(waypoint.getRelativeHeightM())
+                            .setSpeed(waypoint.getSpeedMS()).build();
+                }).collect(Collectors.toList())
+
+                ).build();
+        responseObserver.onNext(r);
         responseObserver.onCompleted();
     }
 
     @Override
     @Transactional
     public void createMission(Mission request, StreamObserver<Mission> responseObserver) {
-        MissionId id = MissionId.newId();
-        net.tomofiles.skysign.mission.domain.mission.Mission mission = MissionFactory.newInstance(id);
+        net.tomofiles.skysign.mission.domain.mission.Mission mission = MissionFactory.newInstance(this.generator);
 
         Navigation navigation = new Navigation();
         navigation.setTakeoffPointGroundHeight(Height.fromM(request.getTakeoffPointGroundHeight()));

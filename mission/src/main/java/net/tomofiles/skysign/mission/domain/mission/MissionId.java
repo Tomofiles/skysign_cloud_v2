@@ -1,20 +1,15 @@
 package net.tomofiles.skysign.mission.domain.mission;
 
-import java.util.UUID;
-
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.ToString;
 
 @Getter
 @RequiredArgsConstructor(access = AccessLevel.PUBLIC)
 @EqualsAndHashCode(of = {"id"})
+@ToString
 public class MissionId {
     private final String id;
-
-    public static MissionId newId() {
-        return new MissionId(UUID.randomUUID().toString());
-    }
-    
 }

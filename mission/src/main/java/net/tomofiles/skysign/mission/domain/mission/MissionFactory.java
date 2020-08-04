@@ -7,19 +7,22 @@ import net.tomofiles.skysign.mission.domain.mission.component.WaypointComponentD
 
 public class MissionFactory {
     
-    public static Mission newInstance(MissionId id) {
-        Mission mission = new Mission(id);
-        Version version = Version.newVersion();
-        mission.setVersion(version);
-        mission.setNewVersion(version);
-        return mission;
+    public static Mission newInstance(Generator generator) {
+        return new Mission(generator);
     }
 
     public static Mission assembleFrom(MissionComponentDto dto) {
-        Mission mission = new Mission(new MissionId(dto.getId()));
-        mission.setMissionName(dto.getName());
+        Mission mission = new Mission(new Generator(){
+			@Override
+			public MissionId newMissionId() {
+				return new MissionId(dto.getId());
+			}
 
-        Version version = new Version(dto.getVersion());
+			@Override
+			public Version newVersion() {
+				return new Version(dto.getVersion());
+			}
+        });
 
         Navigation navigation = new Navigation();
         navigation.setTakeoffPointGroundHeight(Height.fromM(dto.getTakeoffPointGroundHeightWGS84M()));
@@ -33,9 +36,8 @@ public class MissionFactory {
                             Speed.fromMS(waypoint.getSpeedMS()));
                 });
 
+        mission.setMissionName(dto.getName());
         mission.setNavigation(navigation);
-        mission.setVersion(version);
-        mission.setNewVersion(version);
         return mission;
     }
 
