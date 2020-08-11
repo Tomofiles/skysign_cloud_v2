@@ -12,7 +12,16 @@ services:
       context: ../../skysign-db/communication-db
       dockerfile: Dockerfile
     ports:
-      - 5432:5432
+      - 54321:5432
+
+  skysign-mission-db-for-debugging:
+    container_name: skysign-mission-db
+    hostname: skysign-mission-db
+    build:
+      context: ../../skysign-db/mission-db
+      dockerfile: Dockerfile
+    ports:
+      - 54322:5432
 
   skysign-communication-backend-for-debugging:
     container_name: skysign-communication-backend
@@ -24,9 +33,33 @@ services:
      - db.host=skysign-communication-db
     command: java -cp app:app/lib/* net.tomofiles.skysign.communication.CommunicationApplication
     ports:
-      - 5001:5001
+      - 50011:5001
     depends_on:
       - skysign-communication-db-for-debugging
+
+  skysign-mission-backend-for-debugging:
+    container_name: skysign-mission-backend
+    hostname: skysign-mission-backend
+    build:
+      context: ../../mission
+      dockerfile: Dockerfile
+    environment:
+     - db.host=skysign-mission-db
+    command: java -cp app:app/lib/* net.tomofiles.skysign.mission.MissionApplication
+    ports:
+      - 50012:5001
+    depends_on:
+      - skysign-mission-db-for-debugging
+
+  skysign-helper-backend-for-debugging:
+    container_name: skysign-helper-backend
+    hostname: skysign-helper-backend
+    build:
+      context: ../../helper-api
+      dockerfile: Dockerfile
+    command: /app/helper-user-api
+    ports:
+      - 50013:5001
 
   skysign-communication-user-gateway-for-debugging:
     container_name: skysign-communication-user-gateway
@@ -34,11 +67,35 @@ services:
     build:
       context: ../../http_gateway
       dockerfile: Dockerfile
-    command: /app/comm-user-gateway -backend_host skysign-communication-backend -port 8888
+    command: /app/vehicle-user-gateway -backend_host skysign-communication-backend -backend_port 5001
     ports:
-      - 8888:8888
+      - 8888:5000
     depends_on:
       - skysign-communication-backend-for-debugging
+
+  skysign-mission-user-gateway-for-debugging:
+    container_name: skysign-mission-user-gateway
+    hostname: skysign-mission-user-gateway
+    build:
+      context: ../../http_gateway
+      dockerfile: Dockerfile
+    command: /app/mission-user-gateway -backend_host skysign-mission-backend -backend_port 5001
+    ports:
+      - 8887:5000
+    depends_on:
+      - skysign-mission-backend-for-debugging
+
+  skysign-helper-user-gateway-for-debugging:
+    container_name: skysign-helper-user-gateway
+    hostname: skysign-helper-user-gateway
+    build:
+      context: ../../http_gateway
+      dockerfile: Dockerfile
+    command: /app/helper-user-gateway -backend_host skysign-helper-backend -backend_port 5001
+    ports:
+      - 8886:5000
+    depends_on:
+      - skysign-helper-backend-for-debugging
 
   skysign-communication-edge-gateway-for-debugging:
     container_name: skysign-communication-edge-gateway
@@ -46,9 +103,9 @@ services:
     build:
       context: ../../http_gateway
       dockerfile: Dockerfile
-    command: /app/comm-edge-gateway -backend_host skysign-communication-backend -port 8889
+    command: /app/comm-edge-gateway -backend_host skysign-communication-backend -backend_port 5001
     ports:
-      - 8889:8889
+      - 8889:5000
     depends_on:
       - skysign-communication-backend-for-debugging
 
@@ -69,7 +126,9 @@ services:
       - 8080:80
     depends_on:
       - skysign-communication-user-gateway-for-debugging
+      - skysign-mission-user-gateway-for-debugging
       - skysign-communication-edge-gateway-for-debugging
+      - skysign-helper-user-gateway-for-debugging
       - skysign-frontend-for-debugging
 
 networks:
