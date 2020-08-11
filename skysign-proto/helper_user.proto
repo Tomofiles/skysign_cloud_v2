@@ -1,0 +1,24 @@
+syntax = "proto3";
+
+package skysign_proto;
+
+import "google/api/annotations.proto";
+
+option go_package = ".;skysign_proto";
+
+service HelperUserService {
+    rpc GetEllipsoidHeight (GetEllipsoidHeightRequest) returns (GetEllipsoidHeightResponse) {
+        option (google.api.http) = {
+            get: "/api/v1/helper/ellipsoidheight"
+        };
+    };
+}
+
+message GetEllipsoidHeightRequest {
+    double latitude = 1;
+    double longitude = 2;
+}
+
+message GetEllipsoidHeightResponse {
+    double height = 1;
+}
