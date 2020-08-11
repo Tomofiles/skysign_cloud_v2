@@ -55,7 +55,7 @@ public class ManageMissionEndpoint extends ManageMissionServiceImplBase {
                     .setTakeoffPointGroundHeight(mission.getNavigation().getTakeoffPointGroundHeight().getHeightM())
                     .addAllItems(mission.getNavigation().getWaypoints().stream().map(waypoint -> {
                         return MissionItem.newBuilder().setLatitude(waypoint.getLatitude())
-                                .setLongitude(waypoint.getLatitude()).setRelativeHeight(waypoint.getRelativeHeightM())
+                                .setLongitude(waypoint.getLongitude()).setRelativeHeight(waypoint.getRelativeHeightM())
                                 .setSpeed(waypoint.getSpeedMS()).build();
                     }).collect(Collectors.toList())
 
@@ -89,7 +89,7 @@ public class ManageMissionEndpoint extends ManageMissionServiceImplBase {
                 .setTakeoffPointGroundHeight(mission.getNavigation().getTakeoffPointGroundHeight().getHeightM())
                 .addAllItems(mission.getNavigation().getWaypoints().stream().map(waypoint -> {
                     return MissionItem.newBuilder().setLatitude(waypoint.getLatitude())
-                            .setLongitude(waypoint.getLatitude()).setRelativeHeight(waypoint.getRelativeHeightM())
+                            .setLongitude(waypoint.getLongitude()).setRelativeHeight(waypoint.getRelativeHeightM())
                             .setSpeed(waypoint.getSpeedMS()).build();
                 }).collect(Collectors.toList())
 
