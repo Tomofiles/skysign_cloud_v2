@@ -5,15 +5,22 @@ import {
   Viewer,
   Camera,
   CameraFlyTo,
-  Clock
+  Clock,
+  ScreenSpaceEventHandler,
+  ImageryLayer,
 } from "resium";
 import { Cartesian3, createWorldTerrain, IonImageryProvider } from "cesium"
 
 import Drones from './Drones'
+import EditMission from './EditMission';
 import {} from './Key'
+import MapDoubleClickEvent from './MapDoubleClickEvent';
+import SceneMode from './SceneMode'
+
+const imageryProvider = new IonImageryProvider({ assetId: 2 });
 
 const Map = (props) => {
-  const [position, setPosition] = useState({ cartesian3: Cartesian3.fromDegrees(-73.7578307, 45.467115299999996, 1000) });
+  const [ position, setPosition ] = useState({ cartesian3: Cartesian3.fromDegrees(-73.7578307, 45.467115299999996, 1000) });
 
   useEffect(() => {
     getCurrentPosition();
@@ -31,7 +38,7 @@ const Map = (props) => {
     <div >
       <Viewer
         full={false}
-        scene3DOnly={true}
+        sceneModePicker={false}
         selectionIndicator={false}
         baseLayerPicker={false}
         navigationHelpButton={false}
@@ -41,14 +48,20 @@ const Map = (props) => {
         timeline={false}
         fullscreenButton={false}
         className={props.classes.mapArea}
-        imageryProvider={new IonImageryProvider({ assetId: 2 })}
         terrainProvider={createWorldTerrain()}
         >
+          <ImageryLayer
+            imageryProvider={imageryProvider} />
+          <SceneMode />
           <Clock shouldAnimate />
           <Camera>
             <CameraFlyTo duration={0} destination={position.cartesian3} />
           </Camera>
           <Drones />
+          <EditMission />
+          <ScreenSpaceEventHandler >
+            <MapDoubleClickEvent />
+          </ScreenSpaceEventHandler>
       </Viewer>
     </div>
   );

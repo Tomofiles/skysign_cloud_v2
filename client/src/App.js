@@ -4,6 +4,8 @@ import { makeStyles, createMuiTheme, MuiThemeProvider } from "@material-ui/core/
 
 import Map from './map/Map'
 import Func from './Func'
+import { SceneMode } from 'cesium';
+import { Mission } from './plans/missions/MissionHelper';
 
 const menuWidth = 70;
 const menuWidthItem = 38;
@@ -31,6 +33,10 @@ const useStyles = makeStyles(theme => ({
   menuLogo: {
     height: 0,
     paddingTop: '100%',
+  },
+  mapModePopper: {
+    background: '#080808',
+    color: '#fafafa',
   },
   mapArea: {
     position: "absolute",
@@ -119,7 +125,17 @@ const theme = createMuiTheme({
   }
 });
 
-setGlobal({ stagingRows: [] });
+export const EDIT_MODE = {
+  NONE: 0,
+  MISSION: 1,
+}
+
+setGlobal({
+  stagingRows: [],
+  editMission: new Mission(),
+  editMode: EDIT_MODE.NONE,
+  mapMode: SceneMode.SCENE3D,
+});
 
 const App = () => {
   const classes = useStyles();
