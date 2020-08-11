@@ -10,7 +10,6 @@ import static com.google.common.truth.Truth.assertThat;
 import net.tomofiles.skysign.mission.domain.mission.Generator;
 import net.tomofiles.skysign.mission.domain.mission.Mission;
 import net.tomofiles.skysign.mission.domain.mission.MissionId;
-import net.tomofiles.skysign.mission.domain.mission.MissionRepository;
 import net.tomofiles.skysign.mission.domain.mission.Version;
 import net.tomofiles.skysign.mission.infra.common.DeleteCondition;
 
@@ -57,7 +56,7 @@ public class MissionRepositoryTests {
     private WaypointMapper waypointMapper;
 
     @InjectMocks
-    private MissionRepository repository = new MissionRepositoryImpl();
+    private MissionRepositoryImpl repository;
 
     @BeforeEach
     public void beforeEach() {
