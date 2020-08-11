@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 
 import {
   Typography,
@@ -16,6 +16,16 @@ import Send from '@material-ui/icons/Send';
 import Flight from '@material-ui/icons/Flight';
 
 const StagingList = (props) => {
+  const [ removeButtonDisabled, setRemoveButtonDisabled ] = useState(false);
+
+  useEffect(() => {
+    if (props.rows.filter(row => row.selected).length !== 0) {
+      setRemoveButtonDisabled(false);
+    } else {
+      setRemoveButtonDisabled(true);
+    }
+  }, [ props.rows, setRemoveButtonDisabled ])
+
   const onClickNew = () => {
     props.openNew();
   }
@@ -59,8 +69,17 @@ const StagingList = (props) => {
         </List>
       </ExpansionPanelDetails>
       <ExpansionPanelActions >
-        <Button className={props.classes.myVehicleButton} onClick={onClickNew}>Add</Button>
-        <Button className={props.classes.myVehicleButton} onClick={onClickRemove}>Remove</Button>
+        <Button
+            className={props.classes.myVehicleButton}
+            onClick={onClickNew}>
+          Add
+        </Button>
+        <Button
+            className={props.classes.myVehicleButton}
+            disabled={removeButtonDisabled}
+            onClick={onClickRemove}>
+          Remove
+        </Button>
       </ExpansionPanelActions>
     </div>
   );
