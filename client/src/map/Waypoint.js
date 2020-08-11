@@ -3,7 +3,7 @@ import React from 'react';
 import { Entity } from 'resium';
 import { PolylineDashMaterialProperty, Color, Cartesian2 } from 'cesium';
 
-const EditWaypoint = (props) => {
+const Waypoint = (props) => {
   return (
     <>
       <Entity
@@ -39,4 +39,4 @@ const EditWaypoint = (props) => {
   );
 }
   
-export default EditWaypoint;
+export default Waypoint;

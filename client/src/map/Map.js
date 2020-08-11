@@ -16,6 +16,7 @@ import EditMission from './EditMission';
 import {} from './Key'
 import MapDoubleClickEvent from './MapDoubleClickEvent';
 import SceneMode from './SceneMode'
+import Missions from './Missions';
 
 const imageryProvider = new IonImageryProvider({ assetId: 2 });
 
@@ -58,6 +59,7 @@ const Map = (props) => {
             <CameraFlyTo duration={0} destination={position.cartesian3} />
           </Camera>
           <Drones />
+          <Missions />
           <EditMission />
           <ScreenSpaceEventHandler >
             <MapDoubleClickEvent />

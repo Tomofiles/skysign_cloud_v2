@@ -3,7 +3,7 @@ import React from 'react';
 import { Entity } from 'resium';
 import { PolylineArrowMaterialProperty, Color } from 'cesium';
 
-const EditPath = (props) => {
+const Path = (props) => {
   return (
     <Entity
       polyline={{
@@ -19,4 +19,4 @@ const EditPath = (props) => {
   );
 }
   
-export default EditPath;
+export default Path;

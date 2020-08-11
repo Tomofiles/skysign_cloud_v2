@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 
 import { Entity, ModelGraphics } from 'resium';
 import axios from 'axios';
@@ -31,7 +31,6 @@ const Drone = (props) => {
 
   return (
     <Entity
-      id={data.id}
       name={unescape(data.name)}
       position={data.position}
       orientation={data.orientation}

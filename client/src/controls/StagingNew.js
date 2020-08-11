@@ -19,6 +19,7 @@ import { grey } from '@material-ui/core/colors';
 import { v4 as uuidv4 } from 'uuid';
 
 import { getVehicles } from '../assets/vehicles/VehicleUtils'
+import { getMissions } from '../plans/missions/MissionUtils'
 
 const noSelected = {
   "id": "no-selected",
@@ -32,11 +33,14 @@ const StagingNew = (props) => {
       vehicle: "no-selected"
     }
   });
-  const [ missions, setMissions ] = useState([]);
-  const [ vehicles, setVehicles ] = useState([]);
+  const [ missions, setMissions ] = useState([noSelected]);
+  const [ vehicles, setVehicles ] = useState([noSelected]);
 
   useEffect(() => {
-    setMissions([noSelected]);
+    getMissions()
+      .then(data => {
+        setMissions([noSelected, ...data.missions]);
+      });
     getVehicles()
       .then(data => {
         setVehicles([noSelected, ...data.vehicles]);

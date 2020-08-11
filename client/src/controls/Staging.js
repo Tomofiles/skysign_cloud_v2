@@ -11,12 +11,18 @@ import StagingList from './StagingList';
 import StagingNew from './StagingNew';
 
 import { getVehicle } from '../assets/vehicles/VehicleUtils'
+import { getMission } from '../plans/missions/MissionUtils'
 
 const STAGING_MODE = Object.freeze({"NEW":1, "LIST":2});
 
 const getVehicleName = async (id) => {
   const vehicle = await getVehicle(id);
   return vehicle.name;
+}
+
+const getMissionName = async (id) => {
+  const mission = await getMission(id);
+  return mission.name;
 }
 
 const Staging = (props) => {
@@ -37,7 +43,12 @@ const Staging = (props) => {
 
   const addRow = async (data) => {
     setMode(STAGING_MODE.LIST);
-    data.vehicleName = await getVehicleName(data.vehicle);
+    if (data.mission !== "no-selected") {
+      data.missionName = await getMissionName(data.mission);
+    }
+    if (data.vehicle !== "no-selected") {
+      data.vehicleName = await getVehicleName(data.vehicle);
+    }
     setRows([...rows, data]);
   }
 

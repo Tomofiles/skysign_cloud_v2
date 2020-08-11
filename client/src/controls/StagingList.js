@@ -44,7 +44,7 @@ const StagingList = (props) => {
                     <Send style={{ color: grey[50] }} fontSize="small" />
                   </Grid>
                   <Grid item xs={10}>
-                    <Typography >{row.mission}</Typography>
+                    <Typography >{row.missionName}</Typography>
                   </Grid>
                   <Grid item xs={2}>
                     <Flight style={{ color: grey[50] }} fontSize="small" />

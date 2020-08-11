@@ -134,7 +134,7 @@ setGlobal({
   stagingRows: [],
   editMission: new Mission(),
   editMode: EDIT_MODE.NONE,
-  mapMode: SceneMode.SCENE3D,
+  mapMode: SceneMode.SCENE2D,
 });
 
 const App = () => {
