@@ -33,8 +33,8 @@ import proto.skysign.GetMissionRequest;
 import proto.skysign.ListMissionsRequest;
 import proto.skysign.ListMissionsResponses;
 
-import static net.tomofiles.skysign.mission.api.GrpcObjectMother.newSingleItemMission;
-import static net.tomofiles.skysign.mission.api.GrpcObjectMother.newSingleItemMissionNoID;
+import static net.tomofiles.skysign.mission.api.GrpcObjectMother.newSingleItemMissionGrpc;
+import static net.tomofiles.skysign.mission.api.GrpcObjectMother.newSingleItemMissionNoIDGrpc;
 import static net.tomofiles.skysign.mission.domain.mission.MissionObjectMother.newSingleNavigationMission;
 
 public class ManageMissionEndpointTests {
@@ -94,9 +94,9 @@ public class ManageMissionEndpointTests {
         assertThat(results).hasSize(1);
         ListMissionsResponses response = results.get(0);
         assertThat(response).isEqualTo(ListMissionsResponses.newBuilder()
-                .addMissions(newSingleItemMission(DEFAULT_MISSION_ID))
-                .addMissions(newSingleItemMission(DEFAULT_MISSION_ID))
-                .addMissions(newSingleItemMission(DEFAULT_MISSION_ID))
+                .addMissions(newSingleItemMissionGrpc(DEFAULT_MISSION_ID))
+                .addMissions(newSingleItemMissionGrpc(DEFAULT_MISSION_ID))
+                .addMissions(newSingleItemMissionGrpc(DEFAULT_MISSION_ID))
                 .build());
     }
 
@@ -139,7 +139,7 @@ public class ManageMissionEndpointTests {
         List<proto.skysign.Mission> results = responseObserver.getValues();
         assertThat(results).hasSize(1);
         proto.skysign.Mission response = results.get(0);
-        assertThat(response).isEqualTo(newSingleItemMission(DEFAULT_MISSION_ID));
+        assertThat(response).isEqualTo(newSingleItemMissionGrpc(DEFAULT_MISSION_ID));
     }
 
     /**
@@ -186,7 +186,7 @@ public class ManageMissionEndpointTests {
         when(generator.newMissionId()).thenReturn(DEFAULT_MISSION_ID);
         when(generator.newVersion()).thenReturn(DEFAULT_VERSION);
 
-        proto.skysign.Mission request = newSingleItemMissionNoID();
+        proto.skysign.Mission request = newSingleItemMissionNoIDGrpc();
         StreamRecorder<proto.skysign.Mission> responseObserver = StreamRecorder.create();
         endpoint.createMission(request, responseObserver);
 
@@ -200,7 +200,7 @@ public class ManageMissionEndpointTests {
         List<proto.skysign.Mission> results = responseObserver.getValues();
         assertThat(results).hasSize(1);
         proto.skysign.Mission response = results.get(0);
-        assertThat(response).isEqualTo(newSingleItemMission(DEFAULT_MISSION_ID));
+        assertThat(response).isEqualTo(newSingleItemMissionGrpc(DEFAULT_MISSION_ID));
     }
 
     /**
@@ -210,7 +210,7 @@ public class ManageMissionEndpointTests {
     public void createApiInternalError() {
         doThrow(new IllegalStateException()).when(repository).save(any());
 
-        proto.skysign.Mission request = newSingleItemMissionNoID();
+        proto.skysign.Mission request = newSingleItemMissionNoIDGrpc();
         StreamRecorder<proto.skysign.Mission> responseObserver = StreamRecorder.create();
         endpoint.createMission(request, responseObserver);
 
@@ -231,7 +231,7 @@ public class ManageMissionEndpointTests {
                         DEFAULT_VERSION,
                         DEFAULT_GENERATOR.get()));
 
-        proto.skysign.Mission request = newSingleItemMission(DEFAULT_MISSION_ID);
+        proto.skysign.Mission request = newSingleItemMissionGrpc(DEFAULT_MISSION_ID);
         StreamRecorder<proto.skysign.Mission> responseObserver = StreamRecorder.create();
         endpoint.updateMission(request, responseObserver);
 
@@ -244,7 +244,7 @@ public class ManageMissionEndpointTests {
         List<proto.skysign.Mission> results = responseObserver.getValues();
         assertThat(results).hasSize(1);
         proto.skysign.Mission response = results.get(0);
-        assertThat(response).isEqualTo(newSingleItemMission(DEFAULT_MISSION_ID));
+        assertThat(response).isEqualTo(newSingleItemMissionGrpc(DEFAULT_MISSION_ID));
     }
 
     /**
@@ -252,7 +252,7 @@ public class ManageMissionEndpointTests {
      */
     @Test
     public void updateApiNotFoundError() {
-        proto.skysign.Mission request = newSingleItemMission(DEFAULT_MISSION_ID);
+        proto.skysign.Mission request = newSingleItemMissionGrpc(DEFAULT_MISSION_ID);
         StreamRecorder<proto.skysign.Mission> responseObserver = StreamRecorder.create();
         endpoint.updateMission(request, responseObserver);
 
@@ -274,7 +274,7 @@ public class ManageMissionEndpointTests {
                         DEFAULT_GENERATOR.get()));
         doThrow(new IllegalStateException()).when(repository).save(any());
 
-        proto.skysign.Mission request = newSingleItemMission(DEFAULT_MISSION_ID);
+        proto.skysign.Mission request = newSingleItemMissionGrpc(DEFAULT_MISSION_ID);
         StreamRecorder<proto.skysign.Mission> responseObserver = StreamRecorder.create();
         endpoint.updateMission(request, responseObserver);
 

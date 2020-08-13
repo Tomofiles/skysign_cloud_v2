@@ -9,12 +9,12 @@ public class GrpcObjectMother {
     /**
      * 1件のItemを持つテスト用Missionオブジェクトを生成する。
      */
-    public static Mission newSingleItemMission(MissionId missionId) {
+    public static Mission newSingleItemMissionGrpc(MissionId missionId) {
         Mission mission = Mission.newBuilder()
                 .setId(missionId.getId())
                 .setName("mission name")
                 .setTakeoffPointGroundHeight(0.0)
-                .addItems(newSingleItem())
+                .addItems(newSingleItemGrpc())
                 .build();
         return mission;
     }
@@ -22,11 +22,11 @@ public class GrpcObjectMother {
     /**
      * 1件のItemを持つID未設定のテスト用Missionオブジェクトを生成する。
      */
-    public static Mission newSingleItemMissionNoID() {
+    public static Mission newSingleItemMissionNoIDGrpc() {
         Mission mission = Mission.newBuilder()
                 .setName("mission name")
                 .setTakeoffPointGroundHeight(0.0)
-                .addItems(newSingleItem())
+                .addItems(newSingleItemGrpc())
                 .build();
         return mission;
     }
@@ -34,7 +34,7 @@ public class GrpcObjectMother {
     /**
      * 1件のItemオブジェクトを生成する。
      */
-    public static MissionItem newSingleItem() {
+    public static MissionItem newSingleItemGrpc() {
         MissionItem item = MissionItem.newBuilder()
                 .setLatitude(1.0)
                 .setLongitude(2.0)
