@@ -26,6 +26,7 @@ import net.tomofiles.skysign.mission.domain.mission.Mission;
 import net.tomofiles.skysign.mission.domain.mission.MissionId;
 import net.tomofiles.skysign.mission.domain.mission.MissionRepository;
 import net.tomofiles.skysign.mission.domain.mission.Version;
+import net.tomofiles.skysign.mission.service.ManageMissionService;
 import proto.skysign.DeleteMissionRequest;
 import proto.skysign.Empty;
 import proto.skysign.GetMissionRequest;
@@ -61,11 +62,15 @@ public class ManageMissionEndpointTests {
     private Generator generator;
 
     @InjectMocks
+    private ManageMissionService service;
+
     private ManageMissionEndpoint endpoint;
 
     @BeforeEach
     public void beforeEach() {
         initMocks(this);
+
+        endpoint = new ManageMissionEndpoint(service);
     }
 
     /**
