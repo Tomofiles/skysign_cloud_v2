@@ -3,7 +3,7 @@ package net.tomofiles.skysign.mission.infra.mission;
 import java.util.Arrays;
 import java.util.List;
 
-import net.tomofiles.skysign.mission.domain.mission.Generator;
+import net.tomofiles.skysign.mission.domain.mission.MissionId;
 import net.tomofiles.skysign.mission.domain.mission.Version;
 
 public class RecordObjectMother {
@@ -11,11 +11,9 @@ public class RecordObjectMother {
     /**
      * 通常のMissionレコードを生成する。
      */
-    public static MissionRecord newNormalMissionRecord(Generator generator) {
-        Version version = generator.newVersion();
-
+    public static MissionRecord newNormalMissionRecord(MissionId missionId, Version version) {
         return new MissionRecord(
-                generator.newMissionId().getId(),
+                missionId.getId(),
                 "mission name",
                 0.0,
                 version.getVersion(),
@@ -25,9 +23,9 @@ public class RecordObjectMother {
     /**
      * 1件のWaypointレコードを生成する。
      */
-    public static WaypointRecord newSingleWaypointRecord(Generator generator) {
+    public static WaypointRecord newSingleWaypointRecord(MissionId missionId) {
         return new WaypointRecord(
-                generator.newMissionId().getId(),
+                missionId.getId(),
                 1,
                 1.0,
                 2.0,
@@ -38,23 +36,23 @@ public class RecordObjectMother {
     /**
      * 複数件の昇順のWaypointレコードを生成する。
      */
-    public static List<WaypointRecord> newSeveralWaypointRecords(Generator generator) {
+    public static List<WaypointRecord> newSeveralWaypointRecords(MissionId missionId) {
         WaypointRecord waypointRecord1 = new WaypointRecord(
-                generator.newMissionId().getId(),
+                missionId.getId(),
                 1,
                 1.0,
                 2.0,
                 3.0,
                 4.0);
         WaypointRecord waypointRecord2 = new WaypointRecord(
-                generator.newMissionId().getId(),
+                missionId.getId(),
                 2,
                 11.0,
                 12.0,
                 13.0,
                 14.0);
         WaypointRecord waypointRecord3 = new WaypointRecord(
-                generator.newMissionId().getId(),
+                missionId.getId(),
                 3,
                 21.0,
                 22.0,
@@ -70,23 +68,23 @@ public class RecordObjectMother {
     /**
      * 複数件の順不同のWaypointレコードを生成する。
      */
-    public static List<WaypointRecord> newSeveralInRondomOrderWaypointRecords(Generator generator) {
+    public static List<WaypointRecord> newSeveralInRondomOrderWaypointRecords(MissionId missionId) {
         WaypointRecord waypointRecord1 = new WaypointRecord(
-                generator.newMissionId().getId(),
+                missionId.getId(),
                 1,
                 1.0,
                 2.0,
                 3.0,
                 4.0);
         WaypointRecord waypointRecord2 = new WaypointRecord(
-                generator.newMissionId().getId(),
+                missionId.getId(),
                 2,
                 11.0,
                 12.0,
                 13.0,
                 14.0);
         WaypointRecord waypointRecord3 = new WaypointRecord(
-                generator.newMissionId().getId(),
+                missionId.getId(),
                 3,
                 21.0,
                 22.0,

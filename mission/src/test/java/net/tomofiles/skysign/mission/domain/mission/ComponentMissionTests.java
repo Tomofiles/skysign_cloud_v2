@@ -45,9 +45,17 @@ public class ComponentMissionTests {
      */
     @Test
     public void assembleIntoMissionTest() {
-        Mission mission = MissionFactory.assembleFrom(newSeveralNavigationMissionComponentDto(DEFAULT_GENERATOR.get()));
+        Mission mission = MissionFactory.assembleFrom(
+                newSeveralNavigationMissionComponentDto(
+                        DEFAULT_MISSION_ID,
+                        DEFAULT_VERSION1
+                ),
+                DEFAULT_GENERATOR.get());
 
-        Mission expectedMission = newSeveralNavigationMission(DEFAULT_GENERATOR.get());
+        Mission expectedMission = newSeveralNavigationMission(
+                DEFAULT_MISSION_ID,
+                DEFAULT_VERSION1,
+                DEFAULT_GENERATOR.get());
 
         assertAll(
             () -> assertThat(mission.getId()).isEqualTo(expectedMission.getId()),
@@ -63,8 +71,12 @@ public class ComponentMissionTests {
      */
     @Test
     public void takeApartMissionTest() {
-        MissionComponentDto dto = MissionFactory.takeApart(newSeveralNavigationMission(DEFAULT_GENERATOR.get()));
+        MissionComponentDto dto = MissionFactory.takeApart(
+                newSeveralNavigationMission(
+                        DEFAULT_MISSION_ID,
+                        DEFAULT_VERSION1,
+                        DEFAULT_GENERATOR.get()));
 
-        assertThat(dto).isEqualTo(newSeveralNavigationMissionComponentDto(DEFAULT_GENERATOR.get()));
+        assertThat(dto).isEqualTo(newSeveralNavigationMissionComponentDto(DEFAULT_MISSION_ID, DEFAULT_VERSION1));
     }
 }

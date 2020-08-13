@@ -70,14 +70,17 @@ public class MissionRepositoryTests {
     @Test
     public void getMissionByIdTest() {
         when(missionMapper.find(DEFAULT_MISSION_ID.getId()))
-                .thenReturn(newNormalMissionRecord(DEFAULT_GENERATOR.get()));
+                .thenReturn(newNormalMissionRecord(DEFAULT_MISSION_ID, DEFAULT_VERSION));
 
         when(waypointMapper.find(DEFAULT_MISSION_ID.getId()))
-                .thenReturn(newSeveralInRondomOrderWaypointRecords(DEFAULT_GENERATOR.get()));
+                .thenReturn(newSeveralInRondomOrderWaypointRecords(DEFAULT_MISSION_ID));
 
         Mission mission = repository.getById(DEFAULT_MISSION_ID);
 
-        Mission expectedMission = newSeveralNavigationMission(DEFAULT_GENERATOR.get());
+        Mission expectedMission = newSeveralNavigationMission(
+                DEFAULT_MISSION_ID,
+                DEFAULT_VERSION,
+                DEFAULT_GENERATOR.get());
 
         assertAll(
             () -> assertThat(mission.getId()).isEqualTo(expectedMission.getId()),
@@ -106,22 +109,24 @@ public class MissionRepositoryTests {
     public void getAllMissionsTest() {
         when(missionMapper.findAll())
                 .thenReturn(Arrays.asList(new MissionRecord[] {
-                        newNormalMissionRecord(DEFAULT_GENERATOR.get()),
-                        newNormalMissionRecord(DEFAULT_GENERATOR.get()),
-                        newNormalMissionRecord(DEFAULT_GENERATOR.get())
+                        newNormalMissionRecord(DEFAULT_MISSION_ID, DEFAULT_VERSION),
+                        newNormalMissionRecord(DEFAULT_MISSION_ID, DEFAULT_VERSION),
+                        newNormalMissionRecord(DEFAULT_MISSION_ID, DEFAULT_VERSION)
                 }));
         when(waypointMapper.find(DEFAULT_MISSION_ID.getId()))
                 .thenReturn(
-                        newSeveralWaypointRecords(DEFAULT_GENERATOR.get())
+                        newSeveralWaypointRecords(DEFAULT_MISSION_ID)
                 );
 
         List<Mission> missions = repository.getAll();
 
-        Mission expectedMission = newSeveralNavigationMission(DEFAULT_GENERATOR.get());
-
-        assertThat(missions).hasSize(3);
+        Mission expectedMission = newSeveralNavigationMission(
+                DEFAULT_MISSION_ID,
+                DEFAULT_VERSION,
+                DEFAULT_GENERATOR.get());
 
         assertAll(
+            () -> assertThat(missions).hasSize(3),
             () -> assertThat(missions.get(0).getId()).isEqualTo(expectedMission.getId()),
             () -> assertThat(missions.get(0).getMissionName()).isEqualTo(expectedMission.getMissionName()),
             () -> assertThat(missions.get(0).getNavigation()).isEqualTo(expectedMission.getNavigation()),
@@ -147,10 +152,13 @@ public class MissionRepositoryTests {
      */
     @Test
     public void saveNewMissionTest() {
-        repository.save(newSingleNavigationMission(DEFAULT_GENERATOR.get()));
+        repository.save(newSingleNavigationMission(
+                DEFAULT_MISSION_ID,
+                DEFAULT_VERSION,
+                DEFAULT_GENERATOR.get()));
 
-        verify(missionMapper, times(1)).create(newNormalMissionRecord(DEFAULT_GENERATOR.get()));
-        verify(waypointMapper, times(1)).create(newSingleWaypointRecord(DEFAULT_GENERATOR.get()));
+        verify(missionMapper, times(1)).create(newNormalMissionRecord(DEFAULT_MISSION_ID, DEFAULT_VERSION));
+        verify(waypointMapper, times(1)).create(newSingleWaypointRecord(DEFAULT_MISSION_ID));
     }
 
     /**
@@ -160,17 +168,19 @@ public class MissionRepositoryTests {
     @Test
     public void savePreExistMissionTest() {
         when(missionMapper.find(DEFAULT_MISSION_ID.getId()))
-                .thenReturn(newNormalMissionRecord(DEFAULT_GENERATOR.get()));
+                .thenReturn(newNormalMissionRecord(DEFAULT_MISSION_ID, DEFAULT_VERSION));
         when(waypointMapper.find(DEFAULT_MISSION_ID.getId()))
-                .thenReturn(Arrays.asList(new WaypointRecord[] {newSingleWaypointRecord(DEFAULT_GENERATOR.get())}));
+                .thenReturn(Arrays.asList(new WaypointRecord[] {
+                        newSingleWaypointRecord(DEFAULT_MISSION_ID)
+                }));
 
         Mission mission = repository.getById(DEFAULT_MISSION_ID);
 
         repository.save(mission);
         
-        verify(missionMapper, times(1)).update(newNormalMissionRecord(DEFAULT_GENERATOR.get()));
+        verify(missionMapper, times(1)).update(newNormalMissionRecord(DEFAULT_MISSION_ID, DEFAULT_VERSION));
         verify(waypointMapper, times(1)).delete(DEFAULT_MISSION_ID.getId());
-        verify(waypointMapper, times(1)).create(newSingleWaypointRecord(DEFAULT_GENERATOR.get()));
+        verify(waypointMapper, times(1)).create(newSingleWaypointRecord(DEFAULT_MISSION_ID));
     }
 
     /**

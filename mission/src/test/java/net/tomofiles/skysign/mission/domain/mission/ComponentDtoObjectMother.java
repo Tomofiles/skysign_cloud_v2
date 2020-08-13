@@ -10,11 +10,9 @@ public class ComponentDtoObjectMother {
     /**
      * 昇順のWaypointを複数件持つNavigationを含むMissionエンティティのDTOコンポーネントを生成する。
      */
-    public static MissionComponentDto newSeveralNavigationMissionComponentDto(Generator generator) {
-        Version version = generator.newVersion();
-
+    public static MissionComponentDto newSeveralNavigationMissionComponentDto(MissionId missionId, Version version) {
         return new MissionComponentDto(
-                generator.newMissionId().getId(),
+                missionId.getId(),
                 "mission name",
                 0.0,
                 version.getVersion(),

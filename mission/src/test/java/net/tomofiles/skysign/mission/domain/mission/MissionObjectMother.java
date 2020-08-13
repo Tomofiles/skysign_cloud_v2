@@ -5,8 +5,8 @@ public class MissionObjectMother {
     /**
      * 1件のNavigationを持つテスト用Missionエンティティを生成する。
      */
-    public static Mission newSingleNavigationMission(Generator generator) {
-        Mission mission = new Mission(generator);
+    public static Mission newSingleNavigationMission(MissionId missionId, Version version, Generator generator) {
+        Mission mission = new Mission(missionId, version, generator);
         mission.setMissionName("mission name");
         mission.setNavigation(newSingleNavigation());
         return mission;
@@ -15,8 +15,8 @@ public class MissionObjectMother {
     /**
      * 複数件のNavigationを持つテスト用Missionエンティティを生成する。
      */
-    public static Mission newSeveralNavigationMission(Generator generator) {
-        Mission mission = new Mission(generator);
+    public static Mission newSeveralNavigationMission(MissionId missionId, Version version, Generator generator) {
+        Mission mission = new Mission(missionId, version, generator);
         mission.setMissionName("mission name");
         mission.setNavigation(newSeveralNavigation());
         return mission;

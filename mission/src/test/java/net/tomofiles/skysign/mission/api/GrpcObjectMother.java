@@ -1,6 +1,6 @@
 package net.tomofiles.skysign.mission.api;
 
-import net.tomofiles.skysign.mission.domain.mission.Generator;
+import net.tomofiles.skysign.mission.domain.mission.MissionId;
 import proto.skysign.Mission;
 import proto.skysign.MissionItem;
 
@@ -9,9 +9,9 @@ public class GrpcObjectMother {
     /**
      * 1件のItemを持つテスト用Missionオブジェクトを生成する。
      */
-    public static Mission newSingleItemMission(Generator generator) {
+    public static Mission newSingleItemMission(MissionId missionId) {
         Mission mission = Mission.newBuilder()
-                .setId(generator.newMissionId().getId())
+                .setId(missionId.getId())
                 .setName("mission name")
                 .setTakeoffPointGroundHeight(0.0)
                 .addItems(newSingleItem())

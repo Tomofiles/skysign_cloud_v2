@@ -74,9 +74,9 @@ public class ManageMissionEndpointTests {
     @Test
     public void getAllApi() {
         when(repository.getAll()).thenReturn(Arrays.asList(new Mission[] {
-            newSingleNavigationMission(DEFAULT_GENERATOR.get()),
-            newSingleNavigationMission(DEFAULT_GENERATOR.get()),
-            newSingleNavigationMission(DEFAULT_GENERATOR.get())
+            newSingleNavigationMission(DEFAULT_MISSION_ID, DEFAULT_VERSION, DEFAULT_GENERATOR.get()),
+            newSingleNavigationMission(DEFAULT_MISSION_ID, DEFAULT_VERSION, DEFAULT_GENERATOR.get()),
+            newSingleNavigationMission(DEFAULT_MISSION_ID, DEFAULT_VERSION, DEFAULT_GENERATOR.get())
         }));
 
         ListMissionsRequest request = ListMissionsRequest.newBuilder()
@@ -89,9 +89,9 @@ public class ManageMissionEndpointTests {
         assertThat(results).hasSize(1);
         ListMissionsResponses response = results.get(0);
         assertThat(response).isEqualTo(ListMissionsResponses.newBuilder()
-                .addMissions(newSingleItemMission(DEFAULT_GENERATOR.get()))
-                .addMissions(newSingleItemMission(DEFAULT_GENERATOR.get()))
-                .addMissions(newSingleItemMission(DEFAULT_GENERATOR.get()))
+                .addMissions(newSingleItemMission(DEFAULT_MISSION_ID))
+                .addMissions(newSingleItemMission(DEFAULT_MISSION_ID))
+                .addMissions(newSingleItemMission(DEFAULT_MISSION_ID))
                 .build());
     }
 
@@ -119,7 +119,10 @@ public class ManageMissionEndpointTests {
     @Test
     public void getOneApi() {
         when(repository.getById(DEFAULT_MISSION_ID))
-                .thenReturn(newSingleNavigationMission(DEFAULT_GENERATOR.get()));
+                .thenReturn(newSingleNavigationMission(
+                        DEFAULT_MISSION_ID,
+                        DEFAULT_VERSION,
+                        DEFAULT_GENERATOR.get()));
 
         GetMissionRequest request = GetMissionRequest.newBuilder()
                 .setId(DEFAULT_MISSION_ID.getId())
@@ -131,7 +134,7 @@ public class ManageMissionEndpointTests {
         List<proto.skysign.Mission> results = responseObserver.getValues();
         assertThat(results).hasSize(1);
         proto.skysign.Mission response = results.get(0);
-        assertThat(response).isEqualTo(newSingleItemMission(DEFAULT_GENERATOR.get()));
+        assertThat(response).isEqualTo(newSingleItemMission(DEFAULT_MISSION_ID));
     }
 
     /**
@@ -182,13 +185,17 @@ public class ManageMissionEndpointTests {
         StreamRecorder<proto.skysign.Mission> responseObserver = StreamRecorder.create();
         endpoint.createMission(request, responseObserver);
 
-        verify(repository, times(1)).save(newSingleNavigationMission(generator));
+        verify(repository, times(1)).save(newSingleNavigationMission(
+                DEFAULT_MISSION_ID,
+                DEFAULT_VERSION,
+                DEFAULT_GENERATOR.get()
+        ));
 
         assertThat(responseObserver.getError()).isNull();
         List<proto.skysign.Mission> results = responseObserver.getValues();
         assertThat(results).hasSize(1);
         proto.skysign.Mission response = results.get(0);
-        assertThat(response).isEqualTo(newSingleItemMission(generator));
+        assertThat(response).isEqualTo(newSingleItemMission(DEFAULT_MISSION_ID));
     }
 
     /**
@@ -213,22 +220,26 @@ public class ManageMissionEndpointTests {
      */
     @Test
     public void updateApi() {
-        when(generator.newMissionId()).thenReturn(DEFAULT_MISSION_ID);
-        when(generator.newVersion()).thenReturn(DEFAULT_VERSION);
         when(repository.getById(DEFAULT_MISSION_ID))
-                .thenReturn(newSingleNavigationMission(DEFAULT_GENERATOR.get()));
+                .thenReturn(newSingleNavigationMission(
+                        DEFAULT_MISSION_ID,
+                        DEFAULT_VERSION,
+                        DEFAULT_GENERATOR.get()));
 
-        proto.skysign.Mission request = newSingleItemMission(generator);
+        proto.skysign.Mission request = newSingleItemMission(DEFAULT_MISSION_ID);
         StreamRecorder<proto.skysign.Mission> responseObserver = StreamRecorder.create();
         endpoint.updateMission(request, responseObserver);
 
-        verify(repository, times(1)).save(newSingleNavigationMission(generator));
+        verify(repository, times(1)).save(newSingleNavigationMission(
+                DEFAULT_MISSION_ID,
+                DEFAULT_VERSION,
+                DEFAULT_GENERATOR.get()));
 
         assertThat(responseObserver.getError()).isNull();
         List<proto.skysign.Mission> results = responseObserver.getValues();
         assertThat(results).hasSize(1);
         proto.skysign.Mission response = results.get(0);
-        assertThat(response).isEqualTo(newSingleItemMission(generator));
+        assertThat(response).isEqualTo(newSingleItemMission(DEFAULT_MISSION_ID));
     }
 
     /**
@@ -236,10 +247,7 @@ public class ManageMissionEndpointTests {
      */
     @Test
     public void updateApiNotFoundError() {
-        when(generator.newMissionId()).thenReturn(DEFAULT_MISSION_ID);
-        when(generator.newVersion()).thenReturn(DEFAULT_VERSION);
-
-        proto.skysign.Mission request = newSingleItemMission(generator);
+        proto.skysign.Mission request = newSingleItemMission(DEFAULT_MISSION_ID);
         StreamRecorder<proto.skysign.Mission> responseObserver = StreamRecorder.create();
         endpoint.updateMission(request, responseObserver);
 
@@ -254,13 +262,14 @@ public class ManageMissionEndpointTests {
      */
     @Test
     public void updateApiInternalError() {
-        when(generator.newMissionId()).thenReturn(DEFAULT_MISSION_ID);
-        when(generator.newVersion()).thenReturn(DEFAULT_VERSION);
         when(repository.getById(DEFAULT_MISSION_ID))
-                .thenReturn(newSingleNavigationMission(DEFAULT_GENERATOR.get()));
+                .thenReturn(newSingleNavigationMission(
+                        DEFAULT_MISSION_ID,
+                        DEFAULT_VERSION,
+                        DEFAULT_GENERATOR.get()));
         doThrow(new IllegalStateException()).when(repository).save(any());
 
-        proto.skysign.Mission request = newSingleItemMission(generator);
+        proto.skysign.Mission request = newSingleItemMission(DEFAULT_MISSION_ID);
         StreamRecorder<proto.skysign.Mission> responseObserver = StreamRecorder.create();
         endpoint.updateMission(request, responseObserver);
 
@@ -276,7 +285,10 @@ public class ManageMissionEndpointTests {
     @Test
     public void deleteApi() {
         when(repository.getById(DEFAULT_MISSION_ID))
-                .thenReturn(newSingleNavigationMission(DEFAULT_GENERATOR.get()));
+                .thenReturn(newSingleNavigationMission(
+                        DEFAULT_MISSION_ID,
+                        DEFAULT_VERSION,
+                        DEFAULT_GENERATOR.get()));
 
         DeleteMissionRequest request = DeleteMissionRequest.newBuilder()
                 .setId(DEFAULT_MISSION_ID.getId())
@@ -314,7 +326,10 @@ public class ManageMissionEndpointTests {
     @Test
     public void deleteApiInternalError() {
         when(repository.getById(DEFAULT_MISSION_ID))
-                .thenReturn(newSingleNavigationMission(DEFAULT_GENERATOR.get()));
+                .thenReturn(newSingleNavigationMission(
+                        DEFAULT_MISSION_ID,
+                        DEFAULT_VERSION,
+                        DEFAULT_GENERATOR.get()));
         doThrow(new IllegalStateException()).when(repository).remove(any(), any());
 
         DeleteMissionRequest request = DeleteMissionRequest.newBuilder()

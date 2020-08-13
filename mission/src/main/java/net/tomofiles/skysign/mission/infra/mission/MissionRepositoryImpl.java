@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Component;
 
 import lombok.AllArgsConstructor;
+import net.tomofiles.skysign.mission.domain.mission.Generator;
 import net.tomofiles.skysign.mission.domain.mission.Mission;
 import net.tomofiles.skysign.mission.domain.mission.MissionFactory;
 import net.tomofiles.skysign.mission.domain.mission.MissionId;
@@ -24,6 +25,7 @@ public class MissionRepositoryImpl implements MissionRepository {
 
     private final MissionMapper missionMapper;
     private final WaypointMapper waypointMapper;
+    private final Generator generator;
 
     @Override
     public void save(Mission mission) {
@@ -97,7 +99,8 @@ public class MissionRepositoryImpl implements MissionRepository {
                                     );
                                 })
                                 .collect(Collectors.toList())
-                )
+                ),
+                this.generator
         );
     }
 
@@ -133,7 +136,8 @@ public class MissionRepositoryImpl implements MissionRepository {
                                         );
                                     })
                                     .collect(Collectors.toList())
-                    )
+                    ),
+                    this.generator
             );
 
             missions.add(mission);

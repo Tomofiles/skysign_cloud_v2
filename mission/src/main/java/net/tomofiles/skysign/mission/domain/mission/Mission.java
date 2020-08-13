@@ -30,10 +30,8 @@ public class Mission {
     @Setter(value = AccessLevel.PACKAGE)
     private Version newVersion;
 
-    Mission(Generator generator) {
-        this.id = generator.newMissionId();
-        Version version = generator.newVersion();
-
+    Mission(MissionId missionId, Version version, Generator generator) {
+        this.id = missionId;
         this.version = version;
         this.newVersion = version;
 

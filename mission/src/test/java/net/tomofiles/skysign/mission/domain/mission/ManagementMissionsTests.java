@@ -6,13 +6,11 @@ import org.mockito.Mock;
 
 import static com.google.common.truth.Truth.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
 import java.util.UUID;
 import java.util.function.Supplier;
 
-import static net.tomofiles.skysign.mission.domain.mission.MissionObjectMother.newSingleNavigationMission;
 import static net.tomofiles.skysign.mission.domain.mission.MissionObjectMother.newSingleNavigation;
 
 public class ManagementMissionsTests {
@@ -67,13 +65,11 @@ public class ManagementMissionsTests {
     }
 
     /**
-     * Userが、既存のMissionエンティティに対してMission Nameを更新する。
+     * Userが、新しいMissionエンティティに対してMission Nameを付与する。
      */
     @Test
     public void changeMissionsNameTest() {
-        when(repository.getById(DEFAULT_MISSION_ID)).thenReturn(newSingleNavigationMission(DEFAULT_GENERATOR.get()));
-
-        Mission mission = repository.getById(DEFAULT_MISSION_ID);
+        Mission mission = MissionFactory.newInstance(DEFAULT_GENERATOR.get());
 
         String newMissionName = "new mission";
         mission.nameMission(newMissionName);
