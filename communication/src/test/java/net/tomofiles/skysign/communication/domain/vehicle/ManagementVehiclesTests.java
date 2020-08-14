@@ -1,23 +1,64 @@
 package net.tomofiles.skysign.communication.domain.vehicle;
 
+import static com.google.common.truth.Truth.assertThat;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
+import java.util.UUID;
+import java.util.function.Supplier;
+
 import net.tomofiles.skysign.communication.domain.communication.CommunicationId;
 import net.tomofiles.skysign.communication.event.Publisher;
 
+import static net.tomofiles.skysign.communication.domain.vehicle.VehicleObjectMother.newNormalVehicle;
+
 public class ManagementVehiclesTests {
     
+    private static final VehicleId DEFAULT_VEHICLE_ID = new VehicleId(UUID.randomUUID().toString());
+    private static final CommunicationId DEFAULT_COMMUNICATION_ID = new CommunicationId("comm id");
+    private static final Version DEFAULT_VERSION1 = new Version(UUID.randomUUID().toString());
+    private static final Version DEFAULT_VERSION2 = new Version(UUID.randomUUID().toString());
+    private static final Supplier<Generator> DEFAULT_GENERATOR_1CALL = () -> {
+        return new Generator(){
+            @Override
+            public VehicleId newVehicleId() {
+                return DEFAULT_VEHICLE_ID;
+            }
+
+            @Override
+            public Version newVersion() {
+                return DEFAULT_VERSION2;
+            }
+        };
+    };
+    private static final Supplier<Generator> DEFAULT_GENERATOR_2CALL = () -> {
+        return new Generator(){
+            private int count = 0;
+
+            @Override
+            public VehicleId newVehicleId() {
+                return DEFAULT_VEHICLE_ID;
+            }
+
+            @Override
+            public Version newVersion() {
+                if (count == 0) {
+                    count++;
+                    return DEFAULT_VERSION1;
+                } else {
+                    return DEFAULT_VERSION2;
+                }
+            }
+        };
+    };
+
     @Mock
     private Publisher publisher;
 
@@ -35,48 +76,32 @@ public class ManagementVehiclesTests {
      */
     @Test
     public void createNewVehicleTest() {
-        VehicleId id = VehicleId.newId();
+        Vehicle vehicle = VehicleFactory.newInstance(DEFAULT_GENERATOR_2CALL.get());
 
-        Vehicle vehicle = VehicleFactory.newInstance(id);
-
-        assertEquals(vehicle.getId(), id);
-        assertNull(vehicle.getVehicleName());
-        assertNull(vehicle.getCommId());
-        assertNotNull(vehicle.getVersion());
-        assertNotNull(vehicle.getNewVersion());
-        assertEquals(vehicle.getVersion(), vehicle.getNewVersion());
+        assertAll(
+            () -> assertThat(vehicle.getId()).isEqualTo(DEFAULT_VEHICLE_ID),
+            () -> assertThat(vehicle.getVehicleName()).isNull(),
+            () -> assertThat(vehicle.getCommId()).isNull(),
+            () -> assertThat(vehicle.getVersion()).isEqualTo(DEFAULT_VERSION1),
+            () -> assertThat(vehicle.getNewVersion()).isEqualTo(DEFAULT_VERSION1)
+        );
     }
 
     /**
-     * Userが、既存のVehicleエンティティに対してVehicle Nameを更新する。<br>
-     * Vehicle Name以外の変化が無いことを検証する。
+     * Userが、新しいVehicleエンティティに対してVehicle Nameを付与する。
      */
     @Test
     public void changeVehiclesNameTest() {
-        VehicleId id = VehicleId.newId();
-
-        String oldVehicleName = "old vehicle";
-        CommunicationId oldCommId = CommunicationId.newId();
-        Version version = Version.newVersion();
-
-        Vehicle before = new Vehicle(id);
-        before.setVehicleName(oldVehicleName);
-        before.setCommId(oldCommId);
-        before.setVersion(version);
-        before.setNewVersion(version);
-
-        when(repository.getById(id)).thenReturn(before);
-
-        Vehicle vehicle = repository.getById(id);
+        Vehicle vehicle = VehicleFactory.newInstance(DEFAULT_GENERATOR_2CALL.get());
 
         String newVehicleName = "new vehicle";
         vehicle.nameVehicle(newVehicleName);
 
-        assertEquals(vehicle.getId(), id);
-        assertEquals(vehicle.getVehicleName(), newVehicleName);
-        assertEquals(vehicle.getCommId(), oldCommId);
-        assertEquals(vehicle.getVersion(), version);
-        assertNotEquals(vehicle.getVersion(), vehicle.getNewVersion());
+        assertAll(
+            () -> assertThat(vehicle.getVehicleName()).isEqualTo(newVehicleName),
+            () -> assertThat(vehicle.getVersion()).isEqualTo(DEFAULT_VERSION1),
+            () -> assertThat(vehicle.getNewVersion()).isEqualTo(DEFAULT_VERSION2)
+        );
     }
 
     /**
@@ -86,29 +111,26 @@ public class ManagementVehiclesTests {
      */
     @Test
     public void changeNewVehiclesCommIdAndPublishEventTest() {
-        VehicleId id = VehicleId.newId();
+        Vehicle vehicle = VehicleFactory.newInstance(DEFAULT_GENERATOR_2CALL.get());
 
-        CommunicationId newCommId = CommunicationId.newId();
+        vehicle.setPublisher(this.publisher);
 
-        Vehicle vehicle = VehicleFactory.newInstance(id);
-
-        vehicle.setPublisher(publisher);
-
+        CommunicationId newCommId = new CommunicationId("new comm id");
         vehicle.giveCommId(newCommId);
 
         CommunicationIdChangedEvent event
                 = new CommunicationIdChangedEvent(
                     null,
                     newCommId,
-                    Version.newVersion()
+                    DEFAULT_VERSION2
                 );
 
-        assertEquals(vehicle.getId(), id);
-        assertNull(vehicle.getVehicleName());
-        assertEquals(vehicle.getCommId(), newCommId);
-        assertNotEquals(vehicle.getVersion(), vehicle.getNewVersion());
-
-        verify(publisher, times(1)).publish(event);
+        assertAll(
+            () -> assertThat(vehicle.getCommId()).isEqualTo(newCommId),
+            () -> assertThat(vehicle.getVersion()).isEqualTo(DEFAULT_VERSION1),
+            () -> assertThat(vehicle.getNewVersion()).isEqualTo(DEFAULT_VERSION2),
+            () -> verify(publisher, times(1)).publish(event)
+        );
     }
 
     /**
@@ -120,40 +142,28 @@ public class ManagementVehiclesTests {
      */
     @Test
     public void changePreExistVehiclesCommIdAndPublishEventTest() {
-        VehicleId id = VehicleId.newId();
+        when(repository.getById(DEFAULT_VEHICLE_ID))
+                .thenReturn(newNormalVehicle(DEFAULT_VEHICLE_ID, DEFAULT_VERSION1, DEFAULT_GENERATOR_1CALL.get()));
 
-        String oldVehicleName = "old vehicle";
-        CommunicationId oldCommId = CommunicationId.newId();
-        Version version = Version.newVersion();
+        Vehicle vehicle = this.repository.getById(DEFAULT_VEHICLE_ID);
 
-        Vehicle before = new Vehicle(id);
-        before.setVehicleName(oldVehicleName);
-        before.setCommId(oldCommId);
-        before.setVersion(version);
-        before.setNewVersion(version);
+        vehicle.setPublisher(this.publisher);
 
-        when(repository.getById(id)).thenReturn(before);
-
-        Vehicle vehicle = repository.getById(id);
-
-        vehicle.setPublisher(publisher);
-
-        CommunicationId newCommId = CommunicationId.newId();
+        CommunicationId newCommId = new CommunicationId("new comm id");
         vehicle.giveCommId(newCommId);
 
         CommunicationIdChangedEvent event
                 = new CommunicationIdChangedEvent(
-                    oldCommId,
+                    DEFAULT_COMMUNICATION_ID,
                     newCommId,
-                    Version.newVersion()
+                    DEFAULT_VERSION2
                 );
 
-        assertEquals(vehicle.getId(), id);
-        assertEquals(vehicle.getVehicleName(), oldVehicleName);
-        assertEquals(vehicle.getCommId(), newCommId);
-        assertEquals(vehicle.getVersion(), version);
-        assertNotEquals(vehicle.getVersion(), vehicle.getNewVersion());
-
-        verify(publisher, times(1)).publish(event);
+        assertAll(
+            () -> assertThat(vehicle.getCommId()).isEqualTo(newCommId),
+            () -> assertThat(vehicle.getVersion()).isEqualTo(DEFAULT_VERSION1),
+            () -> assertThat(vehicle.getNewVersion()).isEqualTo(DEFAULT_VERSION2),
+            () -> verify(publisher, times(1)).publish(event)
+        );
     }
 }

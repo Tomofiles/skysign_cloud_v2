@@ -4,28 +4,26 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import lombok.RequiredArgsConstructor;
 import net.tomofiles.skysign.communication.domain.communication.Communication;
 import net.tomofiles.skysign.communication.domain.communication.CommunicationFactory;
 import net.tomofiles.skysign.communication.domain.communication.CommunicationId;
 import net.tomofiles.skysign.communication.domain.communication.CommunicationRepository;
+import net.tomofiles.skysign.communication.domain.communication.Generator;
 import net.tomofiles.skysign.communication.domain.communication.component.CommandComponentDto;
 import net.tomofiles.skysign.communication.domain.communication.component.CommunicationComponentDto;
 import net.tomofiles.skysign.communication.domain.communication.component.TelemetryComponentDto;
 
 @Component
+@RequiredArgsConstructor
 public class CommunicationRepositoryImpl implements CommunicationRepository {
 
-    @Autowired
-    private CommunicationMapper communicationMapper;
-
-    @Autowired
-    private TelemetryMapper telemetryMapper;
-
-    @Autowired
-    private CommandMapper commandMapper;
+    private final CommunicationMapper communicationMapper;
+    private final TelemetryMapper telemetryMapper;
+    private final CommandMapper commandMapper;
+    private final Generator generator;
 
     @Override
     public void save(Communication comm) {
@@ -128,6 +126,9 @@ public class CommunicationRepositoryImpl implements CommunicationRepository {
                                     c.getType(),
                                     c.getTime()
                                 ))
-                                .collect(Collectors.toList())));
+                                .collect(Collectors.toList())
+                    ),
+                generator
+        );
     }
 }

@@ -1,6 +1,5 @@
 package net.tomofiles.skysign.communication.domain.communication;
 
-import java.util.ArrayList;
 import java.util.stream.Collectors;
 
 import net.tomofiles.skysign.communication.domain.communication.component.CommandComponentDto;
@@ -9,14 +8,17 @@ import net.tomofiles.skysign.communication.domain.communication.component.Teleme
 
 public class CommunicationFactory {
 
-    public static Communication newInstance(CommunicationId id) {
-        Communication communication = new Communication(id, new ArrayList<>());
+    public static Communication newInstance(CommunicationId communicationId, Generator generator) {
+        Communication communication = new Communication(communicationId, generator);
         communication.setTelemetry(Telemetry.newInstance());
         return communication;
     }
 
-    public static Communication assembleFrom(CommunicationComponentDto componentDto) {
-        Communication communication = new Communication(new CommunicationId(componentDto.getId()), new ArrayList<>());
+    public static Communication assembleFrom(CommunicationComponentDto componentDto, Generator generator) {
+        Communication communication = new Communication(
+                new CommunicationId(componentDto.getId()),
+                generator
+        );
         communication.setMissionId(new MissionId(componentDto.getMissionId()));
         communication.setTelemetry(Telemetry.newInstance()
                 .setPosition(

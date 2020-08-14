@@ -14,6 +14,7 @@ import net.tomofiles.skysign.communication.domain.communication.Communication;
 import net.tomofiles.skysign.communication.domain.communication.CommunicationId;
 import net.tomofiles.skysign.communication.domain.communication.CommunicationRepository;
 import net.tomofiles.skysign.communication.domain.communication.MissionId;
+import net.tomofiles.skysign.communication.domain.communication.TelemetrySnapshot;
 import net.tomofiles.skysign.communication.usecase.dto.ControlCommandDto;
 import net.tomofiles.skysign.communication.usecase.dto.ControlCommandType;
 import net.tomofiles.skysign.communication.usecase.dto.TelemetryDto;
@@ -34,17 +35,19 @@ public class CommunicateEdgeService {
         }
 
         communication.pushTelemetry(
-                telemetry.getLatitude(),
-                telemetry.getLongitude(),
-                telemetry.getAltitude(),
-                telemetry.getRelativeAltitude(),
-                telemetry.getSpeed(),
-                telemetry.isArmed(),
-                telemetry.getFlightMode(),
-                telemetry.getOrientationX(),
-                telemetry.getOrientationY(),
-                telemetry.getOrientationZ(),
-                telemetry.getOrientationW());
+                new TelemetrySnapshot(
+                    telemetry.getLatitude(),
+                    telemetry.getLongitude(),
+                    telemetry.getAltitude(),
+                    telemetry.getRelativeAltitude(),
+                    telemetry.getSpeed(),
+                    telemetry.isArmed(),
+                    telemetry.getFlightMode(),
+                    telemetry.getOrientationX(),
+                    telemetry.getOrientationY(),
+                    telemetry.getOrientationZ(),
+                    telemetry.getOrientationW()
+                ));
         
         List<String> commandIds = communication.getCommandIds().stream()
                 .map(CommandId::getId)

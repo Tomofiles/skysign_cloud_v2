@@ -1,17 +1,40 @@
 package net.tomofiles.skysign.communication.domain.communication;
 
+import static com.google.common.truth.Truth.assertThat;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
+import java.time.LocalDateTime;
+import java.util.UUID;
+import java.util.function.Supplier;
+
+import static net.tomofiles.skysign.communication.domain.communication.SnapshotObjectMother.newNormalTelemetrySnapshot;
+import static net.tomofiles.skysign.communication.domain.communication.CommunicationObjectMother.newNormalCommunication;
+
 public class UserCommunicationTests {
     
+    private static final CommunicationId DEFAULT_COMMUNICATION_ID = new CommunicationId(UUID.randomUUID().toString());
+    private static final CommandId DEFAULT_COMMAND_ID = new CommandId(UUID.randomUUID().toString());
+    private static final MissionId DEFAULT_MISSION_ID = new MissionId(UUID.randomUUID().toString());
+    private static final LocalDateTime DEFAULT_COMMAND_TIME = LocalDateTime.of(2020, 1, 1, 0, 0, 0);
+    private static final Supplier<Generator> DEFAULT_GENERATOR = () -> {
+        return new Generator(){
+            @Override
+            public CommandId newCommandId() {
+                return DEFAULT_COMMAND_ID;
+            }
+            @Override
+            public LocalDateTime newTime() {
+                return DEFAULT_COMMAND_TIME;
+            }
+        };
+    };
+
     @Mock
     private CommunicationRepository repository;
 
@@ -26,14 +49,14 @@ public class UserCommunicationTests {
      */
     @Test
     public void createNewCommunicationTest() {
-        CommunicationId id = CommunicationId.newId();
+        Communication communication = CommunicationFactory.newInstance(DEFAULT_COMMUNICATION_ID, DEFAULT_GENERATOR.get());
 
-        Communication communication = CommunicationFactory.newInstance(id);
-
-        assertEquals(communication.getId(), id);
-        assertNull(communication.getMissionId());
-        assertEquals(communication.getCommands().size(), 0);
-        assertEquals(communication.getTelemetry(), Telemetry.newInstance());
+        assertAll(
+            () -> assertThat(communication.getId()).isEqualTo(DEFAULT_COMMUNICATION_ID),
+            () -> assertThat(communication.getMissionId()).isNull(),
+            () -> assertThat(communication.getCommands()).hasSize(0),
+            () -> assertThat(communication.getTelemetry()).isEqualTo(Telemetry.newInstance())
+        );
     }
 
     /**
@@ -42,23 +65,21 @@ public class UserCommunicationTests {
      */
     @Test
     public void pushCommandToCommunicationTest() {
-        CommunicationId id = CommunicationId.newId();
+        when(this.repository.getById(DEFAULT_COMMUNICATION_ID))
+                .thenReturn(CommunicationFactory.newInstance(DEFAULT_COMMUNICATION_ID, DEFAULT_GENERATOR.get()));
 
-        when(repository.getById(id)).thenReturn(CommunicationFactory.newInstance(id));
-
-        Communication communication = repository.getById(id);
+        Communication communication = this.repository.getById(DEFAULT_COMMUNICATION_ID);
 
         communication.pushCommand(CommandType.ARM);
 
-        assertEquals(communication.getCommandIds().size(), 1);
-
-        assertEquals(communication.getId(), id);
-        assertNull(communication.getMissionId());
-        assertEquals(communication.getCommands().size(), 1);
-        assertNotNull(communication.getCommands().get(0).getId());
-        assertEquals(communication.getCommands().get(0).getType(), CommandType.ARM);
-        assertNotNull(communication.getCommands().get(0).getTime());
-        assertEquals(communication.getTelemetry(), Telemetry.newInstance());
+        assertAll(
+            () -> assertThat(communication.getCommandIds()).hasSize(1),
+            () -> assertThat(communication.getCommandIds().get(0)).isEqualTo(DEFAULT_COMMAND_ID),
+            () -> assertThat(communication.getCommands()).hasSize(1),
+            () -> assertThat(communication.getCommands().get(0).getId()).isEqualTo(DEFAULT_COMMAND_ID),
+            () -> assertThat(communication.getCommands().get(0).getType()).isEqualTo(CommandType.ARM),
+            () -> assertThat(communication.getCommands().get(0).getTime()).isEqualTo(DEFAULT_COMMAND_TIME)
+        );
     }
 
     /**
@@ -67,43 +88,16 @@ public class UserCommunicationTests {
      */
     @Test
     public void pullTelemetryFromCommunicationTest() {
-        CommunicationId id = CommunicationId.newId();
-        double latitude = 0.0d;
-        double longitude = 1.0d;
-        double altitude = 2.0d;
-        double relativeAltitude = 3.0d;
-        double speed = 4.0d;
-        boolean armed = true;
-        String flightMode = "INFLIGHT";
-        double orientationX = 5.0d;
-        double orientationY = 6.0d;
-        double orientationZ = 7.0d;
-        double orientationW = 8.0d;
+        when(repository.getById(DEFAULT_COMMUNICATION_ID))
+                .thenReturn(newNormalCommunication(
+                        DEFAULT_COMMUNICATION_ID,
+                        DEFAULT_MISSION_ID,
+                        DEFAULT_GENERATOR.get()));
 
-        Communication before = CommunicationFactory.newInstance(id);
-        before.setTelemetry(Telemetry.newInstance()
-                .setPosition(latitude, longitude, altitude, relativeAltitude, speed)
-                .setArmed(armed)
-                .setFlightMode(flightMode)
-                .setOrientation(orientationX, orientationY, orientationZ, orientationW)
-        );
-
-        when(repository.getById(id)).thenReturn(before);
-
-        Communication communication = repository.getById(id);
+        Communication communication = repository.getById(DEFAULT_COMMUNICATION_ID);
 
         TelemetrySnapshot telemetry = communication.pullTelemetry();
 
-        assertEquals(telemetry.getLatitude(), latitude);
-        assertEquals(telemetry.getLongitude(), longitude);
-        assertEquals(telemetry.getAltitude(), altitude);
-        assertEquals(telemetry.getRelativeAltitude(), relativeAltitude);
-        assertEquals(telemetry.getSpeed(), speed);
-        assertEquals(telemetry.isArmed(), armed);
-        assertEquals(telemetry.getFlightMode(), flightMode);
-        assertEquals(telemetry.getX(), orientationX);
-        assertEquals(telemetry.getY(), orientationY);
-        assertEquals(telemetry.getZ(), orientationZ);
-        assertEquals(telemetry.getW(), orientationW);
+        assertThat(telemetry).isEqualTo(newNormalTelemetrySnapshot());
     }
 }
