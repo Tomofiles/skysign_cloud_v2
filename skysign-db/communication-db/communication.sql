@@ -1,5 +1,6 @@
 CREATE TABLE communication (
     id character varying(36) NOT NULL,
+    vehicle_id character varying(36) NOT NULL,
     mission_id character varying(36),
     CONSTRAINT communication_pkey PRIMARY KEY (id)
 );
