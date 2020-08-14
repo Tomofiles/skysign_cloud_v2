@@ -54,3 +54,9 @@ message Telemetry {
     double orientationZ = 10;
     double orientationW = 11;
 }
+
+message Communication {
+    string id = 1;
+    string vehicleId = 2;
+    string missionId = 3;
+}

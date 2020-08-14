@@ -10,7 +10,7 @@ option java_multiple_files = true;
 option go_package = ".;skysign_proto";
 
 service ManageMissionService {
-    rpc ListMissions (ListMissionsRequest) returns (ListMissionsResponses) {
+    rpc ListMissions (Empty) returns (ListMissionsResponses) {
         option (google.api.http) = {
             get: "/api/v1/missions"
         };
@@ -41,9 +41,6 @@ service ManageMissionService {
             delete: "/api/v1/missions/{id}"
         };
     };
-}
-
-message ListMissionsRequest {
 }
 
 message GetMissionRequest {
