@@ -2,7 +2,7 @@ package net.tomofiles.skysign.communication.api.dpo;
 
 import lombok.RequiredArgsConstructor;
 import net.tomofiles.skysign.communication.domain.communication.CommunicationId;
-import net.tomofiles.skysign.communication.usecase.dpo.PullTelemetryRequestDpo;
+import net.tomofiles.skysign.communication.service.dpo.PullTelemetryRequestDpo;
 import proto.skysign.PullTelemetryRequest;
 
 @RequiredArgsConstructor

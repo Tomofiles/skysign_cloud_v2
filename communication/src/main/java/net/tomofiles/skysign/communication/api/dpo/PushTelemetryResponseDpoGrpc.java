@@ -7,7 +7,7 @@ import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import net.tomofiles.skysign.communication.domain.communication.CommandId;
 import net.tomofiles.skysign.communication.domain.communication.Communication;
-import net.tomofiles.skysign.communication.usecase.dpo.PushTelemetryResponseDpo;
+import net.tomofiles.skysign.communication.service.dpo.PushTelemetryResponseDpo;
 import proto.skysign.PushTelemetryRequest;
 
 @RequiredArgsConstructor

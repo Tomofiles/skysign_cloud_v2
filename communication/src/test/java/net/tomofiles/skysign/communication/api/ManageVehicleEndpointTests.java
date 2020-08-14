@@ -27,7 +27,7 @@ import net.tomofiles.skysign.communication.domain.vehicle.VehicleId;
 import net.tomofiles.skysign.communication.domain.vehicle.VehicleRepository;
 import net.tomofiles.skysign.communication.domain.vehicle.Version;
 import net.tomofiles.skysign.communication.event.Publisher;
-import net.tomofiles.skysign.communication.usecase.ManageVehicleService;
+import net.tomofiles.skysign.communication.service.ManageVehicleService;
 import proto.skysign.DeleteVehicleRequest;
 import proto.skysign.Empty;
 import proto.skysign.GetVehicleRequest;

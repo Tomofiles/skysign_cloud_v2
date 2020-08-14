@@ -15,7 +15,7 @@ import net.tomofiles.skysign.communication.api.dpo.PushCommandRequestDpoGrpc;
 import net.tomofiles.skysign.communication.api.dpo.PushCommandResponseDpoGrpc;
 import net.tomofiles.skysign.communication.api.dpo.StagingRequestDpoGrpc;
 import net.tomofiles.skysign.communication.api.dpo.StagingResponseDpoGrpc;
-import net.tomofiles.skysign.communication.usecase.CommunicationUserService;
+import net.tomofiles.skysign.communication.service.CommunicationUserService;
 import proto.skysign.CancelRequest;
 import proto.skysign.CancelResponse;
 import proto.skysign.Empty;

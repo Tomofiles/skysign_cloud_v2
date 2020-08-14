@@ -12,7 +12,7 @@ import net.tomofiles.skysign.communication.api.dpo.PullCommandRequestDpoGrpc;
 import net.tomofiles.skysign.communication.api.dpo.PullCommandResponseDpoGrpc;
 import net.tomofiles.skysign.communication.api.dpo.PushTelemetryRequestDpoGrpc;
 import net.tomofiles.skysign.communication.api.dpo.PushTelemetryResponseDpoGrpc;
-import net.tomofiles.skysign.communication.usecase.CommunicateEdgeService;
+import net.tomofiles.skysign.communication.service.CommunicateEdgeService;
 import proto.skysign.Communication;
 import proto.skysign.GetCommunicationRequest;
 import proto.skysign.PullCommandRequest;

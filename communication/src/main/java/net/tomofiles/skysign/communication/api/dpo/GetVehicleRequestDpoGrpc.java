@@ -2,7 +2,7 @@ package net.tomofiles.skysign.communication.api.dpo;
 
 import lombok.RequiredArgsConstructor;
 import net.tomofiles.skysign.communication.domain.vehicle.VehicleId;
-import net.tomofiles.skysign.communication.usecase.dpo.GetVehicleRequestDpo;
+import net.tomofiles.skysign.communication.service.dpo.GetVehicleRequestDpo;
 import proto.skysign.GetVehicleRequest;
 
 @RequiredArgsConstructor

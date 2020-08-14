@@ -17,7 +17,7 @@ import net.tomofiles.skysign.communication.api.dpo.GetVehicleResponseDpoGrpc;
 import net.tomofiles.skysign.communication.api.dpo.ListVehiclesResponsesDpoGrpc;
 import net.tomofiles.skysign.communication.api.dpo.UpdateVehicleRequestDpoGrpc;
 import net.tomofiles.skysign.communication.api.dpo.UpdateVehicleResponseDpoGrpc;
-import net.tomofiles.skysign.communication.usecase.ManageVehicleService;
+import net.tomofiles.skysign.communication.service.ManageVehicleService;
 import proto.skysign.DeleteVehicleRequest;
 import proto.skysign.Empty;
 import proto.skysign.GetVehicleRequest;

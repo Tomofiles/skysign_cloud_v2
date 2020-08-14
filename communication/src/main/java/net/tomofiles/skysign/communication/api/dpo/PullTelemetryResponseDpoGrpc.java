@@ -2,7 +2,7 @@ package net.tomofiles.skysign.communication.api.dpo;
 
 import net.tomofiles.skysign.communication.domain.communication.CommunicationId;
 import net.tomofiles.skysign.communication.domain.communication.TelemetrySnapshot;
-import net.tomofiles.skysign.communication.usecase.dpo.PullTelemetryResponseDpo;
+import net.tomofiles.skysign.communication.service.dpo.PullTelemetryResponseDpo;
 
 public class PullTelemetryResponseDpoGrpc implements PullTelemetryResponseDpo {
 

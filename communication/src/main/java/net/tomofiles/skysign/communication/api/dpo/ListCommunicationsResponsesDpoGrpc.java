@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import net.tomofiles.skysign.communication.domain.communication.Communication;
-import net.tomofiles.skysign.communication.usecase.dpo.ListCommunicationsResponsesDpo;
+import net.tomofiles.skysign.communication.service.dpo.ListCommunicationsResponsesDpo;
 
 public class ListCommunicationsResponsesDpoGrpc implements ListCommunicationsResponsesDpo {
 

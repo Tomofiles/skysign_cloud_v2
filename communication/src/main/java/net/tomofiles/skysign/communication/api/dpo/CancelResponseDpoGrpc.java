@@ -1,7 +1,7 @@
 package net.tomofiles.skysign.communication.api.dpo;
 
 import net.tomofiles.skysign.communication.domain.communication.Communication;
-import net.tomofiles.skysign.communication.usecase.dpo.CancelResponseDpo;
+import net.tomofiles.skysign.communication.service.dpo.CancelResponseDpo;
 
 public class CancelResponseDpoGrpc implements CancelResponseDpo {
 

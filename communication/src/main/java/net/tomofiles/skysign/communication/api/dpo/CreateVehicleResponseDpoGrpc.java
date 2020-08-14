@@ -1,7 +1,7 @@
 package net.tomofiles.skysign.communication.api.dpo;
 
 import net.tomofiles.skysign.communication.domain.vehicle.Vehicle;
-import net.tomofiles.skysign.communication.usecase.dpo.CreateVehicleResponseDpo;
+import net.tomofiles.skysign.communication.service.dpo.CreateVehicleResponseDpo;
 
 public class CreateVehicleResponseDpoGrpc implements CreateVehicleResponseDpo {
 

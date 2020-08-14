@@ -5,7 +5,7 @@ import java.util.Arrays;
 import lombok.RequiredArgsConstructor;
 import net.tomofiles.skysign.communication.domain.communication.CommandType;
 import net.tomofiles.skysign.communication.domain.communication.CommunicationId;
-import net.tomofiles.skysign.communication.usecase.dpo.PushCommandRequestDpo;
+import net.tomofiles.skysign.communication.service.dpo.PushCommandRequestDpo;
 import proto.skysign.PushCommandRequest;
 
 @RequiredArgsConstructor

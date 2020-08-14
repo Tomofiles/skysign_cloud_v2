@@ -1,7 +1,7 @@
 package net.tomofiles.skysign.communication.api.dpo;
 
 import net.tomofiles.skysign.communication.domain.communication.Communication;
-import net.tomofiles.skysign.communication.usecase.dpo.StagingResponseDpo;
+import net.tomofiles.skysign.communication.service.dpo.StagingResponseDpo;
 
 public class StagingResponseDpoGrpc implements StagingResponseDpo {
 

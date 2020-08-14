@@ -21,7 +21,7 @@ import net.tomofiles.skysign.communication.domain.communication.CommunicationRep
 import net.tomofiles.skysign.communication.domain.vehicle.CommunicationIdChangedEvent;
 import net.tomofiles.skysign.communication.domain.vehicle.VehicleId;
 import net.tomofiles.skysign.communication.domain.vehicle.Version;
-import net.tomofiles.skysign.communication.usecase.ManageCommunicationService;
+import net.tomofiles.skysign.communication.service.ManageCommunicationService;
 
 import static net.tomofiles.skysign.communication.domain.communication.CommunicationObjectMother.newNormalCommunication;
 

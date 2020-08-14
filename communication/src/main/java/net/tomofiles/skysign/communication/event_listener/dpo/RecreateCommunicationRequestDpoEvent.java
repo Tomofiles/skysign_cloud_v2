@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import net.tomofiles.skysign.communication.domain.communication.CommunicationId;
 import net.tomofiles.skysign.communication.domain.vehicle.CommunicationIdChangedEvent;
 import net.tomofiles.skysign.communication.domain.vehicle.VehicleId;
-import net.tomofiles.skysign.communication.usecase.dpo.RecreateCommunicationRequestDpo;
+import net.tomofiles.skysign.communication.service.dpo.RecreateCommunicationRequestDpo;
 
 @RequiredArgsConstructor
 public class RecreateCommunicationRequestDpoEvent implements RecreateCommunicationRequestDpo {

@@ -1,7 +1,7 @@
 package net.tomofiles.skysign.communication.api.dpo;
 
 import net.tomofiles.skysign.communication.domain.communication.Communication;
-import net.tomofiles.skysign.communication.usecase.dpo.PushCommandResponseDpo;
+import net.tomofiles.skysign.communication.service.dpo.PushCommandResponseDpo;
 
 public class PushCommandResponseDpoGrpc implements PushCommandResponseDpo {
 
