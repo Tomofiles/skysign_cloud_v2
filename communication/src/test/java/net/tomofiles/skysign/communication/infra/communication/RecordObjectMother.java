@@ -7,14 +7,15 @@ import net.tomofiles.skysign.communication.domain.communication.CommandType;
 import net.tomofiles.skysign.communication.domain.communication.CommunicationId;
 import net.tomofiles.skysign.communication.domain.communication.Generator;
 import net.tomofiles.skysign.communication.domain.communication.MissionId;
+import net.tomofiles.skysign.communication.domain.vehicle.VehicleId;
 
 public class RecordObjectMother {
     
     /**
      * 通常のCommunicationレコードを生成する。
      */
-    public static CommunicationRecord newNormalCommunicationRecord(CommunicationId id, MissionId missionId) {
-        return new CommunicationRecord(id.getId(), missionId.getId());
+    public static CommunicationRecord newNormalCommunicationRecord(CommunicationId id, VehicleId vehicleId, MissionId missionId) {
+        return new CommunicationRecord(id.getId(), vehicleId.getId(), missionId.getId());
     }
     
     /**

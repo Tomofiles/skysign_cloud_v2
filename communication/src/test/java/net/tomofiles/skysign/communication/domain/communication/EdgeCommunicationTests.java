@@ -5,6 +5,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 
+import net.tomofiles.skysign.communication.domain.vehicle.VehicleId;
+
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
@@ -26,6 +28,7 @@ public class EdgeCommunicationTests {
     
     private static final CommunicationId DEFAULT_COMMUNICATION_ID = new CommunicationId(UUID.randomUUID().toString());
     private static final CommandId DEFAULT_COMMAND_ID = new CommandId(UUID.randomUUID().toString());
+    private static final VehicleId DEFAULT_VEHICLE_ID = new VehicleId(UUID.randomUUID().toString());
     private static final MissionId DEFAULT_MISSION_ID = new MissionId(UUID.randomUUID().toString());
     private static final LocalDateTime DEFAULT_COMMAND_TIME = LocalDateTime.of(2020, 1, 1, 0, 0, 0);
     private static final Supplier<Generator> DEFAULT_GENERATOR = () -> {
@@ -84,7 +87,10 @@ public class EdgeCommunicationTests {
     @Test
     public void pushTelemetryToCommunicationTest() {
         when(repository.getById(DEFAULT_COMMUNICATION_ID))
-                .thenReturn(CommunicationFactory.newInstance(DEFAULT_COMMUNICATION_ID, DEFAULT_GENERATOR.get()));
+                .thenReturn(CommunicationFactory.newInstance(
+                        DEFAULT_COMMUNICATION_ID,
+                        DEFAULT_VEHICLE_ID,
+                        DEFAULT_GENERATOR.get()));
 
         Communication communication = repository.getById(DEFAULT_COMMUNICATION_ID);
 
@@ -103,6 +109,7 @@ public class EdgeCommunicationTests {
         when(repository.getById(DEFAULT_COMMUNICATION_ID))
                 .thenReturn(newSeveralCommandsCommunication(
                         DEFAULT_COMMUNICATION_ID,
+                        DEFAULT_VEHICLE_ID,
                         DEFAULT_MISSION_ID,
                         DEFAULT_GENERATOR_IN_RONDOM_ORDER.get()));
 
@@ -127,6 +134,7 @@ public class EdgeCommunicationTests {
         when(repository.getById(DEFAULT_COMMUNICATION_ID))
                 .thenReturn(newSingleCommandCommunication(
                         DEFAULT_COMMUNICATION_ID,
+                        DEFAULT_VEHICLE_ID,
                         DEFAULT_MISSION_ID,
                         DEFAULT_GENERATOR.get()));
 
@@ -149,6 +157,7 @@ public class EdgeCommunicationTests {
         when(repository.getById(DEFAULT_COMMUNICATION_ID))
                 .thenReturn(newNormalCommunication(
                         DEFAULT_COMMUNICATION_ID,
+                        DEFAULT_VEHICLE_ID,
                         DEFAULT_MISSION_ID,
                         DEFAULT_GENERATOR.get()));
 

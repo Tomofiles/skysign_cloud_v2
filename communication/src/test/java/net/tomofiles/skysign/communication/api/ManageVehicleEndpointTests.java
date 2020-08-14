@@ -111,6 +111,22 @@ public class ManageVehicleEndpointTests {
     }
 
     /**
+     * ユーザーは、全件取得APIを実行し、未存在により空のリストを取得できる。
+     */
+    @Test
+    public void getAllApiNotFoundError() {
+        Empty request = Empty.newBuilder().build();
+        StreamRecorder<ListVehiclesResponses> responseObserver = StreamRecorder.create();
+        endpoint.listVehicles(request, responseObserver);
+
+        assertThat(responseObserver.getError()).isNull();
+        List<ListVehiclesResponses> results = responseObserver.getValues();
+        assertThat(results).hasSize(1);
+        ListVehiclesResponses response = results.get(0);
+        assertThat(response).isEqualTo(ListVehiclesResponses.newBuilder().build());
+    }
+
+    /**
      * ユーザーは、全件取得APIを実行し、DBエラーのよりINTERNALエラーを検出できる。
      */
     @Test

@@ -7,6 +7,7 @@ import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 import java.util.function.Supplier;
@@ -28,10 +29,13 @@ import net.tomofiles.skysign.communication.domain.communication.CommunicationRep
 import net.tomofiles.skysign.communication.domain.communication.Generator;
 import net.tomofiles.skysign.communication.domain.communication.MissionId;
 import net.tomofiles.skysign.communication.domain.communication.component.CommunicationComponentDto;
+import net.tomofiles.skysign.communication.domain.vehicle.VehicleId;
 import net.tomofiles.skysign.communication.usecase.CommunicationUserService;
 import proto.skysign.CancelRequest;
 import proto.skysign.CancelResponse;
 import proto.skysign.CommandType;
+import proto.skysign.Empty;
+import proto.skysign.ListCommunicationsResponses;
 import proto.skysign.PullTelemetryRequest;
 import proto.skysign.PullTelemetryResponse;
 import proto.skysign.PushCommandRequest;
@@ -39,6 +43,7 @@ import proto.skysign.PushCommandResponse;
 import proto.skysign.StagingRequest;
 import proto.skysign.StagingResponse;
 
+import static net.tomofiles.skysign.communication.api.GrpcObjectMother.newNormalCommunicationGrpc;
 import static net.tomofiles.skysign.communication.api.GrpcObjectMother.newNormalPullTelemetryResponseGrpc;
 import static net.tomofiles.skysign.communication.domain.communication.CommunicationObjectMother.newNormalCommunication;
 import static net.tomofiles.skysign.communication.domain.communication.ComponentDtoObjectMother.newSingleCommandComponentDto;
@@ -48,6 +53,7 @@ public class CommunicationUserEndpointTests {
     private static final CommunicationId DEFAULT_COMMUNICATION_ID = new CommunicationId(UUID.randomUUID().toString());
     private static final CommandId DEFAULT_COMMAND_ID = new CommandId(UUID.randomUUID().toString());
     private static final String DEFAULT_COMMAND_TYPE = "ARM";
+    private static final VehicleId DEFAULT_VEHICLE_ID = new VehicleId(UUID.randomUUID().toString());
     private static final MissionId DEFAULT_MISSION_ID = new MissionId(UUID.randomUUID().toString());
     private static final LocalDateTime DEFAULT_COMMAND_TIME = LocalDateTime.of(2020, 1, 1, 0, 0, 0);
     private static final Supplier<Generator> DEFAULT_GENERATOR = () -> {
@@ -79,6 +85,87 @@ public class CommunicationUserEndpointTests {
     }
 
     /**
+     * ユーザーは、全件取得APIを実行し、すべてのCommunicationをリスト形式で取得できる。
+     */
+    @Test
+    public void listCommunicationsApi() {
+        when(repository.getAll())
+                .thenReturn(Arrays.asList(new Communication[] {
+                        newNormalCommunication(
+                                DEFAULT_COMMUNICATION_ID,
+                                DEFAULT_VEHICLE_ID,
+                                DEFAULT_MISSION_ID,
+                                DEFAULT_GENERATOR.get()),
+                        newNormalCommunication(
+                                DEFAULT_COMMUNICATION_ID,
+                                DEFAULT_VEHICLE_ID,
+                                DEFAULT_MISSION_ID,
+                                DEFAULT_GENERATOR.get()),
+                        newNormalCommunication(
+                                DEFAULT_COMMUNICATION_ID,
+                                DEFAULT_VEHICLE_ID,
+                                DEFAULT_MISSION_ID,
+                                DEFAULT_GENERATOR.get())
+                }));
+
+        Empty request = Empty.newBuilder().build();
+        StreamRecorder<ListCommunicationsResponses> responseObserver = StreamRecorder.create();
+        endpoint.listCommunications(request, responseObserver);
+
+        assertThat(responseObserver.getError()).isNull();
+        List<ListCommunicationsResponses> results = responseObserver.getValues();
+        assertThat(results).hasSize(1);
+        ListCommunicationsResponses response = results.get(0);
+        assertThat(response).isEqualTo(ListCommunicationsResponses.newBuilder()
+                .addCommunications(newNormalCommunicationGrpc(
+                        DEFAULT_COMMUNICATION_ID,
+                        DEFAULT_VEHICLE_ID,
+                        DEFAULT_MISSION_ID))
+                .addCommunications(newNormalCommunicationGrpc(
+                        DEFAULT_COMMUNICATION_ID,
+                        DEFAULT_VEHICLE_ID,
+                        DEFAULT_MISSION_ID))
+                .addCommunications(newNormalCommunicationGrpc(
+                        DEFAULT_COMMUNICATION_ID,
+                        DEFAULT_VEHICLE_ID,
+                        DEFAULT_MISSION_ID))
+                .build());
+    }
+
+    /**
+     * ユーザーは、全件取得APIを実行し、未存在により空のリストを取得できる。
+     */
+    @Test
+    public void listCommunicationsApiNotFoundError() {
+        Empty request = Empty.newBuilder().build();
+        StreamRecorder<ListCommunicationsResponses> responseObserver = StreamRecorder.create();
+        endpoint.listCommunications(request, responseObserver);
+
+        assertThat(responseObserver.getError()).isNull();
+        List<ListCommunicationsResponses> results = responseObserver.getValues();
+        assertThat(results).hasSize(1);
+        ListCommunicationsResponses response = results.get(0);
+        assertThat(response).isEqualTo(ListCommunicationsResponses.newBuilder().build());
+    }
+
+    /**
+     * ユーザーは、全件取得APIを実行し、DBエラーのよりINTERNALエラーを検出できる。
+     */
+    @Test
+    public void listCommunicationsApiInternalError() {
+        when(repository.getAll()).thenThrow(new IllegalStateException());
+
+        Empty request = Empty.newBuilder().build();
+        StreamRecorder<ListCommunicationsResponses> responseObserver = StreamRecorder.create();
+        endpoint.listCommunications(request, responseObserver);
+
+        assertThat(responseObserver.getError()).isNotNull();
+        assertThat(responseObserver.getError()).isInstanceOf(StatusRuntimeException.class);
+        assertThat(((StatusRuntimeException)responseObserver.getError()).getStatus().getCode())
+                .isEqualTo(Status.INTERNAL.getCode());
+    }
+
+    /**
      * ユーザーは、飛行コマンド送信APIを実行し、対象のCommunicationにコマンドを送信できる。
      */
     @Test
@@ -86,6 +173,7 @@ public class CommunicationUserEndpointTests {
         when(repository.getById(DEFAULT_COMMUNICATION_ID))
                 .thenReturn(newNormalCommunication(
                         DEFAULT_COMMUNICATION_ID,
+                        DEFAULT_VEHICLE_ID,
                         DEFAULT_MISSION_ID,
                         DEFAULT_GENERATOR.get()));
 
@@ -160,6 +248,7 @@ public class CommunicationUserEndpointTests {
         when(repository.getById(DEFAULT_COMMUNICATION_ID))
                 .thenReturn(newNormalCommunication(
                         DEFAULT_COMMUNICATION_ID,
+                        DEFAULT_VEHICLE_ID,
                         DEFAULT_MISSION_ID,
                         DEFAULT_GENERATOR.get()));
 
@@ -221,6 +310,7 @@ public class CommunicationUserEndpointTests {
         when(repository.getById(DEFAULT_COMMUNICATION_ID))
                 .thenReturn(newNormalCommunication(
                         DEFAULT_COMMUNICATION_ID,
+                        DEFAULT_VEHICLE_ID,
                         DEFAULT_MISSION_ID,
                         DEFAULT_GENERATOR.get()));
 
@@ -293,6 +383,7 @@ public class CommunicationUserEndpointTests {
         when(repository.getById(DEFAULT_COMMUNICATION_ID))
                 .thenReturn(newNormalCommunication(
                         DEFAULT_COMMUNICATION_ID,
+                        DEFAULT_VEHICLE_ID,
                         DEFAULT_MISSION_ID,
                         DEFAULT_GENERATOR.get()));
 

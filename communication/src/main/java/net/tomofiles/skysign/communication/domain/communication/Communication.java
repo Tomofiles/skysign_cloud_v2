@@ -11,6 +11,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import net.tomofiles.skysign.communication.domain.vehicle.VehicleId;
 
 @EqualsAndHashCode(of = {"id"})
 @ToString
@@ -21,8 +22,11 @@ public class Communication {
     private final Generator generator;
 
     @Getter
+    private final VehicleId vehicleId;
+
+    @Getter
     @Setter(value = AccessLevel.PACKAGE)
-    private MissionId missionId;
+    private MissionId missionId = null;
 
     @Getter(value = AccessLevel.PACKAGE)
     @Setter(value = AccessLevel.PACKAGE)
@@ -31,8 +35,9 @@ public class Communication {
     @Getter(value = AccessLevel.PACKAGE)
     private final List<Command> commands;
 
-    Communication(CommunicationId id, Generator generator) {
+    Communication(CommunicationId id, VehicleId vehicleId, Generator generator) {
         this.id = id;
+        this.vehicleId = vehicleId;
         this.commands = new ArrayList<>();
 
         this.generator = generator;

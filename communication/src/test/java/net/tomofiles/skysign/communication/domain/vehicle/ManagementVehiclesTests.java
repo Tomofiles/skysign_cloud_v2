@@ -122,6 +122,7 @@ public class ManagementVehiclesTests {
                 = new CommunicationIdChangedEvent(
                     null,
                     newCommId,
+                    DEFAULT_VEHICLE_ID,
                     DEFAULT_VERSION2
                 );
 
@@ -156,6 +157,7 @@ public class ManagementVehiclesTests {
                 = new CommunicationIdChangedEvent(
                     DEFAULT_COMMUNICATION_ID,
                     newCommId,
+                    DEFAULT_VEHICLE_ID,
                     DEFAULT_VERSION2
                 );
 

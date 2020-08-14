@@ -1,6 +1,7 @@
 package net.tomofiles.skysign.communication.infra.communication;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -47,6 +48,7 @@ public class CommunicationRepositoryImpl implements CommunicationRepository {
             commandsInDB.addAll(this.commandMapper.findByCommId(componentDto.getId()));
         }
 
+        communication.setVehicleId(componentDto.getVehicleId());
         communication.setMissionId(componentDto.getMissionId());
 
         telemetry.setLatitude(componentDto.getTelemetry().getLatitude());
@@ -107,6 +109,7 @@ public class CommunicationRepositoryImpl implements CommunicationRepository {
         return CommunicationFactory.assembleFrom(
                 new CommunicationComponentDto(
                         id.getId(),
+                        communication.getVehicleId(),
                         communication.getMissionId(),
                         new TelemetryComponentDto(
                                 telemetry.getLatitude(),
@@ -134,6 +137,48 @@ public class CommunicationRepositoryImpl implements CommunicationRepository {
 
     @Override
     public List<Communication> getAll() {
-        return null;
+        List<CommunicationRecord> commRecords = this.communicationMapper.findAll();
+
+        if (commRecords.isEmpty()) {
+            return Collections.emptyList();
+        }
+
+        List<Communication> communications = new ArrayList<>();
+        for (CommunicationRecord commRecord : commRecords) {
+
+            TelemetryRecord telemetry = this.telemetryMapper.find(commRecord.getId());
+            List<CommandRecord> commands = this.commandMapper.findByCommId(commRecord.getId());
+    
+            Communication communication = CommunicationFactory.assembleFrom(
+                    new CommunicationComponentDto(
+                            commRecord.getId(),
+                            commRecord.getVehicleId(),
+                            commRecord.getMissionId(),
+                            new TelemetryComponentDto(
+                                    telemetry.getLatitude(),
+                                    telemetry.getLongitude(),
+                                    telemetry.getAltitude(),
+                                    telemetry.getRelativeAltitude(),
+                                    telemetry.getSpeed(),
+                                    telemetry.isArmed(),
+                                    telemetry.getFlightMode(),
+                                    telemetry.getOriX(),
+                                    telemetry.getOriY(),
+                                    telemetry.getOriZ(),
+                                    telemetry.getOriW()),
+                            commands.stream()
+                                    .map(c -> new CommandComponentDto(
+                                        c.getId(),
+                                        c.getType(),
+                                        c.getTime()
+                                    ))
+                                    .collect(Collectors.toList())
+                        ),
+                    generator
+            );
+            communications.add(communication);
+        }
+
+        return communications;
     }
 }

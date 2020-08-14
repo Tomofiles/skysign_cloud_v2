@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -25,6 +26,7 @@ import net.tomofiles.skysign.communication.domain.communication.CommunicationId;
 import net.tomofiles.skysign.communication.domain.communication.Generator;
 import net.tomofiles.skysign.communication.domain.communication.MissionId;
 import net.tomofiles.skysign.communication.domain.communication.component.CommunicationComponentDto;
+import net.tomofiles.skysign.communication.domain.vehicle.VehicleId;
 
 import static net.tomofiles.skysign.communication.domain.communication.CommunicationObjectMother.newSingleCommandCommunication;
 import static net.tomofiles.skysign.communication.domain.communication.ComponentDtoObjectMother.newNormalCommunicationComponentDto;
@@ -37,6 +39,7 @@ import static net.tomofiles.skysign.communication.infra.communication.RecordObje
 public class CommunicationRepositoryTests {
 
     private static final CommunicationId DEFAULT_COMMUNICATION_ID = new CommunicationId(UUID.randomUUID().toString());
+    private static final VehicleId DEFAULT_VEHICLE_ID = new VehicleId(UUID.randomUUID().toString());
     private static final MissionId DEFAULT_MISSION_ID = new MissionId(UUID.randomUUID().toString());
     private static final CommandId DEFAULT_COMMAND_ID1 = new CommandId(UUID.randomUUID().toString());
     private static final CommandId DEFAULT_COMMAND_ID2 = new CommandId(UUID.randomUUID().toString());
@@ -109,6 +112,59 @@ public class CommunicationRepositoryTests {
     }
 
     /**
+     * リポジトリーからCommunicationエンティティをすべて取得する。
+     */
+    @Test
+    public void getAllCommunicationsTest() {
+        when(communicationMapper.findAll())
+                .thenReturn(Arrays.asList(new CommunicationRecord[] {
+                        newNormalCommunicationRecord(
+                                DEFAULT_COMMUNICATION_ID,
+                                DEFAULT_VEHICLE_ID,
+                                DEFAULT_MISSION_ID),
+                        newNormalCommunicationRecord(
+                                DEFAULT_COMMUNICATION_ID,
+                                DEFAULT_VEHICLE_ID,
+                                DEFAULT_MISSION_ID),
+                        newNormalCommunicationRecord(
+                                DEFAULT_COMMUNICATION_ID,
+                                DEFAULT_VEHICLE_ID,
+                                DEFAULT_MISSION_ID)
+                }));
+        when(telemetryMapper.find(DEFAULT_COMMUNICATION_ID.getId()))
+                .thenReturn(newNormalTelemetryRecord(DEFAULT_COMMUNICATION_ID));
+        when(commandMapper.findByCommId(DEFAULT_COMMUNICATION_ID.getId()))
+                .thenReturn(newSeveralCommandRecords(
+                        DEFAULT_COMMUNICATION_ID,
+                        DEFAULT_GENERATOR.get()));
+
+        List<Communication> communications = repository.getAll();
+
+        CommunicationComponentDto dto = CommunicationFactory.takeApart(communications.get(0));
+        CommunicationComponentDto expectDto = newNormalCommunicationComponentDto(
+                DEFAULT_COMMUNICATION_ID,
+                DEFAULT_VEHICLE_ID,
+                DEFAULT_MISSION_ID,
+                DEFAULT_GENERATOR.get());
+        
+        assertAll(
+            () -> assertThat(communications).hasSize(3),
+            () -> assertThat(dto).isEqualTo(expectDto)
+        );
+    }
+
+    /**
+     * リポジトリーからCommunicationエンティティを一つ取得する。<br>
+     * 対象のエンティティが存在しない場合、NULLが返却されることを検証する。
+     */
+    @Test
+    public void getAllNoCommunicationTest() {
+        List<Communication> communications = repository.getAll();
+
+        assertThat(communications).hasSize(0);
+    }
+
+    /**
      * リポジトリーからCommunicationエンティティを一つ取得する。
      */
     @Test
@@ -116,6 +172,7 @@ public class CommunicationRepositoryTests {
         when(communicationMapper.find(DEFAULT_COMMUNICATION_ID.getId()))
                 .thenReturn(newNormalCommunicationRecord(
                         DEFAULT_COMMUNICATION_ID,
+                        DEFAULT_VEHICLE_ID,
                         DEFAULT_MISSION_ID));
         when(telemetryMapper.find(DEFAULT_COMMUNICATION_ID.getId()))
                 .thenReturn(newNormalTelemetryRecord(
@@ -130,6 +187,7 @@ public class CommunicationRepositoryTests {
         CommunicationComponentDto dto = CommunicationFactory.takeApart(communication);
         CommunicationComponentDto expectDto = newNormalCommunicationComponentDto(
                 DEFAULT_COMMUNICATION_ID,
+                DEFAULT_VEHICLE_ID,
                 DEFAULT_MISSION_ID,
                 DEFAULT_GENERATOR.get());
 
@@ -155,12 +213,14 @@ public class CommunicationRepositoryTests {
     public void saveNewCommunicationTest() {
         repository.save(newSingleCommandCommunication(
                 DEFAULT_COMMUNICATION_ID,
+                DEFAULT_VEHICLE_ID,
                 DEFAULT_MISSION_ID,
                 DEFAULT_GENERATOR_SINGLE_1.get()));
 
         verify(communicationMapper, times(1))
                 .create(newNormalCommunicationRecord(
                         DEFAULT_COMMUNICATION_ID,
+                        DEFAULT_VEHICLE_ID,
                         DEFAULT_MISSION_ID));
         verify(telemetryMapper, times(1))
                 .create(newNormalTelemetryRecord(DEFAULT_COMMUNICATION_ID));
@@ -179,6 +239,7 @@ public class CommunicationRepositoryTests {
         when(communicationMapper.find(DEFAULT_COMMUNICATION_ID.getId()))
                 .thenReturn(newNormalCommunicationRecord(
                         DEFAULT_COMMUNICATION_ID,
+                        DEFAULT_VEHICLE_ID,
                         DEFAULT_MISSION_ID));
         when(telemetryMapper.find(DEFAULT_COMMUNICATION_ID.getId()))
                 .thenReturn(newEmptyTelemetryRecord(DEFAULT_COMMUNICATION_ID));
@@ -191,12 +252,14 @@ public class CommunicationRepositoryTests {
 
         repository.save(newSingleCommandCommunication(
                 DEFAULT_COMMUNICATION_ID,
+                DEFAULT_VEHICLE_ID,
                 DEFAULT_MISSION_ID,
                 DEFAULT_GENERATOR_SINGLE_2.get()));
 
         verify(communicationMapper, times(1))
                 .update(newNormalCommunicationRecord(
                         DEFAULT_COMMUNICATION_ID,
+                        DEFAULT_VEHICLE_ID,
                         DEFAULT_MISSION_ID));
         verify(telemetryMapper, times(1))
                 .update(newNormalTelemetryRecord(DEFAULT_COMMUNICATION_ID));

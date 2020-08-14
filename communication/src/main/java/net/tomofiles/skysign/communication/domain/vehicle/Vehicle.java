@@ -55,6 +55,6 @@ public class Vehicle {
         this.newVersion = this.generator.newVersion();
         this.publisher
                 .publish(
-                        new CommunicationIdChangedEvent(beforeId, id, this.newVersion));
+                        new CommunicationIdChangedEvent(beforeId, id, this.id, this.newVersion));
     }
 }

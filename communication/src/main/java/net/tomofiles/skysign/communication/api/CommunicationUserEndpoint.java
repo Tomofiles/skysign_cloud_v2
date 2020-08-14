@@ -8,6 +8,7 @@ import io.grpc.stub.StreamObserver;
 import lombok.AllArgsConstructor;
 import net.tomofiles.skysign.communication.api.dpo.CancelRequestDpoGrpc;
 import net.tomofiles.skysign.communication.api.dpo.CancelResponseDpoGrpc;
+import net.tomofiles.skysign.communication.api.dpo.ListCommunicationsResponsesDpoGrpc;
 import net.tomofiles.skysign.communication.api.dpo.PullTelemetryRequestDpoGrpc;
 import net.tomofiles.skysign.communication.api.dpo.PullTelemetryResponseDpoGrpc;
 import net.tomofiles.skysign.communication.api.dpo.PushCommandRequestDpoGrpc;
@@ -36,7 +37,20 @@ public class CommunicationUserEndpoint extends CommunicationUserServiceImplBase 
 
     @Override
     public void listCommunications(Empty request, StreamObserver<ListCommunicationsResponses> responseObserver) {
-        
+        ListCommunicationsResponsesDpoGrpc responsesDpo = new ListCommunicationsResponsesDpoGrpc();
+
+        try {
+            this.service.listCommunications(responsesDpo);
+        } catch (Exception e) {
+            responseObserver.onError(Status
+                    .INTERNAL
+                    .withCause(e)
+                    .asRuntimeException());
+            return;
+        }
+
+        responseObserver.onNext(responsesDpo.getGrpcResponse()); 
+        responseObserver.onCompleted();
     }
 
     @Override

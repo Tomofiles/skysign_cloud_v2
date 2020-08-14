@@ -6,15 +6,21 @@ import java.util.List;
 import net.tomofiles.skysign.communication.domain.communication.component.CommandComponentDto;
 import net.tomofiles.skysign.communication.domain.communication.component.CommunicationComponentDto;
 import net.tomofiles.skysign.communication.domain.communication.component.TelemetryComponentDto;
+import net.tomofiles.skysign.communication.domain.vehicle.VehicleId;
 
 public class ComponentDtoObjectMother {
 
     /**
      * テスト用CommunicationエンティティのDTOコンポーネントを生成する。
      */
-    public static CommunicationComponentDto newNormalCommunicationComponentDto(CommunicationId communicationId, MissionId missionId, Generator generator) {
+    public static CommunicationComponentDto newNormalCommunicationComponentDto(
+            CommunicationId communicationId,
+            VehicleId vehicleId,
+            MissionId missionId,
+            Generator generator) {
         return new CommunicationComponentDto(
                 communicationId.getId(),
+                vehicleId.getId(),
                 missionId.getId(),
                 newNormalTelemetryComponentDto(),
                 newSeveralCommandsComponentDto(generator)

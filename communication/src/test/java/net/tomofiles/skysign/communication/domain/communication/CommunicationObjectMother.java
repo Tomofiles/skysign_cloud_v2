@@ -4,13 +4,19 @@ import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 
+import net.tomofiles.skysign.communication.domain.vehicle.VehicleId;
+
 public class CommunicationObjectMother {
     
     /**
      * テスト用Communicationエンティティを生成する。
      */
-    public static Communication newNormalCommunication(CommunicationId communicationId, MissionId missionId, Generator generator) {
-        Communication communication = CommunicationFactory.newInstance(communicationId, generator);
+    public static Communication newNormalCommunication(
+            CommunicationId communicationId,
+            VehicleId vehicleId,
+            MissionId missionId,
+            Generator generator) {
+        Communication communication = CommunicationFactory.newInstance(communicationId, vehicleId, generator);
         communication.setMissionId(missionId);
         communication.setTelemetry(newNormalTelemetry());
         return communication;
@@ -19,8 +25,12 @@ public class CommunicationObjectMother {
     /**
      * 1件のCommandを持つテスト用Communicationエンティティを生成する。
      */
-    public static Communication newSingleCommandCommunication(CommunicationId communicationId, MissionId missionId, Generator generator) {
-        Communication communication = CommunicationFactory.newInstance(communicationId, generator);
+    public static Communication newSingleCommandCommunication(
+            CommunicationId communicationId,
+            VehicleId vehicleId,
+            MissionId missionId,
+            Generator generator) {
+        Communication communication = CommunicationFactory.newInstance(communicationId, vehicleId, generator);
         communication.setMissionId(missionId);
         communication.getCommands().addAll(newSingleCommands(generator, CommandType.ARM));
         communication.setTelemetry(newNormalTelemetry());
@@ -30,8 +40,12 @@ public class CommunicationObjectMother {
     /**
      * 複数件のCommandリストを持つテスト用Communicationエンティティを生成する。
      */
-    public static Communication newSeveralCommandsCommunication(CommunicationId communicationId, MissionId missionId, Generator generator) {
-        Communication communication = CommunicationFactory.newInstance(communicationId, generator);
+    public static Communication newSeveralCommandsCommunication(
+            CommunicationId communicationId,
+            VehicleId vehicleId,
+            MissionId missionId,
+            Generator generator) {
+        Communication communication = CommunicationFactory.newInstance(communicationId, vehicleId, generator);
         communication.setMissionId(missionId);
         communication.getCommands().addAll(newSeveralCommands(generator));
         communication.setTelemetry(newNormalTelemetry());

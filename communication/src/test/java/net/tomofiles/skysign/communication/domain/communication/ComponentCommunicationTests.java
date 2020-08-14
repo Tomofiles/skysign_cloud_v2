@@ -1,10 +1,10 @@
 package net.tomofiles.skysign.communication.domain.communication;
 
+import static com.google.common.truth.Truth.assertThat;
 import org.junit.jupiter.api.Test;
 
 import net.tomofiles.skysign.communication.domain.communication.component.CommunicationComponentDto;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import net.tomofiles.skysign.communication.domain.vehicle.VehicleId;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -17,10 +17,12 @@ import static net.tomofiles.skysign.communication.domain.communication.Communica
 import static net.tomofiles.skysign.communication.domain.communication.CommunicationObjectMother.newSeveralCommands;
 import static net.tomofiles.skysign.communication.domain.communication.CommunicationObjectMother.newNormalTelemetry;
 import static net.tomofiles.skysign.communication.domain.communication.ComponentDtoObjectMother.newNormalCommunicationComponentDto;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 public class ComponentCommunicationTests {
     
     private static final CommunicationId DEFAULT_COMMUNICATION_ID = new CommunicationId(UUID.randomUUID().toString());
+    private static final VehicleId DEFAULT_VEHICLE_ID = new VehicleId(UUID.randomUUID().toString());
     private static final MissionId DEFAULT_MISSION_ID = new MissionId(UUID.randomUUID().toString());
     private static final CommandId DEFAULT_COMMAND_ID1 = new CommandId(UUID.randomUUID().toString());
     private static final CommandId DEFAULT_COMMAND_ID2 = new CommandId(UUID.randomUUID().toString());
@@ -59,16 +61,19 @@ public class ComponentCommunicationTests {
         Communication communication = CommunicationFactory.assembleFrom(
                 newNormalCommunicationComponentDto(
                         DEFAULT_COMMUNICATION_ID,
+                        DEFAULT_VEHICLE_ID,
                         DEFAULT_MISSION_ID,
                         DEFAULT_GENERATOR.get()
                 ),
                 DEFAULT_GENERATOR.get()
         );
 
-        assertEquals(communication.getId(), DEFAULT_COMMUNICATION_ID);
-        assertEquals(communication.getMissionId(), DEFAULT_MISSION_ID);
-        assertEquals(communication.getCommands(), newSeveralCommands(DEFAULT_GENERATOR.get()));
-        assertEquals(communication.getTelemetry(), newNormalTelemetry());
+        assertAll(
+            () -> assertThat(communication.getId()).isEqualTo(DEFAULT_COMMUNICATION_ID),
+            () -> assertThat(communication.getMissionId()).isEqualTo(DEFAULT_MISSION_ID),
+            () -> assertThat(communication.getCommands()).isEqualTo(newSeveralCommands(DEFAULT_GENERATOR.get())),
+            () -> assertThat(communication.getTelemetry()).isEqualTo(newNormalTelemetry())
+        );
     }
 
     /**
@@ -79,15 +84,18 @@ public class ComponentCommunicationTests {
         CommunicationComponentDto dto = CommunicationFactory.takeApart(
                 newSeveralCommandsCommunication(
                         DEFAULT_COMMUNICATION_ID,
+                        DEFAULT_VEHICLE_ID,
                         DEFAULT_MISSION_ID,
                         DEFAULT_GENERATOR.get()
                 )
         );
 
-        assertEquals(dto, newNormalCommunicationComponentDto(
-            DEFAULT_COMMUNICATION_ID,
-            DEFAULT_MISSION_ID,
-            DEFAULT_GENERATOR.get()
-        ));
+        assertThat(dto)
+                .isEqualTo(newNormalCommunicationComponentDto(
+                        DEFAULT_COMMUNICATION_ID,
+                        DEFAULT_VEHICLE_ID,
+                        DEFAULT_MISSION_ID,
+                        DEFAULT_GENERATOR.get()
+                ));
     }
 }
