@@ -4,11 +4,11 @@ import java.util.List;
 import java.util.NoSuchElementException;
 
 import org.lognet.springboot.grpc.GRpcService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
 import io.grpc.Status;
 import io.grpc.stub.StreamObserver;
+import lombok.AllArgsConstructor;
 import net.tomofiles.skysign.communication.usecase.CommunicateEdgeService;
 import net.tomofiles.skysign.communication.usecase.dto.ControlCommandDto;
 import net.tomofiles.skysign.communication.usecase.dto.TelemetryDto;
@@ -21,10 +21,10 @@ import proto.skysign.CommunicationEdgeServiceGrpc.CommunicationEdgeServiceImplBa
 
 @GRpcService
 @Controller
+@AllArgsConstructor
 public class CommunicateEdgeEndpoint extends CommunicationEdgeServiceImplBase {
 
-    @Autowired
-    private CommunicateEdgeService service;
+    private final CommunicateEdgeService service;
 
     @Override
     public void pushTelemetry(PushTelemetryRequest request, StreamObserver<PushTelemetryResponse> responseObserver) {

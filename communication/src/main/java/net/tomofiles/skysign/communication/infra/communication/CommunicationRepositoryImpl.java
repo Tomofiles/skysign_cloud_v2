@@ -131,4 +131,9 @@ public class CommunicationRepositoryImpl implements CommunicationRepository {
                 generator
         );
     }
+
+    @Override
+    public List<Communication> getAll() {
+        return null;
+    }
 }

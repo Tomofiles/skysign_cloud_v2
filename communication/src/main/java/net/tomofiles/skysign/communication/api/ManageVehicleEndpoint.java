@@ -18,13 +18,10 @@ import net.tomofiles.skysign.communication.api.dpo.ListVehiclesResponsesDpoGrpc;
 import net.tomofiles.skysign.communication.api.dpo.UpdateVehicleRequestDpoGrpc;
 import net.tomofiles.skysign.communication.api.dpo.UpdateVehicleResponseDpoGrpc;
 import net.tomofiles.skysign.communication.usecase.ManageVehicleService;
-import proto.skysign.CreateVehicleRequest;
 import proto.skysign.DeleteVehicleRequest;
 import proto.skysign.Empty;
 import proto.skysign.GetVehicleRequest;
-import proto.skysign.ListVehiclesRequest;
 import proto.skysign.ListVehiclesResponses;
-import proto.skysign.UpdateVehicleRequest;
 import proto.skysign.Vehicle;
 import proto.skysign.ManageVehicleServiceGrpc.ManageVehicleServiceImplBase;
 
@@ -36,7 +33,7 @@ public class ManageVehicleEndpoint extends ManageVehicleServiceImplBase {
     private final ManageVehicleService service;
 
     @Override
-    public void listVehicles(ListVehiclesRequest request, StreamObserver<ListVehiclesResponses> responseObserver) {
+    public void listVehicles(Empty request, StreamObserver<ListVehiclesResponses> responseObserver) {
         ListVehiclesResponsesDpoGrpc responsesDpo = new ListVehiclesResponsesDpoGrpc();
 
         try {
@@ -82,7 +79,7 @@ public class ManageVehicleEndpoint extends ManageVehicleServiceImplBase {
     }
 
     @Override
-    public void createVehicle(CreateVehicleRequest request, StreamObserver<Vehicle> responseObserver) {
+    public void createVehicle(Vehicle request, StreamObserver<Vehicle> responseObserver) {
         CreateVehicleRequestDpoGrpc requestDpo = new CreateVehicleRequestDpoGrpc(request);
         CreateVehicleResponseDpoGrpc responsesDpo = new CreateVehicleResponseDpoGrpc();
 
@@ -101,7 +98,7 @@ public class ManageVehicleEndpoint extends ManageVehicleServiceImplBase {
     }
 
     @Override
-    public void updateVehicle(UpdateVehicleRequest request, StreamObserver<Vehicle> responseObserver) {
+    public void updateVehicle(Vehicle request, StreamObserver<Vehicle> responseObserver) {
         UpdateVehicleRequestDpoGrpc requestDpo = new UpdateVehicleRequestDpoGrpc(request);
         UpdateVehicleResponseDpoGrpc responsesDpo = new UpdateVehicleResponseDpoGrpc();
 

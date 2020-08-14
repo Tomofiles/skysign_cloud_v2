@@ -78,7 +78,7 @@ public class Communication {
                 .collect(Collectors.toList());
     }
 
-    public void standBy(MissionId missionId) {
+    public void staging(MissionId missionId) {
         this.missionId = missionId;
     }
 

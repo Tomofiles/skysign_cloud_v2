@@ -28,17 +28,13 @@ import net.tomofiles.skysign.communication.domain.vehicle.VehicleRepository;
 import net.tomofiles.skysign.communication.domain.vehicle.Version;
 import net.tomofiles.skysign.communication.event.Publisher;
 import net.tomofiles.skysign.communication.usecase.ManageVehicleService;
-import proto.skysign.CreateVehicleRequest;
 import proto.skysign.DeleteVehicleRequest;
 import proto.skysign.Empty;
 import proto.skysign.GetVehicleRequest;
-import proto.skysign.ListVehiclesRequest;
 import proto.skysign.ListVehiclesResponses;
-import proto.skysign.UpdateVehicleRequest;
 
 import static net.tomofiles.skysign.communication.api.GrpcObjectMother.newNormalVehicleGrpc;
-import static net.tomofiles.skysign.communication.api.GrpcObjectMother.newNormalCreateVehicleRequestGrpc;
-import static net.tomofiles.skysign.communication.api.GrpcObjectMother.newNormalUpdateVehicleRequestGrpc;
+import static net.tomofiles.skysign.communication.api.GrpcObjectMother.newNoIdVehicleGrpc;
 import static net.tomofiles.skysign.communication.domain.vehicle.VehicleObjectMother.newNormalVehicle;
 
 public class ManageVehicleEndpointTests {
@@ -99,8 +95,7 @@ public class ManageVehicleEndpointTests {
             newNormalVehicle(DEFAULT_VEHICLE_ID, DEFAULT_VERSION1, DEFAULT_GENERATOR.get())
         }));
 
-        ListVehiclesRequest request = ListVehiclesRequest.newBuilder()
-                .build();
+        Empty request = Empty.newBuilder().build();
         StreamRecorder<ListVehiclesResponses> responseObserver = StreamRecorder.create();
         endpoint.listVehicles(request, responseObserver);
 
@@ -122,8 +117,7 @@ public class ManageVehicleEndpointTests {
     public void getAllApiInternalError() {
         when(repository.getAll()).thenThrow(new IllegalStateException());
 
-        ListVehiclesRequest request = ListVehiclesRequest.newBuilder()
-                .build();
+        Empty request = Empty.newBuilder().build();
         StreamRecorder<ListVehiclesResponses> responseObserver = StreamRecorder.create();
         endpoint.listVehicles(request, responseObserver);
 
@@ -201,7 +195,7 @@ public class ManageVehicleEndpointTests {
         when(generator.newVehicleId()).thenReturn(DEFAULT_VEHICLE_ID);
         when(generator.newVersion()).thenReturn(DEFAULT_VERSION1);
 
-        CreateVehicleRequest request = newNormalCreateVehicleRequestGrpc();
+        proto.skysign.Vehicle request = newNoIdVehicleGrpc();
         StreamRecorder<proto.skysign.Vehicle> responseObserver = StreamRecorder.create();
         endpoint.createVehicle(request, responseObserver);
 
@@ -225,7 +219,7 @@ public class ManageVehicleEndpointTests {
     public void createApiInternalError() {
         doThrow(new IllegalStateException()).when(repository).save(any());
 
-        CreateVehicleRequest request = newNormalCreateVehicleRequestGrpc();
+        proto.skysign.Vehicle request = newNoIdVehicleGrpc();
         StreamRecorder<proto.skysign.Vehicle> responseObserver = StreamRecorder.create();
         endpoint.createVehicle(request, responseObserver);
 
@@ -249,7 +243,7 @@ public class ManageVehicleEndpointTests {
         when(generator.newVehicleId()).thenReturn(DEFAULT_VEHICLE_ID);
         when(generator.newVersion()).thenReturn(DEFAULT_VERSION1);
 
-        UpdateVehicleRequest request = newNormalUpdateVehicleRequestGrpc(DEFAULT_VEHICLE_ID);
+        proto.skysign.Vehicle request = newNormalVehicleGrpc(DEFAULT_VEHICLE_ID);
         StreamRecorder<proto.skysign.Vehicle> responseObserver = StreamRecorder.create();
         endpoint.updateVehicle(request, responseObserver);
 
@@ -271,7 +265,7 @@ public class ManageVehicleEndpointTests {
      */
     @Test
     public void updateApiNotFoundError() {
-        UpdateVehicleRequest request = newNormalUpdateVehicleRequestGrpc(DEFAULT_VEHICLE_ID);
+        proto.skysign.Vehicle request = newNormalVehicleGrpc(DEFAULT_VEHICLE_ID);
         StreamRecorder<proto.skysign.Vehicle> responseObserver = StreamRecorder.create();
         endpoint.updateVehicle(request, responseObserver);
 
@@ -293,7 +287,7 @@ public class ManageVehicleEndpointTests {
                         DEFAULT_GENERATOR.get()));
         doThrow(new IllegalStateException()).when(repository).save(any());
 
-        UpdateVehicleRequest request = newNormalUpdateVehicleRequestGrpc(DEFAULT_VEHICLE_ID);
+        proto.skysign.Vehicle request = newNormalVehicleGrpc(DEFAULT_VEHICLE_ID);
         StreamRecorder<proto.skysign.Vehicle> responseObserver = StreamRecorder.create();
         endpoint.updateVehicle(request, responseObserver);
 

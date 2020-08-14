@@ -52,6 +52,17 @@ public class ComponentDtoObjectMother {
     }
 
     /**
+     * 1
+     * 件のテスト用CommandオブジェクトのDTOコンポーネントを生成する。
+     */
+    public static CommandComponentDto newSingleCommandComponentDto(Generator generator) {
+        return new CommandComponentDto(
+                generator.newCommandId().getId(),
+                CommandType.ARM.name(),
+                generator.newTime());
+    }
+
+    /**
      * 複数件のテスト用CommandオブジェクトのDTOコンポーネントのリストを生成する。
      */
     public static List<CommandComponentDto> newSeveralCommandsComponentDto(Generator generator) {
