@@ -133,6 +133,55 @@ public class CommunicationUserEndpointTests {
     }
 
     /**
+     * ユーザーは、全件取得APIを実行し、すべてのCommunicationをリスト形式で取得できる。<br>
+     * Communicationはすべて未ステージングであり、MissionIdが空であること。
+     */
+    @Test
+    public void listCommunicationsNotStagingApi() {
+        when(repository.getAll())
+                .thenReturn(Arrays.asList(new Communication[] {
+                        newNormalCommunication(
+                                DEFAULT_COMMUNICATION_ID,
+                                DEFAULT_VEHICLE_ID,
+                                null,
+                                DEFAULT_GENERATOR.get()),
+                        newNormalCommunication(
+                                DEFAULT_COMMUNICATION_ID,
+                                DEFAULT_VEHICLE_ID,
+                                null,
+                                DEFAULT_GENERATOR.get()),
+                        newNormalCommunication(
+                                DEFAULT_COMMUNICATION_ID,
+                                DEFAULT_VEHICLE_ID,
+                                null,
+                                DEFAULT_GENERATOR.get())
+                }));
+
+        Empty request = Empty.newBuilder().build();
+        StreamRecorder<ListCommunicationsResponses> responseObserver = StreamRecorder.create();
+        endpoint.listCommunications(request, responseObserver);
+
+        assertThat(responseObserver.getError()).isNull();
+        List<ListCommunicationsResponses> results = responseObserver.getValues();
+        assertThat(results).hasSize(1);
+        ListCommunicationsResponses response = results.get(0);
+        assertThat(response).isEqualTo(ListCommunicationsResponses.newBuilder()
+                .addCommunications(newNormalCommunicationGrpc(
+                        DEFAULT_COMMUNICATION_ID,
+                        DEFAULT_VEHICLE_ID,
+                        null))
+                .addCommunications(newNormalCommunicationGrpc(
+                        DEFAULT_COMMUNICATION_ID,
+                        DEFAULT_VEHICLE_ID,
+                        null))
+                .addCommunications(newNormalCommunicationGrpc(
+                        DEFAULT_COMMUNICATION_ID,
+                        DEFAULT_VEHICLE_ID,
+                        null))
+                .build());
+    }
+
+    /**
      * ユーザーは、全件取得APIを実行し、未存在により空のリストを取得できる。
      */
     @Test

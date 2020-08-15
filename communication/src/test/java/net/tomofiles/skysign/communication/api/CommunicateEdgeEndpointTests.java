@@ -320,6 +320,36 @@ public class CommunicateEdgeEndpointTests {
     }
 
     /**
+     * エッジは、１件取得APIを実行し、対象のCommunicationを取得できる。<br>
+     * Communicationはすべて未ステージングであり、MissionIdが空であること。
+     */
+    @Test
+    public void getCommunicationNotStagingApi() {
+        when(repository.getById(DEFAULT_COMMUNICATION_ID))
+                .thenReturn(newNormalCommunication(
+                        DEFAULT_COMMUNICATION_ID,
+                        DEFAULT_VEHICLE_ID,
+                        null,
+                        DEFAULT_GENERATOR.get()));
+
+        GetCommunicationRequest request = GetCommunicationRequest.newBuilder()
+                .setId(DEFAULT_COMMUNICATION_ID.getId())
+                .build();
+        StreamRecorder<proto.skysign.common.Communication> responseObserver = StreamRecorder.create();
+        endpoint.getCommunication(request, responseObserver);
+
+        assertThat(responseObserver.getError()).isNull();
+        List<proto.skysign.common.Communication> results = responseObserver.getValues();
+        assertThat(results).hasSize(1);
+        proto.skysign.common.Communication response = results.get(0);
+        assertThat(response).isEqualTo(proto.skysign.common.Communication.newBuilder()
+                .setId(DEFAULT_COMMUNICATION_ID.getId())
+                .setVehicleId(DEFAULT_VEHICLE_ID.getId())
+                // .setMissionId(DEFAULT_MISSION_ID.getId()) // MissionIdは空
+                .build());
+    }
+
+    /**
      * エッジは、１件取得APIを実行し、未存在のID指定によりNOT_FOUNDエラーを検出できる。
      */
     @Test

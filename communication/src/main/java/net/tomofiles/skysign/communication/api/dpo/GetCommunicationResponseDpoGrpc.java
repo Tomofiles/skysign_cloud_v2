@@ -1,6 +1,8 @@
 package net.tomofiles.skysign.communication.api.dpo;
 
 import net.tomofiles.skysign.communication.domain.communication.Communication;
+import net.tomofiles.skysign.communication.domain.communication.CommunicationFactory;
+import net.tomofiles.skysign.communication.domain.communication.component.CommunicationComponentDto;
 import net.tomofiles.skysign.communication.service.dpo.GetCommunicationResponseDpo;
 
 public class GetCommunicationResponseDpoGrpc implements GetCommunicationResponseDpo {
@@ -17,10 +19,17 @@ public class GetCommunicationResponseDpoGrpc implements GetCommunicationResponse
     }
 
     public proto.skysign.common.Communication getGrpcResponse() {
-        return proto.skysign.common.Communication.newBuilder()
-                .setId(communication.getId().getId())
-                .setVehicleId(communication.getVehicleId().getId())
-                .setMissionId(communication.getMissionId().getId())
+        CommunicationComponentDto dto = CommunicationFactory.takeApart(communication);
+        proto.skysign.common.Communication nonMissionIdComm =  proto.skysign.common.Communication.newBuilder()
+                .setId(dto.getId())
+                .setVehicleId(dto.getVehicleId())
                 .build();
+        if (dto.getMissionId() == null) {
+            return nonMissionIdComm;
+        } else {
+            return proto.skysign.common.Communication.newBuilder(nonMissionIdComm)
+                    .setMissionId(dto.getMissionId())
+                    .build();
+        }
     }
 }

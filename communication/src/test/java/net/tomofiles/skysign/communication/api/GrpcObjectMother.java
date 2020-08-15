@@ -35,11 +35,17 @@ public class GrpcObjectMother {
      * テスト用Communicationオブジェクトを生成する。
      */
     public static Communication newNormalCommunicationGrpc(CommunicationId communicationId, VehicleId vehicleId, MissionId missionId) {
-        return Communication.newBuilder()
+        Communication nonMissionIdComm =  Communication.newBuilder()
                 .setId(communicationId.getId())
                 .setVehicleId(vehicleId.getId())
-                .setMissionId(missionId.getId())
                 .build();
+        if (missionId == null) {
+            return nonMissionIdComm;
+        } else {
+            return Communication.newBuilder(nonMissionIdComm)
+                    .setMissionId(missionId.getId())
+                    .build();
+        }
     }
 
     /**
