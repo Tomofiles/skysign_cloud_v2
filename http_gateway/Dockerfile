@@ -9,7 +9,9 @@ FROM alpine:latest
 
 WORKDIR /app/
 
-COPY --from=builder /go/bin/vehicle-user-gateway .
-COPY --from=builder /go/bin/mission-user-gateway .
-COPY --from=builder /go/bin/helper-user-gateway .
-COPY --from=builder /go/bin/comm-edge-gateway .
+EXPOSE 5000
+
+COPY --from=builder /go/bin/vehicle-gateway .
+COPY --from=builder /go/bin/mission-gateway .
+COPY --from=builder /go/bin/helper-gateway .
+COPY --from=builder /go/bin/comm-gateway .

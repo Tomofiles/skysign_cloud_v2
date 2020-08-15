@@ -7,7 +7,7 @@ import net.tomofiles.skysign.mission.domain.mission.MissionId;
 import net.tomofiles.skysign.mission.domain.mission.Navigation;
 import net.tomofiles.skysign.mission.domain.mission.Speed;
 import net.tomofiles.skysign.mission.service.dpo.UpdateMissionRequestDpo;
-import proto.skysign.Mission;
+import proto.skysign.common.Mission;
 
 @RequiredArgsConstructor
 public class UpdateMissionRequestDpoGrpc implements UpdateMissionRequestDpo {

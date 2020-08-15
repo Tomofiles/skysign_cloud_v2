@@ -16,8 +16,8 @@ public class GetVehicleResponseDpoGrpc implements GetVehicleResponseDpo {
         return this.vehicle == null;
     }
 
-    public proto.skysign.Vehicle getGrpcResponse() {
-        return proto.skysign.Vehicle.newBuilder()
+    public proto.skysign.common.Vehicle getGrpcResponse() {
+        return proto.skysign.common.Vehicle.newBuilder()
                 .setId(vehicle.getId().getId())
                 .setName(vehicle.getVehicleName())
                 .setCommId(vehicle.getCommId().getId())

@@ -19,11 +19,10 @@ import net.tomofiles.skysign.mission.api.dpo.UpdateMissionRequestDpoGrpc;
 import net.tomofiles.skysign.mission.api.dpo.UpdateMissionResponseDpoGrpc;
 import net.tomofiles.skysign.mission.service.ManageMissionService;
 import proto.skysign.DeleteMissionRequest;
-import proto.skysign.Empty;
+import proto.skysign.common.Empty;
 import proto.skysign.GetMissionRequest;
-import proto.skysign.ListMissionsRequest;
 import proto.skysign.ListMissionsResponses;
-import proto.skysign.Mission;
+import proto.skysign.common.Mission;
 import proto.skysign.ManageMissionServiceGrpc.ManageMissionServiceImplBase;
 
 @GRpcService
@@ -34,7 +33,7 @@ public class ManageMissionEndpoint extends ManageMissionServiceImplBase {
     private final ManageMissionService manageMissionService;
 
     @Override
-    public void listMissions(ListMissionsRequest request, StreamObserver<ListMissionsResponses> responseObserver) {
+    public void listMissions(Empty request, StreamObserver<ListMissionsResponses> responseObserver) {
         ListMissionsResponsesDpoGrpc responsesDpo = new ListMissionsResponsesDpoGrpc();
 
         try {

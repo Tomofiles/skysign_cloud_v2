@@ -3,10 +3,10 @@ package net.tomofiles.skysign.communication.api;
 import net.tomofiles.skysign.communication.domain.communication.CommunicationId;
 import net.tomofiles.skysign.communication.domain.communication.MissionId;
 import net.tomofiles.skysign.communication.domain.vehicle.VehicleId;
-import proto.skysign.Communication;
+import proto.skysign.common.Communication;
 import proto.skysign.PullTelemetryResponse;
-import proto.skysign.Telemetry;
-import proto.skysign.Vehicle;
+import proto.skysign.common.Telemetry;
+import proto.skysign.common.Vehicle;
 
 public class GrpcObjectMother {
 

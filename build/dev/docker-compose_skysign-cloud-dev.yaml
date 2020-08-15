@@ -32,8 +32,6 @@ services:
     environment:
      - db.host=skysign-communication-db
     command: java -cp app:app/lib/* net.tomofiles.skysign.communication.CommunicationApplication
-    ports:
-      - 50011:5001
     depends_on:
       - skysign-communication-db-for-debugging
 
@@ -46,8 +44,6 @@ services:
     environment:
      - db.host=skysign-mission-db
     command: java -cp app:app/lib/* net.tomofiles.skysign.mission.MissionApplication
-    ports:
-      - 50012:5001
     depends_on:
       - skysign-mission-db-for-debugging
 
@@ -58,56 +54,46 @@ services:
       context: ../../helper-api
       dockerfile: Dockerfile
     command: /app/helper-user-api
-    ports:
-      - 50013:5001
 
-  skysign-communication-user-gateway-for-debugging:
-    container_name: skysign-communication-user-gateway
-    hostname: skysign-communication-user-gateway
+  skysign-communication-gateway-for-debugging:
+    container_name: skysign-communication-gateway
+    hostname: skysign-communication-gateway
     build:
       context: ../../http_gateway
       dockerfile: Dockerfile
-    command: /app/vehicle-user-gateway -backend_host skysign-communication-backend -backend_port 5001
-    ports:
-      - 8888:5000
+    command: /app/comm-gateway -backend_host skysign-communication-backend -backend_port 5001
     depends_on:
       - skysign-communication-backend-for-debugging
 
-  skysign-mission-user-gateway-for-debugging:
-    container_name: skysign-mission-user-gateway
-    hostname: skysign-mission-user-gateway
+  skysign-vehicle-gateway-for-debugging:
+    container_name: skysign-vehicle-gateway
+    hostname: skysign-vehicle-gateway
     build:
       context: ../../http_gateway
       dockerfile: Dockerfile
-    command: /app/mission-user-gateway -backend_host skysign-mission-backend -backend_port 5001
-    ports:
-      - 8887:5000
+    command: /app/vehicle-gateway -backend_host skysign-communication-backend -backend_port 5001
+    depends_on:
+      - skysign-communication-backend-for-debugging
+
+  skysign-mission-gateway-for-debugging:
+    container_name: skysign-mission-gateway
+    hostname: skysign-mission-gateway
+    build:
+      context: ../../http_gateway
+      dockerfile: Dockerfile
+    command: /app/mission-gateway -backend_host skysign-mission-backend -backend_port 5001
     depends_on:
       - skysign-mission-backend-for-debugging
 
-  skysign-helper-user-gateway-for-debugging:
-    container_name: skysign-helper-user-gateway
-    hostname: skysign-helper-user-gateway
+  skysign-helper-gateway-for-debugging:
+    container_name: skysign-helper-gateway
+    hostname: skysign-helper-gateway
     build:
       context: ../../http_gateway
       dockerfile: Dockerfile
-    command: /app/helper-user-gateway -backend_host skysign-helper-backend -backend_port 5001
-    ports:
-      - 8886:5000
+    command: /app/helper-gateway -backend_host skysign-helper-backend -backend_port 5001
     depends_on:
       - skysign-helper-backend-for-debugging
-
-  skysign-communication-edge-gateway-for-debugging:
-    container_name: skysign-communication-edge-gateway
-    hostname: skysign-communication-edge-gateway
-    build:
-      context: ../../http_gateway
-      dockerfile: Dockerfile
-    command: /app/comm-edge-gateway -backend_host skysign-communication-backend -backend_port 5001
-    ports:
-      - 8889:5000
-    depends_on:
-      - skysign-communication-backend-for-debugging
 
   skysign-frontend-for-debugging:
     container_name: skysign-cloud-frontend
@@ -116,19 +102,19 @@ services:
       context: ../../client
       dockerfile: Dockerfile
 
-  skysign-gw-for-debugging:
-    container_name: skysign-cloud-user-gw
-    hostname: skysign-cloud-user-gw
+  skysign-cloud-gw-for-debugging:
+    container_name: skysign-cloud-gw
+    hostname: skysign-cloud-gw
     image: nginx:alpine
     volumes:
-      - ../../skysign-gw/nginx.conf:/etc/nginx/nginx.conf
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
     ports:
       - 8080:80
     depends_on:
-      - skysign-communication-user-gateway-for-debugging
-      - skysign-mission-user-gateway-for-debugging
-      - skysign-communication-edge-gateway-for-debugging
-      - skysign-helper-user-gateway-for-debugging
+      - skysign-communication-gateway-for-debugging
+      - skysign-vehicle-gateway-for-debugging
+      - skysign-mission-gateway-for-debugging
+      - skysign-helper-gateway-for-debugging
       - skysign-frontend-for-debugging
 
 networks:

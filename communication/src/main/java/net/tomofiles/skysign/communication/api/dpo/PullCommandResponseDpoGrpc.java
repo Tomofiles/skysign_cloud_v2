@@ -35,7 +35,7 @@ public class PullCommandResponseDpoGrpc implements PullCommandResponseDpo {
         return proto.skysign.PullCommandResponse.newBuilder()
                 .setId(request.getId())
                 .setCommandId(request.getCommandId())
-                .setType(proto.skysign.CommandType.valueOf(commandType.name()))
+                .setType(proto.skysign.common.CommandType.valueOf(commandType.name()))
                 .build();
     }
 }

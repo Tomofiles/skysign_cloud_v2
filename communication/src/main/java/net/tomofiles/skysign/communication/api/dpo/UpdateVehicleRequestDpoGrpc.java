@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import net.tomofiles.skysign.communication.domain.communication.CommunicationId;
 import net.tomofiles.skysign.communication.domain.vehicle.VehicleId;
 import net.tomofiles.skysign.communication.service.dpo.UpdateVehicleRequestDpo;
-import proto.skysign.Vehicle;
+import proto.skysign.common.Vehicle;
 
 @RequiredArgsConstructor
 public class UpdateVehicleRequestDpoGrpc implements UpdateVehicleRequestDpo {

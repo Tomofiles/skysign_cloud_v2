@@ -21,13 +21,13 @@ public class ListMissionsResponsesDpoGrpc implements ListMissionsResponsesDpo {
     }
 
     public proto.skysign.ListMissionsResponses getGrpcResponse() {
-        List<proto.skysign.Mission> r = this.missions.stream().map(mission -> {
-            return proto.skysign.Mission.newBuilder()
+        List<proto.skysign.common.Mission> r = this.missions.stream().map(mission -> {
+            return proto.skysign.common.Mission.newBuilder()
                     .setId(mission.getId().getId())
                     .setName(mission.getMissionName())
                     .setTakeoffPointGroundHeight(mission.getNavigation().getTakeoffPointGroundHeight().getHeightM())
                     .addAllItems(mission.getNavigation().getWaypoints().stream().map(waypoint -> {
-                        return proto.skysign.MissionItem.newBuilder()
+                        return proto.skysign.common.MissionItem.newBuilder()
                                 .setLatitude(waypoint.getLatitude())
                                 .setLongitude(waypoint.getLongitude())
                                 .setRelativeHeight(waypoint.getRelativeHeightM())

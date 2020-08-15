@@ -19,10 +19,10 @@ import net.tomofiles.skysign.communication.api.dpo.UpdateVehicleRequestDpoGrpc;
 import net.tomofiles.skysign.communication.api.dpo.UpdateVehicleResponseDpoGrpc;
 import net.tomofiles.skysign.communication.service.ManageVehicleService;
 import proto.skysign.DeleteVehicleRequest;
-import proto.skysign.Empty;
+import proto.skysign.common.Empty;
 import proto.skysign.GetVehicleRequest;
 import proto.skysign.ListVehiclesResponses;
-import proto.skysign.Vehicle;
+import proto.skysign.common.Vehicle;
 import proto.skysign.ManageVehicleServiceGrpc.ManageVehicleServiceImplBase;
 
 @GRpcService

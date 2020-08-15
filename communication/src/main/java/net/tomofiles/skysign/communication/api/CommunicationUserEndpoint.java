@@ -18,7 +18,7 @@ import net.tomofiles.skysign.communication.api.dpo.StagingResponseDpoGrpc;
 import net.tomofiles.skysign.communication.service.CommunicationUserService;
 import proto.skysign.CancelRequest;
 import proto.skysign.CancelResponse;
-import proto.skysign.Empty;
+import proto.skysign.common.Empty;
 import proto.skysign.ListCommunicationsResponses;
 import proto.skysign.PullTelemetryRequest;
 import proto.skysign.PullTelemetryResponse;

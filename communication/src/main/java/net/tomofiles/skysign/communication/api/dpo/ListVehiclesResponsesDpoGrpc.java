@@ -21,9 +21,9 @@ public class ListVehiclesResponsesDpoGrpc implements ListVehiclesResponsesDpo {
     }
 
     public proto.skysign.ListVehiclesResponses getGrpcResponse() {
-        List<proto.skysign.Vehicle> r = this.vehicles.stream()
+        List<proto.skysign.common.Vehicle> r = this.vehicles.stream()
                 .map(vehicle -> {
-                    return proto.skysign.Vehicle.newBuilder()
+                    return proto.skysign.common.Vehicle.newBuilder()
                             .setId(vehicle.getId().getId())
                             .setName(vehicle.getVehicleName())
                             .setCommId(vehicle.getCommId().getId())

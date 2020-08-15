@@ -10,7 +10,7 @@ option java_multiple_files = true;
 option go_package = ".;skysign_proto";
 
 service ManageVehicleService {
-    rpc ListVehicles (ListVehiclesRequest) returns (ListVehiclesResponses) {
+    rpc ListVehicles (Empty) returns (ListVehiclesResponses) {
         option (google.api.http) = {
             get: "/api/v1/vehicles"
         };
@@ -22,14 +22,14 @@ service ManageVehicleService {
         };
     };
 
-    rpc CreateVehicle (CreateVehicleRequest) returns (Vehicle) {
+    rpc CreateVehicle (Vehicle) returns (Vehicle) {
         option (google.api.http) = {
             post: "/api/v1/vehicles"
             body: "*"
         };
     };
 
-    rpc UpdateVehicle (UpdateVehicleRequest) returns (Vehicle) {
+    rpc UpdateVehicle (Vehicle) returns (Vehicle) {
         option (google.api.http) = {
             put: "/api/v1/vehicles/{id}"
             body: "*"
@@ -43,22 +43,8 @@ service ManageVehicleService {
     };
 }
 
-message ListVehiclesRequest {
-}
-
 message GetVehicleRequest {
     string id = 1;
-}
-
-message CreateVehicleRequest {
-    string name = 1;
-    string commId = 2;
-}
-
-message UpdateVehicleRequest {
-    string id = 1;
-    string name = 2;
-    string commId = 3;
 }
 
 message DeleteVehicleRequest {

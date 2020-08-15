@@ -20,9 +20,9 @@ public class ListCommunicationsResponsesDpoGrpc implements ListCommunicationsRes
         this.communications = communications;
     }
     public proto.skysign.ListCommunicationsResponses getGrpcResponse() {
-        List<proto.skysign.Communication> r = this.communications.stream()
+        List<proto.skysign.common.Communication> r = this.communications.stream()
                 .map(communication -> {
-                        return proto.skysign.Communication.newBuilder()
+                        return proto.skysign.common.Communication.newBuilder()
                                 .setId(communication.getId().getId())
                                 .setVehicleId(communication.getVehicleId().getId())
                                 .setMissionId(communication.getMissionId().getId())

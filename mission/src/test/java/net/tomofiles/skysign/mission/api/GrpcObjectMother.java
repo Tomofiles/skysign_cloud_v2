@@ -1,8 +1,8 @@
 package net.tomofiles.skysign.mission.api;
 
 import net.tomofiles.skysign.mission.domain.mission.MissionId;
-import proto.skysign.Mission;
-import proto.skysign.MissionItem;
+import proto.skysign.common.Mission;
+import proto.skysign.common.MissionItem;
 
 public class GrpcObjectMother {
     

@@ -14,13 +14,13 @@ public class CreateMissionResponseDpoGrpc implements CreateMissionResponseDpo {
         this.mission = mission;
     }
 
-    public proto.skysign.Mission getGrpcResponse() {
-        return proto.skysign.Mission.newBuilder()
+    public proto.skysign.common.Mission getGrpcResponse() {
+        return proto.skysign.common.Mission.newBuilder()
                 .setId(mission.getId().getId())
                 .setName(mission.getMissionName())
                 .setTakeoffPointGroundHeight(mission.getNavigation().getTakeoffPointGroundHeight().getHeightM())
                 .addAllItems(mission.getNavigation().getWaypoints().stream().map(waypoint -> {
-                    return proto.skysign.MissionItem.newBuilder()
+                    return proto.skysign.common.MissionItem.newBuilder()
                             .setLatitude(waypoint.getLatitude())
                             .setLongitude(waypoint.getLongitude())
                             .setRelativeHeight(waypoint.getRelativeHeightM())

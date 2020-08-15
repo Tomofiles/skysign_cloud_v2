@@ -31,11 +31,7 @@ func run() error {
 	mux := runtime.NewServeMux(smOpts...)
 	opts := []grpc.DialOption{grpc.WithInsecure()}
 	endpoint := fmt.Sprintf(*backendHost + ":" + *backendPort)
-	err := gw.RegisterCommunicationEdgeServiceHandlerFromEndpoint(ctx, mux, endpoint, opts)
-	if err != nil {
-		return err
-	}
-	err = gw.RegisterMissionEdgeServiceHandlerFromEndpoint(ctx, mux, endpoint, opts)
+	err := gw.RegisterManageVehicleServiceHandlerFromEndpoint(ctx, mux, endpoint, opts)
 	if err != nil {
 		return err
 	}

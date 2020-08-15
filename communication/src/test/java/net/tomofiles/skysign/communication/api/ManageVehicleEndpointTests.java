@@ -29,7 +29,7 @@ import net.tomofiles.skysign.communication.domain.vehicle.Version;
 import net.tomofiles.skysign.communication.event.Publisher;
 import net.tomofiles.skysign.communication.service.ManageVehicleService;
 import proto.skysign.DeleteVehicleRequest;
-import proto.skysign.Empty;
+import proto.skysign.common.Empty;
 import proto.skysign.GetVehicleRequest;
 import proto.skysign.ListVehiclesResponses;
 
@@ -157,13 +157,13 @@ public class ManageVehicleEndpointTests {
         GetVehicleRequest request = GetVehicleRequest.newBuilder()
                 .setId(DEFAULT_VEHICLE_ID.getId())
                 .build();
-        StreamRecorder<proto.skysign.Vehicle> responseObserver = StreamRecorder.create();
+        StreamRecorder<proto.skysign.common.Vehicle> responseObserver = StreamRecorder.create();
         endpoint.getVehicle(request, responseObserver);
 
         assertThat(responseObserver.getError()).isNull();
-        List<proto.skysign.Vehicle> results = responseObserver.getValues();
+        List<proto.skysign.common.Vehicle> results = responseObserver.getValues();
         assertThat(results).hasSize(1);
-        proto.skysign.Vehicle response = results.get(0);
+        proto.skysign.common.Vehicle response = results.get(0);
         assertThat(response).isEqualTo(newNormalVehicleGrpc(DEFAULT_VEHICLE_ID));
     }
 
@@ -175,7 +175,7 @@ public class ManageVehicleEndpointTests {
         GetVehicleRequest request = GetVehicleRequest.newBuilder()
                 .setId(DEFAULT_VEHICLE_ID.getId())
                 .build();
-        StreamRecorder<proto.skysign.Vehicle> responseObserver = StreamRecorder.create();
+        StreamRecorder<proto.skysign.common.Vehicle> responseObserver = StreamRecorder.create();
         endpoint.getVehicle(request, responseObserver);
 
         assertThat(responseObserver.getError()).isNotNull();
@@ -194,7 +194,7 @@ public class ManageVehicleEndpointTests {
         GetVehicleRequest request = GetVehicleRequest.newBuilder()
                 .setId(DEFAULT_VEHICLE_ID.getId())
                 .build();
-        StreamRecorder<proto.skysign.Vehicle> responseObserver = StreamRecorder.create();
+        StreamRecorder<proto.skysign.common.Vehicle> responseObserver = StreamRecorder.create();
         endpoint.getVehicle(request, responseObserver);
 
         assertThat(responseObserver.getError()).isNotNull();
@@ -211,8 +211,8 @@ public class ManageVehicleEndpointTests {
         when(generator.newVehicleId()).thenReturn(DEFAULT_VEHICLE_ID);
         when(generator.newVersion()).thenReturn(DEFAULT_VERSION1);
 
-        proto.skysign.Vehicle request = newNoIdVehicleGrpc();
-        StreamRecorder<proto.skysign.Vehicle> responseObserver = StreamRecorder.create();
+        proto.skysign.common.Vehicle request = newNoIdVehicleGrpc();
+        StreamRecorder<proto.skysign.common.Vehicle> responseObserver = StreamRecorder.create();
         endpoint.createVehicle(request, responseObserver);
 
         verify(repository, times(1)).save(newNormalVehicle(
@@ -222,9 +222,9 @@ public class ManageVehicleEndpointTests {
         ));
 
         assertThat(responseObserver.getError()).isNull();
-        List<proto.skysign.Vehicle> results = responseObserver.getValues();
+        List<proto.skysign.common.Vehicle> results = responseObserver.getValues();
         assertThat(results).hasSize(1);
-        proto.skysign.Vehicle response = results.get(0);
+        proto.skysign.common.Vehicle response = results.get(0);
         assertThat(response).isEqualTo(newNormalVehicleGrpc(DEFAULT_VEHICLE_ID));
     }
 
@@ -235,8 +235,8 @@ public class ManageVehicleEndpointTests {
     public void createApiInternalError() {
         doThrow(new IllegalStateException()).when(repository).save(any());
 
-        proto.skysign.Vehicle request = newNoIdVehicleGrpc();
-        StreamRecorder<proto.skysign.Vehicle> responseObserver = StreamRecorder.create();
+        proto.skysign.common.Vehicle request = newNoIdVehicleGrpc();
+        StreamRecorder<proto.skysign.common.Vehicle> responseObserver = StreamRecorder.create();
         endpoint.createVehicle(request, responseObserver);
 
         assertThat(responseObserver.getError()).isNotNull();
@@ -259,8 +259,8 @@ public class ManageVehicleEndpointTests {
         when(generator.newVehicleId()).thenReturn(DEFAULT_VEHICLE_ID);
         when(generator.newVersion()).thenReturn(DEFAULT_VERSION1);
 
-        proto.skysign.Vehicle request = newNormalVehicleGrpc(DEFAULT_VEHICLE_ID);
-        StreamRecorder<proto.skysign.Vehicle> responseObserver = StreamRecorder.create();
+        proto.skysign.common.Vehicle request = newNormalVehicleGrpc(DEFAULT_VEHICLE_ID);
+        StreamRecorder<proto.skysign.common.Vehicle> responseObserver = StreamRecorder.create();
         endpoint.updateVehicle(request, responseObserver);
 
         verify(repository, times(1)).save(newNormalVehicle(
@@ -270,9 +270,9 @@ public class ManageVehicleEndpointTests {
         ));
 
         assertThat(responseObserver.getError()).isNull();
-        List<proto.skysign.Vehicle> results = responseObserver.getValues();
+        List<proto.skysign.common.Vehicle> results = responseObserver.getValues();
         assertThat(results).hasSize(1);
-        proto.skysign.Vehicle response = results.get(0);
+        proto.skysign.common.Vehicle response = results.get(0);
         assertThat(response).isEqualTo(newNormalVehicleGrpc(DEFAULT_VEHICLE_ID));
     }
 
@@ -281,8 +281,8 @@ public class ManageVehicleEndpointTests {
      */
     @Test
     public void updateApiNotFoundError() {
-        proto.skysign.Vehicle request = newNormalVehicleGrpc(DEFAULT_VEHICLE_ID);
-        StreamRecorder<proto.skysign.Vehicle> responseObserver = StreamRecorder.create();
+        proto.skysign.common.Vehicle request = newNormalVehicleGrpc(DEFAULT_VEHICLE_ID);
+        StreamRecorder<proto.skysign.common.Vehicle> responseObserver = StreamRecorder.create();
         endpoint.updateVehicle(request, responseObserver);
 
         assertThat(responseObserver.getError()).isNotNull();
@@ -303,8 +303,8 @@ public class ManageVehicleEndpointTests {
                         DEFAULT_GENERATOR.get()));
         doThrow(new IllegalStateException()).when(repository).save(any());
 
-        proto.skysign.Vehicle request = newNormalVehicleGrpc(DEFAULT_VEHICLE_ID);
-        StreamRecorder<proto.skysign.Vehicle> responseObserver = StreamRecorder.create();
+        proto.skysign.common.Vehicle request = newNormalVehicleGrpc(DEFAULT_VEHICLE_ID);
+        StreamRecorder<proto.skysign.common.Vehicle> responseObserver = StreamRecorder.create();
         endpoint.updateVehicle(request, responseObserver);
 
         assertThat(responseObserver.getError()).isNotNull();

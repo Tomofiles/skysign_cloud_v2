@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package skysign_proto;
 
-option java_package = "proto.skysign";
+option java_package = "proto.skysign.common";
 option java_multiple_files = true;
 option go_package = ".;skysign_proto";
 
@@ -53,4 +53,10 @@ message Telemetry {
     double orientationY = 9;
     double orientationZ = 10;
     double orientationW = 11;
+}
+
+message Communication {
+    string id = 1;
+    string vehicleId = 2;
+    string missionId = 3;
 }

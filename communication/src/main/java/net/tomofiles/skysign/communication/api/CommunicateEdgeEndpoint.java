@@ -13,7 +13,7 @@ import net.tomofiles.skysign.communication.api.dpo.PullCommandResponseDpoGrpc;
 import net.tomofiles.skysign.communication.api.dpo.PushTelemetryRequestDpoGrpc;
 import net.tomofiles.skysign.communication.api.dpo.PushTelemetryResponseDpoGrpc;
 import net.tomofiles.skysign.communication.service.CommunicateEdgeService;
-import proto.skysign.Communication;
+import proto.skysign.common.Communication;
 import proto.skysign.GetCommunicationRequest;
 import proto.skysign.PullCommandRequest;
 import proto.skysign.PullCommandResponse;

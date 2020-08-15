@@ -3,7 +3,7 @@ package net.tomofiles.skysign.communication.api.dpo;
 import lombok.RequiredArgsConstructor;
 import net.tomofiles.skysign.communication.domain.communication.CommunicationId;
 import net.tomofiles.skysign.communication.service.dpo.CreateVehicleRequestDpo;
-import proto.skysign.Vehicle;
+import proto.skysign.common.Vehicle;
 
 @RequiredArgsConstructor
 public class CreateVehicleRequestDpoGrpc implements CreateVehicleRequestDpo {

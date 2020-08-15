@@ -16,8 +16,8 @@ public class GetCommunicationResponseDpoGrpc implements GetCommunicationResponse
         return communication == null;
     }
 
-    public proto.skysign.Communication getGrpcResponse() {
-        return proto.skysign.Communication.newBuilder()
+    public proto.skysign.common.Communication getGrpcResponse() {
+        return proto.skysign.common.Communication.newBuilder()
                 .setId(communication.getId().getId())
                 .setVehicleId(communication.getVehicleId().getId())
                 .setMissionId(communication.getMissionId().getId())

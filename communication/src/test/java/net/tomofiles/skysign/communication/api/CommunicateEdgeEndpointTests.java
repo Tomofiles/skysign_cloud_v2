@@ -30,7 +30,7 @@ import net.tomofiles.skysign.communication.domain.communication.MissionId;
 import net.tomofiles.skysign.communication.domain.communication.component.CommunicationComponentDto;
 import net.tomofiles.skysign.communication.domain.vehicle.VehicleId;
 import net.tomofiles.skysign.communication.service.CommunicateEdgeService;
-import proto.skysign.CommandType;
+import proto.skysign.common.CommandType;
 import proto.skysign.GetCommunicationRequest;
 import proto.skysign.PullCommandRequest;
 import proto.skysign.PullCommandResponse;
@@ -305,14 +305,14 @@ public class CommunicateEdgeEndpointTests {
         GetCommunicationRequest request = GetCommunicationRequest.newBuilder()
                 .setId(DEFAULT_COMMUNICATION_ID.getId())
                 .build();
-        StreamRecorder<proto.skysign.Communication> responseObserver = StreamRecorder.create();
+        StreamRecorder<proto.skysign.common.Communication> responseObserver = StreamRecorder.create();
         endpoint.getCommunication(request, responseObserver);
 
         assertThat(responseObserver.getError()).isNull();
-        List<proto.skysign.Communication> results = responseObserver.getValues();
+        List<proto.skysign.common.Communication> results = responseObserver.getValues();
         assertThat(results).hasSize(1);
-        proto.skysign.Communication response = results.get(0);
-        assertThat(response).isEqualTo(proto.skysign.Communication.newBuilder()
+        proto.skysign.common.Communication response = results.get(0);
+        assertThat(response).isEqualTo(proto.skysign.common.Communication.newBuilder()
                 .setId(DEFAULT_COMMUNICATION_ID.getId())
                 .setVehicleId(DEFAULT_VEHICLE_ID.getId())
                 .setMissionId(DEFAULT_MISSION_ID.getId())
@@ -327,7 +327,7 @@ public class CommunicateEdgeEndpointTests {
         GetCommunicationRequest request = GetCommunicationRequest.newBuilder()
                 .setId(DEFAULT_COMMUNICATION_ID.getId())
                 .build();
-        StreamRecorder<proto.skysign.Communication> responseObserver = StreamRecorder.create();
+        StreamRecorder<proto.skysign.common.Communication> responseObserver = StreamRecorder.create();
         endpoint.getCommunication(request, responseObserver);
 
         assertThat(responseObserver.getError()).isNotNull();
@@ -346,7 +346,7 @@ public class CommunicateEdgeEndpointTests {
         GetCommunicationRequest request = GetCommunicationRequest.newBuilder()
                 .setId(DEFAULT_COMMUNICATION_ID.getId())
                 .build();
-        StreamRecorder<proto.skysign.Communication> responseObserver = StreamRecorder.create();
+        StreamRecorder<proto.skysign.common.Communication> responseObserver = StreamRecorder.create();
         endpoint.getCommunication(request, responseObserver);
 
         assertThat(responseObserver.getError()).isNotNull();

@@ -23,7 +23,7 @@ public class PullTelemetryResponseDpoGrpc implements PullTelemetryResponseDpo {
     public proto.skysign.PullTelemetryResponse getGrpcResponse() {
         return proto.skysign.PullTelemetryResponse.newBuilder()
                 .setId(communicationId.getId())
-                .setTelemetry(proto.skysign.Telemetry.newBuilder().setLatitude(telemetry.getLatitude())
+                .setTelemetry(proto.skysign.common.Telemetry.newBuilder().setLatitude(telemetry.getLatitude())
                         .setLongitude(telemetry.getLongitude()).setAltitude(telemetry.getAltitude())
                         .setRelativeAltitude(telemetry.getRelativeAltitude()).setSpeed(telemetry.getSpeed())
                         .setArmed(telemetry.isArmed()).setFlightMode(telemetry.getFlightMode())
