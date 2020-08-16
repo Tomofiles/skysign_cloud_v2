@@ -10,11 +10,13 @@ import (
 )
 
 // Cloudlink .
-func Cloudlink(ctx context.Context, cloud string, telemetry telemetry.Telemetry) <-chan *edge.Command {
+func Cloudlink(ctx context.Context, cloud string, telemetry telemetry.Telemetry) (<-chan *edge.Command, <-chan *edge.Mission) {
 	commandStream := make(chan *edge.Command)
+	missionStream := make(chan *edge.Mission)
 
 	go func() {
 		defer close(commandStream)
+		defer close(missionStream)
 		t := time.NewTicker(500 * time.Millisecond)
 		for {
 			select {
@@ -28,7 +30,14 @@ func Cloudlink(ctx context.Context, cloud string, telemetry telemetry.Telemetry)
 					for _, commID := range commIDs.CommIds {
 						command, err := cloudlink.PullCommand(cloud, id, commID)
 						if err == nil {
-							commandStream <- command
+							if command.Type == "UPLOAD" {
+								mission, err := cloudlink.PullMission(cloud, id)
+								if err == nil {
+									missionStream <- mission
+								}
+							} else {
+								commandStream <- command
+							}
 						}
 					}
 				}
@@ -36,5 +45,5 @@ func Cloudlink(ctx context.Context, cloud string, telemetry telemetry.Telemetry)
 		}
 	}()
 
-	return commandStream
+	return commandStream, missionStream
 }

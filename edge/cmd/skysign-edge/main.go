@@ -40,9 +40,9 @@ func main() {
 					continue
 				}
 
-				commandStream := builder.Cloudlink(ctx, cloud, telemetry)
+				commandStream, missionStream := builder.Cloudlink(ctx, cloud, telemetry)
 
-				err = builder.MavlinkCommand(ctx, mavsdk, commandStream)
+				err = builder.MavlinkCommand(ctx, mavsdk, commandStream, missionStream)
 				if err != nil {
 					log.Println("mavlink command error:", err)
 					cancel()
