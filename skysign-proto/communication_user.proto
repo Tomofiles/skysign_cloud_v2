@@ -42,6 +42,20 @@ service CommunicationUserService {
             body: "*"
         };
     };
+
+    rpc Control (ControlRequest) returns (ControlResponse) {
+        option (google.api.http) = {
+            post: "/api/v1/communications/{id}/control"
+            body: "*"
+        };
+    };
+
+    rpc Uncontrol (UncontrolRequest) returns (UncontrolResponse) {
+        option (google.api.http) = {
+            post: "/api/v1/communications/{id}/uncontrol"
+            body: "*"
+        };
+    };
 }
 
 message ListCommunicationsResponses {
@@ -82,5 +96,21 @@ message CancelRequest {
 }
 
 message CancelResponse {
+    string id = 1;
+}
+
+message ControlRequest {
+    string id = 1;
+}
+
+message ControlResponse {
+    string id = 1;
+}
+
+message UncontrolRequest {
+    string id = 1;
+}
+
+message UncontrolResponse {
     string id = 1;
 }

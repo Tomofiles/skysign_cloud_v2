@@ -33,6 +33,8 @@ import net.tomofiles.skysign.communication.domain.vehicle.VehicleId;
 import net.tomofiles.skysign.communication.service.CommunicationUserService;
 import proto.skysign.CancelRequest;
 import proto.skysign.CancelResponse;
+import proto.skysign.ControlRequest;
+import proto.skysign.ControlResponse;
 import proto.skysign.common.CommandType;
 import proto.skysign.common.Empty;
 import proto.skysign.ListCommunicationsResponses;
@@ -42,6 +44,8 @@ import proto.skysign.PushCommandRequest;
 import proto.skysign.PushCommandResponse;
 import proto.skysign.StagingRequest;
 import proto.skysign.StagingResponse;
+import proto.skysign.UncontrolRequest;
+import proto.skysign.UncontrolResponse;
 
 import static net.tomofiles.skysign.communication.api.GrpcObjectMother.newNormalCommunicationGrpc;
 import static net.tomofiles.skysign.communication.api.GrpcObjectMother.newNormalPullTelemetryResponseGrpc;
@@ -54,6 +58,7 @@ public class CommunicationUserEndpointTests {
     private static final CommandId DEFAULT_COMMAND_ID = new CommandId(UUID.randomUUID().toString());
     private static final String DEFAULT_COMMAND_TYPE = "ARM";
     private static final VehicleId DEFAULT_VEHICLE_ID = new VehicleId(UUID.randomUUID().toString());
+    private static final boolean DEFAULT_CONTROLLED = true;
     private static final MissionId DEFAULT_MISSION_ID = new MissionId(UUID.randomUUID().toString());
     private static final LocalDateTime DEFAULT_COMMAND_TIME = LocalDateTime.of(2020, 1, 1, 0, 0, 0);
     private static final Supplier<Generator> DEFAULT_GENERATOR = () -> {
@@ -94,16 +99,19 @@ public class CommunicationUserEndpointTests {
                         newNormalCommunication(
                                 DEFAULT_COMMUNICATION_ID,
                                 DEFAULT_VEHICLE_ID,
+                                DEFAULT_CONTROLLED,
                                 DEFAULT_MISSION_ID,
                                 DEFAULT_GENERATOR.get()),
                         newNormalCommunication(
                                 DEFAULT_COMMUNICATION_ID,
                                 DEFAULT_VEHICLE_ID,
+                                DEFAULT_CONTROLLED,
                                 DEFAULT_MISSION_ID,
                                 DEFAULT_GENERATOR.get()),
                         newNormalCommunication(
                                 DEFAULT_COMMUNICATION_ID,
                                 DEFAULT_VEHICLE_ID,
+                                DEFAULT_CONTROLLED,
                                 DEFAULT_MISSION_ID,
                                 DEFAULT_GENERATOR.get())
                 }));
@@ -120,14 +128,17 @@ public class CommunicationUserEndpointTests {
                 .addCommunications(newNormalCommunicationGrpc(
                         DEFAULT_COMMUNICATION_ID,
                         DEFAULT_VEHICLE_ID,
+                        DEFAULT_CONTROLLED,
                         DEFAULT_MISSION_ID))
                 .addCommunications(newNormalCommunicationGrpc(
                         DEFAULT_COMMUNICATION_ID,
                         DEFAULT_VEHICLE_ID,
+                        DEFAULT_CONTROLLED,
                         DEFAULT_MISSION_ID))
                 .addCommunications(newNormalCommunicationGrpc(
                         DEFAULT_COMMUNICATION_ID,
                         DEFAULT_VEHICLE_ID,
+                        DEFAULT_CONTROLLED,
                         DEFAULT_MISSION_ID))
                 .build());
     }
@@ -143,16 +154,19 @@ public class CommunicationUserEndpointTests {
                         newNormalCommunication(
                                 DEFAULT_COMMUNICATION_ID,
                                 DEFAULT_VEHICLE_ID,
+                                DEFAULT_CONTROLLED,
                                 null,
                                 DEFAULT_GENERATOR.get()),
                         newNormalCommunication(
                                 DEFAULT_COMMUNICATION_ID,
                                 DEFAULT_VEHICLE_ID,
+                                DEFAULT_CONTROLLED,
                                 null,
                                 DEFAULT_GENERATOR.get()),
                         newNormalCommunication(
                                 DEFAULT_COMMUNICATION_ID,
                                 DEFAULT_VEHICLE_ID,
+                                DEFAULT_CONTROLLED,
                                 null,
                                 DEFAULT_GENERATOR.get())
                 }));
@@ -169,14 +183,17 @@ public class CommunicationUserEndpointTests {
                 .addCommunications(newNormalCommunicationGrpc(
                         DEFAULT_COMMUNICATION_ID,
                         DEFAULT_VEHICLE_ID,
+                        DEFAULT_CONTROLLED,
                         null))
                 .addCommunications(newNormalCommunicationGrpc(
                         DEFAULT_COMMUNICATION_ID,
                         DEFAULT_VEHICLE_ID,
+                        DEFAULT_CONTROLLED,
                         null))
                 .addCommunications(newNormalCommunicationGrpc(
                         DEFAULT_COMMUNICATION_ID,
                         DEFAULT_VEHICLE_ID,
+                        DEFAULT_CONTROLLED,
                         null))
                 .build());
     }
@@ -223,6 +240,7 @@ public class CommunicationUserEndpointTests {
                 .thenReturn(newNormalCommunication(
                         DEFAULT_COMMUNICATION_ID,
                         DEFAULT_VEHICLE_ID,
+                        DEFAULT_CONTROLLED,
                         DEFAULT_MISSION_ID,
                         DEFAULT_GENERATOR.get()));
 
@@ -298,6 +316,7 @@ public class CommunicationUserEndpointTests {
                 .thenReturn(newNormalCommunication(
                         DEFAULT_COMMUNICATION_ID,
                         DEFAULT_VEHICLE_ID,
+                        DEFAULT_CONTROLLED,
                         DEFAULT_MISSION_ID,
                         DEFAULT_GENERATOR.get()));
 
@@ -360,6 +379,7 @@ public class CommunicationUserEndpointTests {
                 .thenReturn(newNormalCommunication(
                         DEFAULT_COMMUNICATION_ID,
                         DEFAULT_VEHICLE_ID,
+                        DEFAULT_CONTROLLED,
                         DEFAULT_MISSION_ID,
                         DEFAULT_GENERATOR.get()));
 
@@ -373,8 +393,7 @@ public class CommunicationUserEndpointTests {
         ArgumentCaptor<Communication> commCaptor = ArgumentCaptor.forClass(Communication.class);
         verify(repository, times(1)).save(commCaptor.capture());
 
-        assertThat(commCaptor.getValue().getMissionId())
-                .isEqualTo(newMissionId);
+        assertThat(commCaptor.getValue().getMissionId()).isEqualTo(newMissionId);
 
         assertThat(responseObserver.getError()).isNull();
         List<StagingResponse> results = responseObserver.getValues();
@@ -433,6 +452,7 @@ public class CommunicationUserEndpointTests {
                 .thenReturn(newNormalCommunication(
                         DEFAULT_COMMUNICATION_ID,
                         DEFAULT_VEHICLE_ID,
+                        DEFAULT_CONTROLLED,
                         DEFAULT_MISSION_ID,
                         DEFAULT_GENERATOR.get()));
 
@@ -445,8 +465,7 @@ public class CommunicationUserEndpointTests {
         ArgumentCaptor<Communication> commCaptor = ArgumentCaptor.forClass(Communication.class);
         verify(repository, times(1)).save(commCaptor.capture());
 
-        assertThat(commCaptor.getValue().getMissionId())
-                .isNull();;
+        assertThat(commCaptor.getValue().getMissionId()).isNull();
 
         assertThat(responseObserver.getError()).isNull();
         List<CancelResponse> results = responseObserver.getValues();
@@ -486,6 +505,144 @@ public class CommunicationUserEndpointTests {
                 .build();
         StreamRecorder<CancelResponse> responseObserver = StreamRecorder.create();
         endpoint.cancel(request, responseObserver);
+
+        assertThat(responseObserver.getError()).isNotNull();
+        assertThat(responseObserver.getError()).isInstanceOf(StatusRuntimeException.class);
+        assertThat(((StatusRuntimeException)responseObserver.getError()).getStatus().getCode())
+                .isEqualTo(Status.INTERNAL.getCode());
+    }
+
+    /**
+     * ユーザーは、管制状態APIを実行し、対象のCommunicationの状態をcontrolledに変更する。
+     */
+    @Test
+    public void controlApi() {
+        when(repository.getById(DEFAULT_COMMUNICATION_ID))
+                .thenReturn(newNormalCommunication(
+                        DEFAULT_COMMUNICATION_ID,
+                        DEFAULT_VEHICLE_ID,
+                        DEFAULT_CONTROLLED,
+                        DEFAULT_MISSION_ID,
+                        DEFAULT_GENERATOR.get()));
+
+        ControlRequest request = ControlRequest.newBuilder()
+                .setId(DEFAULT_COMMUNICATION_ID.getId())
+                .build();
+        StreamRecorder<ControlResponse> responseObserver = StreamRecorder.create();
+        endpoint.control(request, responseObserver);
+
+        ArgumentCaptor<Communication> commCaptor = ArgumentCaptor.forClass(Communication.class);
+        verify(repository, times(1)).save(commCaptor.capture());
+
+        assertThat(commCaptor.getValue().isControlled()).isTrue();
+
+        assertThat(responseObserver.getError()).isNull();
+        List<ControlResponse> results = responseObserver.getValues();
+        assertThat(results).hasSize(1);
+        ControlResponse response = results.get(0);
+        assertThat(response).isEqualTo(ControlResponse.newBuilder()
+                .setId(DEFAULT_COMMUNICATION_ID.getId())
+                .build());
+    }
+
+    /**
+     * ユーザーは、管制状態APIを実行し、未存在のID指定によりNOT_FOUNDエラーを検出できる。
+     */
+    @Test
+    public void controlApiNotFoundError() {
+        ControlRequest request = ControlRequest.newBuilder()
+                .setId(DEFAULT_COMMUNICATION_ID.getId())
+                .build();
+        StreamRecorder<ControlResponse> responseObserver = StreamRecorder.create();
+        endpoint.control(request, responseObserver);
+
+        assertThat(responseObserver.getError()).isNotNull();
+        assertThat(responseObserver.getError()).isInstanceOf(StatusRuntimeException.class);
+        assertThat(((StatusRuntimeException)responseObserver.getError()).getStatus().getCode())
+                .isEqualTo(Status.NOT_FOUND.getCode());
+    }
+
+    /**
+     * ユーザーは、管制状態APIを実行し、DBエラーのよりINTERNALエラーを検出できる。
+     */
+    @Test
+    public void controlApiInternalError() {
+        when(repository.getById(DEFAULT_COMMUNICATION_ID)).thenThrow(new IllegalStateException());
+
+        ControlRequest request = ControlRequest.newBuilder()
+                .setId(DEFAULT_COMMUNICATION_ID.getId())
+                .build();
+        StreamRecorder<ControlResponse> responseObserver = StreamRecorder.create();
+        endpoint.control(request, responseObserver);
+
+        assertThat(responseObserver.getError()).isNotNull();
+        assertThat(responseObserver.getError()).isInstanceOf(StatusRuntimeException.class);
+        assertThat(((StatusRuntimeException)responseObserver.getError()).getStatus().getCode())
+                .isEqualTo(Status.INTERNAL.getCode());
+    }
+
+    /**
+     * ユーザーは、非管制状態APIを実行し、対象のCommunicationの状態をuncontrolledに変更する。
+     */
+    @Test
+    public void uncontrolApi() {
+        when(repository.getById(DEFAULT_COMMUNICATION_ID))
+                .thenReturn(newNormalCommunication(
+                        DEFAULT_COMMUNICATION_ID,
+                        DEFAULT_VEHICLE_ID,
+                        DEFAULT_CONTROLLED,
+                        DEFAULT_MISSION_ID,
+                        DEFAULT_GENERATOR.get()));
+
+        UncontrolRequest request = UncontrolRequest.newBuilder()
+                .setId(DEFAULT_COMMUNICATION_ID.getId())
+                .build();
+        StreamRecorder<UncontrolResponse> responseObserver = StreamRecorder.create();
+        endpoint.uncontrol(request, responseObserver);
+
+        ArgumentCaptor<Communication> commCaptor = ArgumentCaptor.forClass(Communication.class);
+        verify(repository, times(1)).save(commCaptor.capture());
+
+        assertThat(commCaptor.getValue().isControlled()).isFalse();
+
+        assertThat(responseObserver.getError()).isNull();
+        List<UncontrolResponse> results = responseObserver.getValues();
+        assertThat(results).hasSize(1);
+        UncontrolResponse response = results.get(0);
+        assertThat(response).isEqualTo(UncontrolResponse.newBuilder()
+                .setId(DEFAULT_COMMUNICATION_ID.getId())
+                .build());
+    }
+
+    /**
+     * ユーザーは、非管制状態APIを実行し、未存在のID指定によりNOT_FOUNDエラーを検出できる。
+     */
+    @Test
+    public void uncontrolApiNotFoundError() {
+        UncontrolRequest request = UncontrolRequest.newBuilder()
+                .setId(DEFAULT_COMMUNICATION_ID.getId())
+                .build();
+        StreamRecorder<UncontrolResponse> responseObserver = StreamRecorder.create();
+        endpoint.uncontrol(request, responseObserver);
+
+        assertThat(responseObserver.getError()).isNotNull();
+        assertThat(responseObserver.getError()).isInstanceOf(StatusRuntimeException.class);
+        assertThat(((StatusRuntimeException)responseObserver.getError()).getStatus().getCode())
+                .isEqualTo(Status.NOT_FOUND.getCode());
+    }
+
+    /**
+     * ユーザーは、非管制状態APIを実行し、DBエラーのよりINTERNALエラーを検出できる。
+     */
+    @Test
+    public void uncontrolApiInternalError() {
+        when(repository.getById(DEFAULT_COMMUNICATION_ID)).thenThrow(new IllegalStateException());
+
+        UncontrolRequest request = UncontrolRequest.newBuilder()
+                .setId(DEFAULT_COMMUNICATION_ID.getId())
+                .build();
+        StreamRecorder<UncontrolResponse> responseObserver = StreamRecorder.create();
+        endpoint.uncontrol(request, responseObserver);
 
         assertThat(responseObserver.getError()).isNotNull();
         assertThat(responseObserver.getError()).isInstanceOf(StatusRuntimeException.class);

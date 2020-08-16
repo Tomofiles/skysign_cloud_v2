@@ -48,6 +48,7 @@ public class CommunicateEdgeEndpointTests {
     private static final CommandId DEFAULT_COMMAND_ID = new CommandId(UUID.randomUUID().toString());
     private static final String DEFAULT_COMMAND_TYPE = "ARM";
     private static final VehicleId DEFAULT_VEHICLE_ID = new VehicleId(UUID.randomUUID().toString());
+    private static final boolean DEFAULT_CONTROLLED = true;
     private static final MissionId DEFAULT_MISSION_ID = new MissionId(UUID.randomUUID().toString());
     private static final LocalDateTime DEFAULT_COMMAND_TIME = LocalDateTime.of(2020, 1, 1, 0, 0, 0);
     private static final Supplier<Generator> DEFAULT_GENERATOR = () -> {
@@ -124,6 +125,7 @@ public class CommunicateEdgeEndpointTests {
                 .thenReturn(newSingleCommandCommunication(
                         DEFAULT_COMMUNICATION_ID,
                         DEFAULT_VEHICLE_ID,
+                        DEFAULT_CONTROLLED,
                         DEFAULT_MISSION_ID,
                         DEFAULT_GENERATOR.get()));
 
@@ -199,6 +201,7 @@ public class CommunicateEdgeEndpointTests {
                 .thenReturn(newSingleCommandCommunication(
                         DEFAULT_COMMUNICATION_ID,
                         DEFAULT_VEHICLE_ID,
+                        DEFAULT_CONTROLLED,
                         DEFAULT_MISSION_ID,
                         DEFAULT_GENERATOR.get()));
 
@@ -299,6 +302,7 @@ public class CommunicateEdgeEndpointTests {
                 .thenReturn(newNormalCommunication(
                         DEFAULT_COMMUNICATION_ID,
                         DEFAULT_VEHICLE_ID,
+                        DEFAULT_CONTROLLED,
                         DEFAULT_MISSION_ID,
                         DEFAULT_GENERATOR.get()));
 
@@ -315,6 +319,7 @@ public class CommunicateEdgeEndpointTests {
         assertThat(response).isEqualTo(proto.skysign.common.Communication.newBuilder()
                 .setId(DEFAULT_COMMUNICATION_ID.getId())
                 .setVehicleId(DEFAULT_VEHICLE_ID.getId())
+                .setIsControlled(DEFAULT_CONTROLLED)
                 .setMissionId(DEFAULT_MISSION_ID.getId())
                 .build());
     }
@@ -329,6 +334,7 @@ public class CommunicateEdgeEndpointTests {
                 .thenReturn(newNormalCommunication(
                         DEFAULT_COMMUNICATION_ID,
                         DEFAULT_VEHICLE_ID,
+                        DEFAULT_CONTROLLED,
                         null,
                         DEFAULT_GENERATOR.get()));
 
@@ -345,6 +351,7 @@ public class CommunicateEdgeEndpointTests {
         assertThat(response).isEqualTo(proto.skysign.common.Communication.newBuilder()
                 .setId(DEFAULT_COMMUNICATION_ID.getId())
                 .setVehicleId(DEFAULT_VEHICLE_ID.getId())
+                .setIsControlled(DEFAULT_CONTROLLED)
                 // .setMissionId(DEFAULT_MISSION_ID.getId()) // MissionIdは空
                 .build());
     }

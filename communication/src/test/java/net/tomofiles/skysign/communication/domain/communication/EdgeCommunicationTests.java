@@ -29,6 +29,7 @@ public class EdgeCommunicationTests {
     private static final CommunicationId DEFAULT_COMMUNICATION_ID = new CommunicationId(UUID.randomUUID().toString());
     private static final CommandId DEFAULT_COMMAND_ID = new CommandId(UUID.randomUUID().toString());
     private static final VehicleId DEFAULT_VEHICLE_ID = new VehicleId(UUID.randomUUID().toString());
+    private static final boolean DEFAULT_CONTROLLED = true;
     private static final MissionId DEFAULT_MISSION_ID = new MissionId(UUID.randomUUID().toString());
     private static final LocalDateTime DEFAULT_COMMAND_TIME = LocalDateTime.of(2020, 1, 1, 0, 0, 0);
     private static final Supplier<Generator> DEFAULT_GENERATOR = () -> {
@@ -110,6 +111,7 @@ public class EdgeCommunicationTests {
                 .thenReturn(newSeveralCommandsCommunication(
                         DEFAULT_COMMUNICATION_ID,
                         DEFAULT_VEHICLE_ID,
+                        DEFAULT_CONTROLLED,
                         DEFAULT_MISSION_ID,
                         DEFAULT_GENERATOR_IN_RONDOM_ORDER.get()));
 
@@ -135,6 +137,7 @@ public class EdgeCommunicationTests {
                 .thenReturn(newSingleCommandCommunication(
                         DEFAULT_COMMUNICATION_ID,
                         DEFAULT_VEHICLE_ID,
+                        DEFAULT_CONTROLLED,
                         DEFAULT_MISSION_ID,
                         DEFAULT_GENERATOR.get()));
 
@@ -158,6 +161,7 @@ public class EdgeCommunicationTests {
                 .thenReturn(newNormalCommunication(
                         DEFAULT_COMMUNICATION_ID,
                         DEFAULT_VEHICLE_ID,
+                        DEFAULT_CONTROLLED,
                         DEFAULT_MISSION_ID,
                         DEFAULT_GENERATOR.get()));
 

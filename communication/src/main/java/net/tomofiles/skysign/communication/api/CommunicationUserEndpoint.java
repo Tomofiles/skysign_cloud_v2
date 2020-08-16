@@ -8,6 +8,8 @@ import io.grpc.stub.StreamObserver;
 import lombok.AllArgsConstructor;
 import net.tomofiles.skysign.communication.api.dpo.CancelRequestDpoGrpc;
 import net.tomofiles.skysign.communication.api.dpo.CancelResponseDpoGrpc;
+import net.tomofiles.skysign.communication.api.dpo.ControlRequestDpoGrpc;
+import net.tomofiles.skysign.communication.api.dpo.ControlResponseDpoGrpc;
 import net.tomofiles.skysign.communication.api.dpo.ListCommunicationsResponsesDpoGrpc;
 import net.tomofiles.skysign.communication.api.dpo.PullTelemetryRequestDpoGrpc;
 import net.tomofiles.skysign.communication.api.dpo.PullTelemetryResponseDpoGrpc;
@@ -15,9 +17,13 @@ import net.tomofiles.skysign.communication.api.dpo.PushCommandRequestDpoGrpc;
 import net.tomofiles.skysign.communication.api.dpo.PushCommandResponseDpoGrpc;
 import net.tomofiles.skysign.communication.api.dpo.StagingRequestDpoGrpc;
 import net.tomofiles.skysign.communication.api.dpo.StagingResponseDpoGrpc;
+import net.tomofiles.skysign.communication.api.dpo.UncontrolRequestDpoGrpc;
+import net.tomofiles.skysign.communication.api.dpo.UncontrolResponseDpoGrpc;
 import net.tomofiles.skysign.communication.service.CommunicationUserService;
 import proto.skysign.CancelRequest;
 import proto.skysign.CancelResponse;
+import proto.skysign.ControlRequest;
+import proto.skysign.ControlResponse;
 import proto.skysign.common.Empty;
 import proto.skysign.ListCommunicationsResponses;
 import proto.skysign.PullTelemetryRequest;
@@ -26,6 +32,8 @@ import proto.skysign.PushCommandRequest;
 import proto.skysign.PushCommandResponse;
 import proto.skysign.StagingRequest;
 import proto.skysign.StagingResponse;
+import proto.skysign.UncontrolRequest;
+import proto.skysign.UncontrolResponse;
 import proto.skysign.CommunicationUserServiceGrpc.CommunicationUserServiceImplBase;
 
 @GRpcService
@@ -172,4 +180,63 @@ public class CommunicationUserEndpoint extends CommunicationUserServiceImplBase 
         responseObserver.onCompleted();
     }
 
+    @Override
+    public void control(ControlRequest request, StreamObserver<ControlResponse> responseObserver) {
+        ControlRequestDpoGrpc requestDpo = new ControlRequestDpoGrpc(request);
+        ControlResponseDpoGrpc responseDpo = new ControlResponseDpoGrpc();
+
+        try {
+            this.service.control(requestDpo, responseDpo);
+        } catch (Exception e) {
+            responseObserver.onError(Status
+                    .INTERNAL
+                    .withCause(e)
+                    .asRuntimeException());
+            return;
+        }
+
+        if (responseDpo.isEmpty()) {
+            responseObserver.onError(Status
+                    .NOT_FOUND
+                    .withDescription("communication-idに合致するcommunicationが存在しません。")
+                    .asRuntimeException());
+            return;
+        }
+
+        ControlResponse r = ControlResponse.newBuilder()
+                .setId(request.getId())
+                .build();
+        responseObserver.onNext(r); 
+        responseObserver.onCompleted();
+    }
+
+    @Override
+    public void uncontrol(UncontrolRequest request, StreamObserver<UncontrolResponse> responseObserver) {
+        UncontrolRequestDpoGrpc requestDpo = new UncontrolRequestDpoGrpc(request);
+        UncontrolResponseDpoGrpc responseDpo = new UncontrolResponseDpoGrpc();
+
+        try {
+            this.service.uncontrol(requestDpo, responseDpo);
+        } catch (Exception e) {
+            responseObserver.onError(Status
+                    .INTERNAL
+                    .withCause(e)
+                    .asRuntimeException());
+            return;
+        }
+
+        if (responseDpo.isEmpty()) {
+            responseObserver.onError(Status
+                    .NOT_FOUND
+                    .withDescription("communication-idに合致するcommunicationが存在しません。")
+                    .asRuntimeException());
+            return;
+        }
+
+        UncontrolResponse r = UncontrolResponse.newBuilder()
+                .setId(request.getId())
+                .build();
+        responseObserver.onNext(r); 
+        responseObserver.onCompleted();
+    }
 }

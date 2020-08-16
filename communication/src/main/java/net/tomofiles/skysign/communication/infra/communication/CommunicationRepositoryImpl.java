@@ -49,6 +49,7 @@ public class CommunicationRepositoryImpl implements CommunicationRepository {
         }
 
         communication.setVehicleId(componentDto.getVehicleId());
+        communication.setControlled(componentDto.isControlled());
         communication.setMissionId(componentDto.getMissionId());
 
         telemetry.setLatitude(componentDto.getTelemetry().getLatitude());
@@ -110,6 +111,7 @@ public class CommunicationRepositoryImpl implements CommunicationRepository {
                 new CommunicationComponentDto(
                         id.getId(),
                         communication.getVehicleId(),
+                        communication.isControlled(),
                         communication.getMissionId(),
                         new TelemetryComponentDto(
                                 telemetry.getLatitude(),
@@ -153,6 +155,7 @@ public class CommunicationRepositoryImpl implements CommunicationRepository {
                     new CommunicationComponentDto(
                             commRecord.getId(),
                             commRecord.getVehicleId(),
+                            commRecord.isControlled(),
                             commRecord.getMissionId(),
                             new TelemetryComponentDto(
                                     telemetry.getLatitude(),

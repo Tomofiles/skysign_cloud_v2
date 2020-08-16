@@ -11,6 +11,8 @@ import net.tomofiles.skysign.communication.domain.communication.CommunicationRep
 import net.tomofiles.skysign.communication.domain.communication.TelemetrySnapshot;
 import net.tomofiles.skysign.communication.service.dpo.CancelRequestDpo;
 import net.tomofiles.skysign.communication.service.dpo.CancelResponseDpo;
+import net.tomofiles.skysign.communication.service.dpo.ControlRequestDpo;
+import net.tomofiles.skysign.communication.service.dpo.ControlResponseDpo;
 import net.tomofiles.skysign.communication.service.dpo.ListCommunicationsResponsesDpo;
 import net.tomofiles.skysign.communication.service.dpo.PullTelemetryRequestDpo;
 import net.tomofiles.skysign.communication.service.dpo.PullTelemetryResponseDpo;
@@ -18,6 +20,8 @@ import net.tomofiles.skysign.communication.service.dpo.PushCommandRequestDpo;
 import net.tomofiles.skysign.communication.service.dpo.PushCommandResponseDpo;
 import net.tomofiles.skysign.communication.service.dpo.StagingRequestDpo;
 import net.tomofiles.skysign.communication.service.dpo.StagingResponseDpo;
+import net.tomofiles.skysign.communication.service.dpo.UncontrolRequestDpo;
+import net.tomofiles.skysign.communication.service.dpo.UncontrolResponseDpo;
 
 @Component
 @AllArgsConstructor
@@ -56,6 +60,36 @@ public class CommunicationUserService {
         }
 
         communication.cancel();
+
+        this.communicationRepository.save(communication);
+
+        responseDpo.setCommunication(communication);
+    }
+
+    @Transactional
+    public void control(ControlRequestDpo requestDpo, ControlResponseDpo responseDpo) {
+        Communication communication = this.communicationRepository.getById(requestDpo.getCommId());
+
+        if (communication == null) {
+            return;
+        }
+
+        communication.control();
+
+        this.communicationRepository.save(communication);
+
+        responseDpo.setCommunication(communication);
+    }
+
+    @Transactional
+    public void uncontrol(UncontrolRequestDpo requestDpo, UncontrolResponseDpo responseDpo) {
+        Communication communication = this.communicationRepository.getById(requestDpo.getCommId());
+
+        if (communication == null) {
+            return;
+        }
+
+        communication.uncontrol();
 
         this.communicationRepository.save(communication);
 

@@ -23,6 +23,7 @@ public class GetCommunicationResponseDpoGrpc implements GetCommunicationResponse
         proto.skysign.common.Communication nonMissionIdComm =  proto.skysign.common.Communication.newBuilder()
                 .setId(dto.getId())
                 .setVehicleId(dto.getVehicleId())
+                .setIsControlled(dto.isControlled())
                 .build();
         if (dto.getMissionId() == null) {
             return nonMissionIdComm;

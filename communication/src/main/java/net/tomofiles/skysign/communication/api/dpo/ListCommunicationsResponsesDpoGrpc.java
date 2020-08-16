@@ -27,6 +27,7 @@ public class ListCommunicationsResponsesDpoGrpc implements ListCommunicationsRes
                     proto.skysign.common.Communication nonMissionIdComm =  proto.skysign.common.Communication.newBuilder()
                             .setId(communication.getId())
                             .setVehicleId(communication.getVehicleId())
+                            .setIsControlled(communication.isControlled())
                             .build();
                     if (communication.getMissionId() == null) {
                         return nonMissionIdComm;

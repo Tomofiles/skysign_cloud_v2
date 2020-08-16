@@ -30,6 +30,7 @@ public class CommunicationIdChangedEventHandlerTests {
     private static final CommunicationId DEFAULT_COMMUNICATION_ID_BEFORE = new CommunicationId(UUID.randomUUID().toString());
     private static final CommunicationId DEFAULT_COMMUNICATION_ID_AFTER = new CommunicationId(UUID.randomUUID().toString());
     private static final VehicleId DEFAULT_VEHICLE_ID = new VehicleId(UUID.randomUUID().toString());
+    private static final boolean DEFAULT_CONTROLLED = true;
     private static final Version DEFAULT_VERSION = new Version(UUID.randomUUID().toString());
 
     @Mock
@@ -72,6 +73,7 @@ public class CommunicationIdChangedEventHandlerTests {
                 .thenReturn(newNormalCommunication(
                         DEFAULT_COMMUNICATION_ID_BEFORE,
                         DEFAULT_VEHICLE_ID,
+                        DEFAULT_CONTROLLED,
                         null, // テストに使用しないためNull
                         null)); // テストに使用しないためNull
 

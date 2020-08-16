@@ -40,6 +40,7 @@ public class CommunicationRepositoryTests {
 
     private static final CommunicationId DEFAULT_COMMUNICATION_ID = new CommunicationId(UUID.randomUUID().toString());
     private static final VehicleId DEFAULT_VEHICLE_ID = new VehicleId(UUID.randomUUID().toString());
+    private static final boolean DEFAULT_CONTROLLED = true;
     private static final MissionId DEFAULT_MISSION_ID = new MissionId(UUID.randomUUID().toString());
     private static final CommandId DEFAULT_COMMAND_ID1 = new CommandId(UUID.randomUUID().toString());
     private static final CommandId DEFAULT_COMMAND_ID2 = new CommandId(UUID.randomUUID().toString());
@@ -121,14 +122,17 @@ public class CommunicationRepositoryTests {
                         newNormalCommunicationRecord(
                                 DEFAULT_COMMUNICATION_ID,
                                 DEFAULT_VEHICLE_ID,
+                                DEFAULT_CONTROLLED,
                                 DEFAULT_MISSION_ID),
                         newNormalCommunicationRecord(
                                 DEFAULT_COMMUNICATION_ID,
                                 DEFAULT_VEHICLE_ID,
+                                DEFAULT_CONTROLLED,
                                 DEFAULT_MISSION_ID),
                         newNormalCommunicationRecord(
                                 DEFAULT_COMMUNICATION_ID,
                                 DEFAULT_VEHICLE_ID,
+                                DEFAULT_CONTROLLED,
                                 DEFAULT_MISSION_ID)
                 }));
         when(telemetryMapper.find(DEFAULT_COMMUNICATION_ID.getId()))
@@ -144,6 +148,7 @@ public class CommunicationRepositoryTests {
         CommunicationComponentDto expectDto = newNormalCommunicationComponentDto(
                 DEFAULT_COMMUNICATION_ID,
                 DEFAULT_VEHICLE_ID,
+                DEFAULT_CONTROLLED,
                 DEFAULT_MISSION_ID,
                 DEFAULT_GENERATOR.get());
         
@@ -173,6 +178,7 @@ public class CommunicationRepositoryTests {
                 .thenReturn(newNormalCommunicationRecord(
                         DEFAULT_COMMUNICATION_ID,
                         DEFAULT_VEHICLE_ID,
+                        DEFAULT_CONTROLLED,
                         DEFAULT_MISSION_ID));
         when(telemetryMapper.find(DEFAULT_COMMUNICATION_ID.getId()))
                 .thenReturn(newNormalTelemetryRecord(
@@ -188,6 +194,7 @@ public class CommunicationRepositoryTests {
         CommunicationComponentDto expectDto = newNormalCommunicationComponentDto(
                 DEFAULT_COMMUNICATION_ID,
                 DEFAULT_VEHICLE_ID,
+                DEFAULT_CONTROLLED,
                 DEFAULT_MISSION_ID,
                 DEFAULT_GENERATOR.get());
 
@@ -214,6 +221,7 @@ public class CommunicationRepositoryTests {
         repository.save(newSingleCommandCommunication(
                 DEFAULT_COMMUNICATION_ID,
                 DEFAULT_VEHICLE_ID,
+                DEFAULT_CONTROLLED,
                 DEFAULT_MISSION_ID,
                 DEFAULT_GENERATOR_SINGLE_1.get()));
 
@@ -221,6 +229,7 @@ public class CommunicationRepositoryTests {
                 .create(newNormalCommunicationRecord(
                         DEFAULT_COMMUNICATION_ID,
                         DEFAULT_VEHICLE_ID,
+                        DEFAULT_CONTROLLED,
                         DEFAULT_MISSION_ID));
         verify(telemetryMapper, times(1))
                 .create(newNormalTelemetryRecord(DEFAULT_COMMUNICATION_ID));
@@ -240,6 +249,7 @@ public class CommunicationRepositoryTests {
                 .thenReturn(newNormalCommunicationRecord(
                         DEFAULT_COMMUNICATION_ID,
                         DEFAULT_VEHICLE_ID,
+                        DEFAULT_CONTROLLED,
                         DEFAULT_MISSION_ID));
         when(telemetryMapper.find(DEFAULT_COMMUNICATION_ID.getId()))
                 .thenReturn(newEmptyTelemetryRecord(DEFAULT_COMMUNICATION_ID));
@@ -253,6 +263,7 @@ public class CommunicationRepositoryTests {
         repository.save(newSingleCommandCommunication(
                 DEFAULT_COMMUNICATION_ID,
                 DEFAULT_VEHICLE_ID,
+                DEFAULT_CONTROLLED,
                 DEFAULT_MISSION_ID,
                 DEFAULT_GENERATOR_SINGLE_2.get()));
 
@@ -260,6 +271,7 @@ public class CommunicationRepositoryTests {
                 .update(newNormalCommunicationRecord(
                         DEFAULT_COMMUNICATION_ID,
                         DEFAULT_VEHICLE_ID,
+                        DEFAULT_CONTROLLED,
                         DEFAULT_MISSION_ID));
         verify(telemetryMapper, times(1))
                 .update(newNormalTelemetryRecord(DEFAULT_COMMUNICATION_ID));

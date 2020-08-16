@@ -34,10 +34,11 @@ public class GrpcObjectMother {
     /**
      * テスト用Communicationオブジェクトを生成する。
      */
-    public static Communication newNormalCommunicationGrpc(CommunicationId communicationId, VehicleId vehicleId, MissionId missionId) {
+    public static Communication newNormalCommunicationGrpc(CommunicationId communicationId, VehicleId vehicleId, boolean controlled, MissionId missionId) {
         Communication nonMissionIdComm =  Communication.newBuilder()
                 .setId(communicationId.getId())
                 .setVehicleId(vehicleId.getId())
+                .setIsControlled(controlled)
                 .build();
         if (missionId == null) {
             return nonMissionIdComm;

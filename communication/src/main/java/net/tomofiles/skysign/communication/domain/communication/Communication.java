@@ -26,6 +26,10 @@ public class Communication {
 
     @Getter
     @Setter(value = AccessLevel.PACKAGE)
+    private boolean controlled = false;
+
+    @Getter
+    @Setter(value = AccessLevel.PACKAGE)
     private MissionId missionId = null;
 
     @Getter(value = AccessLevel.PACKAGE)
@@ -89,6 +93,14 @@ public class Communication {
 
     public void cancel() {
         this.missionId = null;
+    }
+
+    public void control() {
+        this.controlled = true;
+    }
+
+    public void uncontrol() {
+        this.controlled = false;
     }
 
     public CommandId pushCommand(CommandType commandType) {

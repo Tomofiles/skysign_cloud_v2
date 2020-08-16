@@ -59,4 +59,5 @@ message Communication {
     string id = 1;
     string vehicleId = 2;
     string missionId = 3;
+    bool isControlled = 4;
 }
