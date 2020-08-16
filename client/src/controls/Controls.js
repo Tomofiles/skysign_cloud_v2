@@ -8,8 +8,8 @@ import {
 } from '@material-ui/core';
 import { grey } from '@material-ui/core/colors';
 import Settings from '@material-ui/icons/Settings';
-import FleetControl from './FleetControl';
-import Staging from './Staging';
+import FleetControl from './fleetcontrol/FleetControl';
+import Staging from './staging/Staging';
 
 const Controls = (props) => {
   return (

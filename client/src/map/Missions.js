@@ -8,7 +8,8 @@ const Missions = () => {
   return (
     <div>
       {rows.map(data => (
-        <Mission key={data.id} data={data} />
+        data.isControlled && data.missionId !== "" &&
+          <Mission key={data.id} data={data} />
       ))}
     </div>
   );

@@ -12,7 +12,7 @@ import {
 import { grey } from '@material-ui/core/colors';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 
-import { COMMAND_TYPE, controlVehicle } from './FleetControlUtils'
+import { COMMAND_TYPE, controlCommunication } from './FleetControlUtils'
 
 const FleetControl = (props) => {
   const [ buttonState, setButtonState] = useState({
@@ -29,13 +29,13 @@ const FleetControl = (props) => {
 
   const onClickControl = (type) => {
     return () => {
-      rows.filter(row => row.selected)
-          .forEach(row => controlVehicle(type, row.vehicle));
+      rows.filter(row => row.isControlled)
+          .forEach(row => controlCommunication(type, row.id));
     }
   }
 
   useEffect(() => {
-    if (rows.filter(row => row.selected).length === 0) {
+    if (rows.filter(row => row.isControlled).length === 0) {
       setButtonState({
         arm: true,
         disarm: true,

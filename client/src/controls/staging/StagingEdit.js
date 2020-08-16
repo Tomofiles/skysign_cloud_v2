@@ -16,51 +16,49 @@ import {
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import { grey } from '@material-ui/core/colors';
 
-import { v4 as uuidv4 } from 'uuid';
-
-import { getVehicles } from '../assets/vehicles/VehicleUtils'
-import { getMissions } from '../plans/missions/MissionUtils'
+import { getMissions } from '../../plans/missions/MissionUtils'
 
 const noSelected = {
   "id": "no-selected",
   "name": "-"
 };
 
-const StagingNew = (props) => {
-  const { control, handleSubmit } = useForm({
+const StagingEdit = (props) => {
+  const { control, handleSubmit, setValue } = useForm({
     defaultValues: {
-      mission: "no-selected",
-      vehicle: "no-selected"
+      missionId: "no-selected"
     }
   });
   const [ missions, setMissions ] = useState([noSelected]);
-  const [ vehicles, setVehicles ] = useState([noSelected]);
 
   useEffect(() => {
     getMissions()
       .then(data => {
         setMissions([noSelected, ...data.missions]);
       });
-    getVehicles()
-      .then(data => {
-        setVehicles([noSelected, ...data.vehicles]);
-      });
-  }, [])
+  }, [ setMissions ])
+
+  useEffect(() => {
+    if (props.selected.missionId) {
+      setValue("missionId", props.selected.missionId);
+    }
+  }, [ props.selected, setValue ])
 
   const onClickReturn = () => {
     props.openList();  
   }
 
-  const onClickOk = (data) => {
-    data.id = uuidv4();
-    data.selected = false;
-    props.addRow(data);
-    props.openList();  
+  const onClickStaging = data => {
+    props.staging(props.selected.id, data);
+  }
+
+  const onClickCancel = () => {
+    props.cancel(props.selected.id);
   }
 
   return (
     <div>
-      <form onSubmit={handleSubmit(onClickOk)}>
+      <form onSubmit={handleSubmit(onClickStaging)}>
         <ExpansionPanelDetails>
           <Grid container className={props.classes.editVehicleInput}>
             <Grid item xs={12}>
@@ -69,7 +67,19 @@ const StagingNew = (props) => {
               </Button>
             </Grid>
             <Grid item xs={12}>
-              <Typography>New Staging</Typography>
+              <Typography>Staging / Cancle</Typography>
+            </Grid>
+            <Grid item xs={12}>
+              <Box  p={1} m={1} borderRadius={7} >
+                <Grid container className={props.classes.editVehicleInput}>
+                  <Grid item xs={12}>
+                    <Typography style={{fontSize: "12px"}}>Name</Typography>
+                  </Grid>
+                  <Grid item xs={12}>
+                    <Typography>{props.selected.vehicleName}</Typography>
+                  </Grid>
+                </Grid>
+              </Box>
             </Grid>
             <Grid item xs={12}>
               <Box className={props.classes.editVehicleInputText}
@@ -80,35 +90,14 @@ const StagingNew = (props) => {
                     as={
                       <Select
                         labelId="mission-label"
-                        id="mission"
+                        id="missionId"
                       >
                         {missions.map((mission) => (
                           <MenuItem key={mission.id} value={mission.id}>{mission.name}</MenuItem>
                         ))}
                       </Select>
                     }
-                    name="mission"
-                    control={control} />
-                </FormControl>
-              </Box>
-            </Grid>
-            <Grid item xs={12}>
-              <Box className={props.classes.editVehicleInputText}
-                  p={1} m={1} borderRadius={7} >
-                <FormControl fullWidth>
-                  <InputLabel id="vehicle-label">Vehicle</InputLabel>
-                  <Controller
-                    as={
-                      <Select
-                        labelId="vehicle-label"
-                        id="vehicle"
-                      >
-                        {vehicles.map((vehicle) => (
-                          <MenuItem key={vehicle.id} value={vehicle.id}>{vehicle.name}</MenuItem>
-                        ))}
-                      </Select>
-                    }
-                    name="vehicle"
+                    name="missionId"
                     control={control} />
                 </FormControl>
               </Box>
@@ -119,7 +108,12 @@ const StagingNew = (props) => {
           <Button
               className={props.classes.editVehicleButton}
               type="submit" >
-            OK
+            Staging
+          </Button>
+          <Button
+              className={props.classes.editVehicleButton}
+              onClick={onClickCancel} >
+            Cancel
           </Button>
         </ExpansionPanelActions>
       </form>
@@ -127,4 +121,4 @@ const StagingNew = (props) => {
   );
 }
 
-export default StagingNew;
+export default StagingEdit;

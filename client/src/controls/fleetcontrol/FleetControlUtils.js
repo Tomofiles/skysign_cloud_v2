@@ -11,10 +11,10 @@ export const COMMAND_TYPE = {
   RETURN: "RETURN",
 }
 
-export async function controlVehicle(type, id) {
+export async function controlCommunication(type, id) {
   try {
     const res = await axios
-      .post(`/api/v1/vehicles/${id}/commands`, {
+      .post(`/api/v1/communications/${id}/commands`, {
         type: type
       })
     return res.data;

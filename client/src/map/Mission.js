@@ -9,12 +9,12 @@ const Mission = (props) => {
   const [ mission, setMission ] = useState(new MissionModel());
 
   useEffect(() => {
-    getMission(props.data.mission)
+    getMission(props.data.missionId)
       .then(mission => {
         let newMission = Object.assign(Object.create(MissionModel.prototype), mission);
         setMission(newMission);
       });
-  }, [ props.data.mission, setMission ]);
+  }, [ props.data.missionId, setMission ]);
 
   return (
     <>

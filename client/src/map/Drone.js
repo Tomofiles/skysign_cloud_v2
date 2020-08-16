@@ -1,37 +1,24 @@
 import React, { useState } from 'react';
 
 import { Entity, ModelGraphics } from 'resium';
-import axios from 'axios';
 import useInterval from 'use-interval';
 
 import { convertDroneData } from './CesiumHelper';
+import { getTelemetry } from './MapUtils'
 
-export async function getTelemetry(id) {
-  try {
-    const res = await axios
-      .get(`/api/v1/vehicles/${id}/telemetries`, {
-        params: {}
-      })
-    return res.data;
-  } catch(error) {
-    console.log(error);
-  }
-}
-  
 const Drone = (props) => {
   const [ data, setData ] = useState({});
 
   useInterval(() => {
-    getTelemetry(props.data.vehicle)
+    getTelemetry(props.data.id)
       .then(data => {
-        setData(convertDroneData(props.data.vehicle, data.name, data.telemetry));
+        setData(convertDroneData(props.data.vehicleId, data.telemetry));
       });
   },
   1000);
 
   return (
     <Entity
-      name={unescape(data.name)}
       position={data.position}
       orientation={data.orientation}
       description={data.description} >
