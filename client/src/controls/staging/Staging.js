@@ -33,17 +33,19 @@ const Staging = (props) => {
   const [ rows, setRows ] = useGlobal("stagingRows");
 
   useEffect(() => {
-    getCommunications()
-      .then(async data => {
-        for (let communication of data.communications) {
-          if (communication.missionId !== "") {
-            communication.missionName = await getMissionName(communication.missionId);
+    if (props.open) {
+      getCommunications()
+        .then(async data => {
+          for (let communication of data.communications) {
+            if (communication.missionId !== "") {
+              communication.missionName = await getMissionName(communication.missionId);
+            }
+            communication.vehicleName = await getVehicleName(communication.vehicleId);
           }
-          communication.vehicleName = await getVehicleName(communication.vehicleId);
-        }
-        setRows(data.communications);
-      })
-  }, [ refresh, setRows ])
+          setRows(data.communications);
+        })
+    }
+  }, [ props.open, refresh, setRows ])
 
   const changeControl = (id, isControlled) => {
     if (isControlled) {

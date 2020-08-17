@@ -37,7 +37,7 @@ const Controls = (props) => {
           </Grid>
         </Box>
       </Box>
-      <Staging classes={props.classes} />
+      <Staging classes={props.classes} open={props.open} />
       <FleetControl classes={props.classes} />
     </Drawer>
   );
