@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: skysign-helper-backend
+  labels:
+    run: skysign-helper-backend
+spec:
+  selector:
+    matchLabels:
+      run: skysign-helper-backend
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        run: skysign-helper-backend
+    spec:
+      containers:
+      - name: skysign-helper-backend
+        image: gcr.io/${GOOGLE_PROJECT_ID}/helper-api:${CIRCLE_SHA1}
+        command: ["/app/helper-user-api"]
+        ports:
+        - containerPort: 8888

@@ -11,12 +11,20 @@ spec:
       paths:
       - path: /api/v1/vehicles
         backend:
-          serviceName: skysign-http-gateway-user
-          servicePort: 8888
+          serviceName: skysign-vehicle-gateway
+          servicePort: 6000
+      - path: /api/v1/missions
+        backend:
+          serviceName: skysign-mission-gateway
+          servicePort: 6000
       - path: /api/v1/communications
         backend:
-          serviceName: skysign-http-gateway-edge
-          servicePort: 8889
+          serviceName: skysign-communication-gateway
+          servicePort: 6000
+      - path: /api/v1/helper
+        backend:
+          serviceName: skysign-helper-gateway
+          servicePort: 6000
       - path: /
         backend:
           serviceName: skysign-client
