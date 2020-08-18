@@ -9,22 +9,23 @@ participant "Edge on Vehicle" as E
 UC -> CSV : POST /api/v1/vehicles\n(body communication-id)
 note left: User creates\nnew Vehicle
 CSV -> UC : Success, new Vehicle\n(including vehicle-id)
-CSV -> CSC : Async creates\nnew Communication\n(including communication-id)
-CSV -> CSV : 
+CSV -> CSC : Async creates\nnew Communication\n(including vehicle-id and communication-id)
+CSC -> CSC : 
 note left: Link vehicle-id and communication-id
-E -> CSC : POST /api/v1/communications/<communication-id>/telemetries\n(body Telemetry)
+E -> CSC : POST /api/v1/communications/<communication-id>/telemetry\n(body Telemetry)
 note right: Edge sends Telemetry\nto server
 CSC -> E : Success, no Commands
-UC -> CSV : POST /api/v1/vehicles/<vehicle-id>/commands\n(body command-type)
-note left: User sends\ncommand to Vehicle
-CSV -> CSC : creates\nnew Command
-CSV -> UC : Success, sends to Vehicle
-E -> CSC : POST /api/v1/communications/<communication-id>/telemetries\n(body Telemetry)
+UC -> CSC : POST /api/v1/communications/<communication-id>/commands\n(body command-type)
+note left: User sends\ncommand to Edge\n(relay to Communication)
+CSC -> CSC : 
+note right: Server adds Command
+CSC -> UC : Success, sends to Edge
+E -> CSC : POST /api/v1/communications/<communication-id>/telemetry\n(body Telemetry)
 note right: Edge sends Telemetry\nto server
-CSC -> E : Existing Command for Vehicle\n(including command-id)
+CSC -> E : Existing Command for Edge\n(including command-id)
 note right: Edge discovers\npre-existing Command
 E -> CSC : POST /api/v1/communications/<communication-id>/commands/<command-id>
-CSC -> E : Server sends Command to Vehicle
+CSC -> E : Server sends Command to Edge
 note right: Edge retrieves Command\nfrom server
 CSC -> CSC : 
 note left: Server removes Command
