@@ -3,10 +3,12 @@ package net.tomofiles.skysign.mission.domain.mission;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.ToString;
 
 @Getter
 @AllArgsConstructor
 @EqualsAndHashCode(of = {"order", "latitude", "longitude", "relativeHeightM", "speedMS"})
+@ToString
 public class Waypoint {
     /** 順序 */
     private final int order;

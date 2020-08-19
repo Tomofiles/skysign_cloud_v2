@@ -1,19 +1,78 @@
 package net.tomofiles.skysign.communication.domain.communication;
 
+import static com.google.common.truth.Truth.assertThat;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import net.tomofiles.skysign.communication.domain.vehicle.VehicleId;
+
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.UUID;
+import java.util.function.Supplier;
+
+import static net.tomofiles.skysign.communication.domain.communication.SnapshotObjectMother.newNormalTelemetrySnapshot;
+import static net.tomofiles.skysign.communication.domain.communication.CommunicationObjectMother.newNormalCommunication;
+import static net.tomofiles.skysign.communication.domain.communication.CommunicationObjectMother.newSingleCommandCommunication;
+import static net.tomofiles.skysign.communication.domain.communication.CommunicationObjectMother.newSeveralCommandsCommunication;
+import static net.tomofiles.skysign.communication.domain.communication.CommunicationObjectMother.newNormalTelemetry;
 
 public class EdgeCommunicationTests {
     
+    private static final CommunicationId DEFAULT_COMMUNICATION_ID = new CommunicationId(UUID.randomUUID().toString());
+    private static final CommandId DEFAULT_COMMAND_ID = new CommandId(UUID.randomUUID().toString());
+    private static final VehicleId DEFAULT_VEHICLE_ID = new VehicleId(UUID.randomUUID().toString());
+    private static final boolean DEFAULT_CONTROLLED = true;
+    private static final MissionId DEFAULT_MISSION_ID = new MissionId(UUID.randomUUID().toString());
+    private static final LocalDateTime DEFAULT_COMMAND_TIME = LocalDateTime.of(2020, 1, 1, 0, 0, 0);
+    private static final Supplier<Generator> DEFAULT_GENERATOR = () -> {
+        return new Generator(){
+            @Override
+            public CommandId newCommandId() {
+                return DEFAULT_COMMAND_ID;
+            }
+            @Override
+            public LocalDateTime newTime() {
+                return DEFAULT_COMMAND_TIME;
+            }
+        };
+    };
+    private static final CommandId DEFAULT_COMMAND_ID1 = new CommandId(UUID.randomUUID().toString());
+    private static final CommandId DEFAULT_COMMAND_ID2 = new CommandId(UUID.randomUUID().toString());
+    private static final CommandId DEFAULT_COMMAND_ID3 = new CommandId(UUID.randomUUID().toString());
+    private static final LocalDateTime DEFAULT_COMMAND_TIME1 = LocalDateTime.of(2020, 07, 22, 10, 30, 25);
+    private static final LocalDateTime DEFAULT_COMMAND_TIME2 = LocalDateTime.of(2020, 07, 22, 10, 30, 30);
+    private static final LocalDateTime DEFAULT_COMMAND_TIME3 = LocalDateTime.of(2020, 07, 22, 10, 30, 45);
+    private static final Supplier<Generator> DEFAULT_GENERATOR_IN_RONDOM_ORDER = () -> {
+        return new Generator(){
+            private List<CommandId> commandIds = new ArrayList<>(Arrays.asList(new CommandId[] {
+                    DEFAULT_COMMAND_ID1,
+                    DEFAULT_COMMAND_ID2,
+                    DEFAULT_COMMAND_ID3
+            }));
+            private List<LocalDateTime> times = new ArrayList<>(Arrays.asList(new LocalDateTime[] {
+                    DEFAULT_COMMAND_TIME3, // 順不同
+                    DEFAULT_COMMAND_TIME1, // 順不同
+                    DEFAULT_COMMAND_TIME2  // 順不同
+            }));
+            @Override
+            public CommandId newCommandId() {
+                return commandIds.remove(0);
+            }
+            @Override
+            public LocalDateTime newTime() {
+                return times.remove(0);
+            }
+        };
+    };
+
     @Mock
     private CommunicationRepository repository;
 
@@ -28,45 +87,17 @@ public class EdgeCommunicationTests {
      */
     @Test
     public void pushTelemetryToCommunicationTest() {
-        CommunicationId id = CommunicationId.newId();
-        double latitude = 0.0d;
-        double longitude = 1.0d;
-        double altitude = 2.0d;
-        double relativeAltitude = 3.0d;
-        double speed = 4.0d;
-        boolean armed = true;
-        String flightMode = "INFLIGHT";
-        double orientationX = 5.0d;
-        double orientationY = 6.0d;
-        double orientationZ = 7.0d;
-        double orientationW = 8.0d;
+        when(repository.getById(DEFAULT_COMMUNICATION_ID))
+                .thenReturn(CommunicationFactory.newInstance(
+                        DEFAULT_COMMUNICATION_ID,
+                        DEFAULT_VEHICLE_ID,
+                        DEFAULT_GENERATOR.get()));
 
-        Communication before = CommunicationFactory.newInstance(id);
+        Communication communication = repository.getById(DEFAULT_COMMUNICATION_ID);
 
-        when(repository.getById(id)).thenReturn(before);
+        communication.pushTelemetry(newNormalTelemetrySnapshot());
 
-        Communication communication = repository.getById(id);
-
-        communication.pushTelemetry(
-                latitude,
-                longitude,
-                altitude,
-                relativeAltitude,
-                speed,
-                armed,
-                flightMode,
-                orientationX,
-                orientationY,
-                orientationZ,
-                orientationW);
-
-        Telemetry after = Telemetry.newInstance()
-                .setPosition(latitude, longitude, altitude, relativeAltitude, speed)
-                .setArmed(armed)
-                .setFlightMode(flightMode)
-                .setOrientation(orientationX, orientationY, orientationZ, orientationW);
-
-        assertEquals(communication.getTelemetry(), after);
+        assertThat(communication.getTelemetry()).isEqualTo(newNormalTelemetry());
     }
 
     /**
@@ -76,40 +107,23 @@ public class EdgeCommunicationTests {
      */
     @Test
     public void pullCommandIDsFromCommunicationTest() {
-        CommunicationId id = CommunicationId.newId();
-        CommandId commandId1 = CommandId.newId();
-        CommandId commandId2 = CommandId.newId();
-        CommandId commandId3 = CommandId.newId();
-        CommandId commandId4 = CommandId.newId();
+        when(repository.getById(DEFAULT_COMMUNICATION_ID))
+                .thenReturn(newSeveralCommandsCommunication(
+                        DEFAULT_COMMUNICATION_ID,
+                        DEFAULT_VEHICLE_ID,
+                        DEFAULT_CONTROLLED,
+                        DEFAULT_MISSION_ID,
+                        DEFAULT_GENERATOR_IN_RONDOM_ORDER.get()));
 
-        Communication before = CommunicationFactory.newInstance(id);
-        before.getCommands().add(new Command(
-                commandId1,
-                CommandType.ARM,
-                LocalDateTime.of(2020, 07, 22, 10, 30, 25))); // 3
-        before.getCommands().add(new Command(
-                commandId2,
-                CommandType.ARM,
-                LocalDateTime.of(2020, 07, 22, 10, 30, 12))); // 2
-        before.getCommands().add(new Command(
-                commandId3,
-                CommandType.ARM,
-                LocalDateTime.of(2020, 07, 22, 10, 30, 59))); // 4
-        before.getCommands().add(new Command(
-                commandId4,
-                CommandType.ARM,
-                LocalDateTime.of(2020, 07, 22, 10, 30, 2))); // 1
-
-        when(repository.getById(id)).thenReturn(before);
-
-        Communication communication = repository.getById(id);
+        Communication communication = repository.getById(DEFAULT_COMMUNICATION_ID);
 
         List<CommandId> commandIds = communication.getCommandIds();
 
-        assertEquals(commandIds.get(0), commandId4);
-        assertEquals(commandIds.get(1), commandId2);
-        assertEquals(commandIds.get(2), commandId1);
-        assertEquals(commandIds.get(3), commandId3);
+        assertThat(commandIds).isEqualTo(Arrays.asList(new CommandId[] {
+            DEFAULT_COMMAND_ID2,
+            DEFAULT_COMMAND_ID3,
+            DEFAULT_COMMAND_ID1
+        }));
     }
 
     /**
@@ -119,25 +133,22 @@ public class EdgeCommunicationTests {
      */
     @Test
     public void pullCommandFromCommunicationTest() {
-        CommunicationId id = CommunicationId.newId();
-        CommandId commandId = CommandId.newId();
+        when(repository.getById(DEFAULT_COMMUNICATION_ID))
+                .thenReturn(newSingleCommandCommunication(
+                        DEFAULT_COMMUNICATION_ID,
+                        DEFAULT_VEHICLE_ID,
+                        DEFAULT_CONTROLLED,
+                        DEFAULT_MISSION_ID,
+                        DEFAULT_GENERATOR.get()));
 
-        Communication before = CommunicationFactory.newInstance(id);
-        before.getCommands().add(new Command(commandId, CommandType.ARM, LocalDateTime.now()));
+        Communication communication = repository.getById(DEFAULT_COMMUNICATION_ID);
 
-        when(repository.getById(id)).thenReturn(before);
+        CommandType type = communication.pullCommandById(DEFAULT_COMMAND_ID);
 
-        Communication communication = repository.getById(id);
-
-        CommandType type = communication.pullCommandById(commandId);
-
-        assertEquals(type, CommandType.ARM);
-        assertEquals(communication.getCommandIds().size(), 0);
-
-        assertEquals(communication.getId(), id);
-        assertNull(communication.getMissionId());
-        assertEquals(communication.getCommands().size(), 0);
-        assertEquals(communication.getTelemetry(), Telemetry.newInstance());
+        assertAll(
+            () -> assertThat(type).isEqualTo(CommandType.ARM),
+            () -> assertThat(communication.getCommandIds()).hasSize(0)
+        );
     }
 
     /**
@@ -146,20 +157,22 @@ public class EdgeCommunicationTests {
      */
     @Test
     public void pullNoCommandFromCommunicationTest() {
-        CommunicationId id = CommunicationId.newId();
+        when(repository.getById(DEFAULT_COMMUNICATION_ID))
+                .thenReturn(newNormalCommunication(
+                        DEFAULT_COMMUNICATION_ID,
+                        DEFAULT_VEHICLE_ID,
+                        DEFAULT_CONTROLLED,
+                        DEFAULT_MISSION_ID,
+                        DEFAULT_GENERATOR.get()));
 
-        when(repository.getById(id)).thenReturn(CommunicationFactory.newInstance(id));
+        Communication communication = repository.getById(DEFAULT_COMMUNICATION_ID);
 
-        Communication communication = repository.getById(id);
+        CommandType type = communication.pullCommandById(DEFAULT_COMMAND_ID);
 
-        CommandType type = communication.pullCommandById(CommandId.newId());
-
-        assertNull(type);
-        assertEquals(communication.getCommandIds().size(), 0);
-
-        assertEquals(communication.getId(), id);
-        assertNull(communication.getMissionId());
-        assertEquals(communication.getCommands().size(), 0);
-        assertEquals(communication.getTelemetry(), Telemetry.newInstance());
+        assertAll(
+            () -> assertThat(type).isNull(),
+            () -> assertThat(communication.getCommandIds()).hasSize(0),
+            () -> assertThat(communication.getCommands()).hasSize(0)
+        );
     }
 }

@@ -1,8 +1,12 @@
 package net.tomofiles.skysign.communication.infra.vehicle;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class VehicleRecord {
     private String id;
     private String name;

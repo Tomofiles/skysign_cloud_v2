@@ -1,11 +1,14 @@
 package net.tomofiles.skysign.communication.domain.communication;
 
-import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.ToString;
 
-@AllArgsConstructor(access = AccessLevel.PACKAGE)
+@AllArgsConstructor
 @Getter
+@EqualsAndHashCode
+@ToString
 public class TelemetrySnapshot {
     private double latitude;
     private double longitude;

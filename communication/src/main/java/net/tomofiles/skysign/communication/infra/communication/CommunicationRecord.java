@@ -1,9 +1,15 @@
 package net.tomofiles.skysign.communication.infra.communication;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class CommunicationRecord {
     private String id;
+    private String vehicleId;
+    private boolean controlled;
     private String missionId;
 }

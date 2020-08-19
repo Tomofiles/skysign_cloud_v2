@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: skysign-vehicle-gateway-backend
+  labels:
+    run: skysign-vehicle-gateway-backend
+spec:
+  selector:
+    matchLabels:
+      run: skysign-vehicle-gateway-backend
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        run: skysign-vehicle-gateway-backend
+    spec:
+      containers:
+      - name: skysign-vehicle-gateway-backend
+        image: gcr.io/${GOOGLE_PROJECT_ID}/http_gateway:${CIRCLE_SHA1}
+        command: ["/app/vehicle-gateway"]
+        args: ["-port", "6000", "-backend_host", "skysign-communication", "-backend_port", "5001"]
+        ports:
+        - containerPort: 6000

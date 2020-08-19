@@ -1,6 +1,7 @@
 package net.tomofiles.skysign.communication.domain.communication;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -8,18 +9,28 @@ import java.util.stream.Collectors;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
+import net.tomofiles.skysign.communication.domain.vehicle.VehicleId;
 
-@RequiredArgsConstructor(access = AccessLevel.PACKAGE)
 @EqualsAndHashCode(of = {"id"})
+@ToString
 public class Communication {
     @Getter
     private final CommunicationId id;
 
+    private final Generator generator;
+
+    @Getter
+    private final VehicleId vehicleId;
+
     @Getter
     @Setter(value = AccessLevel.PACKAGE)
-    private MissionId missionId;
+    private boolean controlled = false;
+
+    @Getter
+    @Setter(value = AccessLevel.PACKAGE)
+    private MissionId missionId = null;
 
     @Getter(value = AccessLevel.PACKAGE)
     @Setter(value = AccessLevel.PACKAGE)
@@ -28,23 +39,29 @@ public class Communication {
     @Getter(value = AccessLevel.PACKAGE)
     private final List<Command> commands;
 
-    public void pushTelemetry(
-            double latitude,
-            double longitude,
-            double altitude,
-            double relativeAltitude,
-            double speed,
-            boolean armed,
-            String flightMode,
-            double orientationX,
-            double orientationY,
-            double orientationZ,
-            double orientationW) {
+    Communication(CommunicationId id, VehicleId vehicleId, Generator generator) {
+        this.id = id;
+        this.vehicleId = vehicleId;
+        this.commands = new ArrayList<>();
+
+        this.generator = generator;
+    }
+
+    public void pushTelemetry(TelemetrySnapshot snapshot) {
         this.telemetry = Telemetry.newInstance()
-                .setPosition(latitude, longitude, altitude, relativeAltitude, speed)
-                .setArmed(armed)
-                .setFlightMode(flightMode)
-                .setOrientation(orientationX, orientationY, orientationZ, orientationW);
+                .setPosition(
+                        snapshot.getLatitude(),
+                        snapshot.getLongitude(),
+                        snapshot.getAltitude(),
+                        snapshot.getRelativeAltitude(),
+                        snapshot.getSpeed())
+                .setArmed(snapshot.isArmed())
+                .setFlightMode(snapshot.getFlightMode())
+                .setOrientation(
+                        snapshot.getX(),
+                        snapshot.getY(),
+                        snapshot.getZ(),
+                        snapshot.getW());
     }
 
     public TelemetrySnapshot pullTelemetry() {
@@ -70,7 +87,7 @@ public class Communication {
                 .collect(Collectors.toList());
     }
 
-    public void standBy(MissionId missionId) {
+    public void staging(MissionId missionId) {
         this.missionId = missionId;
     }
 
@@ -78,15 +95,24 @@ public class Communication {
         this.missionId = null;
     }
 
+    public void control() {
+        this.controlled = true;
+    }
+
+    public void uncontrol() {
+        this.controlled = false;
+    }
+
     public CommandId pushCommand(CommandType commandType) {
-        CommandId id = CommandId.newId();
-        this.commands.add(new Command(id, commandType, LocalDateTime.now()));
+        CommandId id = this.generator.newCommandId();
+        LocalDateTime time = this.generator.newTime();
+        this.commands.add(new Command(id, commandType, time));
         return id;
     }
 
     public CommandType pullCommandById(CommandId id) {
         Command command = this.commands.stream()
-                .filter(c -> c.equals(Command.empty(id)))
+                .filter(Command.empty(id)::equals)
                 .findAny()
                 .orElse(null);
         if (command == null) {

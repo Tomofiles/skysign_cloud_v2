@@ -1,19 +1,14 @@
 package net.tomofiles.skysign.communication.domain.communication;
 
-import java.util.UUID;
-
-import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.ToString;
 
 @Getter
-@RequiredArgsConstructor(access = AccessLevel.PUBLIC)
-@EqualsAndHashCode(of = {"id"})
+@RequiredArgsConstructor
+@EqualsAndHashCode
+@ToString
 public class CommunicationId {
     private final String id;
-    
-    public static CommunicationId newId() {
-        return new CommunicationId(UUID.randomUUID().toString());
-    }
 }

@@ -1,30 +1,28 @@
 package net.tomofiles.skysign.mission.api;
 
-import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.stream.Collectors;
 
 import org.lognet.springboot.grpc.GRpcService;
 import org.springframework.stereotype.Controller;
-import org.springframework.transaction.annotation.Transactional;
 
 import io.grpc.Status;
 import io.grpc.stub.StreamObserver;
 import lombok.AllArgsConstructor;
-import net.tomofiles.skysign.mission.domain.mission.GeodesicCoordinates;
-import net.tomofiles.skysign.mission.domain.mission.Height;
-import net.tomofiles.skysign.mission.domain.mission.MissionFactory;
-import net.tomofiles.skysign.mission.domain.mission.MissionId;
-import net.tomofiles.skysign.mission.domain.mission.MissionRepository;
-import net.tomofiles.skysign.mission.domain.mission.Navigation;
-import net.tomofiles.skysign.mission.domain.mission.Speed;
+import net.tomofiles.skysign.mission.api.dpo.CreateMissionRequestDpoGrpc;
+import net.tomofiles.skysign.mission.api.dpo.CreateMissionResponseDpoGrpc;
+import net.tomofiles.skysign.mission.api.dpo.DeleteMissionRequestDpoGrpc;
+import net.tomofiles.skysign.mission.api.dpo.DeleteMissionResponseDpoGrpc;
+import net.tomofiles.skysign.mission.api.dpo.GetMissionRequestDpoGrpc;
+import net.tomofiles.skysign.mission.api.dpo.GetMissionResponseDpoGrpc;
+import net.tomofiles.skysign.mission.api.dpo.ListMissionsResponsesDpoGrpc;
+import net.tomofiles.skysign.mission.api.dpo.UpdateMissionRequestDpoGrpc;
+import net.tomofiles.skysign.mission.api.dpo.UpdateMissionResponseDpoGrpc;
+import net.tomofiles.skysign.mission.service.ManageMissionService;
 import proto.skysign.DeleteMissionRequest;
-import proto.skysign.Empty;
+import proto.skysign.common.Empty;
 import proto.skysign.GetMissionRequest;
-import proto.skysign.ListMissionsRequest;
 import proto.skysign.ListMissionsResponses;
-import proto.skysign.Mission;
-import proto.skysign.MissionItem;
+import proto.skysign.common.Mission;
 import proto.skysign.ManageMissionServiceGrpc.ManageMissionServiceImplBase;
 
 @GRpcService
@@ -32,15 +30,14 @@ import proto.skysign.ManageMissionServiceGrpc.ManageMissionServiceImplBase;
 @AllArgsConstructor
 public class ManageMissionEndpoint extends ManageMissionServiceImplBase {
 
-    private MissionRepository missionRepository;
+    private final ManageMissionService manageMissionService;
 
     @Override
-    @Transactional
-    public void listMissions(ListMissionsRequest request, StreamObserver<ListMissionsResponses> responseObserver) {
-        List<net.tomofiles.skysign.mission.domain.mission.Mission> missions;
-        
+    public void listMissions(Empty request, StreamObserver<ListMissionsResponses> responseObserver) {
+        ListMissionsResponsesDpoGrpc responsesDpo = new ListMissionsResponsesDpoGrpc();
+
         try {
-            missions = missionRepository.getAll();
+            this.manageMissionService.listMissions(responsesDpo);
         } catch (Exception e) {
             responseObserver.onError(Status
                     .INTERNAL
@@ -49,41 +46,17 @@ public class ManageMissionEndpoint extends ManageMissionServiceImplBase {
             return;
         }
 
-        List<Mission> r = missions.stream()
-                .map(mission -> {
-                    return Mission.newBuilder()
-                            .setId(mission.getId().getId())
-                            .setName(mission.getMissionName())
-                            .setTakeoffPointGroundHeight(mission.getNavigation().getTakeoffPointGroundHeight().getHeightM())
-                            .addAllItems(
-                                mission.getNavigation().getWaypoints().stream()
-                                        .map(waypoint -> {
-                                            return MissionItem.newBuilder()
-                                                    .setLatitude(waypoint.getLatitude())
-                                                    .setLongitude(waypoint.getLatitude())
-                                                    .setRelativeHeight(waypoint.getRelativeHeightM())
-                                                    .setSpeed(waypoint.getSpeedMS())
-                                                    .build();
-                                        })
-                                        .collect(Collectors.toList())
-                                
-                            )
-                            .build();
-                })
-                .collect(Collectors.toList());
-
-        responseObserver.onNext(ListMissionsResponses.newBuilder().addAllMissions(r).build()); 
+        responseObserver.onNext(responsesDpo.getGrpcResponse());
         responseObserver.onCompleted();
     }
 
     @Override
-    @Transactional
     public void getMission(GetMissionRequest request, StreamObserver<Mission> responseObserver) {
-        MissionId id = new MissionId(request.getId());
-        net.tomofiles.skysign.mission.domain.mission.Mission mission;
-        
+        GetMissionRequestDpoGrpc requestDpo = new GetMissionRequestDpoGrpc(request);
+        GetMissionResponseDpoGrpc responsesDpo = new GetMissionResponseDpoGrpc();
+
         try {
-            mission = missionRepository.getById(id);
+            this.manageMissionService.getMission(requestDpo, responsesDpo);
         } catch (Exception e) {
             responseObserver.onError(Status
                     .INTERNAL
@@ -92,7 +65,7 @@ public class ManageMissionEndpoint extends ManageMissionServiceImplBase {
             return;
         }
 
-        if (mission == null) {
+        if (responsesDpo.isEmpty()) {
             responseObserver.onError(Status
                     .NOT_FOUND
                     .withCause(new NoSuchElementException())
@@ -101,49 +74,17 @@ public class ManageMissionEndpoint extends ManageMissionServiceImplBase {
             return;
         }
 
-        Mission r = Mission.newBuilder()
-                .setId(mission.getId().getId())
-                .setName(mission.getMissionName())
-                .setTakeoffPointGroundHeight(mission.getNavigation().getTakeoffPointGroundHeight().getHeightM())
-                .addAllItems(
-                    mission.getNavigation().getWaypoints().stream()
-                            .map(waypoint -> {
-                                return MissionItem.newBuilder()
-                                        .setLatitude(waypoint.getLatitude())
-                                        .setLongitude(waypoint.getLatitude())
-                                        .setRelativeHeight(waypoint.getRelativeHeightM())
-                                        .setSpeed(waypoint.getSpeedMS())
-                                        .build();
-                            })
-                            .collect(Collectors.toList())
-                    
-                )
-                .build();
-        responseObserver.onNext(r); 
+        responseObserver.onNext(responsesDpo.getGrpcResponse());
         responseObserver.onCompleted();
     }
 
     @Override
-    @Transactional
     public void createMission(Mission request, StreamObserver<Mission> responseObserver) {
-        MissionId id = MissionId.newId();
-        net.tomofiles.skysign.mission.domain.mission.Mission mission = MissionFactory.newInstance(id);
-
-        Navigation navigation = new Navigation();
-        navigation.setTakeoffPointGroundHeight(Height.fromM(request.getTakeoffPointGroundHeight()));
-        request.getItemsList()
-                .forEach(item -> {
-                    navigation.pushNextWaypoint(
-                        new GeodesicCoordinates(item.getLatitude(), item.getLongitude()),
-                        Height.fromM(item.getRelativeHeight()),
-                        Speed.fromMS(item.getSpeed()));
-                });
-
-        mission.nameMission(request.getName());
-        mission.replaceNavigationWith(navigation);
+        CreateMissionRequestDpoGrpc requestDpo = new CreateMissionRequestDpoGrpc(request);
+        CreateMissionResponseDpoGrpc responsesDpo = new CreateMissionResponseDpoGrpc();
 
         try {
-            this.missionRepository.save(mission);
+            this.manageMissionService.createMission(requestDpo, responsesDpo);
         } catch (Exception e) {
             responseObserver.onError(Status
                     .INTERNAL
@@ -152,21 +93,17 @@ public class ManageMissionEndpoint extends ManageMissionServiceImplBase {
             return;
         }
 
-        Mission r = Mission.newBuilder(request)
-                .setId(mission.getId().getId())
-                .build();
-        responseObserver.onNext(r);
+        responseObserver.onNext(responsesDpo.getGrpcResponse());
         responseObserver.onCompleted();
     }
 
     @Override
-    @Transactional
     public void updateMission(Mission request, StreamObserver<Mission> responseObserver) {
-        MissionId id = new MissionId(request.getId());
-        net.tomofiles.skysign.mission.domain.mission.Mission mission;
+        UpdateMissionRequestDpoGrpc requestDpo = new UpdateMissionRequestDpoGrpc(request);
+        UpdateMissionResponseDpoGrpc responsesDpo = new UpdateMissionResponseDpoGrpc();
 
         try {
-            mission = missionRepository.getById(id);
+            this.manageMissionService.updateMission(requestDpo, responsesDpo);
         } catch (Exception e) {
             responseObserver.onError(Status
                     .INTERNAL
@@ -175,7 +112,7 @@ public class ManageMissionEndpoint extends ManageMissionServiceImplBase {
             return;
         }
 
-        if (mission == null) {
+        if (responsesDpo.isEmpty()) {
             responseObserver.onError(Status
                     .NOT_FOUND
                     .withCause(new NoSuchElementException())
@@ -184,44 +121,17 @@ public class ManageMissionEndpoint extends ManageMissionServiceImplBase {
             return;
         }
 
-        Navigation navigation = new Navigation();
-        navigation.setTakeoffPointGroundHeight(Height.fromM(request.getTakeoffPointGroundHeight()));
-        request.getItemsList()
-                .forEach(item -> {
-                    navigation.pushNextWaypoint(
-                        new GeodesicCoordinates(item.getLatitude(), item.getLongitude()),
-                        Height.fromM(item.getRelativeHeight()),
-                        Speed.fromMS(item.getSpeed()));
-                });
-
-        mission.nameMission(request.getName());
-        mission.replaceNavigationWith(navigation);
-
-        try {
-            this.missionRepository.save(mission);
-        } catch (Exception e) {
-            responseObserver.onError(Status
-                    .INTERNAL
-                    .withCause(e)
-                    .asRuntimeException());
-            return;
-        }
-
-        Mission r = Mission.newBuilder(request)
-                .setId(mission.getId().getId())
-                .build();
-        responseObserver.onNext(r);
+        responseObserver.onNext(responsesDpo.getGrpcResponse());
         responseObserver.onCompleted();
     }
 
     @Override
-    @Transactional
     public void deleteMission(DeleteMissionRequest request, StreamObserver<Empty> responseObserver) {
-        MissionId id = new MissionId(request.getId());
-        net.tomofiles.skysign.mission.domain.mission.Mission mission;
+        DeleteMissionRequestDpoGrpc requestDpo = new DeleteMissionRequestDpoGrpc(request);
+        DeleteMissionResponseDpoGrpc responsesDpo = new DeleteMissionResponseDpoGrpc();
 
         try {
-            mission = missionRepository.getById(id);
+            this.manageMissionService.deleteMission(requestDpo, responsesDpo);
         } catch (Exception e) {
             responseObserver.onError(Status
                     .INTERNAL
@@ -230,7 +140,7 @@ public class ManageMissionEndpoint extends ManageMissionServiceImplBase {
             return;
         }
 
-        if (mission == null) {
+        if (responsesDpo.isEmpty()) {
             responseObserver.onError(Status
                     .NOT_FOUND
                     .withCause(new NoSuchElementException())
@@ -239,17 +149,7 @@ public class ManageMissionEndpoint extends ManageMissionServiceImplBase {
             return;
         }
 
-        try {
-            this.missionRepository.remove(id, mission.getVersion());
-        } catch (Exception e) {
-            responseObserver.onError(Status
-                    .INTERNAL
-                    .withCause(e)
-                    .asRuntimeException());
-            return;
-        }
-
-        responseObserver.onNext(Empty.newBuilder().build()); 
+        responseObserver.onNext(Empty.newBuilder().build());
         responseObserver.onCompleted();
     }
 }

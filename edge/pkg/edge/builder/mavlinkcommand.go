@@ -8,7 +8,7 @@ import (
 )
 
 // MavlinkCommand .
-func MavlinkCommand(ctx context.Context, mavsdk string, commandStream <-chan *edge.Command) error {
+func MavlinkCommand(ctx context.Context, mavsdk string, commandStream <-chan *edge.Command, missionStream <-chan *edge.Mission) error {
 	go func() {
 		for {
 			select {
@@ -25,8 +25,6 @@ func MavlinkCommand(ctx context.Context, mavsdk string, commandStream <-chan *ed
 					mavlink.AdapterArm(ctx, mavsdk)
 				case "DISARM":
 					mavlink.AdapterDisarm(ctx, mavsdk)
-				case "UPLOAD":
-					mavlink.AdapterUpload(ctx, mavsdk)
 				case "START":
 					mavlink.AdapterStart(ctx, mavsdk)
 				case "PAUSE":
@@ -40,6 +38,12 @@ func MavlinkCommand(ctx context.Context, mavsdk string, commandStream <-chan *ed
 				default:
 					continue
 				}
+			case mission, ok := <-missionStream:
+				if !ok {
+					log.Println("mission none.")
+					continue
+				}
+				mavlink.AdapterUpload(ctx, mavsdk, mission)
 			}
 		}
 	}()

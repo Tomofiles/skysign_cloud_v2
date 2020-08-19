@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: skysign-mission
+  labels:
+    run: skysign-mission
+spec:
+  ports:
+  - port: 5001
+    protocol: TCP
+  selector:
+    run: skysign-mission-backend

@@ -5,99 +5,19 @@ import {
   List,
   ListItem,
   ListItemIcon,
-  ListItemText,
-  Divider,
   Card,
   CardMedia,
   Badge,
   Typography,
   Grid,
-  Box
+  Box,
 } from '@material-ui/core';
 import { grey } from '@material-ui/core/colors';
 import Flight from '@material-ui/icons/Flight';
 import Send from '@material-ui/icons/Send';
 import Settings from '@material-ui/icons/Settings';
 import Games from '@material-ui/icons/Games';
-
-const list = (classes, controlsOpen, missionsOpen, assetsOpen, toggleControls, toggleMissions, toggleAssets) => (
-  <div>
-    <Card
-        className={classes.menuLogoBackground}>
-      <Grid container>
-        <Grid item xs={12}>
-          <CardMedia
-            className={classes.menuLogo}
-            image="logo_transparent.png"
-            title="Skysign Cloud"
-          />
-        </Grid>
-        <Grid item xs={12}>
-          <Typography align="center" style={{ color: grey[50], fontSize: "6px" }} >Skysign Cloud</Typography>
-        </Grid>
-      </Grid>
-    </Card>
-    <Box px={1} py={2} />
-    <List>
-      <ListItem button onClick={toggleControls}>
-        <ListItemIcon >
-          <Grid container className={classes.menuWidthItem} >
-            <Grid item xs={12} >
-              <Badge color="secondary" variant="dot" invisible={!controlsOpen}>
-                <Games style={{ color: grey[50] }} fontSize="large" />
-              </Badge>
-            </Grid>
-            <Grid item xs={12}>
-              <Typography align="center" style={{ color: grey[50], fontSize: "6px" }} >Controls</Typography>
-            </Grid>
-          </Grid>
-        </ListItemIcon>
-      </ListItem>
-      <ListItem button onClick={toggleMissions}>
-        <ListItemIcon>
-          <Grid container className={classes.menuWidthItem} >
-            <Grid item xs={12}>
-              <Badge color="secondary" variant="dot" invisible={!missionsOpen}>
-                <Send style={{ color: grey[50] }} fontSize="large" />
-              </Badge>
-            </Grid>
-            <Grid item xs={12}>
-              <Typography align="center" style={{ color: grey[50], fontSize: "6px" }} >Missions</Typography>
-            </Grid>
-          </Grid>
-        </ListItemIcon>
-      </ListItem>
-      <ListItem button onClick={toggleAssets}>
-        <ListItemIcon>
-          <Grid container className={classes.menuWidthItem} >
-            <Grid item xs={12}>
-              <Badge color="secondary" variant="dot" invisible={!assetsOpen}>
-                <Flight style={{ color: grey[50] }} fontSize="large" />
-              </Badge>
-            </Grid>
-            <Grid item xs={12}>
-              <Typography align="center" style={{ color: grey[50], fontSize: "6px" }} >Assets</Typography>
-            </Grid>
-          </Grid>
-        </ListItemIcon>
-      </ListItem>
-      <ListItem button>
-        <ListItemIcon>
-          <Grid container className={classes.menuWidthItem} >
-            <Grid item xs={12}>
-              <Badge color="secondary" variant="dot" invisible>
-                <Settings style={{ color: grey[50] }} fontSize="large" />
-              </Badge>
-            </Grid>
-            <Grid item xs={12}>
-              <Typography align="center" style={{ color: grey[50], fontSize: "6px" }} >Settings</Typography>
-            </Grid>
-          </Grid>
-        </ListItemIcon>
-      </ListItem>
-    </List>
-  </div>
-);
+import MapMode from './MapMode';
 
 const Menu = (props) => {
   return (
@@ -109,15 +29,81 @@ const Menu = (props) => {
         paper: props.classes.menuPaper,
       }}
       open={true} >
-      {list(
-        props.classes,
-        props.controlsOpen,
-        props.missionsOpen,
-        props.assetsOpen,
-        props.toggleControls,
-        props.toggleMissions,
-        props.toggleAssets
-      )}
+      <Card
+          className={props.classes.menuLogoBackground}>
+        <Grid container>
+          <Grid item xs={12}>
+            <CardMedia
+              className={props.classes.menuLogo}
+              image="logo_transparent.png"
+              title="Skysign Cloud"
+            />
+          </Grid>
+          <Grid item xs={12}>
+            <Typography align="center" style={{ color: grey[50], fontSize: "6px" }} >Skysign Cloud</Typography>
+          </Grid>
+        </Grid>
+      </Card>
+      <Box px={1} py={2} />
+      <List>
+        <MapMode classes={props.classes} />
+        <ListItem button onClick={props.toggleControls}>
+          <ListItemIcon >
+            <Grid container className={props.classes.menuWidthItem} >
+              <Grid item xs={12} >
+                <Badge color="secondary" variant="dot" invisible={!props.controlsOpen}>
+                  <Games style={{ color: grey[50] }} fontSize="large" />
+                </Badge>
+              </Grid>
+              <Grid item xs={12}>
+                <Typography align="center" style={{ color: grey[50], fontSize: "6px" }} >Controls</Typography>
+              </Grid>
+            </Grid>
+          </ListItemIcon>
+        </ListItem>
+        <ListItem button onClick={props.toggleMissions}>
+          <ListItemIcon>
+            <Grid container className={props.classes.menuWidthItem} >
+              <Grid item xs={12}>
+                <Badge color="secondary" variant="dot" invisible={!props.plansOpen}>
+                  <Send style={{ color: grey[50] }} fontSize="large" />
+                </Badge>
+              </Grid>
+              <Grid item xs={12}>
+                <Typography align="center" style={{ color: grey[50], fontSize: "6px" }} >Plans</Typography>
+              </Grid>
+            </Grid>
+          </ListItemIcon>
+        </ListItem>
+        <ListItem button onClick={props.toggleAssets}>
+          <ListItemIcon>
+            <Grid container className={props.classes.menuWidthItem} >
+              <Grid item xs={12}>
+                <Badge color="secondary" variant="dot" invisible={!props.assetsOpen}>
+                  <Flight style={{ color: grey[50] }} fontSize="large" />
+                </Badge>
+              </Grid>
+              <Grid item xs={12}>
+                <Typography align="center" style={{ color: grey[50], fontSize: "6px" }} >Assets</Typography>
+              </Grid>
+            </Grid>
+          </ListItemIcon>
+        </ListItem>
+        <ListItem button>
+          <ListItemIcon>
+            <Grid container className={props.classes.menuWidthItem} >
+              <Grid item xs={12}>
+                <Badge color="secondary" variant="dot" invisible>
+                  <Settings style={{ color: grey[50] }} fontSize="large" />
+                </Badge>
+              </Grid>
+              <Grid item xs={12}>
+                <Typography align="center" style={{ color: grey[50], fontSize: "6px" }} >Settings</Typography>
+              </Grid>
+            </Grid>
+          </ListItemIcon>
+        </ListItem>
+      </List>
     </Drawer>
   );
 }

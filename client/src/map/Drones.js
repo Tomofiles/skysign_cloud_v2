@@ -8,7 +8,8 @@ const Drones = () => {
   return (
     <div>
       {rows.map(data => (
-        <Drone key={data.id} data={data} />
+        data.isControlled &&
+          <Drone key={data.id} data={data} />
       ))}
     </div>
   );

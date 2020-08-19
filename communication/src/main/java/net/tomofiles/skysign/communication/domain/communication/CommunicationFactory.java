@@ -1,22 +1,27 @@
 package net.tomofiles.skysign.communication.domain.communication;
 
-import java.util.ArrayList;
 import java.util.stream.Collectors;
 
 import net.tomofiles.skysign.communication.domain.communication.component.CommandComponentDto;
 import net.tomofiles.skysign.communication.domain.communication.component.CommunicationComponentDto;
 import net.tomofiles.skysign.communication.domain.communication.component.TelemetryComponentDto;
+import net.tomofiles.skysign.communication.domain.vehicle.VehicleId;
 
 public class CommunicationFactory {
 
-    public static Communication newInstance(CommunicationId id) {
-        Communication communication = new Communication(id, new ArrayList<>());
+    public static Communication newInstance(CommunicationId communicationId, VehicleId vehicleId, Generator generator) {
+        Communication communication = new Communication(communicationId, vehicleId, generator);
         communication.setTelemetry(Telemetry.newInstance());
         return communication;
     }
 
-    public static Communication assembleFrom(CommunicationComponentDto componentDto) {
-        Communication communication = new Communication(new CommunicationId(componentDto.getId()), new ArrayList<>());
+    public static Communication assembleFrom(CommunicationComponentDto componentDto, Generator generator) {
+        Communication communication = new Communication(
+                new CommunicationId(componentDto.getId()),
+                new VehicleId(componentDto.getVehicleId()),
+                generator
+        );
+        communication.setControlled(componentDto.isControlled());
         communication.setMissionId(new MissionId(componentDto.getMissionId()));
         communication.setTelemetry(Telemetry.newInstance()
                 .setPosition(
@@ -49,6 +54,8 @@ public class CommunicationFactory {
     public static CommunicationComponentDto takeApart(Communication communication) {
         return  new CommunicationComponentDto(
                 communication.getId().getId(),
+                communication.getVehicleId().getId(),
+                communication.isControlled(),
                 communication.getMissionId() == null ? null : communication.getMissionId().getId(),
                 new TelemetryComponentDto(
                         communication.getTelemetry().getPosition().getLatitude(),

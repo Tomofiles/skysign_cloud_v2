@@ -1,18 +1,18 @@
 import React, { useState } from 'react';
 
 import Menu from './menu/Menu'
-import Missions from './missions/Missions'
+import Plans from './plans/Plans'
 import Assets from './assets/Assets'
 import Controls from './controls/Controls';
 
 const Func = (props) => {
   const [controlsOpen, setControlsOpen] = useState(false);
-  const [missionsOpen, setMissionsOpen] = useState(false);
+  const [plansOpen, setPlansOpen] = useState(false);
   const [assetsOpen, setAssetsOpen] = useState(false);
 
   const toggleControls = () => {
-    if (missionsOpen) {
-      setMissionsOpen(false);
+    if (plansOpen) {
+      setPlansOpen(false);
     }
     if (assetsOpen) {
       setAssetsOpen(false);
@@ -27,12 +27,12 @@ const Func = (props) => {
     if (controlsOpen) {
       setControlsOpen(false);
     }
-    setMissionsOpen(!missionsOpen);
+    setPlansOpen(!plansOpen);
   }
 
   const toggleAssets = () => {
-    if (missionsOpen) {
-      setMissionsOpen(false);
+    if (plansOpen) {
+      setPlansOpen(false);
     }
     if (controlsOpen) {
       setControlsOpen(false);
@@ -45,13 +45,13 @@ const Func = (props) => {
       <Menu
         classes={props.classes}
         controlsOpen={controlsOpen}
-        missionsOpen={missionsOpen}
+        plansOpen={plansOpen}
         assetsOpen={assetsOpen}
         toggleControls={toggleControls}
         toggleMissions={toggleMissions}
         toggleAssets={toggleAssets} />
       <Controls classes={props.classes} open={controlsOpen} />
-      <Missions classes={props.classes} open={missionsOpen} />
+      <Plans classes={props.classes} open={plansOpen} />
       <Assets classes={props.classes} open={assetsOpen} />
     </div>
   );

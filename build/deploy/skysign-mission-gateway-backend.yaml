@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: skysign-mission-gateway-backend
+  labels:
+    run: skysign-mission-gateway-backend
+spec:
+  selector:
+    matchLabels:
+      run: skysign-mission-gateway-backend
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        run: skysign-mission-gateway-backend
+    spec:
+      containers:
+      - name: skysign-mission-gateway-backend
+        image: gcr.io/${GOOGLE_PROJECT_ID}/http_gateway:${CIRCLE_SHA1}
+        command: ["/app/mission-gateway"]
+        args: ["-port", "6000", "-backend_host", "skysign-mission", "-backend_port", "5001"]
+        ports:
+        - containerPort: 6000

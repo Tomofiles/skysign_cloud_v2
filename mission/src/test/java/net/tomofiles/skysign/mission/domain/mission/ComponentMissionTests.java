@@ -2,89 +2,68 @@ package net.tomofiles.skysign.mission.domain.mission;
 
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
-import java.util.Arrays;
+import static com.google.common.truth.Truth.assertThat;
 
 import net.tomofiles.skysign.mission.domain.mission.component.MissionComponentDto;
-import net.tomofiles.skysign.mission.domain.mission.component.WaypointComponentDto;
+
+import static net.tomofiles.skysign.mission.domain.mission.MissionObjectMother.newSeveralNavigationMission;
+import static org.junit.jupiter.api.Assertions.assertAll;
+
+import java.util.UUID;
+import java.util.function.Supplier;
+
+import static net.tomofiles.skysign.mission.domain.mission.ComponentDtoObjectMother.newSeveralNavigationMissionComponentDto;
 
 public class ComponentMissionTests {
     
+    private static final MissionId DEFAULT_MISSION_ID = new MissionId(UUID.randomUUID().toString());
+    private static final Version DEFAULT_VERSION1 = new Version(UUID.randomUUID().toString());
+    private static final Version DEFAULT_VERSION2 = new Version(UUID.randomUUID().toString());
+    private static final Supplier<Generator> DEFAULT_GENERATOR = () -> {
+        return new Generator(){
+            private int count = 0;
+
+            @Override
+            public MissionId newMissionId() {
+                return DEFAULT_MISSION_ID;
+            }
+
+            @Override
+            public Version newVersion() {
+                if (count == 0) {
+                    count++;
+                    return DEFAULT_VERSION1;
+                } else {
+                    return DEFAULT_VERSION2;
+                }
+            }
+        };
+    };
+
     /**
      * DTOからMissionエンティティを組み立てる。
      */
     @Test
     public void assembleIntoMissionTest() {
-        MissionId id = MissionId.newId();
-        String missionName = "mission name";
-        Height takeoffPointGroundHeight = Height.fromM(10.0);
-        Version version = Version.newVersion();
-
-        double latitude1 = 0.0d;
-        double longitude1 = 1.0d;
-        double heightWGS84M1 = 2.0d;
-        double speedMS1 = 4.0d;
-        double latitude2 = 10.0d;
-        double longitude2 = 11.0d;
-        double heightWGS84M2 = 12.0d;
-        double speedMS2 = 14.0d;
-        double latitude3 = 20.0d;
-        double longitude3 = 21.0d;
-        double heightWGS84M3 = 22.0d;
-        double speedMS3 = 24.0d;
-
         Mission mission = MissionFactory.assembleFrom(
-                new MissionComponentDto(
-                        id.getId(),
-                        missionName,
-                        takeoffPointGroundHeight.getHeightM(),
-                        version.getVersion(),
-                        version.getVersion(),
-                        Arrays.asList(new WaypointComponentDto[] {
-                                new WaypointComponentDto(
-                                        1,
-                                        latitude1,
-                                        longitude1,
-                                        heightWGS84M1,
-                                        speedMS1),
-                                new WaypointComponentDto(
-                                        2,
-                                        latitude2,
-                                        longitude2,
-                                        heightWGS84M2,
-                                        speedMS2),
-                                new WaypointComponentDto(
-                                        3,
-                                        latitude3,
-                                        longitude3,
-                                        heightWGS84M3,
-                                        speedMS3),
-                        })
-                )
+                newSeveralNavigationMissionComponentDto(
+                        DEFAULT_MISSION_ID,
+                        DEFAULT_VERSION1
+                ),
+                DEFAULT_GENERATOR.get());
+
+        Mission expectedMission = newSeveralNavigationMission(
+                DEFAULT_MISSION_ID,
+                DEFAULT_VERSION1,
+                DEFAULT_GENERATOR.get());
+
+        assertAll(
+            () -> assertThat(mission.getId()).isEqualTo(expectedMission.getId()),
+            () -> assertThat(mission.getMissionName()).isEqualTo(expectedMission.getMissionName()),
+            () -> assertThat(mission.getNavigation()).isEqualTo(expectedMission.getNavigation()),
+            () -> assertThat(mission.getVersion()).isEqualTo(expectedMission.getVersion()),
+            () -> assertThat(mission.getNewVersion()).isEqualTo(expectedMission.getNewVersion())
         );
-
-        Navigation expectNavigation = new Navigation();
-
-        expectNavigation.setTakeoffPointGroundHeight(takeoffPointGroundHeight);
-        expectNavigation.pushNextWaypoint(
-            new GeodesicCoordinates(latitude1, longitude1),
-            Height.distanceFrom(Height.fromM(heightWGS84M1), takeoffPointGroundHeight),
-            Speed.fromMS(speedMS1));
-        expectNavigation.pushNextWaypoint(
-            new GeodesicCoordinates(latitude2, longitude2),
-            Height.distanceFrom(Height.fromM(heightWGS84M2), takeoffPointGroundHeight),
-            Speed.fromMS(speedMS2));
-        expectNavigation.pushNextWaypoint(
-            new GeodesicCoordinates(latitude3, longitude3),
-            Height.distanceFrom(Height.fromM(heightWGS84M3), takeoffPointGroundHeight),
-            Speed.fromMS(speedMS3));
-
-        assertEquals(mission.getId(), id);
-        assertEquals(mission.getMissionName(), missionName);
-        assertEquals(mission.getNavigation(), expectNavigation);
-        assertEquals(mission.getVersion(), version);
-        assertEquals(mission.getNewVersion(), version);
     }
 
     /**
@@ -92,63 +71,12 @@ public class ComponentMissionTests {
      */
     @Test
     public void takeApartMissionTest() {
-        MissionId id = MissionId.newId();
-        String missionName = "mission name";
-        Height takeoffPointGroundHeight = Height.fromM(10.0);
+        MissionComponentDto dto = MissionFactory.takeApart(
+                newSeveralNavigationMission(
+                        DEFAULT_MISSION_ID,
+                        DEFAULT_VERSION1,
+                        DEFAULT_GENERATOR.get()));
 
-        double latitude1 = 0.0d;
-        double longitude1 = 1.0d;
-        double heightWGS84M1 = 2.0d;
-        double speedMS1 = 4.0d;
-        double latitude2 = 10.0d;
-        double longitude2 = 11.0d;
-        double heightWGS84M2 = 12.0d;
-        double speedMS2 = 14.0d;
-        double latitude3 = 20.0d;
-        double longitude3 = 21.0d;
-        double heightWGS84M3 = 22.0d;
-        double speedMS3 = 24.0d;
-
-        Mission mission = MissionFactory.newInstance(id);
-        mission.setMissionName(missionName);
-
-        Navigation navigation = new Navigation();
-        navigation.setTakeoffPointGroundHeight(takeoffPointGroundHeight);
-        navigation.pushNextWaypoint(
-            new GeodesicCoordinates(latitude1, longitude1),
-            Height.distanceFrom(Height.fromM(heightWGS84M1), takeoffPointGroundHeight),
-            Speed.fromMS(speedMS1));
-        navigation.pushNextWaypoint(
-            new GeodesicCoordinates(latitude2, longitude2),
-            Height.distanceFrom(Height.fromM(heightWGS84M2), takeoffPointGroundHeight),
-            Speed.fromMS(speedMS2));
-        navigation.pushNextWaypoint(
-            new GeodesicCoordinates(latitude3, longitude3),
-            Height.distanceFrom(Height.fromM(heightWGS84M3), takeoffPointGroundHeight),
-            Speed.fromMS(speedMS3));
-
-        mission.replaceNavigationWith(navigation);
-
-        MissionComponentDto dto = MissionFactory.takeApart(mission);
-
-        assertEquals(dto.getId(), id.getId());
-        assertEquals(dto.getName(), missionName);
-        assertEquals(dto.getTakeoffPointGroundHeightWGS84M(), takeoffPointGroundHeight.getHeightM());
-        assertEquals(dto.getWaypoints().get(0).getOrder(), 1);
-        assertEquals(dto.getWaypoints().get(0).getLatitude(), latitude1);
-        assertEquals(dto.getWaypoints().get(0).getLongitude(), longitude1);
-        assertEquals(dto.getWaypoints().get(0).getHeightWGS84M(), heightWGS84M1);
-        assertEquals(dto.getWaypoints().get(0).getSpeedMS(), speedMS1);
-        assertEquals(dto.getWaypoints().get(1).getOrder(), 2);
-        assertEquals(dto.getWaypoints().get(1).getLatitude(), latitude2);
-        assertEquals(dto.getWaypoints().get(1).getLongitude(), longitude2);
-        assertEquals(dto.getWaypoints().get(1).getHeightWGS84M(), heightWGS84M2);
-        assertEquals(dto.getWaypoints().get(1).getSpeedMS(), speedMS2);
-        assertEquals(dto.getWaypoints().get(2).getOrder(), 3);
-        assertEquals(dto.getWaypoints().get(2).getLatitude(), latitude3);
-        assertEquals(dto.getWaypoints().get(2).getLongitude(), longitude3);
-        assertEquals(dto.getWaypoints().get(2).getHeightWGS84M(), heightWGS84M3);
-        assertEquals(dto.getWaypoints().get(2).getSpeedMS(), speedMS3);
-        assertEquals(dto.getVersion(), mission.getVersion().getVersion());
+        assertThat(dto).isEqualTo(newSeveralNavigationMissionComponentDto(DEFAULT_MISSION_ID, DEFAULT_VERSION1));
     }
 }

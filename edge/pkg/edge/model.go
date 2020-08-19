@@ -68,3 +68,27 @@ type CommandIDs struct {
 type Command struct {
 	Type string `json:"type"`
 }
+
+// Communication .
+type Communication struct {
+	ID           string `json:"id"`
+	VehicleID    string `json:"vehicleId"`
+	MissionID    string `json:"missionId"`
+	IsControlled bool   `json:"isControlled"`
+}
+
+// Mission .
+type Mission struct {
+	ID                       string         `json:"id"`
+	Name                     string         `json:"name"`
+	TakeoffPointGroundHeight float64        `json:"takeoffPointGroundHeight"`
+	Items                    []*MissionItem `json:"items"`
+}
+
+// MissionItem .
+type MissionItem struct {
+	Latitude       float64 `json:"latitude"`
+	Longitude      float64 `json:"longitude"`
+	RelativeHeight float64 `json:"relativeHeight"`
+	Speed          float64 `json:"speed"`
+}

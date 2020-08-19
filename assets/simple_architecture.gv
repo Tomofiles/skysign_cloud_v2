@@ -2,32 +2,31 @@
 // https://dreampuf.github.io/GraphvizOnline/
 digraph G {
   Client [label="Client", shape=Box];
-  HTTPFrontend1 [label="gRPC gateway\n[Golang]"];
-  HTTPFrontend2 [label="gRPC gateway\n[Golang]"];
-  HTTPFrontend3 [label="gRPC gateway\n[Golang]"];
-  MissionsBackend [label="Mission\nbackend\n[Java]"];
-  CommunicationBackend [label="Communication\nbackend\n[Java]"];
+  HTTPFrontend1 [label="<Communicaton>\ngRPC gateway\n[Golang]"];
+  HTTPFrontend2 [label="<Mission>\ngRPC gateway\n[Golang]"];
+  HTTPFrontend3 [label="<Vehicle>\ngRPC gateway\n[Golang]"];
+  MissionsBackend [label="<Mission>\nbackend\n[Java]"];
+  CommunicationBackend [label="<Communication>\nbackend\n[Java]"];
   PostgreSQL1 [label="PostgreSQL", shape=cylinder];
   PostgreSQL2 [label="PostgreSQL", shape=cylinder];
-  ReverseProxy1 [label="Reverse Proxy"];
-  ReverseProxy2 [label="Reverse Proxy"];
+  ReverseProxy [label="Reverse Proxy"];
   StaticContents [label="Static contents\n[React/Cesium]"];
   Edge_ [label="Edge\n[Golang]"];
   MavsdkBackend [label="Mavsdk\nbackend server"];
   PX4 [label="PX4"];
   
-  Client -> ReverseProxy1 [label="HTTP"];
-  Edge_ -> ReverseProxy2 [label="HTTP"];
+  Client -> ReverseProxy [label="HTTP"];
+  Edge_ -> ReverseProxy [label="HTTP"];
   
   CommunicationBackend -> PostgreSQL1;
   MissionsBackend -> PostgreSQL2;
     
   subgraph cluster_0 {
     label="Container\nplatform";
-    ReverseProxy1 -> HTTPFrontend1 [label="HTTP"];
-    ReverseProxy1 -> HTTPFrontend2 [label="HTTP"];
-    ReverseProxy1 -> StaticContents [label="HTTP"];
-    ReverseProxy2 -> HTTPFrontend3 [label="HTTP"];
+    ReverseProxy -> HTTPFrontend1 [label="HTTP"];
+    ReverseProxy -> HTTPFrontend2 [label="HTTP"];
+    ReverseProxy -> StaticContents [label="HTTP"];
+    ReverseProxy -> HTTPFrontend3 [label="HTTP"];
   
     HTTPFrontend1 -> CommunicationBackend [label="gRPC"];
     HTTPFrontend2 -> MissionsBackend [label="gRPC"];

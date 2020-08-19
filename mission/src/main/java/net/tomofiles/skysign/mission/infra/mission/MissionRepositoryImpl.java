@@ -6,9 +6,10 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import lombok.AllArgsConstructor;
+import net.tomofiles.skysign.mission.domain.mission.Generator;
 import net.tomofiles.skysign.mission.domain.mission.Mission;
 import net.tomofiles.skysign.mission.domain.mission.MissionFactory;
 import net.tomofiles.skysign.mission.domain.mission.MissionId;
@@ -19,13 +20,12 @@ import net.tomofiles.skysign.mission.domain.mission.component.WaypointComponentD
 import net.tomofiles.skysign.mission.infra.common.DeleteCondition;
 
 @Component
+@AllArgsConstructor
 public class MissionRepositoryImpl implements MissionRepository {
 
-    @Autowired
-    private MissionMapper missionMapper;
-
-    @Autowired
-    private WaypointMapper waypointMapper;
+    private final MissionMapper missionMapper;
+    private final WaypointMapper waypointMapper;
+    private final Generator generator;
 
     @Override
     public void save(Mission mission) {
@@ -99,7 +99,8 @@ public class MissionRepositoryImpl implements MissionRepository {
                                     );
                                 })
                                 .collect(Collectors.toList())
-                )
+                ),
+                this.generator
         );
     }
 
@@ -135,7 +136,8 @@ public class MissionRepositoryImpl implements MissionRepository {
                                         );
                                     })
                                     .collect(Collectors.toList())
-                    )
+                    ),
+                    this.generator
             );
 
             missions.add(mission);

@@ -7,11 +7,12 @@ import (
 
 	"google.golang.org/grpc"
 
+	"edge/pkg/edge"
 	mavsdk_rpc_mission "edge/pkg/protos/mission"
 )
 
 // AdapterUpload .
-func AdapterUpload(ctx context.Context, url string) error {
+func AdapterUpload(ctx context.Context, url string, missionModel *edge.Mission) error {
 	gr, err := grpc.Dial(url, grpc.WithInsecure())
 	if err != nil {
 		log.Println("grpc client connection error:", err)
@@ -19,6 +20,17 @@ func AdapterUpload(ctx context.Context, url string) error {
 	}
 
 	missionItems := make([]*mavsdk_rpc_mission.MissionItem, 0)
+
+	for _, item := range missionModel.Items {
+		missionItems = append(missionItems,
+			&mavsdk_rpc_mission.MissionItem{
+				LatitudeDeg:       item.Latitude,
+				LongitudeDeg:      item.Longitude,
+				RelativeAltitudeM: float32(item.RelativeHeight),
+				SpeedMS:           float32(item.Speed),
+			},
+		)
+	}
 
 	mission := mavsdk_rpc_mission.NewMissionServiceClient(gr)
 

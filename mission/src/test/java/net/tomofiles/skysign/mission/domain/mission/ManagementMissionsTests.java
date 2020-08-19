@@ -4,15 +4,41 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.mockito.Mockito.when;
+import static com.google.common.truth.Truth.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.MockitoAnnotations.initMocks;
 
+import java.util.UUID;
+import java.util.function.Supplier;
+
+import static net.tomofiles.skysign.mission.domain.mission.MissionObjectMother.newSingleNavigation;
+
 public class ManagementMissionsTests {
-    
+
+    private static final MissionId DEFAULT_MISSION_ID = new MissionId(UUID.randomUUID().toString());
+    private static final Version DEFAULT_VERSION1 = new Version(UUID.randomUUID().toString());
+    private static final Version DEFAULT_VERSION2 = new Version(UUID.randomUUID().toString());
+    private static final Supplier<Generator> DEFAULT_GENERATOR = () -> {
+        return new Generator(){
+            private int count = 0;
+
+            @Override
+            public MissionId newMissionId() {
+                return DEFAULT_MISSION_ID;
+            }
+
+            @Override
+            public Version newVersion() {
+                if (count == 0) {
+                    count++;
+                    return DEFAULT_VERSION1;
+                } else {
+                    return DEFAULT_VERSION2;
+                }
+            }
+        };
+    };
+
     @Mock
     private MissionRepository repository;
 
@@ -27,46 +53,32 @@ public class ManagementMissionsTests {
      */
     @Test
     public void createNewMissionTest() {
-        MissionId id = MissionId.newId();
+        Mission mission = MissionFactory.newInstance(DEFAULT_GENERATOR.get());
 
-        Mission mission = MissionFactory.newInstance(id);
-
-        assertEquals(mission.getId(), id);
-        assertNull(mission.getMissionName());
-        assertNull(mission.getNavigation());
-        assertNotNull(mission.getVersion());
-        assertNotNull(mission.getNewVersion());
-        assertEquals(mission.getVersion(), mission.getNewVersion());
+        assertAll(
+            () -> assertThat(mission.getId()).isEqualTo(DEFAULT_MISSION_ID),
+            () -> assertThat(mission.getMissionName()).isNull(),
+            () -> assertThat(mission.getNavigation()).isNull(),
+            () -> assertThat(mission.getVersion()).isEqualTo(DEFAULT_VERSION1),
+            () -> assertThat(mission.getNewVersion()).isEqualTo(DEFAULT_VERSION1)
+        );
     }
 
     /**
-     * Userが、既存のMissionエンティティに対してMission Nameを更新する。<br>
-     * Mission Name以外の変化が無いことを検証する。
+     * Userが、新しいMissionエンティティに対してMission Nameを付与する。
      */
     @Test
     public void changeMissionsNameTest() {
-        MissionId id = MissionId.newId();
-
-        String oldMissionName = "old mission";
-        Version version = Version.newVersion();
-
-        Mission before = new Mission(id);
-        before.setMissionName(oldMissionName);
-        before.setVersion(version);
-        before.setNewVersion(version);
-
-        when(repository.getById(id)).thenReturn(before);
-
-        Mission mission = repository.getById(id);
+        Mission mission = MissionFactory.newInstance(DEFAULT_GENERATOR.get());
 
         String newMissionName = "new mission";
         mission.nameMission(newMissionName);
 
-        assertEquals(mission.getId(), id);
-        assertEquals(mission.getMissionName(), newMissionName);
-        assertNull(mission.getNavigation());
-        assertEquals(mission.getVersion(), version);
-        assertNotEquals(mission.getVersion(), mission.getNewVersion());
+        assertAll(
+            () -> assertThat(mission.getMissionName()).isEqualTo(newMissionName),
+            () -> assertThat(mission.getVersion()).isEqualTo(DEFAULT_VERSION1),
+            () -> assertThat(mission.getNewVersion()).isEqualTo(DEFAULT_VERSION2)
+        );
     }
 
     /**
@@ -75,29 +87,14 @@ public class ManagementMissionsTests {
      */
     @Test
     public void addNavigationToMissionTest() {
-        MissionId id = MissionId.newId();
+        Mission mission = MissionFactory.newInstance(DEFAULT_GENERATOR.get());
 
-        Mission mission = MissionFactory.newInstance(id);
+        mission.replaceNavigationWith(newSingleNavigation());
 
-        Navigation navigation = new Navigation();
-        navigation.setTakeoffPointGroundHeight(Height.fromM(0.0));
-        navigation.pushNextWaypoint(
-            new GeodesicCoordinates(1.0, 2.0),
-            Height.fromM(3.0),
-            Speed.fromMS(4.0));
-
-        mission.replaceNavigationWith(navigation);
-
-        Navigation expectNavigation = new Navigation();
-        expectNavigation.setTakeoffPointGroundHeight(Height.fromM(0.0));
-        expectNavigation.pushNextWaypoint(
-            new GeodesicCoordinates(1.0, 2.0),
-            Height.fromM(3.0),
-            Speed.fromMS(4.0));
-
-        assertEquals(mission.getId(), id);
-        assertNull(mission.getMissionName());
-        assertEquals(mission.getNavigation(), expectNavigation);
-        assertNotEquals(mission.getVersion(), mission.getNewVersion());
+        assertAll(
+            () -> assertThat(mission.getNavigation()).isEqualTo(newSingleNavigation()),
+            () -> assertThat(mission.getVersion()).isEqualTo(DEFAULT_VERSION1),
+            () -> assertThat(mission.getNewVersion()).isEqualTo(DEFAULT_VERSION2)
+        );
     }
 }

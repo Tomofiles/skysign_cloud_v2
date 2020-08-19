@@ -3,9 +3,10 @@ package net.tomofiles.skysign.communication.infra.vehicle;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import lombok.RequiredArgsConstructor;
+import net.tomofiles.skysign.communication.domain.vehicle.Generator;
 import net.tomofiles.skysign.communication.domain.vehicle.Vehicle;
 import net.tomofiles.skysign.communication.domain.vehicle.VehicleFactory;
 import net.tomofiles.skysign.communication.domain.vehicle.VehicleId;
@@ -14,10 +15,11 @@ import net.tomofiles.skysign.communication.domain.vehicle.Version;
 import net.tomofiles.skysign.communication.infra.common.DeleteCondition;
 
 @Component
+@RequiredArgsConstructor
 public class VehicleRepositoryImpl implements VehicleRepository {
 
-    @Autowired
-    private VehicleMapper vehicleMapper;
+    private final VehicleMapper vehicleMapper;
+    private final Generator generator;
 
     @Override
     public void save(Vehicle vehicle) {
@@ -61,7 +63,12 @@ public class VehicleRepositoryImpl implements VehicleRepository {
             return null;
         }
 
-        return VehicleFactory.rebuild(id, record.getName(), record.getCommId(), record.getVersion());
+        return VehicleFactory.rebuild(
+                id,
+                record.getName(),
+                record.getCommId(),
+                record.getVersion(),
+                generator);
     }
 
     @Override
@@ -69,7 +76,13 @@ public class VehicleRepositoryImpl implements VehicleRepository {
         List<VehicleRecord> records = this.vehicleMapper.findAll();
 
         List<Vehicle> results = records.stream()
-                .map(record -> VehicleFactory.rebuild(new VehicleId(record.getId()), record.getName(), record.getCommId(), record.getVersion()))
+                .map(record -> VehicleFactory.rebuild(
+                        new VehicleId(
+                                record.getId()),
+                                record.getName(),
+                                record.getCommId(),
+                                record.getVersion(),
+                                generator))
                 .collect(Collectors.toList());
 
         return results;

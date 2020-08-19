@@ -24,6 +24,11 @@ service CommunicationEdgeService {
         };
     };
 
+    rpc GetCommunication (GetCommunicationRequest) returns (Communication) {
+        option (google.api.http) = {
+            get: "/api/v1/communications/{id}"
+        };
+    };
 }
 
 message PushTelemetryRequest {
@@ -45,4 +50,8 @@ message PullCommandResponse {
     string id = 1;
     string commandId = 2;
     CommandType type = 3;
+}
+
+message GetCommunicationRequest {
+    string id = 1;
 }

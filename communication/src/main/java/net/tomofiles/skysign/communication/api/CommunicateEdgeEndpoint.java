@@ -1,18 +1,20 @@
 package net.tomofiles.skysign.communication.api;
 
-import java.util.List;
-import java.util.NoSuchElementException;
-
 import org.lognet.springboot.grpc.GRpcService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
 import io.grpc.Status;
 import io.grpc.stub.StreamObserver;
-import net.tomofiles.skysign.communication.usecase.CommunicateEdgeService;
-import net.tomofiles.skysign.communication.usecase.dto.ControlCommandDto;
-import net.tomofiles.skysign.communication.usecase.dto.TelemetryDto;
-import proto.skysign.CommandType;
+import lombok.AllArgsConstructor;
+import net.tomofiles.skysign.communication.api.dpo.GetCommunicationRequestDpoGrpc;
+import net.tomofiles.skysign.communication.api.dpo.GetCommunicationResponseDpoGrpc;
+import net.tomofiles.skysign.communication.api.dpo.PullCommandRequestDpoGrpc;
+import net.tomofiles.skysign.communication.api.dpo.PullCommandResponseDpoGrpc;
+import net.tomofiles.skysign.communication.api.dpo.PushTelemetryRequestDpoGrpc;
+import net.tomofiles.skysign.communication.api.dpo.PushTelemetryResponseDpoGrpc;
+import net.tomofiles.skysign.communication.service.CommunicateEdgeService;
+import proto.skysign.common.Communication;
+import proto.skysign.GetCommunicationRequest;
 import proto.skysign.PullCommandRequest;
 import proto.skysign.PullCommandResponse;
 import proto.skysign.PushTelemetryRequest;
@@ -21,36 +23,18 @@ import proto.skysign.CommunicationEdgeServiceGrpc.CommunicationEdgeServiceImplBa
 
 @GRpcService
 @Controller
+@AllArgsConstructor
 public class CommunicateEdgeEndpoint extends CommunicationEdgeServiceImplBase {
 
-    @Autowired
-    private CommunicateEdgeService service;
+    private final CommunicateEdgeService service;
 
     @Override
     public void pushTelemetry(PushTelemetryRequest request, StreamObserver<PushTelemetryResponse> responseObserver) {
-        TelemetryDto telemetry = new TelemetryDto();
-        telemetry.setLatitude(request.getTelemetry().getLatitude());
-        telemetry.setLongitude(request.getTelemetry().getLongitude());
-        telemetry.setAltitude(request.getTelemetry().getAltitude());
-        telemetry.setRelativeAltitude(request.getTelemetry().getRelativeAltitude());
-        telemetry.setSpeed(request.getTelemetry().getSpeed());
-        telemetry.setArmed(request.getTelemetry().getArmed());
-        telemetry.setFlightMode(request.getTelemetry().getFlightMode());
-        telemetry.setOrientationX(request.getTelemetry().getOrientationX());
-        telemetry.setOrientationY(request.getTelemetry().getOrientationY());
-        telemetry.setOrientationZ(request.getTelemetry().getOrientationZ());
-        telemetry.setOrientationW(request.getTelemetry().getOrientationW());
+        PushTelemetryRequestDpoGrpc requestDpo = new PushTelemetryRequestDpoGrpc(request);
+        PushTelemetryResponseDpoGrpc responseDpo = new PushTelemetryResponseDpoGrpc(request);
 
-        List<String> commandIds;
         try {
-            commandIds = this.service.pushTelemetry(request.getId(), telemetry);
-        } catch (NoSuchElementException e) {
-            responseObserver.onError(Status
-                    .NOT_FOUND
-                    .withCause(e)
-                    .withDescription(e.getMessage())
-                    .asRuntimeException());
-            return;
+            this.service.pushTelemetry(requestDpo, responseDpo);
         } catch (Exception e) {
             responseObserver.onError(Status
                     .INTERNAL
@@ -59,23 +43,25 @@ public class CommunicateEdgeEndpoint extends CommunicationEdgeServiceImplBase {
             return;
         }
 
-        PushTelemetryResponse r = PushTelemetryResponse.newBuilder().setId(request.getId()).addAllCommIds(commandIds).build();
-        responseObserver.onNext(r); 
+        if (responseDpo.notExistCommunication()) {
+            responseObserver.onError(Status
+                    .NOT_FOUND
+                    .withDescription("communication-idに合致するCommunicationが存在しません。")
+                    .asRuntimeException());
+            return;
+        }
+
+        responseObserver.onNext(responseDpo.getGrpcResponse()); 
         responseObserver.onCompleted();
     }
 
     @Override
     public void pullCommand(PullCommandRequest request, StreamObserver<PullCommandResponse> responseObserver) {
-        ControlCommandDto command;
+        PullCommandRequestDpoGrpc requestDpo = new PullCommandRequestDpoGrpc(request);
+        PullCommandResponseDpoGrpc responseDpo = new PullCommandResponseDpoGrpc(request);
+        
         try {
-            command = this.service.pullCommand(request.getId(), request.getCommandId());
-        } catch (NoSuchElementException e) {
-            responseObserver.onError(Status
-                    .NOT_FOUND
-                    .withCause(e)
-                    .withDescription(e.getMessage())
-                    .asRuntimeException());
-            return;
+            this.service.pullCommand(requestDpo, responseDpo);
         } catch (Exception e) {
             responseObserver.onError(Status
                     .INTERNAL
@@ -84,9 +70,50 @@ public class CommunicateEdgeEndpoint extends CommunicationEdgeServiceImplBase {
             return;
         }
 
-        CommandType type = CommandType.valueOf(command.getType().toString());
-        PullCommandResponse r = PullCommandResponse.newBuilder().setId(request.getId()).setCommandId(request.getCommandId()).setType(type).build();
-        responseObserver.onNext(r); 
+        if (responseDpo.notExistCommunication()) {
+            responseObserver.onError(Status
+                    .NOT_FOUND
+                    .withDescription("communication-idに合致するCommunicationが存在しません。")
+                    .asRuntimeException());
+            return;
+        }
+
+        if (responseDpo.notExistCommand()) {
+            responseObserver.onError(Status
+                    .NOT_FOUND
+                    .withDescription("command-idに合致するCommandが存在しません。")
+                    .asRuntimeException());
+            return;
+        }
+
+        responseObserver.onNext(responseDpo.getGrpcResponse()); 
+        responseObserver.onCompleted();
+    }
+
+    @Override
+    public void getCommunication(GetCommunicationRequest request, StreamObserver<Communication> responseObserver) {
+        GetCommunicationRequestDpoGrpc requestDpo = new GetCommunicationRequestDpoGrpc(request);
+        GetCommunicationResponseDpoGrpc responseDpo = new GetCommunicationResponseDpoGrpc();
+        
+        try {
+            this.service.getCommunication(requestDpo, responseDpo);
+        } catch (Exception e) {
+            responseObserver.onError(Status
+                    .INTERNAL
+                    .withCause(e)
+                    .asRuntimeException());
+            return;
+        }
+
+        if (responseDpo.notExistCommunication()) {
+            responseObserver.onError(Status
+                    .NOT_FOUND
+                    .withDescription("communication-idに合致するCommunicationが存在しません。")
+                    .asRuntimeException());
+            return;
+        }
+
+        responseObserver.onNext(responseDpo.getGrpcResponse()); 
         responseObserver.onCompleted();
     }
 }

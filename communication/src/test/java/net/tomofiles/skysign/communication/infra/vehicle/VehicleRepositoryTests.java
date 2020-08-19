@@ -1,36 +1,55 @@
 package net.tomofiles.skysign.communication.infra.vehicle;
 
+import static com.google.common.truth.Truth.assertThat;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.mockito.ArgumentMatchers.any;
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.UUID;
+import java.util.function.Supplier;
 
-import net.tomofiles.skysign.communication.domain.communication.CommunicationId;
+import net.tomofiles.skysign.communication.domain.vehicle.Generator;
 import net.tomofiles.skysign.communication.domain.vehicle.Vehicle;
-import net.tomofiles.skysign.communication.domain.vehicle.VehicleFactory;
 import net.tomofiles.skysign.communication.domain.vehicle.VehicleId;
-import net.tomofiles.skysign.communication.domain.vehicle.VehicleRepository;
 import net.tomofiles.skysign.communication.domain.vehicle.Version;
 import net.tomofiles.skysign.communication.infra.common.DeleteCondition;
 
+import static net.tomofiles.skysign.communication.domain.vehicle.VehicleObjectMother.newNormalVehicle;
+import static net.tomofiles.skysign.communication.infra.vehicle.RecordObjectMother.newNormalVehicleRecord;
+
 public class VehicleRepositoryTests {
     
+    private static final VehicleId DEFAULT_VEHICLE_ID = new VehicleId(UUID.randomUUID().toString());
+    private static final Version DEFAULT_VERSION = new Version(UUID.randomUUID().toString());
+    private static final Supplier<Generator> DEFAULT_GENERATOR = () -> {
+        return new Generator(){
+            @Override
+            public VehicleId newVehicleId() {
+                return DEFAULT_VEHICLE_ID;
+            }
+
+            @Override
+            public Version newVersion() {
+                return DEFAULT_VERSION;
+            }
+        };
+    };
+
     @Mock
     private VehicleMapper vehicleMapper;
 
     @InjectMocks
-    private VehicleRepository repository = new VehicleRepositoryImpl();
+    private VehicleRepositoryImpl repository;
 
     @BeforeEach
     public void beforeEach() {
@@ -42,26 +61,20 @@ public class VehicleRepositoryTests {
      */
     @Test
     public void getVehicleByIdTest() {
-        VehicleId id = VehicleId.newId();
-        String oldVehicleName = "old vehicle";
-        CommunicationId oldCommId = CommunicationId.newId();
-        Version version = Version.newVersion();
+        when(vehicleMapper.find(DEFAULT_VEHICLE_ID.getId()))
+                .thenReturn(newNormalVehicleRecord(DEFAULT_VEHICLE_ID, DEFAULT_VERSION, DEFAULT_GENERATOR.get()));
 
-        VehicleRecord record = new VehicleRecord();
-        record.setId(id.getId());
-        record.setName(oldVehicleName);
-        record.setCommId(oldCommId.getId());
-        record.setVersion(version.getVersion());
+        Vehicle vehicle = repository.getById(DEFAULT_VEHICLE_ID);
 
-        when(vehicleMapper.find(id.getId())).thenReturn(record);
+        Vehicle expectVehicle = newNormalVehicle(DEFAULT_VEHICLE_ID, DEFAULT_VERSION, DEFAULT_GENERATOR.get());
 
-        Vehicle vehicle = repository.getById(id);
-
-        assertEquals(vehicle.getId(), id);
-        assertEquals(vehicle.getVehicleName(), oldVehicleName);
-        assertEquals(vehicle.getCommId(), oldCommId);
-        assertEquals(vehicle.getVersion(), version);
-        assertEquals(vehicle.getNewVersion(), version);
+        assertAll(
+            () -> assertThat(vehicle.getId()).isEqualTo(expectVehicle.getId()),
+            () -> assertThat(vehicle.getVehicleName()).isEqualTo(expectVehicle.getVehicleName()),
+            () -> assertThat(vehicle.getCommId()).isEqualTo(expectVehicle.getCommId()),
+            () -> assertThat(vehicle.getVersion()).isEqualTo(expectVehicle.getVersion()),
+            () -> assertThat(vehicle.getNewVersion()).isEqualTo(expectVehicle.getNewVersion())
+        );
     }
 
     /**
@@ -70,11 +83,9 @@ public class VehicleRepositoryTests {
      */
     @Test
     public void getNoVehicleByIdTest() {
-        VehicleId id = VehicleId.newId();
+        Vehicle vehicle = repository.getById(DEFAULT_VEHICLE_ID);
 
-        Vehicle vehicle = repository.getById(id);
-
-        assertNull(vehicle);
+        assertThat(vehicle).isNull();
     }
 
     /**
@@ -82,33 +93,24 @@ public class VehicleRepositoryTests {
      */
     @Test
     public void getAllVehiclesTest() {
-        VehicleId id = VehicleId.newId();
-        String oldVehicleName = "old vehicle";
-        CommunicationId oldCommId = CommunicationId.newId();
-        Version version = Version.newVersion();
-
-        VehicleRecord record = new VehicleRecord();
-        record.setId(id.getId());
-        record.setName(oldVehicleName);
-        record.setCommId(oldCommId.getId());
-        record.setVersion(version.getVersion());
-
-        List<VehicleRecord> records = new ArrayList<>();
-        records.add(record);
-        records.add(record);
-        records.add(record);
-
-        when(vehicleMapper.findAll()).thenReturn(records);
+        when(vehicleMapper.findAll()).thenReturn(Arrays.asList(new VehicleRecord[] {
+            newNormalVehicleRecord(DEFAULT_VEHICLE_ID, DEFAULT_VERSION, DEFAULT_GENERATOR.get()),
+            newNormalVehicleRecord(DEFAULT_VEHICLE_ID, DEFAULT_VERSION, DEFAULT_GENERATOR.get()),
+            newNormalVehicleRecord(DEFAULT_VEHICLE_ID, DEFAULT_VERSION, DEFAULT_GENERATOR.get())
+        }));
 
         List<Vehicle> vehicles = repository.getAll();
 
-        assertEquals(vehicles.size(), 3);
+        Vehicle expectVehicle = newNormalVehicle(DEFAULT_VEHICLE_ID, DEFAULT_VERSION, DEFAULT_GENERATOR.get());
 
-        assertEquals(vehicles.get(0).getId(), id);
-        assertEquals(vehicles.get(0).getVehicleName(), oldVehicleName);
-        assertEquals(vehicles.get(0).getCommId(), oldCommId);
-        assertEquals(vehicles.get(0).getVersion(), version);
-        assertEquals(vehicles.get(0).getNewVersion(), version);
+        assertAll(
+            () -> assertThat(vehicles).hasSize(3),
+            () -> assertThat(vehicles.get(0).getId()).isEqualTo(expectVehicle.getId()),
+            () -> assertThat(vehicles.get(0).getVehicleName()).isEqualTo(expectVehicle.getVehicleName()),
+            () -> assertThat(vehicles.get(0).getCommId()).isEqualTo(expectVehicle.getCommId()),
+            () -> assertThat(vehicles.get(0).getVersion()).isEqualTo(expectVehicle.getVersion()),
+            () -> assertThat(vehicles.get(0).getNewVersion()).isEqualTo(expectVehicle.getNewVersion())
+        );
     }
 
     /**
@@ -119,7 +121,7 @@ public class VehicleRepositoryTests {
     public void getAllNoVehiclesTest() {
         List<Vehicle> vehicles = repository.getAll();
 
-        assertEquals(vehicles.size(), 0);
+        assertThat(vehicles).hasSize(0);
     }
 
     /**
@@ -128,29 +130,10 @@ public class VehicleRepositoryTests {
      */
     @Test
     public void saveNewVehicleTest() {
-        VehicleId id = VehicleId.newId();
-        String oldVehicleName = "old vehicle";
-        CommunicationId oldCommId = CommunicationId.newId();
+        repository.save(newNormalVehicle(DEFAULT_VEHICLE_ID, DEFAULT_VERSION, DEFAULT_GENERATOR.get()));
 
-        Vehicle vehicle = VehicleFactory.newInstance(id);
-        Version version = vehicle.getVersion();
-
-        vehicle.nameVehicle(oldVehicleName);
-        vehicle.giveCommId(oldCommId);
-
-        Version newVersion = vehicle.getNewVersion();
-
-        repository.save(vehicle);
-
-        VehicleRecord record = new VehicleRecord();
-        record.setId(id.getId());
-        record.setName(oldVehicleName);
-        record.setCommId(oldCommId.getId());
-        record.setVersion(version.getVersion());
-        record.setNewVersion(newVersion.getVersion());
-
-        verify(vehicleMapper, times(1)).create(record);
-        verify(vehicleMapper, times(0)).update(any());
+        verify(vehicleMapper, times(1))
+                .create(newNormalVehicleRecord(DEFAULT_VEHICLE_ID, DEFAULT_VERSION, DEFAULT_GENERATOR.get()));
     }
 
     /**
@@ -159,40 +142,15 @@ public class VehicleRepositoryTests {
      */
     @Test
     public void savePreExistVehicleTest() {
-        VehicleId id = VehicleId.newId();
-        String oldVehicleName = "old vehicle";
-        CommunicationId oldCommId = CommunicationId.newId();
-        Version version = Version.newVersion();
+        when(vehicleMapper.find(DEFAULT_VEHICLE_ID.getId()))
+                .thenReturn(newNormalVehicleRecord(DEFAULT_VEHICLE_ID, DEFAULT_VERSION, DEFAULT_GENERATOR.get()));
 
-        VehicleRecord before = new VehicleRecord();
-        before.setId(id.getId());
-        before.setName(oldVehicleName);
-        before.setCommId(oldCommId.getId());
-        before.setVersion(version.getVersion());
-
-        when(vehicleMapper.find(id.getId())).thenReturn(before);
-
-        Vehicle vehicle = repository.getById(id);
-
-        String newVehicleName = "new vehicle";
-        CommunicationId newCommId = CommunicationId.newId();
-
-        vehicle.nameVehicle(newVehicleName);
-        vehicle.giveCommId(newCommId);
-
-        Version newVersion = vehicle.getNewVersion();
+        Vehicle vehicle = repository.getById(DEFAULT_VEHICLE_ID);
 
         repository.save(vehicle);
 
-        VehicleRecord after = new VehicleRecord();
-        after.setId(id.getId());
-        after.setName(newVehicleName);
-        after.setCommId(newCommId.getId());
-        after.setVersion(version.getVersion());
-        after.setNewVersion(newVersion.getVersion());
-
-        verify(vehicleMapper, times(0)).create(any());
-        verify(vehicleMapper, times(1)).update(after);
+        verify(vehicleMapper, times(1))
+                .update(newNormalVehicleRecord(DEFAULT_VEHICLE_ID, DEFAULT_VERSION, DEFAULT_GENERATOR.get()));
     }
 
     /**
@@ -200,14 +158,11 @@ public class VehicleRepositoryTests {
      */
     @Test
     public void removeVehicleTest() {
-        VehicleId id = VehicleId.newId();
-        Version version = Version.newVersion();
-
-        repository.remove(id, version);
+        repository.remove(DEFAULT_VEHICLE_ID, DEFAULT_VERSION);
 
         DeleteCondition condition = new DeleteCondition();
-        condition.setId(id.getId());
-        condition.setVersion(version.getVersion());
+        condition.setId(DEFAULT_VEHICLE_ID.getId());
+        condition.setVersion(DEFAULT_VERSION.getVersion());
 
         verify(vehicleMapper, times(1)).delete(condition);
     }
