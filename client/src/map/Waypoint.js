@@ -10,7 +10,11 @@ const Waypoint = (props) => {
         position={props.waypoint.groundPosition}
         point={{
           pixelSize: 17.0,
-          color: Color.WHITE
+          color: Color.WHITE,
+        }}
+        properties={{
+          draggable: true,
+          index: props.index,
         }} />
       <Entity
         polyline={{

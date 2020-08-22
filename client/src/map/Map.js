@@ -15,6 +15,7 @@ import Drones from './Drones'
 import EditMission from './EditMission';
 import {} from './Key'
 import MapDoubleClickEvent from './MapDoubleClickEvent';
+import MapDragAndDropEvent from './MapDragAndDropEvent';
 import SceneMode from './SceneMode'
 import Missions from './Missions';
 
@@ -63,6 +64,7 @@ const Map = (props) => {
           <EditMission />
           <ScreenSpaceEventHandler >
             <MapDoubleClickEvent />
+            <MapDragAndDropEvent />
           </ScreenSpaceEventHandler>
       </Viewer>
     </div>
