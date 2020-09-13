@@ -36,6 +36,11 @@ export class Mission {
     this.items[index].speed = speed;
   }
 
+  changePosition(index, latitude, longitude) {
+    this.items[index].latitude = latitude;
+    this.items[index].longitude = longitude;
+  }
+
   removeWaypoint(index) {
     this.items.splice(index, 1);
     if (this.items.length === 0) {
