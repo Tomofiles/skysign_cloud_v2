@@ -1,13 +1,13 @@
-import React, { useGlobal, useState } from 'reactn';
+import React, { useState, useContext } from 'react';
 import { ScreenSpaceEvent, useCesium } from 'resium';
 import { ScreenSpaceEventType, defined, Cartographic, Math, SceneMode } from 'cesium';
-import { Mission } from '../plans/missions/MissionHelper';
-import { EDIT_MODE } from '../App';
+import { AppContext } from '../context/Context';
+import { EDIT_MODE } from '../context/EditMode';
 
-const MapDragAndDropEvent = (props) => {
+const MapDragAndDropEvent = () => {
   const context = useCesium();
-  const [ mission, setMission ] = useGlobal("editMission");
-  const editMode = useGlobal("editMode")[0];
+  const { dispatchEditMission } = useContext(AppContext);
+  const { editMode } = useContext(AppContext);
   const [ draggingWaypoint, setDraggingWaypoint ] = useState(undefined);
 
   const onLeftDown = event => {
@@ -39,11 +39,13 @@ const MapDragAndDropEvent = (props) => {
       let cartographic = Cartographic.fromCartesian(cartesian);
       let longitude = Math.toDegrees(cartographic.longitude);
       let latitude = Math.toDegrees(cartographic.latitude);
-      
-      let newMission = Object.assign(Object.create(Mission.prototype), mission);
-      newMission.changePosition(index, latitude, longitude);
 
-      setMission(newMission);
+      dispatchEditMission({
+        type: 'CHANGE_POSITION',
+        index: index,
+        latitude: latitude,
+        longitude: longitude,
+      });
     }
   };
 

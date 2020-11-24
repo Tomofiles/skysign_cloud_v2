@@ -6,6 +6,8 @@ import Map from './map/Map'
 import Func from './Func'
 import { SceneMode } from 'cesium';
 import { Mission } from './plans/missions/MissionHelper';
+import AppContextProvider from './context/Context';
+import { EDIT_MODE } from './context/EditMode';
 
 const menuWidth = 70;
 const menuWidthItem = 38;
@@ -125,11 +127,6 @@ const theme = createMuiTheme({
   }
 });
 
-export const EDIT_MODE = {
-  NONE: 0,
-  MISSION: 1,
-}
-
 setGlobal({
   stagingRows: [],
   editMission: new Mission(),
@@ -142,8 +139,10 @@ const App = () => {
 
   return (
     <MuiThemeProvider theme={theme}>
-      <Func classes={classes} />
-      <Map classes={classes} />
+      <AppContextProvider>
+        <Func classes={classes} />
+        <Map classes={classes} />
+      </AppContextProvider>
     </MuiThemeProvider>
   );
 }
