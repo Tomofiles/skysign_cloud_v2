@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useGlobal } from 'reactn';
+import React, { useState, useEffect, useGlobal, useContext } from 'reactn';
 
 import {
   Typography,
@@ -16,11 +16,12 @@ import { grey } from '@material-ui/core/colors';
 import { getMission, updateMission, deleteMission } from './MissionUtils'
 import { Mission } from './MissionHelper';
 import WaypointItem from './WaypointItem';
-import { EDIT_MODE } from '../../App';
+import { AppContext } from '../../context/Context';
 
 const MissionsEdit = (props) => {
+  const { dispatchEditMission } = useContext(AppContext);
   const [ mission, setMission ] = useGlobal("editMission");
-  const setEditMode = useGlobal("editMode")[1];
+  const { dispatchEditMode } = useContext(AppContext);
   const [ missionName, setMissionName ] = useState("");
 
   useEffect(() => {
@@ -28,23 +29,23 @@ const MissionsEdit = (props) => {
     getMission(props.id)
       .then(data => {
         setMissionName(data.name);
-        setEditMode(EDIT_MODE.MISSION);
+        dispatchEditMode({type: 'MISSION'});
         let newMission = Object.assign(Object.create(Mission.prototype), data);
         setMission(newMission);
       })
-  }, [ props.id, setMission, setMissionName, setEditMode ])
+  }, [ props.id, setMission, setMissionName, dispatchEditMode ])
 
   const onClickCancel = () => {
-    setEditMode(EDIT_MODE.NONE);
-    setMission(new Mission());
+    dispatchEditMode({type: 'NONE'});
+    dispatchEditMission({ type: "CLEAR"});
     props.openDetail(props.id);
   }
 
   const onClickSave = () => {
     updateMission(props.id, mission)
       .then(ret => {
-        setEditMode(EDIT_MODE.NONE);
-        setMission(new Mission());
+        dispatchEditMode({type: 'NONE'});
+        dispatchEditMission({ type: "CLEAR"});
         props.openList();
       });
   }
@@ -52,46 +53,47 @@ const MissionsEdit = (props) => {
   const onClickDelete = () => {
     deleteMission(props.id)
       .then(data => {
-        setEditMode(EDIT_MODE.NONE);
-        setMission(new Mission());
+        dispatchEditMode({type: 'NONE'});
+        dispatchEditMission({ type: "CLEAR"});
         props.openList();
       })
   }
 
   const onClickReturn = () => {
-    setEditMode(EDIT_MODE.NONE);
-    setMission(new Mission());
+    dispatchEditMode({type: 'NONE'});
+    dispatchEditMission({ type: "CLEAR"});
     props.openList();
   }
 
   const changeName = e => {
     setMissionName(e.target.value);
-
-    let newMission = Object.assign(Object.create(Mission.prototype), mission);
-    newMission.nameMission(e.target.value);
-
-    setMission(newMission);
+    dispatchEditMission({
+      type: 'CHANGE_NAME',
+      name: e.target.value,
+    });
   }
 
   const changeRelativeHeight = async (index, height) => {
-    let newMission = Object.assign(Object.create(Mission.prototype), mission);
-    await newMission.changeRelativeHeight(index, height);
-
-    setMission(newMission);
+    dispatchEditMission({
+      type: 'CHANGE_RELATIVE_HEIGHT',
+      index: index,
+      height: height,
+    });
   }
 
   const changeSpeed = async (index, speed) => {
-    let newMission = Object.assign(Object.create(Mission.prototype), mission);
-    await newMission.changeSpeed(index, speed);
-
-    setMission(newMission);
+    dispatchEditMission({
+      type: 'CHANGE_SPEED',
+      index: index,
+      speed: speed,
+    });
   }
 
   const removeWaypoint = index => {
-    let newMission = Object.assign(Object.create(Mission.prototype), mission);
-    newMission.removeWaypoint(index);
-
-    setMission(newMission);
+    dispatchEditMission({
+      type: 'REMOVE_WAYPOINT',
+      index: index,
+    });
   }
 
   return (

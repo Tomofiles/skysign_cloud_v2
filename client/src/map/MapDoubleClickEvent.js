@@ -1,13 +1,13 @@
-import React, { useGlobal } from 'reactn';
+import React, { useContext } from 'react';
 import { ScreenSpaceEvent, useCesium } from 'resium';
 import { ScreenSpaceEventType, defined, Cartographic, Math, SceneMode } from 'cesium';
-import { Mission } from '../plans/missions/MissionHelper';
-import { EDIT_MODE } from '../App';
+import { AppContext } from '../context/Context';
+import { EDIT_MODE } from '../context/EditMode';
 
-const MapDoubleClickEvent = (props) => {
+const MapDoubleClickEvent = () => {
   const context = useCesium();
-  const [ mission, setMission ] = useGlobal("editMission");
-  const editMode = useGlobal("editMode")[0];
+  const { dispatchEditMission } = useContext(AppContext);
+  const { editMode } = useContext(AppContext);
 
   const onDoubleClick = async (event) => {
     if (context.scene.mode === SceneMode.SCENE2D) {
@@ -19,10 +19,11 @@ const MapDoubleClickEvent = (props) => {
         let latitude = Math.toDegrees(cartographic.latitude);
 
         if (editMode === EDIT_MODE.MISSION) {
-          let newMission = Object.assign(Object.create(Mission.prototype), mission);
-          await newMission.addWaypoint(latitude, longitude);
-  
-          setMission(newMission);
+          dispatchEditMission({
+            type: 'ADD_WAYPOINT',
+            latitude: latitude,
+            longitude: longitude,
+          });
         }
       }
     }
