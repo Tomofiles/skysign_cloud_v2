@@ -23,21 +23,21 @@ const MissionsNew = (props) => {
   const [ missionName, setMissionName ] = useState("");
 
   useEffect(() => {
-    dispatchEditMode({type: 'MISSION'});
+    dispatchEditMode({ type: 'MISSION' });
     dispatchEditMission({ type: "CLEAR"});
   }, [ dispatchEditMode, dispatchEditMission ])
 
   const onClickSave = () => {
     createMission(editMission)
       .then(ret => {
-        dispatchEditMode({type: 'NONE'});
+        dispatchEditMode({ type: 'NONE' });
         dispatchEditMission({ type: "CLEAR"});
         props.openList();
       });
   }
 
   const onClickReturn = () => {
-    dispatchEditMode({type: 'NONE'});
+    dispatchEditMode({ type: 'NONE' });
     dispatchEditMission({ type: "CLEAR"});
     props.openList();
   }
@@ -67,6 +67,12 @@ const MissionsNew = (props) => {
   }
 
   const removeWaypoint = index => {
+    if (editMission.items.length === 1) {
+      dispatchEditMission({
+        type: 'CHANGE_TAKEOFF_POINT_GROUND_HEIGHT',
+        height: undefined,
+      });
+    }
     dispatchEditMission({
       type: 'REMOVE_WAYPOINT',
       index: index,

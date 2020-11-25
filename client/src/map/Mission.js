@@ -1,27 +1,30 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useReducer } from 'react';
 
 import { getMission } from '../plans/missions/MissionUtils'
-import { Mission as MissionModel } from '../plans/missions/MissionHelper'
 import Waypoint from './Waypoint';
 import Path from './Path';
+import { getPathsForDisplayToMap, getWaypointsForDisplayToMap } from '../plans/missions/MissionHelper';
+import { editMissionReducer, initialEditMission } from '../context/EditMission';
 
 const Mission = (props) => {
-  const [ mission, setMission ] = useState(new MissionModel());
+  const [ editMission, dispatchEditMission ] = useReducer(editMissionReducer, initialEditMission);
 
   useEffect(() => {
     getMission(props.data.missionId)
-      .then(mission => {
-        let newMission = Object.assign(Object.create(MissionModel.prototype), mission);
-        setMission(newMission);
+      .then(data => {
+        dispatchEditMission({
+          type: 'OPEN',
+          mission: data,
+        });
       });
-  }, [ props.data.missionId, setMission ]);
+  }, [ props.data.missionId, dispatchEditMission ]);
 
   return (
     <>
-      {mission.getWaypointsForDisplayToMap().map((waypoint, index) => (
+      {getWaypointsForDisplayToMap(editMission).map((waypoint, index) => (
         <Waypoint key={waypoint.id} index={index} waypoint={waypoint} />
       ))}
-      {mission.getPathsForDisplayToMap().map(path => (
+      {getPathsForDisplayToMap(editMission).map(path => (
         <Path key={path.id} path={path} />
       ))}
     </>

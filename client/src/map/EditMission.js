@@ -1,17 +1,19 @@
-import React, { useGlobal } from 'reactn';
+import React, { useContext } from 'react';
 
 import Waypoint from './Waypoint';
 import Path from './Path';
+import { AppContext } from '../context/Context';
+import { getPathsForDisplayToMap, getWaypointsForDisplayToMap } from '../plans/missions/MissionHelper';
 
 const EditMission = () => {
-  const mission = useGlobal("editMission")[0];
+  const { editMission } = useContext(AppContext);
 
   return (
     <>
-      {mission.getWaypointsForDisplayToMap().map((waypoint, index) => (
+      {getWaypointsForDisplayToMap(editMission).map((waypoint, index) => (
         <Waypoint key={waypoint.id} index={index} waypoint={waypoint} />
       ))}
-      {mission.getPathsForDisplayToMap().map(path => (
+      {getPathsForDisplayToMap(editMission).map(path => (
         <Path key={path.id} path={path} />
       ))}
     </>

@@ -1,13 +1,10 @@
-import React, { setGlobal } from 'reactn';
+import React from 'react';
 
 import { makeStyles, createMuiTheme, MuiThemeProvider } from "@material-ui/core/styles";
 
 import Map from './map/Map'
 import Func from './Func'
-import { SceneMode } from 'cesium';
-import { Mission } from './plans/missions/MissionHelper';
 import AppContextProvider from './context/Context';
-import { EDIT_MODE } from './context/EditMode';
 
 const menuWidth = 70;
 const menuWidthItem = 38;
@@ -125,13 +122,6 @@ const theme = createMuiTheme({
       }
     }
   }
-});
-
-setGlobal({
-  stagingRows: [],
-  editMission: new Mission(),
-  editMode: EDIT_MODE.NONE,
-  mapMode: SceneMode.SCENE2D,
 });
 
 const App = () => {

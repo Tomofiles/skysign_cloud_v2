@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useGlobal, useContext } from 'reactn';
+import React, { useState, useEffect, useContext } from 'react';
 
 import {
   Typography,
@@ -14,37 +14,36 @@ import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import { grey } from '@material-ui/core/colors';
 
 import { getMission, updateMission, deleteMission } from './MissionUtils'
-import { Mission } from './MissionHelper';
 import WaypointItem from './WaypointItem';
 import { AppContext } from '../../context/Context';
 
 const MissionsEdit = (props) => {
-  const { dispatchEditMission } = useContext(AppContext);
-  const [ mission, setMission ] = useGlobal("editMission");
+  const { editMission, dispatchEditMission } = useContext(AppContext);
   const { dispatchEditMode } = useContext(AppContext);
   const [ missionName, setMissionName ] = useState("");
 
   useEffect(() => {
-    setMission(new Mission());
     getMission(props.id)
       .then(data => {
         setMissionName(data.name);
-        dispatchEditMode({type: 'MISSION'});
-        let newMission = Object.assign(Object.create(Mission.prototype), data);
-        setMission(newMission);
+        dispatchEditMode({ type: 'MISSION' });
+        dispatchEditMission({
+          type: 'OPEN',
+          mission: data,
+        });
       })
-  }, [ props.id, setMission, setMissionName, dispatchEditMode ])
+  }, [ props.id, setMissionName, dispatchEditMode, dispatchEditMission ])
 
   const onClickCancel = () => {
-    dispatchEditMode({type: 'NONE'});
+    dispatchEditMode({ type: 'NONE' });
     dispatchEditMission({ type: "CLEAR"});
     props.openDetail(props.id);
   }
 
   const onClickSave = () => {
-    updateMission(props.id, mission)
+    updateMission(props.id, editMission)
       .then(ret => {
-        dispatchEditMode({type: 'NONE'});
+        dispatchEditMode({ type: 'NONE' });
         dispatchEditMission({ type: "CLEAR"});
         props.openList();
       });
@@ -53,14 +52,14 @@ const MissionsEdit = (props) => {
   const onClickDelete = () => {
     deleteMission(props.id)
       .then(data => {
-        dispatchEditMode({type: 'NONE'});
+        dispatchEditMode({ type: 'NONE' });
         dispatchEditMission({ type: "CLEAR"});
         props.openList();
       })
   }
 
   const onClickReturn = () => {
-    dispatchEditMode({type: 'NONE'});
+    dispatchEditMode({ type: 'NONE' });
     dispatchEditMission({ type: "CLEAR"});
     props.openList();
   }
@@ -90,6 +89,12 @@ const MissionsEdit = (props) => {
   }
 
   const removeWaypoint = index => {
+    if (editMission.items.length === 1) {
+      dispatchEditMission({
+        type: 'CHANGE_TAKEOFF_POINT_GROUND_HEIGHT',
+        height: undefined,
+      });
+    }
     dispatchEditMission({
       type: 'REMOVE_WAYPOINT',
       index: index,
@@ -127,10 +132,10 @@ const MissionsEdit = (props) => {
                 </Grid>
                 <Grid item xs={12}>
                   <Typography>
-                    {mission.takeoffPointGroundHeight === undefined ?
+                    {editMission.takeoffPointGroundHeight === undefined ?
                       "-"
                     :
-                      mission.takeoffPointGroundHeight} m
+                      editMission.takeoffPointGroundHeight} m
                     </Typography>
                 </Grid>
               </Grid>
@@ -142,10 +147,10 @@ const MissionsEdit = (props) => {
           <Grid item xs={12}>
             <List
               className={props.classes.myVehicleList} >
-              {mission.items.length === 0 &&
+              {editMission.items.length === 0 &&
                 <Typography>No Waypoints</Typography>
               }
-              {mission.items.map((waypoint, index) => (
+              {editMission.items.map((waypoint, index) => (
                 <WaypointItem
                   key={index}
                   classes={props.classes}
