@@ -1,13 +1,14 @@
-import React, { useGlobal } from 'reactn';
+import React, { useContext } from 'react';
+import { AppContext } from '../context/Context';
 
 import Mission from './Mission';
 
 const Missions = () => {
-  const [ rows ] = useGlobal("stagingRows");
+  const { stagingRows } = useContext(AppContext);
 
   return (
     <div>
-      {rows.map(data => (
+      {stagingRows.map(data => (
         data.isControlled && data.missionId !== "" &&
           <Mission key={data.id} data={data} />
       ))}

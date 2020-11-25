@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useGlobal } from 'reactn';
+import React, { useState, useEffect, useContext } from 'react';
 
 import {
   Typography,
@@ -13,6 +13,7 @@ import { grey } from '@material-ui/core/colors';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 
 import { COMMAND_TYPE, controlCommunication } from './FleetControlUtils'
+import { AppContext } from '../../context/Context';
 
 const FleetControl = (props) => {
   const [ buttonState, setButtonState] = useState({
@@ -25,17 +26,17 @@ const FleetControl = (props) => {
     land: true,
     return: true,
   });
-  const [ rows ] = useGlobal("stagingRows");
+  const { stagingRows } = useContext(AppContext);
 
   const onClickControl = (type) => {
     return () => {
-      rows.filter(row => row.isControlled)
+      stagingRows.filter(row => row.isControlled)
           .forEach(row => controlCommunication(type, row.id));
     }
   }
 
   useEffect(() => {
-    if (rows.filter(row => row.isControlled).length === 0) {
+    if (stagingRows.filter(row => row.isControlled).length === 0) {
       setButtonState({
         arm: true,
         disarm: true,
@@ -58,7 +59,7 @@ const FleetControl = (props) => {
         return: false,
       });
     }
-  }, [rows]);
+  }, [stagingRows]);
 
   return (
     <ExpansionPanel
