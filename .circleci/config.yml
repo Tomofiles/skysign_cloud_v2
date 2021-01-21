@@ -170,6 +170,7 @@ jobs:
             echo ${GCLOUD_SERVICE_KEY} > ${HOME}/gcloud-service-key.json
             gcloud auth activate-service-account --key-file=${HOME}/gcloud-service-key.json
       - setup_remote_docker
+          version: 19.03.13
       - run: 
           name: http_gateway Docker build and push
           command: |
