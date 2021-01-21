@@ -48,7 +48,7 @@ const WaypointItem = (props) => {
     <Box py={0.5} >
       <ExpansionPanel
           component={Paper}
-          className={props.classes.myVehiclePaper} >
+          className={props.classes.missionListItem} >
         <ExpansionPanelSummary>
           <Grid container>
             <Grid item xs={12}>
@@ -72,7 +72,7 @@ const WaypointItem = (props) => {
         <ExpansionPanelActions>
         <Grid container >
           <Grid item xs={12}>
-            <Box className={props.classes.editVehicleInputText}
+            <Box className={props.classes.textInput}
                 p={1} m={1} borderRadius={7} >
               <Grid container >
                 <Grid item xs={4}>
@@ -95,7 +95,7 @@ const WaypointItem = (props) => {
             </Box>
           </Grid>
           <Grid item xs={12}>
-            <Box className={props.classes.editVehicleInputText}
+            <Box className={props.classes.textInput}
                 p={1} m={1} borderRadius={7} >
               <Grid container >
                 <Grid item xs={4}>

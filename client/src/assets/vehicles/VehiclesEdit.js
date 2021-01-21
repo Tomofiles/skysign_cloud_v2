@@ -54,7 +54,7 @@ const VehiclesEdit = (props) => {
     <div>
       <form onSubmit={handleSubmit(onClickSave)}>
         <ExpansionPanelDetails>
-          <Grid container className={props.classes.editVehicleInput}>
+          <Grid container className={props.classes.textLabel}>
             <Grid item xs={12}>
               <Button onClick={onClickReturn}>
                 <ChevronLeftIcon style={{ color: grey[50] }} />
@@ -64,7 +64,7 @@ const VehiclesEdit = (props) => {
               <Typography>Edit Vehicle</Typography>
             </Grid>
             <Grid item xs={12}>
-              <Box className={props.classes.editVehicleInputText}
+              <Box className={props.classes.textInput}
                   p={1} m={1} borderRadius={7} >
                 <Controller
                   as={TextField}
@@ -76,7 +76,7 @@ const VehiclesEdit = (props) => {
               </Box>
             </Grid>
             <Grid item xs={12}>
-              <Box className={props.classes.editVehicleInputText}
+              <Box className={props.classes.textInput}
                   p={1} m={1} borderRadius={7} >
                 <Controller
                   as={TextField}
@@ -91,17 +91,17 @@ const VehiclesEdit = (props) => {
         </ExpansionPanelDetails>
         <ExpansionPanelActions >
           <Button
-              className={props.classes.editVehicleButton}
+              className={props.classes.funcButton}
               onClick={() => onClickCancel(id)}>
             Cancel
           </Button>
           <Button 
-              className={props.classes.editVehicleButton}
+              className={props.classes.funcButton}
               onClick={() => onClickDelete(id)}>
             Delete
           </Button>
           <Button
-              className={props.classes.editVehicleButton}
+              className={props.classes.funcButton}
               type="submit" >
             Save
           </Button>

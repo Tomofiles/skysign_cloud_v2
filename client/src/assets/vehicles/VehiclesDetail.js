@@ -38,7 +38,7 @@ const VehiclesDetail = (props) => {
   return (
     <div>
       <ExpansionPanelDetails>
-        <Grid container className={props.classes.editVehicleInput}>
+        <Grid container className={props.classes.textLabel}>
           <Grid item xs={12}>
             <Button onClick={onClickReturn}>
               <ChevronLeftIcon style={{ color: grey[50] }} />
@@ -49,7 +49,7 @@ const VehiclesDetail = (props) => {
           </Grid>
           <Grid item xs={12}>
             <Box  p={1} m={1} borderRadius={7} >
-              <Grid container className={props.classes.editVehicleInput}>
+              <Grid container className={props.classes.textLabel}>
                 <Grid item xs={12}>
                   <Typography style={{fontSize: "12px"}}>Name</Typography>
                 </Grid>
@@ -61,7 +61,7 @@ const VehiclesDetail = (props) => {
           </Grid>
           <Grid item xs={12}>
             <Box  p={1} m={1} borderRadius={7} >
-              <Grid container className={props.classes.editVehicleInput}>
+              <Grid container className={props.classes.textLabel}>
                 <Grid item xs={12}>
                   <Typography style={{fontSize: "12px"}}>Communication ID</Typography>
                 </Grid>
@@ -74,7 +74,7 @@ const VehiclesDetail = (props) => {
         </Grid>
       </ExpansionPanelDetails>
       <ExpansionPanelActions >
-        <Button className={props.classes.editVehicleButton} onClick={() => onClickEdit(vehicle.id)}>Edit</Button>
+        <Button className={props.classes.funcButton} onClick={() => onClickEdit(vehicle.id)}>Edit</Button>
       </ExpansionPanelActions>
     </div>
   );

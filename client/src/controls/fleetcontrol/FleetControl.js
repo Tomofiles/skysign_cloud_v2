@@ -63,13 +63,13 @@ const FleetControl = (props) => {
 
   return (
     <ExpansionPanel
-        className={props.classes.myVehicleRoot}
+        className={props.classes.funcPanel}
         defaultExpanded>
       <ExpansionPanelSummary
         expandIcon={<ExpandMoreIcon style={{ color: grey[50] }} />}
         aria-controls="panel1a-content"
         id="panel1a-header"
-        className={props.classes.myVehicleSummary}
+        className={props.classes.funcPanelSummary}
       >
         <Typography>Fleet Control</Typography>
       </ExpansionPanelSummary>
@@ -80,7 +80,7 @@ const FleetControl = (props) => {
           <Grid item xs={4} >
             <Button
               disabled={buttonState.arm}
-              className={props.classes.myVehicleButton}
+              className={props.classes.funcButton}
               fullWidth
               onClick={onClickControl(COMMAND_TYPE.ARM)}>
                 Arm
@@ -89,7 +89,7 @@ const FleetControl = (props) => {
           <Grid item xs={4} >
             <Button
               disabled={buttonState.disarm}
-              className={props.classes.myVehicleButton}
+              className={props.classes.funcButton}
               fullWidth
               onClick={onClickControl(COMMAND_TYPE.DISARM)}>
                 Disarm
@@ -99,7 +99,7 @@ const FleetControl = (props) => {
           <Grid item xs={4} >
             <Button
               disabled={buttonState.upload}
-              className={props.classes.myVehicleButton}
+              className={props.classes.funcButton}
               fullWidth
               onClick={onClickControl(COMMAND_TYPE.UPLOAD)}>
                 Upload
@@ -108,7 +108,7 @@ const FleetControl = (props) => {
           <Grid item xs={4} >
             <Button
               disabled={buttonState.start}
-              className={props.classes.myVehicleButton}
+              className={props.classes.funcButton}
               fullWidth
               onClick={onClickControl(COMMAND_TYPE.START)}>
                 Start
@@ -117,7 +117,7 @@ const FleetControl = (props) => {
           <Grid item xs={4} >
             <Button
               disabled={buttonState.pause}
-              className={props.classes.myVehicleButton}
+              className={props.classes.funcButton}
               fullWidth
               onClick={onClickControl(COMMAND_TYPE.PAUSE)}>
                 Pause
@@ -126,7 +126,7 @@ const FleetControl = (props) => {
           <Grid item xs={4} >
             <Button
               disabled={buttonState.takeoff}
-              className={props.classes.myVehicleButton}
+              className={props.classes.funcButton}
               fullWidth
               onClick={onClickControl(COMMAND_TYPE.TAKEOFF)}>
                 Take Off
@@ -135,7 +135,7 @@ const FleetControl = (props) => {
           <Grid item xs={4} >
             <Button
               disabled={buttonState.land}
-              className={props.classes.myVehicleButton}
+              className={props.classes.funcButton}
               fullWidth
               onClick={onClickControl(COMMAND_TYPE.LAND)}>
                 Land
@@ -144,7 +144,7 @@ const FleetControl = (props) => {
           <Grid item xs={4} >
             <Button
               disabled={buttonState.return}
-              className={props.classes.myVehicleButton}
+              className={props.classes.funcButton}
               fullWidth
               onClick={onClickControl(COMMAND_TYPE.RETURN)}>
                 Return

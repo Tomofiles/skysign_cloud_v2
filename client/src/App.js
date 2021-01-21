@@ -8,8 +8,7 @@ import AppContextProvider from './context/Context';
 
 const menuWidth = 70;
 const menuWidthItem = 38;
-const missionsWidth = 320;
-const assetsWidth = 320;
+const funcWidth = 320;
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -18,13 +17,13 @@ const useStyles = makeStyles(theme => ({
     width: menuWidth,
     flexShrink: 0,
   },
-  menuWidthItem: {
-    width: menuWidthItem,
-  },
   menuPaper: {
     background: '#080808',
     color: '#fafafa',
     width: menuWidth,
+  },
+  menuItem: {
+    width: menuWidthItem,
   },
   menuLogoBackground: {
     background: 'transparent',
@@ -44,63 +43,60 @@ const useStyles = makeStyles(theme => ({
     right: 0,
     bottom: 0
   },
-  missions: {
-    width: missionsWidth,
+  func: {
+    width: funcWidth,
     flexShrink: 0,
   },
-  missionsPaper: {
+  funcPaper: {
     background: 'rgba(0, 0, 0, 0.7)',
     color: '#fafafa',
-    width: missionsWidth,
+    width: funcWidth,
   },
-  assets: {
-    width: assetsWidth,
-    flexShrink: 0,
-  },
-  assetsPaper: {
-    background: 'rgba(0, 0, 0, 0.7)',
-    color: '#fafafa',
-    width: assetsWidth,
-  },
-  myVehicleRoot: {
+  funcPanel: {
     background: 'transparent',
   },
-  myVehicleSummary: {
+  funcPanelSummary: {
     background: '#303437',
     color: '#fafafa',
   },
-  myVehiclePaper: {
-    background: '#303437',
-    color: '#fafafa',
-    "&:hover": {
-      background: 'rgba(0, 173, 181, 1.0)'
-    }
-  },
-  myVehicleList: {
+  funcPanelDetails: {
     maxHeight: '300px',
     overflow: 'auto',
     width: '100%',
     color: '#fafafa',
   },
-  myVehicleButton: {
+  funcListItem: {
     background: '#303437',
     color: '#fafafa',
     "&:hover": {
       background: 'rgba(0, 173, 181, 1.0)'
     }
   },
-  editVehicleInput: {
+  missionList: {
+    maxHeight: '300px',
+    overflow: 'auto',
+    width: '100%',
     color: '#fafafa',
   },
-  editVehicleInputText: {
+  missionListItem: {
+    background: '#303437',
+    color: '#fafafa',
+    "&:hover": {
+      background: 'rgba(0, 173, 181, 1.0)'
+    }
+  },
+  funcButton: {
+    background: '#303437',
+    color: '#fafafa',
+    "&:hover": {
+      background: 'rgba(0, 173, 181, 1.0)'
+    }
+  },
+  textLabel: {
+    color: '#fafafa',
+  },
+  textInput: {
     background: '#fafafa',
-  },
-  editVehicleButton: {
-    background: '#303437',
-    color: '#fafafa',
-    "&:hover": {
-      background: 'rgba(0, 173, 181, 1.0)'
-    }
   },
 }));
 

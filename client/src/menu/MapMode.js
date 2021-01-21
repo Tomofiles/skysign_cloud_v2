@@ -38,7 +38,7 @@ const MapMode = (props) => {
     <>
       <ListItem button onClick={openMapModeChange}>
         <ListItemIcon >
-          <Box className={props.classes.menuWidthItem}>
+          <Box className={props.classes.menuItem}>
             <Grid container >
               <Grid item xs={12}>
                 {mapMode === SceneMode.SCENE3D && 
