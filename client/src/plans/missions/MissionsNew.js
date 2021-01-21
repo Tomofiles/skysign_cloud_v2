@@ -82,7 +82,7 @@ const MissionsNew = (props) => {
   return (
     <div>
       <ExpansionPanelDetails>
-        <Grid container className={props.classes.editVehicleInput}>
+        <Grid container className={props.classes.textLabel}>
           <Grid item xs={12}>
             <Button onClick={onClickReturn}>
               <ChevronLeftIcon style={{ color: grey[50] }} />
@@ -92,7 +92,7 @@ const MissionsNew = (props) => {
             <Typography>New Mission</Typography>
           </Grid>
           <Grid item xs={12}>
-            <Box className={props.classes.editVehicleInputText}
+            <Box className={props.classes.textInput}
                 p={1} m={1} borderRadius={7} >
               <TextField
                 label="Name"
@@ -104,7 +104,7 @@ const MissionsNew = (props) => {
           </Grid>
           <Grid item xs={12}>
             <Box  p={1} m={1} borderRadius={7} >
-              <Grid container className={props.classes.editVehicleInput}>
+              <Grid container className={props.classes.textLabel}>
                 <Grid item xs={12}>
                   <Typography style={{fontSize: "12px"}}>Takeoff Ground Height</Typography>
                 </Grid>
@@ -124,7 +124,7 @@ const MissionsNew = (props) => {
           </Grid>
           <Grid item xs={12}>
             <List 
-              className={props.classes.myVehicleList} >
+              className={props.classes.funcPanelDetails} >
               {editMission.items.length === 0 &&
                 <Typography>No Waypoints</Typography>
               }
@@ -145,7 +145,7 @@ const MissionsNew = (props) => {
       </ExpansionPanelDetails>
       <ExpansionPanelActions >
         <Button
-            className={props.classes.editVehicleButton}
+            className={props.classes.funcButton}
             onClick={onClickSave}>
           Save
         </Button>

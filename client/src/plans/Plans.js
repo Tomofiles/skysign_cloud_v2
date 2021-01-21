@@ -14,11 +14,11 @@ import Missions from './missions/Missions'
 const Plans = (props) => {
   return (
     <Drawer
-        className={props.classes.assets}
+        className={props.classes.func}
         anchor='right'
         variant="persistent"
         classes={{
-          paper: props.classes.assetsPaper,
+          paper: props.classes.funcPaper,
         }}
         open={props.open} >
       <Box m={2} alignContent="center">

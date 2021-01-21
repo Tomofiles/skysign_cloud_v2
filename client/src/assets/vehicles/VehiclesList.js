@@ -41,13 +41,13 @@ const VehiclesList = (props) => {
     <div>
       <ExpansionPanelDetails>
         <List 
-          className={props.classes.myVehicleList} >
+          className={props.classes.funcPanelDetails} >
           {rows.length === 0 &&
             <Typography>No Vehicles</Typography>
           }
           {rows.map((row) => (
             <Box key={row.id} pb={1} onClick={() => onSelect(row.id)} >
-              <ListItem button component={Paper} className={props.classes.myVehiclePaper}>
+              <ListItem button component={Paper} className={props.classes.funcListItem}>
                 <ListItemIcon>
                   <Flight style={{ color: grey[50] }} />
                 </ListItemIcon>
@@ -58,7 +58,7 @@ const VehiclesList = (props) => {
         </List>
       </ExpansionPanelDetails>
       <ExpansionPanelActions >
-        <Button className={props.classes.myVehicleButton} onClick={onClickNew}>New</Button>
+        <Button className={props.classes.funcButton} onClick={onClickNew}>New</Button>
       </ExpansionPanelActions>
     </div>
   );
