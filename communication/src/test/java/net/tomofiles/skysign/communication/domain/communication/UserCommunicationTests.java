@@ -6,8 +6,11 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 
 import net.tomofiles.skysign.communication.domain.vehicle.VehicleId;
+import net.tomofiles.skysign.communication.event.Publisher;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
@@ -26,7 +29,7 @@ public class UserCommunicationTests {
     private static final boolean DEFAULT_CONTROLLED = true;
     private static final boolean DEFAULT_UNCONTROLLED = false;
     private static final MissionId DEFAULT_MISSION_ID = new MissionId(UUID.randomUUID().toString());
-    private static final LocalDateTime DEFAULT_COMMAND_TIME = LocalDateTime.of(2020, 1, 1, 0, 0, 0);
+    private static final LocalDateTime DEFAULT_TIME = LocalDateTime.of(2020, 1, 1, 0, 0, 0);
     private static final Supplier<Generator> DEFAULT_GENERATOR = () -> {
         return new Generator(){
             @Override
@@ -35,13 +38,16 @@ public class UserCommunicationTests {
             }
             @Override
             public LocalDateTime newTime() {
-                return DEFAULT_COMMAND_TIME;
+                return DEFAULT_TIME;
             }
         };
     };
 
     @Mock
     private CommunicationRepository repository;
+
+    @Mock
+    private Publisher publisher;
 
     @BeforeEach
     public void beforeEach() {
@@ -91,7 +97,7 @@ public class UserCommunicationTests {
             () -> assertThat(communication.getCommands()).hasSize(1),
             () -> assertThat(communication.getCommands().get(0).getId()).isEqualTo(DEFAULT_COMMAND_ID),
             () -> assertThat(communication.getCommands().get(0).getType()).isEqualTo(CommandType.ARM),
-            () -> assertThat(communication.getCommands().get(0).getTime()).isEqualTo(DEFAULT_COMMAND_TIME)
+            () -> assertThat(communication.getCommands().get(0).getTime()).isEqualTo(DEFAULT_TIME)
         );
     }
 
@@ -158,7 +164,8 @@ public class UserCommunicationTests {
 
     /**
      * Userが、既存のCommunicationエンティティを管制状態にする。<br>
-     * controlledであることを検証する。
+     * controlledであることを検証する。<br>
+     * その際、管制状態に切り替わったことが、購読者に通知されることを検証する。
      */
     @Test
     public void controlledCommunicationTest() {
@@ -170,9 +177,21 @@ public class UserCommunicationTests {
 
         Communication communication = this.repository.getById(DEFAULT_COMMUNICATION_ID);
 
+        communication.setPublisher(this.publisher);
+
         communication.control();
 
-        assertThat(communication.isControlled()).isTrue();
+        CommunicationControlledEvent event = new CommunicationControlledEvent(
+            DEFAULT_COMMUNICATION_ID,
+            DEFAULT_VEHICLE_ID,
+            null,
+            DEFAULT_TIME
+        );
+
+        assertAll(
+            () -> assertThat(communication.isControlled()).isTrue(),
+            () -> verify(this.publisher, times(1)).publish(event)
+        );
     }
 
     /**

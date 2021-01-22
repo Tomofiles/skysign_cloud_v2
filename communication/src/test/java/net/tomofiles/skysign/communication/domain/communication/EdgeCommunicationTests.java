@@ -6,8 +6,11 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 
 import net.tomofiles.skysign.communication.domain.vehicle.VehicleId;
+import net.tomofiles.skysign.communication.event.Publisher;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
@@ -31,7 +34,7 @@ public class EdgeCommunicationTests {
     private static final VehicleId DEFAULT_VEHICLE_ID = new VehicleId(UUID.randomUUID().toString());
     private static final boolean DEFAULT_CONTROLLED = true;
     private static final MissionId DEFAULT_MISSION_ID = new MissionId(UUID.randomUUID().toString());
-    private static final LocalDateTime DEFAULT_COMMAND_TIME = LocalDateTime.of(2020, 1, 1, 0, 0, 0);
+    private static final LocalDateTime DEFAULT_TIME = LocalDateTime.of(2020, 1, 1, 0, 0, 0);
     private static final Supplier<Generator> DEFAULT_GENERATOR = () -> {
         return new Generator(){
             @Override
@@ -40,16 +43,16 @@ public class EdgeCommunicationTests {
             }
             @Override
             public LocalDateTime newTime() {
-                return DEFAULT_COMMAND_TIME;
+                return DEFAULT_TIME;
             }
         };
     };
     private static final CommandId DEFAULT_COMMAND_ID1 = new CommandId(UUID.randomUUID().toString());
     private static final CommandId DEFAULT_COMMAND_ID2 = new CommandId(UUID.randomUUID().toString());
     private static final CommandId DEFAULT_COMMAND_ID3 = new CommandId(UUID.randomUUID().toString());
-    private static final LocalDateTime DEFAULT_COMMAND_TIME1 = LocalDateTime.of(2020, 07, 22, 10, 30, 25);
-    private static final LocalDateTime DEFAULT_COMMAND_TIME2 = LocalDateTime.of(2020, 07, 22, 10, 30, 30);
-    private static final LocalDateTime DEFAULT_COMMAND_TIME3 = LocalDateTime.of(2020, 07, 22, 10, 30, 45);
+    private static final LocalDateTime DEFAULT_TIME1 = LocalDateTime.of(2020, 07, 22, 10, 30, 25);
+    private static final LocalDateTime DEFAULT_TIME2 = LocalDateTime.of(2020, 07, 22, 10, 30, 30);
+    private static final LocalDateTime DEFAULT_TIME3 = LocalDateTime.of(2020, 07, 22, 10, 30, 45);
     private static final Supplier<Generator> DEFAULT_GENERATOR_IN_RONDOM_ORDER = () -> {
         return new Generator(){
             private List<CommandId> commandIds = new ArrayList<>(Arrays.asList(new CommandId[] {
@@ -58,9 +61,9 @@ public class EdgeCommunicationTests {
                     DEFAULT_COMMAND_ID3
             }));
             private List<LocalDateTime> times = new ArrayList<>(Arrays.asList(new LocalDateTime[] {
-                    DEFAULT_COMMAND_TIME3, // 順不同
-                    DEFAULT_COMMAND_TIME1, // 順不同
-                    DEFAULT_COMMAND_TIME2  // 順不同
+                    DEFAULT_TIME3, // 順不同
+                    DEFAULT_TIME1, // 順不同
+                    DEFAULT_TIME2  // 順不同
             }));
             @Override
             public CommandId newCommandId() {
@@ -76,6 +79,9 @@ public class EdgeCommunicationTests {
     @Mock
     private CommunicationRepository repository;
 
+    @Mock
+    private Publisher publisher;
+
     @BeforeEach
     public void beforeEach() {
         initMocks(this);
@@ -83,7 +89,8 @@ public class EdgeCommunicationTests {
 
     /**
      * Edgeが、既存のCommunicationエンティティのTelemetryを更新する。<br>
-     * すべてのTelemetryのフィールドが更新されることを検証する。
+     * すべてのTelemetryのフィールドが更新されることを検証する。<br>
+     * その際、購読者に更新イベントが通知されることを検証する。
      */
     @Test
     public void pushTelemetryToCommunicationTest() {
@@ -95,9 +102,18 @@ public class EdgeCommunicationTests {
 
         Communication communication = repository.getById(DEFAULT_COMMUNICATION_ID);
 
+        communication.setPublisher(this.publisher);
+
         communication.pushTelemetry(newNormalTelemetrySnapshot());
 
-        assertThat(communication.getTelemetry()).isEqualTo(newNormalTelemetry());
+        TelemetryUpdatedEvent event = new TelemetryUpdatedEvent(
+                newNormalTelemetrySnapshot(),
+                DEFAULT_TIME);
+
+        assertAll(
+            () -> assertThat(communication.getTelemetry()).isEqualTo(newNormalTelemetry()),
+            () -> verify(this.publisher, times(1)).publish(event)
+        );
     }
 
     /**

@@ -130,7 +130,7 @@ public class ManagementVehiclesTests {
             () -> assertThat(vehicle.getCommId()).isEqualTo(newCommId),
             () -> assertThat(vehicle.getVersion()).isEqualTo(DEFAULT_VERSION1),
             () -> assertThat(vehicle.getNewVersion()).isEqualTo(DEFAULT_VERSION2),
-            () -> verify(publisher, times(1)).publish(event)
+            () -> verify(this.publisher, times(1)).publish(event)
         );
     }
 
@@ -165,7 +165,7 @@ public class ManagementVehiclesTests {
             () -> assertThat(vehicle.getCommId()).isEqualTo(newCommId),
             () -> assertThat(vehicle.getVersion()).isEqualTo(DEFAULT_VERSION1),
             () -> assertThat(vehicle.getNewVersion()).isEqualTo(DEFAULT_VERSION2),
-            () -> verify(publisher, times(1)).publish(event)
+            () -> verify(this.publisher, times(1)).publish(event)
         );
     }
 }
