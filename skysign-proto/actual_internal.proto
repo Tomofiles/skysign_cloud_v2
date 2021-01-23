@@ -1,0 +1,39 @@
+syntax = "proto3";
+
+package skysign_proto;
+
+import "google/api/annotations.proto";
+import "common.proto";
+
+option java_package = "proto.skysign";
+option java_multiple_files = true;
+option go_package = ".;skysign_proto";
+
+service ActualInternalService {
+    rpc UpdateTelemetry (UpdateTelemetryRequest) returns (Empty) {
+        option (google.api.http) = {
+            post: "/api/v1/actuals/telemetry"
+            body: "*"
+        };
+    };
+
+    rpc CreateActual (CreateActualRequest) returns (Empty) {
+        option (google.api.http) = {
+            post: "/api/v1/actuals"
+            body: "*"
+        };
+    };
+}
+
+message UpdateTelemetryRequest {
+    string communicationId = 1;
+    Telemetry telemetry = 2;
+    string updateDateTime = 3;
+}
+
+message CreateActualRequest {
+    string communicationId = 1;
+    string vehicleId = 2;
+    string missionId = 3;
+    string startDateTime = 4;
+}
