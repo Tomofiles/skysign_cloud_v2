@@ -70,7 +70,7 @@ public class Communication {
                         snapshot.getW());
         this.publisher
                 .publish(
-                        new TelemetryUpdatedEvent(snapshot, time));
+                        new TelemetryUpdatedEvent(this.id, snapshot, time));
     }
 
     public TelemetrySnapshot pullTelemetry() {

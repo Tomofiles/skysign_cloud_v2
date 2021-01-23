@@ -13,6 +13,7 @@ import net.tomofiles.skysign.communication.event.Event;
 @EqualsAndHashCode
 @ToString
 public class TelemetryUpdatedEvent implements Event {
+    private final CommunicationId communicationId;
     private final TelemetrySnapshot snapshot;
     private final LocalDateTime updateDateTime;
 }

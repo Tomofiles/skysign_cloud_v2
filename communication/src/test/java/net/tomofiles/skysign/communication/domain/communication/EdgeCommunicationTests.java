@@ -107,6 +107,7 @@ public class EdgeCommunicationTests {
         communication.pushTelemetry(newNormalTelemetrySnapshot());
 
         TelemetryUpdatedEvent event = new TelemetryUpdatedEvent(
+                DEFAULT_COMMUNICATION_ID,
                 newNormalTelemetrySnapshot(),
                 DEFAULT_TIME);
 
