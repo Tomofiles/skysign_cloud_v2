@@ -40,3 +40,4 @@ workflows:
             aws-secret-access-key: AWS_SECRET_ACCESS_KEY
             repo: ${AWS_RESOURCE_NAME_PREFIX}
             tag: "${CIRCLE_SHA1}"
+            path: ./http_gateway
