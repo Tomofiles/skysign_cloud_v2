@@ -34,7 +34,7 @@ workflows:
       - aws-ecr/build-and-push-image:
             requires:
                 - build_and_test_http_gateway
-            region: "${AWS_DEFAULT_REGION}"
-            account-url: "${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com"
-            repo: "${AWS_RESOURCE_NAME_PREFIX}"
-            tag: "${CIRCLE_SHA1}"
+            region: ${AWS_DEFAULT_REGION}
+            account-url: ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com
+            repo: ${AWS_RESOURCE_NAME_PREFIX}
+            tag: ${CIRCLE_SHA1}
