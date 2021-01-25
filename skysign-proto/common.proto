@@ -65,10 +65,8 @@ message Communication {
 message Actual {
     string id = 1;
     string vehicleId = 2;
-    string vehicleName = 3;
-    string missionId = 4;
-    string missionName = 5;
-    string startDateTime = 6;
-    string totalTime = 7;
-    string totalDistance = 8;
+    string missionId = 3;
+    string startDateTime = 4;
+    string totalTime = 5;
+    string totalDistance = 6;
 }
