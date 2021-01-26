@@ -1,20 +1,30 @@
 version: 2.1
 
 orbs:
-  go: circleci/go@1.5.0
   aws-ecr: circleci/aws-ecr@6.15.2
 
 jobs:
   build_and_test_http_gateway:
-    executor:
-      name: go/default
-      tag: "1.13"
+    docker:
+      - image: circleci/golang:1.13
     steps:
       - checkout
-      - go/load-cache
-      - go/mod-download
-      - go/save-cache
-      - go/test
+      - restore_cache:
+          key: http_gateway-{{ checksum "./http_gateway/go.sum" }}
+      - run:
+          name: http_gateway test
+          command: |
+            cd ./http_gateway
+            go test ./...
+      - run:
+          name: http_gateway build
+          command: |
+            cd ./http_gateway
+            go build ./...
+      - save_cache:
+          key: http_gateway-{{ checksum "./http_gateway/go.sum" }}
+          paths:
+            - /go/pkg/mod
 
 workflows:
   build_test_push:
