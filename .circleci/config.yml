@@ -137,6 +137,29 @@ jobs:
             cd ./client
             npm build
 
+  build_and_test_edge:
+    docker:
+      - image: circleci/golang:1.13
+    working_directory: ~/edge
+    steps:
+      - checkout
+      - restore_cache:
+          key: edge-{{ checksum "./edge/go.sum" }}
+      - run:
+          name: edge test
+          command: |
+            cd ./edge
+            go test ./...
+      - run:
+          name: edge build
+          command: |
+            cd ./edge
+            go build ./...
+      - save_cache:
+          key: edge-{{ checksum "./edge/go.sum" }}
+          paths:
+            - /go/pkg/mod
+
 workflows:
   http_gateway:
     jobs:
@@ -193,29 +216,6 @@ workflows:
           repo: ${AWS_RESOURCE_NAME_PREFIX}
           tag: "mission_${CIRCLE_SHA1}"
           path: ./mission
-
-  build_and_test_edge:
-    docker:
-      - image: circleci/golang:1.13
-    working_directory: ~/edge
-    steps:
-      - checkout
-      - restore_cache:
-          key: edge-{{ checksum "./edge/go.sum" }}
-      - run:
-          name: edge test
-          command: |
-            cd ./edge
-            go test ./...
-      - run:
-          name: edge build
-          command: |
-            cd ./edge
-            go build ./...
-      - save_cache:
-          key: edge-{{ checksum "./edge/go.sum" }}
-          paths:
-            - /go/pkg/mod
 
   client:
     jobs:
