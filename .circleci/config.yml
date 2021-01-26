@@ -12,11 +12,9 @@ jobs:
     working_directory: ~/http_gateway
     steps:
       - checkout
-      - go/load-cache:
-          key: http_gateway-{{ checksum "./go.sum" }}
+      - go/load-cache
       - go/mod-download
-      - go/save-cache:
-          key: http_gateway-{{ checksum "./go.sum" }}
+      - go/save-cache
       - go/test
 
 workflows:
