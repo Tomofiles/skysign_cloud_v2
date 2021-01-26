@@ -15,7 +15,7 @@ jobs:
       - go/load-cache:
           key: http_gateway-{{ checksum "./go.sum" }}
       - go/mod-download
-      - go/save-cache
+      - go/save-cache:
           key: http_gateway-{{ checksum "./go.sum" }}
       - go/test:
 
