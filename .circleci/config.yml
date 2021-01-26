@@ -9,15 +9,15 @@ jobs:
     executor:
       name: go/default
       tag: "1.13"
+    working_directory: ~/http_gateway
     steps:
       - checkout
-      - path: ./http_gateway
       - go/load-cache:
           key: http_gateway-{{ checksum "./go.sum" }}
       - go/mod-download
       - go/save-cache:
           key: http_gateway-{{ checksum "./go.sum" }}
-      - go/test:
+      - go/test
 
 workflows:
   build_test_push:
