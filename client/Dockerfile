@@ -1,9 +1,11 @@
 ARG NODE_TAG=12-alpine
 ARG APP_HOME=/home/node/app
+ARG CESIUM_KEY=EMPTY
 
 FROM node:${NODE_TAG} as builder
 ARG NODE_TAG
 ARG APP_HOME
+ARG CESIUM_KEY
 
 RUN mkdir -p /usr/src/cesium \
     && wget https://github.com/CesiumGS/cesium-workshop/archive/master.zip -P /usr/src/cesium

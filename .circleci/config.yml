@@ -230,6 +230,7 @@ workflows:
           repo: ${AWS_RESOURCE_NAME_PREFIX}
           tag: "client_${CIRCLE_SHA1}"
           path: ./client
+          extra-build-args: "--build-arg CESIUM_KEY=${CESIUM_KEY}"
 
   edge:
     jobs:
