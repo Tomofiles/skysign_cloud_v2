@@ -26,8 +26,119 @@ jobs:
           paths:
             - /go/pkg/mod
 
+  build_and_test_helper_api:
+    docker:
+      - image: circleci/golang:1.13
+    steps:
+      - checkout
+      - restore_cache:
+          key: helper-api-{{ checksum "./helper-api/go.sum" }}
+      - run:
+          name: helper-api test
+          command: |
+            cd ./helper-api
+            go test ./...
+      - run:
+          name: helper-api build
+          command: |
+            cd ./helper-api
+            go build ./...
+      - save_cache:
+          key: helper-api-{{ checksum "./helper-api/go.sum" }}
+          paths:
+            - /go/pkg/mod
+
+  build_and_test_communication:
+    docker:
+      - image: circleci/openjdk:8-jdk-browsers
+    working_directory: ~/communication
+    steps:
+      - checkout
+      - restore_cache:
+          key: communication-{{ checksum "./communication/pom.xml" }}
+      - run:
+          name: communication dependency
+          command: |
+            cd ./communication
+            mvn dependency:go-offline
+      - save_cache:
+          paths:
+            - ~/.m2
+          key: communication-{{ checksum "./communication/pom.xml" }}
+      - run:
+          name: communication test
+          command: |
+            cd ./communication
+            mvn test
+      - run:
+          name: communication compile
+          command: |
+            cd ./communication
+            mvn compile
+
+  build_and_test_mission:
+    docker:
+      - image: circleci/openjdk:8-jdk-browsers
+    working_directory: ~/mission
+    steps:
+      - checkout
+      - restore_cache:
+          key: mission-{{ checksum "./mission/pom.xml" }}
+      - run:
+          name: mission dependency
+          command: |
+            cd ./mission
+            mvn dependency:go-offline
+      - save_cache:
+          paths:
+            - ~/.m2
+          key: mission-{{ checksum "./mission/pom.xml" }}
+      - run:
+          name: mission test
+          command: |
+            cd ./mission
+            mvn test
+      - run:
+          name: mission compile
+          command: |
+            cd ./mission
+            mvn compile
+
+  build_and_test_client:
+    docker:
+      - image: circleci/node
+    working_directory: ~/client
+    steps:
+      - checkout
+      - run:
+          name: client env
+          command: |
+            cd ./client
+            echo REACT_APP_CESIUM_KEY=${CESIUM_KEY} > ./.env
+      - restore_cache:
+          key: client-{{ checksum "./client/package.json" }}
+      - run:
+          name: client dependency
+          command: |
+            cd ./client
+            npm install
+      - save_cache:
+          paths:
+            - ~/.m2
+          key: client-{{ checksum "./client/package.json" }}
+      - run:
+          name: client test
+          command: |
+            cd ./client
+            npm test
+      - run:
+          name: client compile
+          command: |
+            cd ./client
+            npm build
+
 workflows:
-  build_test_push:
+  http_gateway:
     jobs:
       - build_and_test_http_gateway
       - aws-ecr/build-and-push-image:
@@ -38,5 +149,88 @@ workflows:
           aws-access-key-id: AWS_ACCESS_KEY_ID
           aws-secret-access-key: AWS_SECRET_ACCESS_KEY
           repo: ${AWS_RESOURCE_NAME_PREFIX}
-          tag: "${CIRCLE_SHA1}"
+          tag: "http_gateway_${CIRCLE_SHA1}"
           path: ./http_gateway
+
+  helper_api:
+    jobs:
+      - build_and_test_helper_api
+      - aws-ecr/build-and-push-image:
+          requires:
+              - build_and_test_helper_api
+          region: AWS_DEFAULT_REGION
+          account-url: AWS_ACCOUNT_URL
+          aws-access-key-id: AWS_ACCESS_KEY_ID
+          aws-secret-access-key: AWS_SECRET_ACCESS_KEY
+          repo: ${AWS_RESOURCE_NAME_PREFIX}
+          tag: "helper-api_${CIRCLE_SHA1}"
+          path: ./helper-api
+
+  communication:
+    jobs:
+      - build_and_test_communication
+      - aws-ecr/build-and-push-image:
+          requires:
+              - build_and_test_communication
+          region: AWS_DEFAULT_REGION
+          account-url: AWS_ACCOUNT_URL
+          aws-access-key-id: AWS_ACCESS_KEY_ID
+          aws-secret-access-key: AWS_SECRET_ACCESS_KEY
+          repo: ${AWS_RESOURCE_NAME_PREFIX}
+          tag: "communication_${CIRCLE_SHA1}"
+          path: ./communication
+
+  mission:
+    jobs:
+      - build_and_test_mission
+      - aws-ecr/build-and-push-image:
+          requires:
+              - build_and_test_mission
+          region: AWS_DEFAULT_REGION
+          account-url: AWS_ACCOUNT_URL
+          aws-access-key-id: AWS_ACCESS_KEY_ID
+          aws-secret-access-key: AWS_SECRET_ACCESS_KEY
+          repo: ${AWS_RESOURCE_NAME_PREFIX}
+          tag: "mission_${CIRCLE_SHA1}"
+          path: ./mission
+
+  build_and_test_edge:
+    docker:
+      - image: circleci/golang:1.13
+    working_directory: ~/edge
+    steps:
+      - checkout
+      - restore_cache:
+          key: edge-{{ checksum "./edge/go.sum" }}
+      - run:
+          name: edge test
+          command: |
+            cd ./edge
+            go test ./...
+      - run:
+          name: edge build
+          command: |
+            cd ./edge
+            go build ./...
+      - save_cache:
+          key: edge-{{ checksum "./edge/go.sum" }}
+          paths:
+            - /go/pkg/mod
+
+  client:
+    jobs:
+      - build_and_test_client
+      - aws-ecr/build-and-push-image:
+          requires:
+              - build_and_test_client
+          region: AWS_DEFAULT_REGION
+          account-url: AWS_ACCOUNT_URL
+          aws-access-key-id: AWS_ACCESS_KEY_ID
+          aws-secret-access-key: AWS_SECRET_ACCESS_KEY
+          repo: ${AWS_RESOURCE_NAME_PREFIX}
+          tag: "client_${CIRCLE_SHA1}"
+          path: ./client
+
+  edge:
+    jobs:
+      - build_and_test_edge
