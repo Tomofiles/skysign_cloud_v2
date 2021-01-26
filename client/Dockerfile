@@ -18,10 +18,12 @@ COPY public ${APP_HOME}/public/
 
 RUN cp -r /usr/src/cesium/cesium-workshop-master/Source/SampleData/Models/CesiumDrone.gltf ${APP_HOME}/public/
 
-RUN echo REACT_APP_CESIUM_KEY=${CESIUM_KEY} > .env
+RUN mkdir -p /usr/src/env
+RUN echo REACT_APP_CESIUM_KEY=${CESIUM_KEY} > /usr/src/env/.env
+RUN cat /usr/src/env/.env
 
 COPY craco.config.js ${APP_HOME}/
-COPY .env ${APP_HOME}/
+COPY /usr/src/env/.env ${APP_HOME}/
 
 RUN npm run build
 
