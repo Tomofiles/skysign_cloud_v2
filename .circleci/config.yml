@@ -160,8 +160,9 @@ jobs:
           paths:
             - /go/pkg/mod
 
-commands:
   build_and_push_http_gateway:
+    docker:
+      - image: cimg/base:2021.01
     steps:
       - aws-ecr/build-and-push-image:
           region: AWS_DEFAULT_REGION
