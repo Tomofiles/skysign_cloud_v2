@@ -4,6 +4,12 @@ orbs:
   aws-ecr: circleci/aws-ecr@6.15.2
   slack: circleci/slack@4.2.0
 
+slack-fail-post-step: &slack-fail-post-step
+  post-steps:
+    - slack/status:
+          webhook: "${SLACK_WEBHOOK}"
+          fail_only: true
+
 jobs:
   build_and_test_http_gateway:
     docker:
@@ -274,32 +280,30 @@ jobs:
       - image: "cimg/base:stable"
     steps:
       - slack/status:
-          success_message: ":circleci-pass: $CIRCLE_BRANCH のデプロイが完了しました\n:github_octocat: User：$CIRCLE_USERNAME"
-          failure_message: ":circleci-fail: $CIRCLE_BRANCH のデプロイが失敗しました\n:github_octocat: User：$CIRCLE_USERNAME"
           webhook: "${SLACK_WEBHOOK}"
 
 workflows:
   skysign-cicd-workflow:
     jobs:
-      - build_and_test_http_gateway
-      - build_and_test_helper_api
-      - build_and_test_communication
-      - build_and_test_mission
-      - build_and_test_client
-      - build_and_test_edge
-      - build_and_push_http_gateway:
+      - build_and_test_http_gateway: *slack-fail-post-step
+      - build_and_test_helper_api: *slack-fail-post-step
+      - build_and_test_communication: *slack-fail-post-step
+      - build_and_test_mission: *slack-fail-post-step
+      - build_and_test_client: *slack-fail-post-step
+      - build_and_test_edge: *slack-fail-post-step
+      - build_and_push_http_gateway: *slack-fail-post-step
           requires:
               - build_and_test_http_gateway
-      - build_and_push_helper_api:
+      - build_and_push_helper_api: *slack-fail-post-step
           requires:
               - build_and_test_helper_api
-      - build_and_push_communication:
+      - build_and_push_communication: *slack-fail-post-step
           requires:
               - build_and_test_communication
-      - build_and_push_mission:
+      - build_and_push_mission: *slack-fail-post-step
           requires:
               - build_and_test_mission
-      - build_and_push_client:
+      - build_and_push_client: *slack-fail-post-step
           requires:
               - build_and_test_client
       - notify-slack:
