@@ -172,20 +172,10 @@ jobs:
           tag: "http_gateway_${CIRCLE_SHA1}"
           path: ./http_gateway
 
-workflows:
-  http_gateway:
-    jobs:
-      - build_and_test_http_gateway
-      - build_and_push_http_gateway:
-          requires:
-              - build_and_test_http_gateway
-
-  helper_api:
-    jobs:
-      - build_and_test_helper_api
+  build_and_push_helper_api:
+    executor: aws-ecr/default
+    steps:
       - aws-ecr/build-and-push-image:
-          requires:
-              - build_and_test_helper_api
           region: AWS_DEFAULT_REGION
           account-url: AWS_ACCOUNT_URL
           aws-access-key-id: AWS_ACCESS_KEY_ID
@@ -194,12 +184,10 @@ workflows:
           tag: "helper-api_${CIRCLE_SHA1}"
           path: ./helper-api
 
-  communication:
-    jobs:
-      - build_and_test_communication
+  build_and_push_communication:
+    executor: aws-ecr/default
+    steps:
       - aws-ecr/build-and-push-image:
-          requires:
-              - build_and_test_communication
           region: AWS_DEFAULT_REGION
           account-url: AWS_ACCOUNT_URL
           aws-access-key-id: AWS_ACCESS_KEY_ID
@@ -208,12 +196,10 @@ workflows:
           tag: "communication_${CIRCLE_SHA1}"
           path: ./communication
 
-  mission:
-    jobs:
-      - build_and_test_mission
+  build_and_push_mission:
+    executor: aws-ecr/default
+    steps:
       - aws-ecr/build-and-push-image:
-          requires:
-              - build_and_test_mission
           region: AWS_DEFAULT_REGION
           account-url: AWS_ACCOUNT_URL
           aws-access-key-id: AWS_ACCESS_KEY_ID
@@ -222,12 +208,10 @@ workflows:
           tag: "mission_${CIRCLE_SHA1}"
           path: ./mission
 
-  client:
-    jobs:
-      - build_and_test_client
+  build_and_push_client:
+    executor: aws-ecr/default
+    steps:
       - aws-ecr/build-and-push-image:
-          requires:
-              - build_and_test_client
           region: AWS_DEFAULT_REGION
           account-url: AWS_ACCOUNT_URL
           aws-access-key-id: AWS_ACCESS_KEY_ID
@@ -237,6 +221,27 @@ workflows:
           path: ./client
           extra-build-args: "--build-arg CESIUM_KEY=${CESIUM_KEY}"
 
-  edge:
+workflows:
+  skysign-cicd-workflow:
     jobs:
+      - build_and_test_http_gateway
+      - build_and_test_helper_api
+      - build_and_test_communication
+      - build_and_test_mission
+      - build_and_test_client
       - build_and_test_edge
+      - build_and_push_http_gateway:
+          requires:
+              - build_and_test_http_gateway
+      - build_and_push_helper_api:
+          requires:
+              - build_and_test_helper_api
+      - build_and_push_communication:
+          requires:
+              - build_and_test_communication
+      - build_and_push_mission:
+          requires:
+              - build_and_test_mission
+      - build_and_push_client:
+          requires:
+              - build_and_test_client
