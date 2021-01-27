@@ -1,9 +1,19 @@
-version: 2
+version: 2.1
+
+orbs:
+  aws-ecr: circleci/aws-ecr@6.15.2
+  slack: circleci/slack@3.4.2
+
+slack-fail-post-step: &slack-fail-post-step
+  post-steps:
+    - slack/status:
+          webhook: "${SLACK_WEBHOOK}"
+          fail_only: true
+
 jobs:
   build_and_test_http_gateway:
     docker:
       - image: circleci/golang:1.13
-    working_directory: ~/http_gateway
     steps:
       - checkout
       - restore_cache:
@@ -26,7 +36,6 @@ jobs:
   build_and_test_helper_api:
     docker:
       - image: circleci/golang:1.13
-    working_directory: ~/helper-api
     steps:
       - checkout
       - restore_cache:
@@ -158,59 +167,66 @@ jobs:
           paths:
             - /go/pkg/mod
 
-  containerize_and_push:
-    docker:
-      - image: google/cloud-sdk
+  build_and_push_http_gateway:
+    executor: aws-ecr/default
     steps:
-      - checkout
-      - run: 
-          name: Setup Google Cloud SDK
-          command: |
-            apt-get install -qq -y gettext
-            echo ${GCLOUD_SERVICE_KEY} > ${HOME}/gcloud-service-key.json
-            gcloud auth activate-service-account --key-file=${HOME}/gcloud-service-key.json
-      - setup_remote_docker
-      - run: 
-          name: http_gateway Docker build and push
-          command: |
-            cd ./http_gateway
-            docker build -t http_gateway .
-            docker tag http_gateway gcr.io/${GOOGLE_PROJECT_ID}/http_gateway:${CIRCLE_SHA1}
-            gcloud auth print-access-token | docker login -u oauth2accesstoken --password-stdin https://gcr.io
-            docker push gcr.io/${GOOGLE_PROJECT_ID}/http_gateway:${CIRCLE_SHA1}
-      - run: 
-          name: helper-api Docker build and push
-          command: |
-            cd ./helper-api
-            docker build -t helper-api .
-            docker tag helper-api gcr.io/${GOOGLE_PROJECT_ID}/helper-api:${CIRCLE_SHA1}
-            gcloud auth print-access-token | docker login -u oauth2accesstoken --password-stdin https://gcr.io
-            docker push gcr.io/${GOOGLE_PROJECT_ID}/helper-api:${CIRCLE_SHA1}
-      - run: 
-          name: communication Docker build and push
-          command: |
-            cd ./communication
-            docker build -t communication .
-            docker tag communication gcr.io/${GOOGLE_PROJECT_ID}/communication:${CIRCLE_SHA1}
-            gcloud auth print-access-token | docker login -u oauth2accesstoken --password-stdin https://gcr.io
-            docker push gcr.io/${GOOGLE_PROJECT_ID}/communication:${CIRCLE_SHA1}
-      - run: 
-          name: mission Docker build and push
-          command: |
-            cd ./mission
-            docker build -t mission .
-            docker tag mission gcr.io/${GOOGLE_PROJECT_ID}/mission:${CIRCLE_SHA1}
-            gcloud auth print-access-token | docker login -u oauth2accesstoken --password-stdin https://gcr.io
-            docker push gcr.io/${GOOGLE_PROJECT_ID}/mission:${CIRCLE_SHA1}
-      - run: 
-          name: client Docker build and push
-          command: |
-            cd ./client
-            echo REACT_APP_CESIUM_KEY=${CESIUM_KEY} > ./.env
-            docker build -t client .
-            docker tag client gcr.io/${GOOGLE_PROJECT_ID}/client:${CIRCLE_SHA1}
-            gcloud auth print-access-token | docker login -u oauth2accesstoken --password-stdin https://gcr.io
-            docker push gcr.io/${GOOGLE_PROJECT_ID}/client:${CIRCLE_SHA1}
+      - aws-ecr/build-and-push-image:
+          region: AWS_DEFAULT_REGION
+          account-url: AWS_ACCOUNT_URL
+          aws-access-key-id: AWS_ACCESS_KEY_ID
+          aws-secret-access-key: AWS_SECRET_ACCESS_KEY
+          repo: ${AWS_RESOURCE_NAME_PREFIX}
+          tag: "http_gateway_${CIRCLE_SHA1}"
+          path: ./http_gateway
+
+  build_and_push_helper_api:
+    executor: aws-ecr/default
+    steps:
+      - aws-ecr/build-and-push-image:
+          region: AWS_DEFAULT_REGION
+          account-url: AWS_ACCOUNT_URL
+          aws-access-key-id: AWS_ACCESS_KEY_ID
+          aws-secret-access-key: AWS_SECRET_ACCESS_KEY
+          repo: ${AWS_RESOURCE_NAME_PREFIX}
+          tag: "helper-api_${CIRCLE_SHA1}"
+          path: ./helper-api
+
+  build_and_push_communication:
+    executor: aws-ecr/default
+    steps:
+      - aws-ecr/build-and-push-image:
+          region: AWS_DEFAULT_REGION
+          account-url: AWS_ACCOUNT_URL
+          aws-access-key-id: AWS_ACCESS_KEY_ID
+          aws-secret-access-key: AWS_SECRET_ACCESS_KEY
+          repo: ${AWS_RESOURCE_NAME_PREFIX}
+          tag: "communication_${CIRCLE_SHA1}"
+          path: ./communication
+
+  build_and_push_mission:
+    executor: aws-ecr/default
+    steps:
+      - aws-ecr/build-and-push-image:
+          region: AWS_DEFAULT_REGION
+          account-url: AWS_ACCOUNT_URL
+          aws-access-key-id: AWS_ACCESS_KEY_ID
+          aws-secret-access-key: AWS_SECRET_ACCESS_KEY
+          repo: ${AWS_RESOURCE_NAME_PREFIX}
+          tag: "mission_${CIRCLE_SHA1}"
+          path: ./mission
+
+  build_and_push_client:
+    executor: aws-ecr/default
+    steps:
+      - aws-ecr/build-and-push-image:
+          region: AWS_DEFAULT_REGION
+          account-url: AWS_ACCOUNT_URL
+          aws-access-key-id: AWS_ACCESS_KEY_ID
+          aws-secret-access-key: AWS_SECRET_ACCESS_KEY
+          repo: ${AWS_RESOURCE_NAME_PREFIX}
+          tag: "client_${CIRCLE_SHA1}"
+          path: ./client
+          extra-build-args: "--build-arg CESIUM_KEY=${CESIUM_KEY}"
 
   create_pull_request:
     docker:
@@ -259,27 +275,52 @@ jobs:
             git push --set-upstream origin release-${CIRCLE_SHA1}
             hub pull-request -F .github/PULL_REQUEST_TEMPLATE.md -m "[image update] skysign ${CIRCLE_SHA1}"
 
+  notify-slack:
+    docker:
+      - image: "cimg/base:stable"
+    steps:
+      - slack/status:
+          webhook: "${SLACK_WEBHOOK}"
+
 workflows:
-  version: 2
-  build_test_push:
+  skysign-cicd-workflow:
     jobs:
-      - build_and_test_http_gateway
-      - build_and_test_helper_api
-      - build_and_test_communication
-      - build_and_test_mission
-      - build_and_test_client
-      - build_and_test_edge
-      - containerize_and_push:
+      - build_and_test_http_gateway: *slack-fail-post-step
+      - build_and_test_helper_api: *slack-fail-post-step
+      - build_and_test_communication: *slack-fail-post-step
+      - build_and_test_mission: *slack-fail-post-step
+      - build_and_test_client: *slack-fail-post-step
+      - build_and_test_edge: *slack-fail-post-step
+      - build_and_push_http_gateway:
           requires:
             - build_and_test_http_gateway
+          <<: *slack-fail-post-step
+      - build_and_push_helper_api:
+          requires:
             - build_and_test_helper_api
+          <<: *slack-fail-post-step
+      - build_and_push_communication:
+          requires:
             - build_and_test_communication
+          <<: *slack-fail-post-step
+      - build_and_push_mission:
+          requires:
             - build_and_test_mission
+          <<: *slack-fail-post-step
+      - build_and_push_client:
+          requires:
             - build_and_test_client
-            - build_and_test_edge
+          <<: *slack-fail-post-step
+      - notify-slack:
+          requires:
+            - build_and_push_http_gateway
+            - build_and_push_helper_api
+            - build_and_push_communication
+            - build_and_push_mission
+            - build_and_push_client
       - create_pull_request:
           requires:
-            - containerize_and_push
+            - notify-slack
           filters:
             branches:
               only: master

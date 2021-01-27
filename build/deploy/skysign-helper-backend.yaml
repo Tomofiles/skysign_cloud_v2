@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: skysign-helper-backend
-        image: gcr.io/${GOOGLE_PROJECT_ID}/helper-api:${CIRCLE_SHA1}
+        image: ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com/skysign-cloud-v2:helper-api_${CIRCLE_SHA1}
         command: ["/app/helper-user-api"]
         ports:
         - containerPort: 8888
