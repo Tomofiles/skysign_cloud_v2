@@ -2,6 +2,7 @@ version: 2.1
 
 orbs:
   aws-ecr: circleci/aws-ecr@6.15.2
+  slack: circleci/slack@4.2.0
 
 jobs:
   build_and_test_http_gateway:
@@ -221,6 +222,62 @@ jobs:
           path: ./client
           extra-build-args: "--build-arg CESIUM_KEY=${CESIUM_KEY}"
 
+  create_pull_request:
+    docker:
+      - image: circleci/python:3.7.4-stretch
+    steps:
+      - checkout
+      - run:
+          name: install hub
+          command: |
+            curl -sSLf https://github.com/github/hub/releases/download/v2.8.3/hub-linux-amd64-2.8.3.tgz | \
+            tar zxf - --strip-components=1 -C /tmp/ && \
+            sudo mv /tmp/bin/hub /usr/local/bin/hub
+            hub --version
+      - run:
+          name: install envsubst
+          command: |
+            sudo apt-get install -qq -y gettext
+      - run:
+          name: git clone commit push create pull request
+          command: |
+            git config --global user.name tomofiles-circleci
+            git config --global user.email tomofiles-circleci@email.com
+            git clone git@github.com:Tomofiles/${SKYSIGN_CONFIG_REPO}.git
+            cd ${SKYSIGN_CONFIG_REPO}/
+            git checkout -b release-${CIRCLE_SHA1}
+            rm -f manifest/*
+            envsubst < ../build/deploy/skysign-client.yaml > manifest/skysign-client.yaml
+            envsubst < ../build/deploy/skysign-client-backend.yaml > manifest/skysign-client-backend.yaml
+            envsubst < ../build/deploy/skysign-communication.yaml > manifest/skysign-communication.yaml
+            envsubst < ../build/deploy/skysign-communication-backend.yaml > manifest/skysign-communication-backend.yaml
+            envsubst < ../build/deploy/skysign-communication-gateway.yaml > manifest/skysign-communication-gateway.yaml
+            envsubst < ../build/deploy/skysign-communication-gateway-backend.yaml > manifest/skysign-communication-gateway-backend.yaml
+            envsubst < ../build/deploy/skysign-endpoint.yaml > manifest/skysign-endpoint.yaml
+            envsubst < ../build/deploy/skysign-helper.yaml > manifest/skysign-helper.yaml
+            envsubst < ../build/deploy/skysign-helper-backend.yaml > manifest/skysign-helper-backend.yaml
+            envsubst < ../build/deploy/skysign-helper-gateway.yaml > manifest/skysign-helper-gateway.yaml
+            envsubst < ../build/deploy/skysign-helper-gateway-backend.yaml > manifest/skysign-helper-gateway-backend.yaml
+            envsubst < ../build/deploy/skysign-mission.yaml > manifest/skysign-mission.yaml
+            envsubst < ../build/deploy/skysign-mission-backend.yaml > manifest/skysign-mission-backend.yaml
+            envsubst < ../build/deploy/skysign-mission-gateway.yaml > manifest/skysign-mission-gateway.yaml
+            envsubst < ../build/deploy/skysign-mission-gateway-backend.yaml > manifest/skysign-mission-gateway-backend.yaml
+            envsubst < ../build/deploy/skysign-vehicle-gateway.yaml > manifest/skysign-vehicle-gateway.yaml
+            envsubst < ../build/deploy/skysign-vehicle-gateway-backend.yaml > manifest/skysign-vehicle-gateway-backend.yaml
+            git add .
+            git commit -m "release-${CIRCLE_SHA1}"
+            git push --set-upstream origin release-${CIRCLE_SHA1}
+            hub pull-request -F .github/PULL_REQUEST_TEMPLATE.md -m "[image update] skysign ${CIRCLE_SHA1}"
+
+  notify-slack:
+    docker:
+      - image: "cimg/base:stable"
+    steps:
+      - slack/status:
+          success_message: ":circleci-pass: $CIRCLE_BRANCH のデプロイが完了しました\n:github_octocat: User：$CIRCLE_USERNAME"
+          failure_message: ":circleci-fail: $CIRCLE_BRANCH のデプロイが失敗しました\n:github_octocat: User：$CIRCLE_USERNAME"
+          webhook: "${SLACK_WEBHOOK}"
+
 workflows:
   skysign-cicd-workflow:
     jobs:
@@ -245,3 +302,16 @@ workflows:
       - build_and_push_client:
           requires:
               - build_and_test_client
+      - notify-slack:
+          requires:
+            - build_and_push_http_gateway
+            - build_and_push_helper_api
+            - build_and_push_communication
+            - build_and_push_mission
+            - build_and_push_client
+      - create_pull_request:
+          requires:
+            - notify-slack
+          filters:
+            branches:
+              only: master
