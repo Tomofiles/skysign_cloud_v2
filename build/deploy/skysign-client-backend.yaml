@@ -16,6 +16,6 @@ spec:
     spec:
       containers:
       - name: skysign-client-backend
-        image: gcr.io/${GOOGLE_PROJECT_ID}/client:${CIRCLE_SHA1}
+        image: ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com/skysign-cloud-v2:client_${CIRCLE_SHA1}
         ports:
         - containerPort: 5000
