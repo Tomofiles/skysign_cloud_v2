@@ -3,29 +3,31 @@ kind: Ingress
 metadata:
   name: skysign-endpoint
   annotations:
-    kubernetes.io/ingress.class: nginx
-    nginx.ingress.kubernetes.io/ssl-redirect: "false"
+    kubernetes.io/ingress.class: alb
+    alb.ingress.kubernetes.io/scheme: internet-facing
+    alb.ingress.kubernetes.io/target-type: ip
+    alb.ingress.kubernetes.io/subnets: subnet-0ae1df469fcc5d6d3,subnet-01f478c4b47bf4e25
 spec:
   rules:
   - http:
       paths:
-      - path: /api/v1/vehicles
+      - path: /api/v1/vehicles*
         backend:
           serviceName: skysign-vehicle-gateway
           servicePort: 6000
-      - path: /api/v1/missions
+      - path: /api/v1/missions*
         backend:
           serviceName: skysign-mission-gateway
           servicePort: 6000
-      - path: /api/v1/communications
+      - path: /api/v1/communications*
         backend:
           serviceName: skysign-communication-gateway
           servicePort: 6000
-      - path: /api/v1/helper
+      - path: /api/v1/helper*
         backend:
           serviceName: skysign-helper-gateway
           servicePort: 6000
-      - path: /
+      - path: /*
         backend:
           serviceName: skysign-client
           servicePort: 5000
