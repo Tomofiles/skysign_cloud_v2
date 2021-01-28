@@ -6,7 +6,9 @@ metadata:
     kubernetes.io/ingress.class: alb
     alb.ingress.kubernetes.io/scheme: internet-facing
     alb.ingress.kubernetes.io/target-type: ip
-    alb.ingress.kubernetes.io/subnets: subnet-0ae1df469fcc5d6d3,subnet-01f478c4b47bf4e25
+    alb.ingress.kubernetes.io/subnets: ${AWS_ALB_SUBNETS}
+    alb.ingress.kubernetes.io/listen-ports: '[{"HTTPS": 443}]'
+    alb.ingress.kubernetes.io/certificate-arn: ${AWS_ALB_CERTIFICATE_ARN}
 spec:
   rules:
   - http:
