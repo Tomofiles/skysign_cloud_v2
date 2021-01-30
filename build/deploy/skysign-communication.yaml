@@ -5,6 +5,7 @@ metadata:
   labels:
     run: skysign-communication
 spec:
+  clusterIP: None
   ports:
   - port: 5001
     protocol: TCP
