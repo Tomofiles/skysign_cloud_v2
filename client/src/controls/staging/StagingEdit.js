@@ -60,7 +60,7 @@ const StagingEdit = (props) => {
     <div>
       <form onSubmit={handleSubmit(onClickStaging)}>
         <ExpansionPanelDetails>
-          <Grid container className={props.classes.editVehicleInput}>
+          <Grid container className={props.classes.textLabel}>
             <Grid item xs={12}>
               <Button onClick={onClickReturn}>
                 <ChevronLeftIcon style={{ color: grey[50] }} />
@@ -71,7 +71,7 @@ const StagingEdit = (props) => {
             </Grid>
             <Grid item xs={12}>
               <Box  p={1} m={1} borderRadius={7} >
-                <Grid container className={props.classes.editVehicleInput}>
+                <Grid container className={props.classes.textLabel}>
                   <Grid item xs={12}>
                     <Typography style={{fontSize: "12px"}}>Name</Typography>
                   </Grid>
@@ -82,7 +82,7 @@ const StagingEdit = (props) => {
               </Box>
             </Grid>
             <Grid item xs={12}>
-              <Box className={props.classes.editVehicleInputText}
+              <Box className={props.classes.textInput}
                   p={1} m={1} borderRadius={7} >
                 <FormControl fullWidth>
                   <InputLabel id="mission-label">Mission</InputLabel>
@@ -106,12 +106,12 @@ const StagingEdit = (props) => {
         </ExpansionPanelDetails>
         <ExpansionPanelActions >
           <Button
-              className={props.classes.editVehicleButton}
+              className={props.classes.funcButton}
               type="submit" >
             Staging
           </Button>
           <Button
-              className={props.classes.editVehicleButton}
+              className={props.classes.funcButton}
               onClick={onClickCancel} >
             Cancel
           </Button>

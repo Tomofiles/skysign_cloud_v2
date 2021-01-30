@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useGlobal } from 'reactn';
+import React, { useState, useEffect, useContext } from 'react';
 
 import {
   Typography,
@@ -14,37 +14,37 @@ import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import { grey } from '@material-ui/core/colors';
 
 import { getMission, updateMission, deleteMission } from './MissionUtils'
-import { Mission } from './MissionHelper';
 import WaypointItem from './WaypointItem';
-import { EDIT_MODE } from '../../App';
+import { AppContext } from '../../context/Context';
 
 const MissionsEdit = (props) => {
-  const [ mission, setMission ] = useGlobal("editMission");
-  const setEditMode = useGlobal("editMode")[1];
+  const { editMission, dispatchEditMission } = useContext(AppContext);
+  const { dispatchEditMode } = useContext(AppContext);
   const [ missionName, setMissionName ] = useState("");
 
   useEffect(() => {
-    setMission(new Mission());
     getMission(props.id)
       .then(data => {
         setMissionName(data.name);
-        setEditMode(EDIT_MODE.MISSION);
-        let newMission = Object.assign(Object.create(Mission.prototype), data);
-        setMission(newMission);
+        dispatchEditMode({ type: 'MISSION' });
+        dispatchEditMission({
+          type: 'OPEN',
+          mission: data,
+        });
       })
-  }, [ props.id, setMission, setMissionName, setEditMode ])
+  }, [ props.id, setMissionName, dispatchEditMode, dispatchEditMission ])
 
   const onClickCancel = () => {
-    setEditMode(EDIT_MODE.NONE);
-    setMission(new Mission());
+    dispatchEditMode({ type: 'NONE' });
+    dispatchEditMission({ type: "CLEAR"});
     props.openDetail(props.id);
   }
 
   const onClickSave = () => {
-    updateMission(props.id, mission)
+    updateMission(props.id, editMission)
       .then(ret => {
-        setEditMode(EDIT_MODE.NONE);
-        setMission(new Mission());
+        dispatchEditMode({ type: 'NONE' });
+        dispatchEditMission({ type: "CLEAR"});
         props.openList();
       });
   }
@@ -52,52 +52,59 @@ const MissionsEdit = (props) => {
   const onClickDelete = () => {
     deleteMission(props.id)
       .then(data => {
-        setEditMode(EDIT_MODE.NONE);
-        setMission(new Mission());
+        dispatchEditMode({ type: 'NONE' });
+        dispatchEditMission({ type: "CLEAR"});
         props.openList();
       })
   }
 
   const onClickReturn = () => {
-    setEditMode(EDIT_MODE.NONE);
-    setMission(new Mission());
+    dispatchEditMode({ type: 'NONE' });
+    dispatchEditMission({ type: "CLEAR"});
     props.openList();
   }
 
   const changeName = e => {
     setMissionName(e.target.value);
-
-    let newMission = Object.assign(Object.create(Mission.prototype), mission);
-    newMission.nameMission(e.target.value);
-
-    setMission(newMission);
+    dispatchEditMission({
+      type: 'CHANGE_NAME',
+      name: e.target.value,
+    });
   }
 
   const changeRelativeHeight = async (index, height) => {
-    let newMission = Object.assign(Object.create(Mission.prototype), mission);
-    await newMission.changeRelativeHeight(index, height);
-
-    setMission(newMission);
+    dispatchEditMission({
+      type: 'CHANGE_RELATIVE_HEIGHT',
+      index: index,
+      height: height,
+    });
   }
 
   const changeSpeed = async (index, speed) => {
-    let newMission = Object.assign(Object.create(Mission.prototype), mission);
-    await newMission.changeSpeed(index, speed);
-
-    setMission(newMission);
+    dispatchEditMission({
+      type: 'CHANGE_SPEED',
+      index: index,
+      speed: speed,
+    });
   }
 
   const removeWaypoint = index => {
-    let newMission = Object.assign(Object.create(Mission.prototype), mission);
-    newMission.removeWaypoint(index);
-
-    setMission(newMission);
+    if (editMission.items.length === 1) {
+      dispatchEditMission({
+        type: 'CHANGE_TAKEOFF_POINT_GROUND_HEIGHT',
+        height: undefined,
+      });
+    }
+    dispatchEditMission({
+      type: 'REMOVE_WAYPOINT',
+      index: index,
+    });
   }
 
   return (
     <div>
       <ExpansionPanelDetails>
-        <Grid container className={props.classes.editVehicleInput}>
+        <Grid container className={props.classes.textLabel}>
           <Grid item xs={12}>
             <Button onClick={onClickReturn}>
               <ChevronLeftIcon style={{ color: grey[50] }} />
@@ -107,7 +114,7 @@ const MissionsEdit = (props) => {
             <Typography>Edit Mission</Typography>
           </Grid>
           <Grid item xs={12}>
-            <Box className={props.classes.editVehicleInputText}
+            <Box className={props.classes.textInput}
                 p={1} m={1} borderRadius={7} >
               <TextField
                 label="Name"
@@ -119,16 +126,16 @@ const MissionsEdit = (props) => {
           </Grid>
           <Grid item xs={12}>
             <Box  p={1} m={1} borderRadius={7} >
-              <Grid container className={props.classes.editVehicleInput}>
+              <Grid container className={props.classes.textLabel}>
                 <Grid item xs={12}>
                   <Typography style={{fontSize: "12px"}}>Takeoff Ground Height</Typography>
                 </Grid>
                 <Grid item xs={12}>
                   <Typography>
-                    {mission.takeoffPointGroundHeight === undefined ?
+                    {editMission.takeoffPointGroundHeight === undefined ?
                       "-"
                     :
-                      mission.takeoffPointGroundHeight} m
+                      editMission.takeoffPointGroundHeight} m
                     </Typography>
                 </Grid>
               </Grid>
@@ -139,11 +146,11 @@ const MissionsEdit = (props) => {
           </Grid>
           <Grid item xs={12}>
             <List
-              className={props.classes.myVehicleList} >
-              {mission.items.length === 0 &&
+              className={props.classes.missionList} >
+              {editMission.items.length === 0 &&
                 <Typography>No Waypoints</Typography>
               }
-              {mission.items.map((waypoint, index) => (
+              {editMission.items.map((waypoint, index) => (
                 <WaypointItem
                   key={index}
                   classes={props.classes}
@@ -160,17 +167,17 @@ const MissionsEdit = (props) => {
       </ExpansionPanelDetails>
       <ExpansionPanelActions >
         <Button
-            className={props.classes.editVehicleButton}
+            className={props.classes.funcButton}
             onClick={onClickCancel}>
           Cancel
         </Button>
         <Button 
-            className={props.classes.editVehicleButton}
+            className={props.classes.funcButton}
             onClick={onClickDelete}>
           Delete
         </Button>
         <Button
-            className={props.classes.editVehicleButton}
+            className={props.classes.funcButton}
             onClick={onClickSave}>
           Save
         </Button>

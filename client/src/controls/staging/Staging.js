@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useGlobal } from 'reactn';
+import React, { useState, useEffect, useContext } from 'react';
 
 import {
   Typography,
@@ -13,6 +13,7 @@ import StagingEdit from './StagingEdit';
 import { getCommunications, control, uncontrol, staging as stagingApi, cancel as cancelApi } from './StagingUtils'
 import { getVehicle } from '../../assets/vehicles/VehicleUtils'
 import { getMission } from '../../plans/missions/MissionUtils'
+import { AppContext } from '../../context/Context';
 
 const STAGING_MODE = Object.freeze({"EDIT":1, "LIST":2});
 
@@ -30,7 +31,7 @@ const Staging = (props) => {
   const [ selected, setSelected ] = useState(undefined);
   const [ refresh, setRefresh ] = useState({});
   const [ mode, setMode ] = useState(STAGING_MODE.LIST);
-  const [ rows, setRows ] = useGlobal("stagingRows");
+  const { stagingRows, dispatchStagingRows } = useContext(AppContext);
 
   useEffect(() => {
     if (props.open) {
@@ -42,10 +43,13 @@ const Staging = (props) => {
             }
             communication.vehicleName = await getVehicleName(communication.vehicleId);
           }
-          setRows(data.communications);
+          dispatchStagingRows({
+            type: "ROWS",
+            rows: data.communications,
+          });
         })
     }
-  }, [ props.open, refresh, setRows ])
+  }, [ props.open, refresh, dispatchStagingRows ])
 
   const changeControl = (id, isControlled) => {
     if (isControlled) {
@@ -70,7 +74,7 @@ const Staging = (props) => {
   }
 
   const selectRow = id => {
-    const selectedRow = rows.filter(row => row.id === id);
+    const selectedRow = stagingRows.filter(row => row.id === id);
     if (selectedRow.length !== 0) {
       setSelected(selectedRow[0]);
     } else {
@@ -96,13 +100,13 @@ const Staging = (props) => {
 
   return (
     <ExpansionPanel
-        className={props.classes.myVehicleRoot}
+        className={props.classes.funcPanel}
         defaultExpanded>
       <ExpansionPanelSummary
         expandIcon={<ExpandMoreIcon style={{ color: grey[50] }} />}
         aria-controls="panel1a-content"
         id="panel1a-header"
-        className={props.classes.myVehicleSummary}
+        className={props.classes.funcPanelSummary}
       >
         <Typography>Staging</Typography>
       </ExpansionPanelSummary>
@@ -121,7 +125,7 @@ const Staging = (props) => {
           openEdit={openEdit}
           selectRow={selectRow}
           changeControl={changeControl}
-          rows={rows} />
+          rows={stagingRows} />
       }
     </ExpansionPanel>
   );

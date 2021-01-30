@@ -33,7 +33,7 @@ const VehiclesNew = (props) => {
     <div>
       <form onSubmit={handleSubmit(onClickSave)}>
         <ExpansionPanelDetails>
-          <Grid container className={props.classes.editVehicleInput}>
+          <Grid container className={props.classes.textLabel}>
             <Grid item xs={12}>
               <Button onClick={onClickReturn}>
                 <ChevronLeftIcon style={{ color: grey[50] }} />
@@ -43,7 +43,7 @@ const VehiclesNew = (props) => {
               <Typography>New Vehicle</Typography>
             </Grid>
             <Grid item xs={12}>
-              <Box className={props.classes.editVehicleInputText}
+              <Box className={props.classes.textInput}
                   p={1} m={1} borderRadius={7} >
                 <TextField
                   label="Name"
@@ -56,7 +56,7 @@ const VehiclesNew = (props) => {
               </Box>
             </Grid>
             <Grid item xs={12}>
-              <Box className={props.classes.editVehicleInputText}
+              <Box className={props.classes.textInput}
                   p={1} m={1} borderRadius={7} >
                 <TextField
                   label="Communication ID"
@@ -72,7 +72,7 @@ const VehiclesNew = (props) => {
         </ExpansionPanelDetails>
         <ExpansionPanelActions >
           <Button
-              className={props.classes.editVehicleButton}
+              className={props.classes.funcButton}
               type="submit" >
             Save
           </Button>

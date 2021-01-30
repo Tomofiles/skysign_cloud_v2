@@ -41,13 +41,13 @@ const Vehicles = (props) => {
 
   return (
     <ExpansionPanel
-        className={props.classes.myVehicleRoot}
+        className={props.classes.funcPanel}
         defaultExpanded>
       <ExpansionPanelSummary
         expandIcon={<ExpandMoreIcon style={{ color: grey[50] }} />}
         aria-controls="panel1a-content"
         id="panel1a-header"
-        className={props.classes.myVehicleSummary}
+        className={props.classes.funcPanelSummary}
       >
         <Typography>My Vehicles</Typography>
       </ExpansionPanelSummary>

@@ -31,13 +31,13 @@ const StagingList = (props) => {
     <div>
       <ExpansionPanelDetails>
         <List 
-          className={props.classes.myVehicleList} >
+          className={props.classes.funcPanelDetails} >
           {props.rows.length === 0 &&
             <Typography>No Staging</Typography>
           }
           {props.rows.map((row) => (
             <Box key={row.id} pb={1} >
-              <ListItem button selected={row.selected} component={Paper} className={props.classes.myVehiclePaper}>
+              <ListItem button selected={row.selected} component={Paper} className={props.classes.funcListItem}>
                 <Grid container>
                   <Grid item xs={10}>
                     <Box onClick={() => onClickRow(row.id)}>

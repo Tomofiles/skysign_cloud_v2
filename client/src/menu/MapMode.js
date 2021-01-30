@@ -1,4 +1,4 @@
-import React, { useState, useGlobal } from 'reactn';
+import React, { useState, useContext } from 'react';
 
 import {
   ListItemIcon,
@@ -13,9 +13,10 @@ import { grey } from '@material-ui/core/colors';
 import Language from '@material-ui/icons/Language';
 import GridOn from '@material-ui/icons/GridOn';
 import { SceneMode } from 'cesium';
+import { AppContext } from '../context/Context';
 
 const MapMode = (props) => {
-  const [ mode, setMode ] = useGlobal("mapMode");
+  const { mapMode, dispatchMapMode } = useContext(AppContext);
   const [ mapOpen, setMapOpen ] = useState(false);
   const [ anchorEl, setAnchorEl ] = useState(null);
 
@@ -24,9 +25,11 @@ const MapMode = (props) => {
     setAnchorEl(e.currentTarget);
   }
 
-  const changeMapMode = sm => {
-    return e => {
-      setMode(sm);
+  const changeMapMode = mapMode => {
+    return () => {
+      dispatchMapMode({
+        type: mapMode,
+      });
       setMapOpen(!mapOpen);
     }
   }
@@ -35,12 +38,12 @@ const MapMode = (props) => {
     <>
       <ListItem button onClick={openMapModeChange}>
         <ListItemIcon >
-          <Box className={props.classes.menuWidthItem}>
+          <Box className={props.classes.menuItem}>
             <Grid container >
               <Grid item xs={12}>
-                {mode === SceneMode.SCENE3D && 
+                {mapMode === SceneMode.SCENE3D && 
                   <Language style={{ color: grey[50] }} fontSize="large" />}
-                {mode === SceneMode.SCENE2D && 
+                {mapMode === SceneMode.SCENE2D && 
                   <GridOn style={{ color: grey[50] }} fontSize="large" />}
               </Grid>
               <Grid item xs={12}>
@@ -50,7 +53,7 @@ const MapMode = (props) => {
             <Popper open={mapOpen} anchorEl={anchorEl} placement="right">
               <Grid container className={props.classes.mapModePopper}>
                 <Grid item xs={6}>
-                  <Button onClick={changeMapMode(SceneMode.SCENE3D)}>
+                  <Button onClick={changeMapMode('SCENE3D')}>
                     <Grid container >
                       <Grid item xs={12}>
                         <Language style={{ color: grey[50] }} fontSize="large" />
@@ -62,7 +65,7 @@ const MapMode = (props) => {
                   </Button>
                 </Grid>
                 <Grid item xs={6}>
-                  <Button onClick={changeMapMode(SceneMode.SCENE2D)}>
+                  <Button onClick={changeMapMode('SCENE2D')}>
                     <Grid container >
                       <Grid item xs={12}>
                         <GridOn style={{ color: grey[50] }} fontSize="large" />

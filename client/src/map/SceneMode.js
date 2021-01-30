@@ -1,12 +1,13 @@
-import React, { useGlobal } from 'reactn';
+import React, { useContext } from 'react';
 import { Scene } from 'resium';
+import { AppContext } from '../context/Context';
 
-const SceneMode = (props) => {
-  const [ mode ] = useGlobal("mapMode");
+const SceneMode = () => {
+  const { mapMode } = useContext(AppContext);
 
   return (
     <Scene
-      mode={mode}
+      mode={mapMode}
       morphTime={0.0}
       morphDuration={0.0} />
   );

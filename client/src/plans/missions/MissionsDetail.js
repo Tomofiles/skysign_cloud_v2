@@ -1,4 +1,4 @@
-import React, { useGlobal, useEffect } from 'reactn';
+import React, { useContext, useEffect } from 'react';
 
 import {
   Typography,
@@ -13,35 +13,36 @@ import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import { grey } from '@material-ui/core/colors';
 
 import { getMission } from './MissionUtils'
-import { Mission } from './MissionHelper';
 import WaypointItem from './WaypointItem';
+import { AppContext } from '../../context/Context';
 
 const MissionsDetail = (props) => {
-  const [ mission, setMission ] = useGlobal("editMission");
+  const { editMission, dispatchEditMission } = useContext(AppContext);
 
   useEffect(() => {
-    setMission(new Mission());
     getMission(props.id)
       .then(data => {
-        let newMission = Object.assign(Object.create(Mission.prototype), data);
-        setMission(newMission);
+        dispatchEditMission({
+          type: 'OPEN',
+          mission: data,
+        });
       })
-  }, [ props.id, setMission ])
+  }, [ props.id, dispatchEditMission ])
 
   const onClickEdit = () => {
-    setMission(new Mission());
+    dispatchEditMission({ type: "CLEAR"});
     props.openEdit(props.id);
   }
 
   const onClickReturn = () => {
-    setMission(new Mission());
+    dispatchEditMission({ type: "CLEAR"});
     props.openList();  
   }
 
   return (
     <div>
       <ExpansionPanelDetails>
-        <Grid container className={props.classes.editVehicleInput}>
+        <Grid container className={props.classes.textLabel}>
           <Grid item xs={12}>
             <Button onClick={onClickReturn}>
               <ChevronLeftIcon style={{ color: grey[50] }} />
@@ -52,24 +53,24 @@ const MissionsDetail = (props) => {
           </Grid>
           <Grid item xs={12}>
             <Box  p={1} m={1} borderRadius={7} >
-              <Grid container className={props.classes.editVehicleInput}>
+              <Grid container className={props.classes.textLabel}>
                 <Grid item xs={12}>
                   <Typography style={{fontSize: "12px"}}>Name</Typography>
                 </Grid>
                 <Grid item xs={12}>
-                  <Typography>{mission.name}</Typography>
+                  <Typography>{editMission.name}</Typography>
                 </Grid>
               </Grid>
             </Box>
           </Grid>
           <Grid item xs={12}>
             <Box  p={1} m={1} borderRadius={7} >
-              <Grid container className={props.classes.editVehicleInput}>
+              <Grid container className={props.classes.textLabel}>
                 <Grid item xs={12}>
                   <Typography style={{fontSize: "12px"}}>Takeoff Ground Height</Typography>
                 </Grid>
                 <Grid item xs={12}>
-                  <Typography>{mission.takeoffPointGroundHeight} m</Typography>
+                  <Typography>{editMission.takeoffPointGroundHeight} m</Typography>
                 </Grid>
               </Grid>
             </Box>
@@ -79,11 +80,11 @@ const MissionsDetail = (props) => {
           </Grid>
           <Grid item xs={12}>
             <List
-              className={props.classes.myVehicleList} >
-              {mission.items.length === 0 &&
+              className={props.classes.missionList} >
+              {editMission.items.length === 0 &&
                 <Typography>No Waypoints</Typography>
               }
-              {mission.items.map((waypoint, index) => (
+              {editMission.items.map((waypoint, index) => (
                 <WaypointItem
                   key={index}
                   classes={props.classes}
@@ -96,7 +97,7 @@ const MissionsDetail = (props) => {
       </ExpansionPanelDetails>
       <ExpansionPanelActions >
         <Button
-            className={props.classes.editVehicleButton}
+            className={props.classes.funcButton}
             onClick={onClickEdit}>
           Edit
         </Button>

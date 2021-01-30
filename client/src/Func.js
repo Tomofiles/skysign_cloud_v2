@@ -11,33 +11,21 @@ const Func = (props) => {
   const [assetsOpen, setAssetsOpen] = useState(false);
 
   const toggleControls = () => {
-    if (plansOpen) {
-      setPlansOpen(false);
-    }
-    if (assetsOpen) {
-      setAssetsOpen(false);
-    }
-    setControlsOpen(!controlsOpen);
+    setControlsOpen(open => !open);
+    setPlansOpen(false);
+    setAssetsOpen(false);
   }
 
-  const toggleMissions = () => {
-    if (assetsOpen) {
-      setAssetsOpen(false);
-    }
-    if (controlsOpen) {
-      setControlsOpen(false);
-    }
-    setPlansOpen(!plansOpen);
+  const togglePlans = () => {
+    setControlsOpen(false);
+    setPlansOpen(open => !open);
+    setAssetsOpen(false);
   }
 
   const toggleAssets = () => {
-    if (plansOpen) {
-      setPlansOpen(false);
-    }
-    if (controlsOpen) {
-      setControlsOpen(false);
-    }
-    setAssetsOpen(!assetsOpen);
+    setControlsOpen(false);
+    setPlansOpen(false);
+    setAssetsOpen(open => !open);
   }
 
   return (
@@ -48,7 +36,7 @@ const Func = (props) => {
         plansOpen={plansOpen}
         assetsOpen={assetsOpen}
         toggleControls={toggleControls}
-        toggleMissions={toggleMissions}
+        togglePlans={togglePlans}
         toggleAssets={toggleAssets} />
       <Controls classes={props.classes} open={controlsOpen} />
       <Plans classes={props.classes} open={plansOpen} />
