@@ -76,20 +76,6 @@ const Menu = (props) => {
             </Grid>
           </ListItemIcon>
         </ListItem>
-        <ListItem button onClick={props.toggleActual}>
-          <ListItemIcon>
-            <Grid container className={props.classes.menuItem} >
-              <Grid item xs={12}>
-                <Badge color="secondary" variant="dot" invisible={!props.actualOpen}>
-                  <Archive style={{ color: grey[50] }} fontSize="large" />
-                </Badge>
-              </Grid>
-              <Grid item xs={12}>
-                <Typography align="center" style={{ color: grey[50], fontSize: "6px" }} >Actual</Typography>
-              </Grid>
-            </Grid>
-          </ListItemIcon>
-        </ListItem>
         <ListItem button onClick={props.toggleAssets}>
           <ListItemIcon>
             <Grid container className={props.classes.menuItem} >
