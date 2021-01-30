@@ -253,23 +253,29 @@ jobs:
             cd ${SKYSIGN_CONFIG_REPO}/
             git checkout -b release-${CIRCLE_SHA1}
             rm -f manifest/*
-            envsubst < ../build/deploy/skysign-client.yaml > manifest/skysign-client.yaml
             envsubst < ../build/deploy/skysign-client-backend.yaml > manifest/skysign-client-backend.yaml
-            envsubst < ../build/deploy/skysign-communication.yaml > manifest/skysign-communication.yaml
+            envsubst < ../build/deploy/skysign-client.yaml > manifest/skysign-client.yaml
+            envsubst < ../build/deploy/skysign-communication-backend-envoy.yaml > manifest/skysign-communication-backend-envoy.yaml
             envsubst < ../build/deploy/skysign-communication-backend.yaml > manifest/skysign-communication-backend.yaml
-            envsubst < ../build/deploy/skysign-communication-gateway.yaml > manifest/skysign-communication-gateway.yaml
+            envsubst < ../build/deploy/skysign-communication-gateway-backend-envoy.yaml > manifest/skysign-communication-gateway-backend-envoy.yaml
             envsubst < ../build/deploy/skysign-communication-gateway-backend.yaml > manifest/skysign-communication-gateway-backend.yaml
+            envsubst < ../build/deploy/skysign-communication-gateway.yaml > manifest/skysign-communication-gateway.yaml
+            envsubst < ../build/deploy/skysign-communication.yaml > manifest/skysign-communication.yaml
+            envsubst < ../build/deploy/skysign-db.yaml > manifest/skysign-db.yaml
             envsubst < ../build/deploy/skysign-endpoint.yaml > manifest/skysign-endpoint.yaml
-            envsubst < ../build/deploy/skysign-helper.yaml > manifest/skysign-helper.yaml
             envsubst < ../build/deploy/skysign-helper-backend.yaml > manifest/skysign-helper-backend.yaml
-            envsubst < ../build/deploy/skysign-helper-gateway.yaml > manifest/skysign-helper-gateway.yaml
             envsubst < ../build/deploy/skysign-helper-gateway-backend.yaml > manifest/skysign-helper-gateway-backend.yaml
-            envsubst < ../build/deploy/skysign-mission.yaml > manifest/skysign-mission.yaml
+            envsubst < ../build/deploy/skysign-helper-gateway.yaml > manifest/skysign-helper-gateway.yaml
+            envsubst < ../build/deploy/skysign-helper.yaml > manifest/skysign-helper.yaml
+            envsubst < ../build/deploy/skysign-mission-backend-envoy.yaml > manifest/skysign-mission-backend-envoy.yaml
             envsubst < ../build/deploy/skysign-mission-backend.yaml > manifest/skysign-mission-backend.yaml
-            envsubst < ../build/deploy/skysign-mission-gateway.yaml > manifest/skysign-mission-gateway.yaml
+            envsubst < ../build/deploy/skysign-mission-gateway-backend-envoy.yaml > manifest/skysign-mission-gateway-backend-envoy.yaml
             envsubst < ../build/deploy/skysign-mission-gateway-backend.yaml > manifest/skysign-mission-gateway-backend.yaml
-            envsubst < ../build/deploy/skysign-vehicle-gateway.yaml > manifest/skysign-vehicle-gateway.yaml
+            envsubst < ../build/deploy/skysign-mission-gateway.yaml > manifest/skysign-mission-gateway.yaml
+            envsubst < ../build/deploy/skysign-mission.yaml > manifest/skysign-mission.yaml
+            envsubst < ../build/deploy/skysign-vehicle-gateway-backend-envoy.yaml > manifest/skysign-vehicle-gateway-backend-envoy.yaml
             envsubst < ../build/deploy/skysign-vehicle-gateway-backend.yaml > manifest/skysign-vehicle-gateway-backend.yaml
+            envsubst < ../build/deploy/skysign-vehicle-gateway.yaml > manifest/skysign-vehicle-gateway.yaml
             git add .
             git commit -m "release-${CIRCLE_SHA1}"
             git push --set-upstream origin release-${CIRCLE_SHA1}

@@ -6,20 +6,36 @@ spec:
   selector:
     matchLabels:
       run: skysign-mission-backend
-  replicas: 1
+  replicas: 2
   template:
     metadata:
       labels:
         run: skysign-mission-backend
     spec:
+      volumes:
+      - name: envoy
+        configMap:
+          name: skysign-mission-backend-envoy
       containers:
+      - name: envoy
+        image: envoyproxy/envoy:v1.17-latest
+        command:
+          - "/usr/local/bin/envoy"
+        args:
+          - "--config-path /etc/envoy/envoy.json"
+          - "--bootstrap-version 2"
+        ports:
+          - containerPort: 15001
+        volumeMounts:
+          - name: envoy
+            mountPath: /etc/envoy
       - name: skysign-mission-backend
         image: ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com/skysign-cloud-v2:mission_${CIRCLE_SHA1}
         command: ["java"]
         args: ["-cp", "app:app/lib/*", "net.tomofiles.skysign.mission.MissionApplication"]
         env:
         - name: db.host
-          value: "${AWS_RDS_DB_HOST}"
+          value: "skysign-db"
         - name: db.username
           value: "${AWS_RDS_USER_NAME}"
         - name: db.password
