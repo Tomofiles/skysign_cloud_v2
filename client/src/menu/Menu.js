@@ -15,6 +15,7 @@ import {
 import { grey } from '@material-ui/core/colors';
 import Flight from '@material-ui/icons/Flight';
 import Send from '@material-ui/icons/Send';
+import Archive from '@material-ui/icons/Archive';
 import Settings from '@material-ui/icons/Settings';
 import Games from '@material-ui/icons/Games';
 import MapMode from './MapMode';
@@ -61,7 +62,7 @@ const Menu = (props) => {
             </Grid>
           </ListItemIcon>
         </ListItem>
-        <ListItem button onClick={props.toggleMissions}>
+        <ListItem button onClick={props.togglePlans}>
           <ListItemIcon>
             <Grid container className={props.classes.menuItem} >
               <Grid item xs={12}>
