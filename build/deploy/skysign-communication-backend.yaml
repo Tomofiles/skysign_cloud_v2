@@ -41,7 +41,7 @@ spec:
         - name: db.password
           value: "${AWS_RDS_PASSWORD}"
         - name: mq.host
-          value: "skysign-mq"
+          value: "${AWS_AMQ_MQ_HOST}"
         - name: mq.port
           value: "${AWS_AMQ_PORT}"
         - name: mq.username
