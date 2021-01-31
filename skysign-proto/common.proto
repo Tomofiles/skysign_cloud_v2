@@ -61,12 +61,3 @@ message Communication {
     string missionId = 3;
     bool isControlled = 4;
 }
-
-message Actual {
-    string id = 1;
-    string vehicleId = 2;
-    string missionId = 3;
-    string startDateTime = 4;
-    string totalTime = 5;
-    string totalDistance = 6;
-}

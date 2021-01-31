@@ -12,8 +12,6 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import net.tomofiles.skysign.communication.domain.vehicle.VehicleId;
-import net.tomofiles.skysign.communication.event.EmptyPublisher;
-import net.tomofiles.skysign.communication.event.Publisher;
 
 @EqualsAndHashCode(of = {"id"})
 @ToString
@@ -41,9 +39,6 @@ public class Communication {
     @Getter(value = AccessLevel.PACKAGE)
     private final List<Command> commands;
 
-    @Setter
-    private Publisher publisher = new EmptyPublisher();
-    
     Communication(CommunicationId id, VehicleId vehicleId, Generator generator) {
         this.id = id;
         this.vehicleId = vehicleId;
@@ -53,7 +48,6 @@ public class Communication {
     }
 
     public void pushTelemetry(TelemetrySnapshot snapshot) {
-        LocalDateTime time = this.generator.newTime();
         this.telemetry = Telemetry.newInstance()
                 .setPosition(
                         snapshot.getLatitude(),
@@ -68,9 +62,6 @@ public class Communication {
                         snapshot.getY(),
                         snapshot.getZ(),
                         snapshot.getW());
-        this.publisher
-                .publish(
-                        new TelemetryUpdatedEvent(this.id, snapshot, time));
     }
 
     public TelemetrySnapshot pullTelemetry() {
@@ -105,15 +96,7 @@ public class Communication {
     }
 
     public void control() {
-        LocalDateTime time = this.generator.newTime();
         this.controlled = true;
-        this.publisher
-                .publish(
-                        new CommunicationControlledEvent(
-                                this.id,
-                                this.vehicleId,
-                                this.missionId,
-                                time));
     }
 
     public void uncontrol() {

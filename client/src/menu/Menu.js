@@ -15,7 +15,6 @@ import {
 import { grey } from '@material-ui/core/colors';
 import Flight from '@material-ui/icons/Flight';
 import Send from '@material-ui/icons/Send';
-import Archive from '@material-ui/icons/Archive';
 import Settings from '@material-ui/icons/Settings';
 import Games from '@material-ui/icons/Games';
 import MapMode from './MapMode';
@@ -62,7 +61,7 @@ const Menu = (props) => {
             </Grid>
           </ListItemIcon>
         </ListItem>
-        <ListItem button onClick={props.togglePlans}>
+        <ListItem button onClick={props.toggleMissions}>
           <ListItemIcon>
             <Grid container className={props.classes.menuItem} >
               <Grid item xs={12}>
@@ -72,20 +71,6 @@ const Menu = (props) => {
               </Grid>
               <Grid item xs={12}>
                 <Typography align="center" style={{ color: grey[50], fontSize: "6px" }} >Plans</Typography>
-              </Grid>
-            </Grid>
-          </ListItemIcon>
-        </ListItem>
-        <ListItem button onClick={props.toggleActual}>
-          <ListItemIcon>
-            <Grid container className={props.classes.menuItem} >
-              <Grid item xs={12}>
-                <Badge color="secondary" variant="dot" invisible={!props.actualOpen}>
-                  <Archive style={{ color: grey[50] }} fontSize="large" />
-                </Badge>
-              </Grid>
-              <Grid item xs={12}>
-                <Typography align="center" style={{ color: grey[50], fontSize: "6px" }} >Actual</Typography>
               </Grid>
             </Grid>
           </ListItemIcon>

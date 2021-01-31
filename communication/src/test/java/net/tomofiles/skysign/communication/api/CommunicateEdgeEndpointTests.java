@@ -50,7 +50,7 @@ public class CommunicateEdgeEndpointTests {
     private static final VehicleId DEFAULT_VEHICLE_ID = new VehicleId(UUID.randomUUID().toString());
     private static final boolean DEFAULT_CONTROLLED = true;
     private static final MissionId DEFAULT_MISSION_ID = new MissionId(UUID.randomUUID().toString());
-    private static final LocalDateTime DEFAULT_TIME = LocalDateTime.of(2020, 1, 1, 0, 0, 0);
+    private static final LocalDateTime DEFAULT_COMMAND_TIME = LocalDateTime.of(2020, 1, 1, 0, 0, 0);
     private static final Supplier<Generator> DEFAULT_GENERATOR = () -> {
         return new Generator(){
             @Override
@@ -59,7 +59,7 @@ public class CommunicateEdgeEndpointTests {
             }
             @Override
             public LocalDateTime newTime() {
-                return DEFAULT_TIME;
+                return DEFAULT_COMMAND_TIME;
             }
         };
     };

@@ -45,9 +45,9 @@ public class CommunicationRepositoryTests {
     private static final CommandId DEFAULT_COMMAND_ID1 = new CommandId(UUID.randomUUID().toString());
     private static final CommandId DEFAULT_COMMAND_ID2 = new CommandId(UUID.randomUUID().toString());
     private static final CommandId DEFAULT_COMMAND_ID3 = new CommandId(UUID.randomUUID().toString());
-    private static final LocalDateTime DEFAULT_TIME1 = LocalDateTime.of(2020, 07, 22, 10, 30, 25);
-    private static final LocalDateTime DEFAULT_TIME2 = LocalDateTime.of(2020, 07, 22, 10, 30, 30);
-    private static final LocalDateTime DEFAULT_TIME3 = LocalDateTime.of(2020, 07, 22, 10, 30, 45);
+    private static final LocalDateTime DEFAULT_COMMAND_TIME1 = LocalDateTime.of(2020, 07, 22, 10, 30, 25);
+    private static final LocalDateTime DEFAULT_COMMAND_TIME2 = LocalDateTime.of(2020, 07, 22, 10, 30, 30);
+    private static final LocalDateTime DEFAULT_COMMAND_TIME3 = LocalDateTime.of(2020, 07, 22, 10, 30, 45);
     private static final Supplier<Generator> DEFAULT_GENERATOR = () -> {
         return new Generator(){
             private List<CommandId> commandIds = new ArrayList<>(Arrays.asList(new CommandId[] {
@@ -56,9 +56,9 @@ public class CommunicationRepositoryTests {
                     DEFAULT_COMMAND_ID3
             }));
             private List<LocalDateTime> times = new ArrayList<>(Arrays.asList(new LocalDateTime[] {
-                    DEFAULT_TIME1,
-                    DEFAULT_TIME2,
-                    DEFAULT_TIME3
+                    DEFAULT_COMMAND_TIME1,
+                    DEFAULT_COMMAND_TIME2,
+                    DEFAULT_COMMAND_TIME3
             }));
             @Override
             public CommandId newCommandId() {
@@ -78,7 +78,7 @@ public class CommunicationRepositoryTests {
             }
             @Override
             public LocalDateTime newTime() {
-                return DEFAULT_TIME1;
+                return DEFAULT_COMMAND_TIME1;
             }
         };
     };
@@ -90,7 +90,7 @@ public class CommunicationRepositoryTests {
             }
             @Override
             public LocalDateTime newTime() {
-                return DEFAULT_TIME2;
+                return DEFAULT_COMMAND_TIME2;
             }
         };
     };
