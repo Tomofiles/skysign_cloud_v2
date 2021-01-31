@@ -1,0 +1,6 @@
+FROM rabbitmq:3.8.5-management-alpine
+
+ENV RABBITMQ_DEFAULT_PASS guest
+ENV RABBITMQ_DEFAULT_USER guest
+
+EXPOSE 5672 15672

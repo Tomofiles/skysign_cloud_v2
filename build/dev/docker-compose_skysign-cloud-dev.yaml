@@ -23,6 +23,16 @@ services:
     ports:
       - 54322:5432
 
+  skysign-mq-for-debugging:
+    container_name: skysign-mq
+    hostname: skysign-mq
+    build:
+      context: ../../skysign-mq
+      dockerfile: Dockerfile
+    ports:
+      - 56721:5672
+      - 15672:15672
+
   skysign-communication-backend-for-debugging:
     container_name: skysign-communication-backend
     hostname: skysign-communication-backend
@@ -31,9 +41,11 @@ services:
       dockerfile: Dockerfile
     environment:
      - db.host=skysign-communication-db
+     - mq.host=skysign-mq
     command: java -cp app:app/lib/* net.tomofiles.skysign.communication.CommunicationApplication
     depends_on:
       - skysign-communication-db-for-debugging
+      - skysign-mq-for-debugging
 
   skysign-mission-backend-for-debugging:
     container_name: skysign-mission-backend
