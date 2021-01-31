@@ -40,5 +40,13 @@ spec:
           value: "${AWS_RDS_USER_NAME}"
         - name: db.password
           value: "${AWS_RDS_PASSWORD}"
+        - name: mq.host
+          value: "skysign-mq"
+        - name: mq.port
+          value: "${AWS_AMQ_PORT}"
+        - name: mq.username
+          value: "${AWS_AMQ_USER_NAME}"
+        - name: mq.password
+          value: "${AWS_AMQ_PASSWORD}"
         ports:
         - containerPort: 5001

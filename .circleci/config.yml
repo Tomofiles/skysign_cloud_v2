@@ -273,6 +273,7 @@ jobs:
             envsubst < ../build/deploy/skysign-mission-gateway-backend.yaml > manifest/skysign-mission-gateway-backend.yaml
             envsubst < ../build/deploy/skysign-mission-gateway.yaml > manifest/skysign-mission-gateway.yaml
             envsubst < ../build/deploy/skysign-mission.yaml > manifest/skysign-mission.yaml
+            envsubst < ../build/deploy/skysign-mq.yaml > manifest/skysign-mq.yaml
             envsubst < ../build/deploy/skysign-vehicle-gateway-backend-envoy.yaml > manifest/skysign-vehicle-gateway-backend-envoy.yaml
             envsubst < ../build/deploy/skysign-vehicle-gateway-backend.yaml > manifest/skysign-vehicle-gateway-backend.yaml
             envsubst < ../build/deploy/skysign-vehicle-gateway.yaml > manifest/skysign-vehicle-gateway.yaml
