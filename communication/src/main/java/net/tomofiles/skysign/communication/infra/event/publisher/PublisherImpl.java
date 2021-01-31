@@ -1,4 +1,4 @@
-package net.tomofiles.skysign.communication.event_publisher;
+package net.tomofiles.skysign.communication.infra.event.publisher;
 
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.ApplicationEventPublisherAware;
