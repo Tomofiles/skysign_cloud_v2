@@ -1,4 +1,4 @@
-package net.tomofiles.skysign.communication.event_listener.dpo;
+package net.tomofiles.skysign.communication.api.dpo;
 
 import lombok.RequiredArgsConstructor;
 import net.tomofiles.skysign.communication.domain.communication.CommunicationId;

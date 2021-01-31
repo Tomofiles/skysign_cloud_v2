@@ -1,4 +1,4 @@
-package net.tomofiles.skysign.communication.event_listener;
+package net.tomofiles.skysign.communication.api;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -21,17 +21,19 @@ import net.tomofiles.skysign.communication.domain.communication.CommunicationRep
 import net.tomofiles.skysign.communication.domain.vehicle.CommunicationIdChangedEvent;
 import net.tomofiles.skysign.communication.domain.vehicle.VehicleId;
 import net.tomofiles.skysign.communication.domain.vehicle.Version;
+import net.tomofiles.skysign.communication.infra.event.listener.proto.CommunicationIdChangedEventPb;
 import net.tomofiles.skysign.communication.service.ManageCommunicationService;
 
 import static net.tomofiles.skysign.communication.domain.communication.CommunicationObjectMother.newNormalCommunication;
 
-public class CommunicationIdChangedEventHandlerTests {
+public class CommunicationEventHandlerTests {
     
     private static final CommunicationId DEFAULT_COMMUNICATION_ID_BEFORE = new CommunicationId(UUID.randomUUID().toString());
     private static final CommunicationId DEFAULT_COMMUNICATION_ID_AFTER = new CommunicationId(UUID.randomUUID().toString());
     private static final VehicleId DEFAULT_VEHICLE_ID = new VehicleId(UUID.randomUUID().toString());
     private static final boolean DEFAULT_CONTROLLED = true;
     private static final Version DEFAULT_VERSION = new Version(UUID.randomUUID().toString());
+    private static final String EXCHANGE_NAME = "exchange_name";
 
     @Mock
     private CommunicationRepository repository;
@@ -39,25 +41,32 @@ public class CommunicationIdChangedEventHandlerTests {
     @InjectMocks
     private ManageCommunicationService service;
 
-    private CommunicationIdChangedEventHandler eventHandler;
+    private CommunicationEventHandler eventHandler;
 
     @BeforeEach
     public void beforeEach() {
         initMocks(this);
 
-        eventHandler = new CommunicationIdChangedEventHandler(service);
+        eventHandler = new CommunicationEventHandler(service);
+        eventHandler.setEXCHANGE_NAME(EXCHANGE_NAME);
     }
 
+    /**
+     * Vehicleが作成されたときにCommunicationIDが変更されたイベントを
+     * 受信した場合の処理を確認する。<br>
+     * 新しくCommunicationのレコードが作成されたことを検証する。
+     */
     @Test
-    public void firstFireCommunicationIdChangedEvent() {
+    public void firstFireCommunicationIdChangedEvent() throws Exception {
         CommunicationIdChangedEvent event = new CommunicationIdChangedEvent(
                 null,
                 DEFAULT_COMMUNICATION_ID_AFTER,
                 DEFAULT_VEHICLE_ID,
                 DEFAULT_VERSION
         );
+        CommunicationIdChangedEventPb eventPb = new CommunicationIdChangedEventPb(event);
 
-        this.eventHandler.processCommunicationIdChangedEvent(event);
+        this.eventHandler.processCommunicationIdChangedEvent(eventPb.getMessage().getBody());
 
         ArgumentCaptor<Communication> commCaptor = ArgumentCaptor.forClass(Communication.class);
         verify(repository, times(1)).save(commCaptor.capture());
@@ -67,8 +76,14 @@ public class CommunicationIdChangedEventHandlerTests {
         assertThat(commCaptor.getValue().getVehicleId()).isEqualTo(DEFAULT_VEHICLE_ID);
     }
 
+    /**
+     * Vehicleが更新されたときにCommunicationIDが変更されたイベントを
+     * 受信した場合の処理を確認する。<br>
+     * 古いCommunicationのレコードが削除されたことを検証する。<r>
+     * 新しくCommunicationのレコードが作成されたことを検証する。
+     */
     @Test
-    public void secondFireCommunicationIdChangedEvent() {
+    public void secondFireCommunicationIdChangedEvent() throws Exception {
         when(repository.getById(DEFAULT_COMMUNICATION_ID_BEFORE))
                 .thenReturn(newNormalCommunication(
                         DEFAULT_COMMUNICATION_ID_BEFORE,
@@ -83,8 +98,9 @@ public class CommunicationIdChangedEventHandlerTests {
                 DEFAULT_VEHICLE_ID,
                 DEFAULT_VERSION
         );
+        CommunicationIdChangedEventPb eventPb = new CommunicationIdChangedEventPb(event);
 
-        this.eventHandler.processCommunicationIdChangedEvent(event);
+        this.eventHandler.processCommunicationIdChangedEvent(eventPb.getMessage().getBody());
 
         ArgumentCaptor<Communication> commCaptor = ArgumentCaptor.forClass(Communication.class);
         verify(repository, times(1)).save(commCaptor.capture());
