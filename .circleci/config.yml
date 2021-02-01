@@ -56,32 +56,16 @@ jobs:
             - /go/pkg/mod
 
   build_and_test_communication:
-    docker:
-      - image: circleci/openjdk:8-jdk-browsers
-    working_directory: ~/communication
+    executor: aws-ecr/default
     steps:
-      - checkout
-      - restore_cache:
-          key: communication-{{ checksum "./communication/pom.xml" }}
-      - run:
-          name: communication dependency
-          command: |
-            cd ./communication
-            mvn dependency:go-offline
-      - save_cache:
-          paths:
-            - ~/.m2
-          key: communication-{{ checksum "./communication/pom.xml" }}
-      - run:
-          name: communication test
-          command: |
-            cd ./communication
-            mvn test
-      - run:
-          name: communication compile
-          command: |
-            cd ./communication
-            mvn compile
+      - aws-ecr/build-image:
+          region: AWS_DEFAULT_REGION
+          account-url: AWS_ACCOUNT_URL
+          aws-access-key-id: AWS_ACCESS_KEY_ID
+          aws-secret-access-key: AWS_SECRET_ACCESS_KEY
+          repo: ${AWS_RESOURCE_NAME_PREFIX}
+          tag: "communication_${CIRCLE_SHA1}"
+          path: ./communication
 
   build_and_test_mission:
     docker:
