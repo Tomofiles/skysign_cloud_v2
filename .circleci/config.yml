@@ -65,6 +65,7 @@ jobs:
           aws-secret-access-key: AWS_SECRET_ACCESS_KEY
           repo: ${AWS_RESOURCE_NAME_PREFIX}
           tag: "communication_${CIRCLE_SHA1}"
+          checkout: true
           path: ./communication
 
   build_and_test_mission:
