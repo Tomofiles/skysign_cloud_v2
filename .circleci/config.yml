@@ -211,6 +211,13 @@ jobs:
       - slack/status:
           webhook: "${SLACK_WEBHOOK}"
 
+  notify-slack-master:
+    docker:
+      - image: "cimg/base:stable"
+    steps:
+      - slack/status:
+          webhook: "${SLACK_WEBHOOK}"
+
 workflows:
   skysign-cicd-workflow:
     jobs:
