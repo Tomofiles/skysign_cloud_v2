@@ -12,48 +12,30 @@ slack-fail-post-step: &slack-fail-post-step
 
 jobs:
   build_and_test_http_gateway:
-    docker:
-      - image: circleci/golang:1.13
+    executor: aws-ecr/default
     steps:
-      - checkout
-      - restore_cache:
-          key: http_gateway-{{ checksum "./http_gateway/go.sum" }}
-      - run:
-          name: http_gateway test
-          command: |
-            cd ./http_gateway
-            go test ./...
-      - run:
-          name: http_gateway build
-          command: |
-            cd ./http_gateway
-            go build ./...
-      - save_cache:
-          key: http_gateway-{{ checksum "./http_gateway/go.sum" }}
-          paths:
-            - /go/pkg/mod
+      - aws-ecr/build-image:
+          region: AWS_DEFAULT_REGION
+          account-url: AWS_ACCOUNT_URL
+          aws-access-key-id: AWS_ACCESS_KEY_ID
+          aws-secret-access-key: AWS_SECRET_ACCESS_KEY
+          repo: ${AWS_RESOURCE_NAME_PREFIX}
+          tag: "http_gateway_${CIRCLE_SHA1}"
+          checkout: true
+          path: ./http_gateway
 
   build_and_test_helper_api:
-    docker:
-      - image: circleci/golang:1.13
+    executor: aws-ecr/default
     steps:
-      - checkout
-      - restore_cache:
-          key: helper-api-{{ checksum "./helper-api/go.sum" }}
-      - run:
-          name: helper-api test
-          command: |
-            cd ./helper-api
-            go test ./...
-      - run:
-          name: helper-api build
-          command: |
-            cd ./helper-api
-            go build ./...
-      - save_cache:
-          key: helper-api-{{ checksum "./helper-api/go.sum" }}
-          paths:
-            - /go/pkg/mod
+      - aws-ecr/build-image:
+          region: AWS_DEFAULT_REGION
+          account-url: AWS_ACCOUNT_URL
+          aws-access-key-id: AWS_ACCESS_KEY_ID
+          aws-secret-access-key: AWS_SECRET_ACCESS_KEY
+          repo: ${AWS_RESOURCE_NAME_PREFIX}
+          tag: "helper-api_${CIRCLE_SHA1}"
+          checkout: true
+          path: ./helper-api
 
   build_and_test_communication:
     executor: aws-ecr/default
@@ -69,88 +51,44 @@ jobs:
           path: ./communication
 
   build_and_test_mission:
-    docker:
-      - image: circleci/openjdk:8-jdk-browsers
-    working_directory: ~/mission
+    executor: aws-ecr/default
     steps:
-      - checkout
-      - restore_cache:
-          key: mission-{{ checksum "./mission/pom.xml" }}
-      - run:
-          name: mission dependency
-          command: |
-            cd ./mission
-            mvn dependency:go-offline
-      - save_cache:
-          paths:
-            - ~/.m2
-          key: mission-{{ checksum "./mission/pom.xml" }}
-      - run:
-          name: mission test
-          command: |
-            cd ./mission
-            mvn test
-      - run:
-          name: mission compile
-          command: |
-            cd ./mission
-            mvn compile
+      - aws-ecr/build-image:
+          region: AWS_DEFAULT_REGION
+          account-url: AWS_ACCOUNT_URL
+          aws-access-key-id: AWS_ACCESS_KEY_ID
+          aws-secret-access-key: AWS_SECRET_ACCESS_KEY
+          repo: ${AWS_RESOURCE_NAME_PREFIX}
+          tag: "mission_${CIRCLE_SHA1}"
+          checkout: true
+          path: ./mission
 
   build_and_test_client:
-    docker:
-      - image: circleci/node
-    working_directory: ~/client
+    executor: aws-ecr/default
     steps:
-      - checkout
-      - run:
-          name: client env
-          command: |
-            cd ./client
-            echo REACT_APP_CESIUM_KEY=${CESIUM_KEY} > ./.env
-      - restore_cache:
-          key: client-{{ checksum "./client/package.json" }}
-      - run:
-          name: client dependency
-          command: |
-            cd ./client
-            npm install
-      - save_cache:
-          paths:
-            - ~/.m2
-          key: client-{{ checksum "./client/package.json" }}
-      - run:
-          name: client test
-          command: |
-            cd ./client
-            npm test
-      - run:
-          name: client compile
-          command: |
-            cd ./client
-            npm build
+      - aws-ecr/build-image:
+          region: AWS_DEFAULT_REGION
+          account-url: AWS_ACCOUNT_URL
+          aws-access-key-id: AWS_ACCESS_KEY_ID
+          aws-secret-access-key: AWS_SECRET_ACCESS_KEY
+          repo: ${AWS_RESOURCE_NAME_PREFIX}
+          tag: "client_${CIRCLE_SHA1}"
+          checkout: true
+          path: ./client
+          extra-build-args: "--build-arg CESIUM_KEY=${CESIUM_KEY}"
 
   build_and_test_edge:
-    docker:
-      - image: circleci/golang:1.13
-    working_directory: ~/edge
+    executor: aws-ecr/default
     steps:
-      - checkout
-      - restore_cache:
-          key: edge-{{ checksum "./edge/go.sum" }}
-      - run:
-          name: edge test
-          command: |
-            cd ./edge
-            go test ./...
-      - run:
-          name: edge build
-          command: |
-            cd ./edge
-            go build ./...
-      - save_cache:
-          key: edge-{{ checksum "./edge/go.sum" }}
-          paths:
-            - /go/pkg/mod
+      - aws-ecr/build-image:
+          region: AWS_DEFAULT_REGION
+          account-url: AWS_ACCOUNT_URL
+          aws-access-key-id: AWS_ACCESS_KEY_ID
+          aws-secret-access-key: AWS_SECRET_ACCESS_KEY
+          repo: ${AWS_RESOURCE_NAME_PREFIX}
+          tag: "edge_${CIRCLE_SHA1}"
+          checkout: true
+          path: ./edge
 
   build_and_push_http_gateway:
     executor: aws-ecr/default
@@ -276,31 +214,71 @@ jobs:
 workflows:
   skysign-cicd-workflow:
     jobs:
-      - build_and_test_http_gateway: *slack-fail-post-step
-      - build_and_test_helper_api: *slack-fail-post-step
-      - build_and_test_communication: *slack-fail-post-step
-      - build_and_test_mission: *slack-fail-post-step
-      - build_and_test_client: *slack-fail-post-step
-      - build_and_test_edge: *slack-fail-post-step
-      - build_and_push_http_gateway:
+      - build_and_test_http_gateway:
+          filters:
+            branches:
+              ignore: master
+          <<: *slack-fail-post-step
+      - build_and_test_helper_api:
+          filters:
+            branches:
+              ignore: master
+          <<: *slack-fail-post-step
+      - build_and_test_communication:
+          filters:
+            branches:
+              ignore: master
+          <<: *slack-fail-post-step
+      - build_and_test_mission:
+          filters:
+            branches:
+              ignore: master
+          <<: *slack-fail-post-step
+      - build_and_test_client:
+          filters:
+            branches:
+              ignore: master
+          <<: *slack-fail-post-step
+      - build_and_test_edge:
+          filters:
+            branches:
+              ignore: master
+          <<: *slack-fail-post-step
+      - notify-slack:
           requires:
             - build_and_test_http_gateway
+            - build_and_test_helper_api
+            - build_and_test_communication
+            - build_and_test_mission
+            - build_and_test_client
+            - build_and_test_edge
+          filters:
+            branches:
+              ignore: master
+      - build_and_push_http_gateway:
+          filters:
+            branches:
+              only: master
           <<: *slack-fail-post-step
       - build_and_push_helper_api:
-          requires:
-            - build_and_test_helper_api
+          filters:
+            branches:
+              only: master
           <<: *slack-fail-post-step
       - build_and_push_communication:
-          requires:
-            - build_and_test_communication
+          filters:
+            branches:
+              only: master
           <<: *slack-fail-post-step
       - build_and_push_mission:
-          requires:
-            - build_and_test_mission
+          filters:
+            branches:
+              only: master
           <<: *slack-fail-post-step
       - build_and_push_client:
-          requires:
-            - build_and_test_client
+          filters:
+            branches:
+              only: master
           <<: *slack-fail-post-step
       - notify-slack:
           requires:
@@ -309,6 +287,9 @@ workflows:
             - build_and_push_communication
             - build_and_push_mission
             - build_and_push_client
+          filters:
+            branches:
+              only: master
       - create_pull_request:
           requires:
             - notify-slack

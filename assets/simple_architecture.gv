@@ -9,6 +9,7 @@ digraph G {
   CommunicationBackend [label="<Communication>\nbackend\n[Java]"];
   PostgreSQL1 [label="PostgreSQL", shape=cylinder];
   PostgreSQL2 [label="PostgreSQL", shape=cylinder];
+  RabbitMQ [label="RabbitMQ", shape=box3d];
   ReverseProxy [label="Reverse Proxy"];
   StaticContents [label="Static contents\n[React/Cesium]"];
   Edge_ [label="Edge\n[Golang]"];
@@ -20,6 +21,8 @@ digraph G {
   
   CommunicationBackend -> PostgreSQL1;
   MissionsBackend -> PostgreSQL2;
+  
+  CommunicationBackend -> RabbitMQ;
     
   subgraph cluster_0 {
     label="Container\nplatform";

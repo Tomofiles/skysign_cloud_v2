@@ -1,4 +1,8 @@
 # To bring up this system:
+# export CLOUD_ADDRESS=<ip>:<port>
+# export PX4_HOME_LAT=<latitude>
+# export PX4_HOME_LON=<longitude>
+# export PX4_HOME_ALT=<altitude>
 # docker-compose -f docker-compose_skysign-edge-dev.yaml -p skysign-edge-dev up
 
 version: '3.7'

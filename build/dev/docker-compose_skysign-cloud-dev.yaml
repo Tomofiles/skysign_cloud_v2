@@ -1,4 +1,5 @@
 # To bring up this system:
+# export CESIUM_KEY=<アクセストークン>
 # docker-compose -f docker-compose_skysign-cloud-dev.yaml -p skysign-cloud-dev up
 
 version: '3.7'
@@ -42,6 +43,7 @@ services:
     environment:
      - db.host=skysign-communication-db
      - mq.host=skysign-mq
+     - mq.ssl.enabled=false
     command: java -cp app:app/lib/* net.tomofiles.skysign.communication.CommunicationApplication
     depends_on:
       - skysign-communication-db-for-debugging
@@ -113,6 +115,8 @@ services:
     build:
       context: ../../client
       dockerfile: Dockerfile
+      args:
+        - CESIUM_KEY=${CESIUM_KEY}
 
   skysign-cloud-gw-for-debugging:
     container_name: skysign-cloud-gw
