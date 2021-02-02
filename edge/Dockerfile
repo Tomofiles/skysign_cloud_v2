@@ -16,4 +16,4 @@ RUN go install ./...
 FROM alpine:latest
 WORKDIR /app/
 
-COPY --from=builder /go/bin/skysign-edge .
+COPY --from=build /go/bin/skysign-edge .
