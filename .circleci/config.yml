@@ -280,7 +280,7 @@ workflows:
             branches:
               only: master
           <<: *slack-fail-post-step
-      - notify-slack:
+      - notify-slack-master:
           requires:
             - build_and_push_http_gateway
             - build_and_push_helper_api
@@ -292,7 +292,7 @@ workflows:
               only: master
       - create_pull_request:
           requires:
-            - notify-slack
+            - notify-slack-master
           filters:
             branches:
               only: master
