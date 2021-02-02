@@ -1,4 +1,6 @@
-FROM openjdk:8-jdk-alpine as build
+FROM openjdk:8-jdk-alpine AS base
+
+FROM base AS build-base
 WORKDIR /workspace/app
 
 RUN wget -q -O /etc/apk/keys/sgerrand.rsa.pub https://alpine-pkgs.sgerrand.com/sgerrand.rsa.pub
@@ -7,16 +9,22 @@ RUN apk add glibc-2.31-r0.apk
 
 COPY mvnw .
 COPY .mvn .mvn
-COPY pom.xml .
 
+FROM build-base AS dependency
+COPY pom.xml .
 RUN ./mvnw dependency:go-offline
 
+FROM dependency AS app
 COPY src src
 
+FROM app AS test
+RUN ./mvnw test
+
+FROM app AS build
 RUN ./mvnw install -DskipTests
 RUN mkdir -p target/dependency && (cd target/dependency; jar -xf ../*.jar)
 
-FROM openjdk:8-jdk-alpine
+FROM base AS production
 VOLUME /tmp
 ARG DEPENDENCY=/workspace/app/target/dependency
 COPY --from=build ${DEPENDENCY}/BOOT-INF/lib /app/lib

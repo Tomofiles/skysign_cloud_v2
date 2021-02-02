@@ -18,7 +18,7 @@ Skysignでは、アクセストークンがなくてもサンドボックス環�
 
 [Terrain - cesium.com](https://cesium.com/docs/tutorials/terrain/)
 
-取得したアクセストークンは、`/skysign_cloud_v2/client/.env`ファイルを作成し、ファイル内に１行、`REACT_APP_CESIUM_KEY=<アクセストークン>`と記載してから、Docker Composeのビルドコマンドを実行してください。
+取得したアクセストークンは、環境変数にエクスポートしてから、Docker Composeのビルドコマンドを実行してください。詳しくは、yamlファイルの冒頭コメントを参照ください。
 
 ## エッジについて
 クラウド機能が構築できれば、エッジ機能からドローンをクラウドに接続できます。
@@ -27,7 +27,7 @@ Skysignでは、アクセストークンがなくてもサンドボックス環�
 
 エッジ機能のサンドボックス環境は、このフォルダ内で`docker-compose -f docker-compose_skysign-edge-dev.yaml -p skysign-edge-dev up`と実行するだけで起動することができます。その際に、クラウドの接続先を環境変数から指定してあげる必要があります。
 
-Docker Composeの起動コマンドを実行する前に、各自の環境に合わせて`<ip>:<port>`の組み合わせで、`CLOUD_ADDRESS`というキーで環境変数を指定してください。
+Docker Composeの起動コマンドを実行する前に、各自の環境に合わせて`<ip>:<port>`の組み合わせで、`CLOUD_ADDRESS`というキーで環境変数を指定してください。詳しくは、yamlファイルの冒頭コメントを参照ください。
 
 ## OSSの使用について
 エッジ機能のサンドボックス環境を構築するにあたり、以下のPX4ガゼボシミュレータのDockerイメージを使用しています。
