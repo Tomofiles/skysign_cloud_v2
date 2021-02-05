@@ -10,7 +10,7 @@ import (
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
 	"google.golang.org/grpc"
 
-	gw "github.com/Tomofiles/skysign_cloud/http_gateway/pkg/skysign_proto"
+	gw "github.com/Tomofiles/skysign_cloud/http-gateway/pkg/skysign_proto"
 )
 
 var (
@@ -31,11 +31,7 @@ func run() error {
 	mux := runtime.NewServeMux(smOpts...)
 	opts := []grpc.DialOption{grpc.WithInsecure()}
 	endpoint := fmt.Sprintf(*backendHost + ":" + *backendPort)
-	err := gw.RegisterCommunicationUserServiceHandlerFromEndpoint(ctx, mux, endpoint, opts)
-	if err != nil {
-		return err
-	}
-	err = gw.RegisterCommunicationEdgeServiceHandlerFromEndpoint(ctx, mux, endpoint, opts)
+	err := gw.RegisterHelperUserServiceHandlerFromEndpoint(ctx, mux, endpoint, opts)
 	if err != nil {
 		return err
 	}

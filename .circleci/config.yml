@@ -20,9 +20,9 @@ jobs:
           aws-access-key-id: AWS_ACCESS_KEY_ID
           aws-secret-access-key: AWS_SECRET_ACCESS_KEY
           repo: ${AWS_RESOURCE_NAME_PREFIX}
-          tag: "http_gateway_${CIRCLE_SHA1}"
+          tag: "http-gateway_${CIRCLE_SHA1}"
           checkout: true
-          path: ./http_gateway
+          path: ./http-gateway
 
   build_and_test_helper_api:
     executor: aws-ecr/default
@@ -99,8 +99,8 @@ jobs:
           aws-access-key-id: AWS_ACCESS_KEY_ID
           aws-secret-access-key: AWS_SECRET_ACCESS_KEY
           repo: ${AWS_RESOURCE_NAME_PREFIX}
-          tag: "http_gateway_${CIRCLE_SHA1}"
-          path: ./http_gateway
+          tag: "http-gateway_${CIRCLE_SHA1}"
+          path: ./http-gateway
 
   build_and_push_helper_api:
     executor: aws-ecr/default

@@ -1,4 +1,4 @@
-module github.com/Tomofiles/skysign_cloud/http_gateway
+module github.com/Tomofiles/skysign_cloud/http-gateway
 
 go 1.13
 

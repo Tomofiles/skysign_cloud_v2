@@ -73,7 +73,7 @@ services:
     container_name: skysign-communication-gateway
     hostname: skysign-communication-gateway
     build:
-      context: ../../http_gateway
+      context: ../../http-gateway
       dockerfile: Dockerfile
     command: /app/comm-gateway -backend_host skysign-communication-backend -backend_port 5001
     depends_on:
@@ -83,7 +83,7 @@ services:
     container_name: skysign-vehicle-gateway
     hostname: skysign-vehicle-gateway
     build:
-      context: ../../http_gateway
+      context: ../../http-gateway
       dockerfile: Dockerfile
     command: /app/vehicle-gateway -backend_host skysign-communication-backend -backend_port 5001
     depends_on:
@@ -93,7 +93,7 @@ services:
     container_name: skysign-mission-gateway
     hostname: skysign-mission-gateway
     build:
-      context: ../../http_gateway
+      context: ../../http-gateway
       dockerfile: Dockerfile
     command: /app/mission-gateway -backend_host skysign-mission-backend -backend_port 5001
     depends_on:
@@ -103,7 +103,7 @@ services:
     container_name: skysign-helper-gateway
     hostname: skysign-helper-gateway
     build:
-      context: ../../http_gateway
+      context: ../../http-gateway
       dockerfile: Dockerfile
     command: /app/helper-gateway -backend_host skysign-helper-backend -backend_port 5001
     depends_on:
