@@ -61,10 +61,10 @@ public class VehicleRepositoryTests {
      */
     @Test
     public void getVehicleByIdTest() {
-        when(vehicleMapper.find(DEFAULT_VEHICLE_ID.getId()))
+        when(this.vehicleMapper.find(DEFAULT_VEHICLE_ID.getId()))
                 .thenReturn(newNormalVehicleRecord(DEFAULT_VEHICLE_ID, DEFAULT_VERSION, DEFAULT_GENERATOR.get()));
 
-        Vehicle vehicle = repository.getById(DEFAULT_VEHICLE_ID);
+        Vehicle vehicle = this.repository.getById(DEFAULT_VEHICLE_ID);
 
         Vehicle expectVehicle = newNormalVehicle(DEFAULT_VEHICLE_ID, DEFAULT_VERSION, DEFAULT_GENERATOR.get());
 
@@ -83,7 +83,7 @@ public class VehicleRepositoryTests {
      */
     @Test
     public void getNoVehicleByIdTest() {
-        Vehicle vehicle = repository.getById(DEFAULT_VEHICLE_ID);
+        Vehicle vehicle = this.repository.getById(DEFAULT_VEHICLE_ID);
 
         assertThat(vehicle).isNull();
     }
@@ -93,13 +93,13 @@ public class VehicleRepositoryTests {
      */
     @Test
     public void getAllVehiclesTest() {
-        when(vehicleMapper.findAll()).thenReturn(Arrays.asList(new VehicleRecord[] {
+        when(this.vehicleMapper.findAll()).thenReturn(Arrays.asList(new VehicleRecord[] {
             newNormalVehicleRecord(DEFAULT_VEHICLE_ID, DEFAULT_VERSION, DEFAULT_GENERATOR.get()),
             newNormalVehicleRecord(DEFAULT_VEHICLE_ID, DEFAULT_VERSION, DEFAULT_GENERATOR.get()),
             newNormalVehicleRecord(DEFAULT_VEHICLE_ID, DEFAULT_VERSION, DEFAULT_GENERATOR.get())
         }));
 
-        List<Vehicle> vehicles = repository.getAll();
+        List<Vehicle> vehicles = this.repository.getAll();
 
         Vehicle expectVehicle = newNormalVehicle(DEFAULT_VEHICLE_ID, DEFAULT_VERSION, DEFAULT_GENERATOR.get());
 
@@ -119,7 +119,7 @@ public class VehicleRepositoryTests {
      */
     @Test
     public void getAllNoVehiclesTest() {
-        List<Vehicle> vehicles = repository.getAll();
+        List<Vehicle> vehicles = this.repository.getAll();
 
         assertThat(vehicles).hasSize(0);
     }
@@ -130,9 +130,9 @@ public class VehicleRepositoryTests {
      */
     @Test
     public void saveNewVehicleTest() {
-        repository.save(newNormalVehicle(DEFAULT_VEHICLE_ID, DEFAULT_VERSION, DEFAULT_GENERATOR.get()));
+        this.repository.save(newNormalVehicle(DEFAULT_VEHICLE_ID, DEFAULT_VERSION, DEFAULT_GENERATOR.get()));
 
-        verify(vehicleMapper, times(1))
+        verify(this.vehicleMapper, times(1))
                 .create(newNormalVehicleRecord(DEFAULT_VEHICLE_ID, DEFAULT_VERSION, DEFAULT_GENERATOR.get()));
     }
 
@@ -142,14 +142,14 @@ public class VehicleRepositoryTests {
      */
     @Test
     public void savePreExistVehicleTest() {
-        when(vehicleMapper.find(DEFAULT_VEHICLE_ID.getId()))
+        when(this.vehicleMapper.find(DEFAULT_VEHICLE_ID.getId()))
                 .thenReturn(newNormalVehicleRecord(DEFAULT_VEHICLE_ID, DEFAULT_VERSION, DEFAULT_GENERATOR.get()));
 
-        Vehicle vehicle = repository.getById(DEFAULT_VEHICLE_ID);
+        Vehicle vehicle = this.repository.getById(DEFAULT_VEHICLE_ID);
 
         repository.save(vehicle);
 
-        verify(vehicleMapper, times(1))
+        verify(this.vehicleMapper, times(1))
                 .update(newNormalVehicleRecord(DEFAULT_VEHICLE_ID, DEFAULT_VERSION, DEFAULT_GENERATOR.get()));
     }
 
@@ -158,12 +158,12 @@ public class VehicleRepositoryTests {
      */
     @Test
     public void removeVehicleTest() {
-        repository.remove(DEFAULT_VEHICLE_ID, DEFAULT_VERSION);
+        this.repository.remove(DEFAULT_VEHICLE_ID, DEFAULT_VERSION);
 
         DeleteCondition condition = new DeleteCondition();
         condition.setId(DEFAULT_VEHICLE_ID.getId());
         condition.setVersion(DEFAULT_VERSION.getVersion());
 
-        verify(vehicleMapper, times(1)).delete(condition);
+        verify(this.vehicleMapper, times(1)).delete(condition);
     }
 }

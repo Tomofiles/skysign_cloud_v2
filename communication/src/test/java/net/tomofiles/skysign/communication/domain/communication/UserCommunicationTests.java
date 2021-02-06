@@ -101,7 +101,7 @@ public class UserCommunicationTests {
      */
     @Test
     public void pullTelemetryFromCommunicationTest() {
-        when(repository.getById(DEFAULT_COMMUNICATION_ID))
+        when(this.repository.getById(DEFAULT_COMMUNICATION_ID))
                 .thenReturn(newNormalCommunication(
                         DEFAULT_COMMUNICATION_ID,
                         DEFAULT_VEHICLE_ID,
@@ -109,7 +109,7 @@ public class UserCommunicationTests {
                         DEFAULT_MISSION_ID,
                         DEFAULT_GENERATOR.get()));
 
-        Communication communication = repository.getById(DEFAULT_COMMUNICATION_ID);
+        Communication communication = this.repository.getById(DEFAULT_COMMUNICATION_ID);
 
         TelemetrySnapshot telemetry = communication.pullTelemetry();
 

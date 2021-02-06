@@ -50,11 +50,31 @@ public class Vehicle {
     }
 
     public void giveCommId(CommunicationId id) {
-        CommunicationId beforeId = this.commId;
-        this.commId = id;
+        if (this.commId == null) {
+            this.commId = id;
+            this.newVersion = this.generator.newVersion();
+            this.publisher
+                    .publish(
+                            new CommunicationIdGaveEvent(this.commId, this.id, this.newVersion));
+        } else {
+            CommunicationId beforeId = this.commId;
+            this.commId = id;
+            this.newVersion = this.generator.newVersion();
+            this.publisher
+                    .publish(
+                            new CommunicationIdRemovedEvent(beforeId, this.newVersion));
+            this.publisher
+                    .publish(
+                            new CommunicationIdGaveEvent(this.commId, this.id, this.newVersion));
+        }
+    }
+
+    public void removeCommId() {
+        CommunicationId removedId = this.commId;
+        this.commId = null;
         this.newVersion = this.generator.newVersion();
         this.publisher
                 .publish(
-                        new CommunicationIdChangedEvent(beforeId, id, this.id, this.newVersion));
+                        new CommunicationIdRemovedEvent(removedId, this.newVersion));
     }
 }

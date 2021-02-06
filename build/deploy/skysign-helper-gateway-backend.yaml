@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: skysign-helper-gateway-backend
-        image: ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com/skysign-cloud-v2:http_gateway_${CIRCLE_SHA1}
+        image: ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com/skysign-cloud-v2:http-gateway_${CIRCLE_SHA1}
         command: ["/app/helper-gateway"]
         args: ["-port", "6000", "-backend_host", "skysign-helper", "-backend_port", "5001"]
         ports:

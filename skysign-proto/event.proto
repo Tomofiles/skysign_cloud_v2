@@ -6,9 +6,13 @@ option java_package = "proto.skysign.event";
 option java_multiple_files = true;
 option go_package = ".;skysign_proto";
 
-message CommunicationIdChangedEvent {
-    string beforeId = 1;
-    string afterId = 2;
-    string vehicleId = 3;
-    string version = 4;
+message CommunicationIdGaveEvent {
+    string communicationId = 1;
+    string vehicleId = 2;
+    string version = 3;
+}
+
+message CommunicationIdRemovedEvent {
+    string communicationId = 1;
+    string version = 2;
 }

@@ -86,7 +86,7 @@ public class CommunicationUserEndpointTests {
     public void beforeEach() {
         initMocks(this);
 
-        endpoint = new CommunicationUserEndpoint(service);
+        this.endpoint = new CommunicationUserEndpoint(this.service);
     }
 
     /**
@@ -94,7 +94,7 @@ public class CommunicationUserEndpointTests {
      */
     @Test
     public void listCommunicationsApi() {
-        when(repository.getAll())
+        when(this.repository.getAll())
                 .thenReturn(Arrays.asList(new Communication[] {
                         newNormalCommunication(
                                 DEFAULT_COMMUNICATION_ID,
@@ -118,7 +118,7 @@ public class CommunicationUserEndpointTests {
 
         Empty request = Empty.newBuilder().build();
         StreamRecorder<ListCommunicationsResponses> responseObserver = StreamRecorder.create();
-        endpoint.listCommunications(request, responseObserver);
+        this.endpoint.listCommunications(request, responseObserver);
 
         assertThat(responseObserver.getError()).isNull();
         List<ListCommunicationsResponses> results = responseObserver.getValues();
@@ -149,7 +149,7 @@ public class CommunicationUserEndpointTests {
      */
     @Test
     public void listCommunicationsNotStagingApi() {
-        when(repository.getAll())
+        when(this.repository.getAll())
                 .thenReturn(Arrays.asList(new Communication[] {
                         newNormalCommunication(
                                 DEFAULT_COMMUNICATION_ID,
@@ -173,7 +173,7 @@ public class CommunicationUserEndpointTests {
 
         Empty request = Empty.newBuilder().build();
         StreamRecorder<ListCommunicationsResponses> responseObserver = StreamRecorder.create();
-        endpoint.listCommunications(request, responseObserver);
+        this.endpoint.listCommunications(request, responseObserver);
 
         assertThat(responseObserver.getError()).isNull();
         List<ListCommunicationsResponses> results = responseObserver.getValues();
@@ -205,7 +205,7 @@ public class CommunicationUserEndpointTests {
     public void listCommunicationsApiNotFoundError() {
         Empty request = Empty.newBuilder().build();
         StreamRecorder<ListCommunicationsResponses> responseObserver = StreamRecorder.create();
-        endpoint.listCommunications(request, responseObserver);
+        this.endpoint.listCommunications(request, responseObserver);
 
         assertThat(responseObserver.getError()).isNull();
         List<ListCommunicationsResponses> results = responseObserver.getValues();
@@ -219,11 +219,11 @@ public class CommunicationUserEndpointTests {
      */
     @Test
     public void listCommunicationsApiInternalError() {
-        when(repository.getAll()).thenThrow(new IllegalStateException());
+        when(this.repository.getAll()).thenThrow(new IllegalStateException());
 
         Empty request = Empty.newBuilder().build();
         StreamRecorder<ListCommunicationsResponses> responseObserver = StreamRecorder.create();
-        endpoint.listCommunications(request, responseObserver);
+        this.endpoint.listCommunications(request, responseObserver);
 
         assertThat(responseObserver.getError()).isNotNull();
         assertThat(responseObserver.getError()).isInstanceOf(StatusRuntimeException.class);
@@ -236,7 +236,7 @@ public class CommunicationUserEndpointTests {
      */
     @Test
     public void pushCommandApi() {
-        when(repository.getById(DEFAULT_COMMUNICATION_ID))
+        when(this.repository.getById(DEFAULT_COMMUNICATION_ID))
                 .thenReturn(newNormalCommunication(
                         DEFAULT_COMMUNICATION_ID,
                         DEFAULT_VEHICLE_ID,
@@ -249,10 +249,10 @@ public class CommunicationUserEndpointTests {
                 .setType(CommandType.valueOf(DEFAULT_COMMAND_TYPE))
                 .build();
         StreamRecorder<PushCommandResponse> responseObserver = StreamRecorder.create();
-        endpoint.pushCommand(request, responseObserver);
+        this.endpoint.pushCommand(request, responseObserver);
 
         ArgumentCaptor<Communication> commCaptor = ArgumentCaptor.forClass(Communication.class);
-        verify(repository, times(1)).save(commCaptor.capture());
+        verify(this.repository, times(1)).save(commCaptor.capture());
 
         CommunicationComponentDto dto = CommunicationFactory.takeApart(commCaptor.getValue());
         assertThat(dto.getCommands()).hasSize(1);
@@ -279,7 +279,7 @@ public class CommunicationUserEndpointTests {
                 .setType(CommandType.valueOf(DEFAULT_COMMAND_TYPE))
                 .build();
         StreamRecorder<PushCommandResponse> responseObserver = StreamRecorder.create();
-        endpoint.pushCommand(request, responseObserver);
+        this.endpoint.pushCommand(request, responseObserver);
 
         assertThat(responseObserver.getError()).isNotNull();
         assertThat(responseObserver.getError()).isInstanceOf(StatusRuntimeException.class);
@@ -292,14 +292,14 @@ public class CommunicationUserEndpointTests {
      */
     @Test
     public void pushCommandApiInternalError() {
-        when(repository.getById(DEFAULT_COMMUNICATION_ID)).thenThrow(new IllegalStateException());
+        when(this.repository.getById(DEFAULT_COMMUNICATION_ID)).thenThrow(new IllegalStateException());
 
         PushCommandRequest request = PushCommandRequest.newBuilder()
                 .setId(DEFAULT_COMMUNICATION_ID.getId())
                 .setType(CommandType.valueOf(DEFAULT_COMMAND_TYPE))
                 .build();
         StreamRecorder<PushCommandResponse> responseObserver = StreamRecorder.create();
-        endpoint.pushCommand(request, responseObserver);
+        this.endpoint.pushCommand(request, responseObserver);
 
         assertThat(responseObserver.getError()).isNotNull();
         assertThat(responseObserver.getError()).isInstanceOf(StatusRuntimeException.class);
@@ -312,7 +312,7 @@ public class CommunicationUserEndpointTests {
      */
     @Test
     public void pullTelemetryApi() {
-        when(repository.getById(DEFAULT_COMMUNICATION_ID))
+        when(this.repository.getById(DEFAULT_COMMUNICATION_ID))
                 .thenReturn(newNormalCommunication(
                         DEFAULT_COMMUNICATION_ID,
                         DEFAULT_VEHICLE_ID,
@@ -324,7 +324,7 @@ public class CommunicationUserEndpointTests {
                 .setId(DEFAULT_COMMUNICATION_ID.getId())
                 .build();
         StreamRecorder<PullTelemetryResponse> responseObserver = StreamRecorder.create();
-        endpoint.pullTelemetry(request, responseObserver);
+        this.endpoint.pullTelemetry(request, responseObserver);
 
         assertThat(responseObserver.getError()).isNull();
         List<PullTelemetryResponse> results = responseObserver.getValues();
@@ -342,7 +342,7 @@ public class CommunicationUserEndpointTests {
                 .setId(DEFAULT_COMMUNICATION_ID.getId())
                 .build();
         StreamRecorder<PullTelemetryResponse> responseObserver = StreamRecorder.create();
-        endpoint.pullTelemetry(request, responseObserver);
+        this.endpoint.pullTelemetry(request, responseObserver);
 
         assertThat(responseObserver.getError()).isNotNull();
         assertThat(responseObserver.getError()).isInstanceOf(StatusRuntimeException.class);
@@ -355,13 +355,13 @@ public class CommunicationUserEndpointTests {
      */
     @Test
     public void pullTelemetryApiInternalError() {
-        when(repository.getById(DEFAULT_COMMUNICATION_ID)).thenThrow(new IllegalStateException());
+        when(this.repository.getById(DEFAULT_COMMUNICATION_ID)).thenThrow(new IllegalStateException());
 
         PullTelemetryRequest request = PullTelemetryRequest.newBuilder()
                 .setId(DEFAULT_COMMUNICATION_ID.getId())
                 .build();
         StreamRecorder<PullTelemetryResponse> responseObserver = StreamRecorder.create();
-        endpoint.pullTelemetry(request, responseObserver);
+        this.endpoint.pullTelemetry(request, responseObserver);
 
         assertThat(responseObserver.getError()).isNotNull();
         assertThat(responseObserver.getError()).isInstanceOf(StatusRuntimeException.class);
@@ -375,7 +375,7 @@ public class CommunicationUserEndpointTests {
     @Test
     public void stagingApi() {
         MissionId newMissionId = new MissionId("new mission id");
-        when(repository.getById(DEFAULT_COMMUNICATION_ID))
+        when(this.repository.getById(DEFAULT_COMMUNICATION_ID))
                 .thenReturn(newNormalCommunication(
                         DEFAULT_COMMUNICATION_ID,
                         DEFAULT_VEHICLE_ID,
@@ -388,10 +388,10 @@ public class CommunicationUserEndpointTests {
                 .setMissionId(newMissionId.getId())
                 .build();
         StreamRecorder<StagingResponse> responseObserver = StreamRecorder.create();
-        endpoint.staging(request, responseObserver);
+        this.endpoint.staging(request, responseObserver);
 
         ArgumentCaptor<Communication> commCaptor = ArgumentCaptor.forClass(Communication.class);
-        verify(repository, times(1)).save(commCaptor.capture());
+        verify(this.repository, times(1)).save(commCaptor.capture());
 
         assertThat(commCaptor.getValue().getMissionId()).isEqualTo(newMissionId);
 
@@ -415,7 +415,7 @@ public class CommunicationUserEndpointTests {
                 .setMissionId(DEFAULT_MISSION_ID.getId())
                 .build();
         StreamRecorder<StagingResponse> responseObserver = StreamRecorder.create();
-        endpoint.staging(request, responseObserver);
+        this.endpoint.staging(request, responseObserver);
 
         assertThat(responseObserver.getError()).isNotNull();
         assertThat(responseObserver.getError()).isInstanceOf(StatusRuntimeException.class);
@@ -428,14 +428,14 @@ public class CommunicationUserEndpointTests {
      */
     @Test
     public void stagingApiInternalError() {
-        when(repository.getById(DEFAULT_COMMUNICATION_ID)).thenThrow(new IllegalStateException());
+        when(this.repository.getById(DEFAULT_COMMUNICATION_ID)).thenThrow(new IllegalStateException());
 
         StagingRequest request = StagingRequest.newBuilder()
                 .setId(DEFAULT_COMMUNICATION_ID.getId())
                 .setMissionId(DEFAULT_MISSION_ID.getId())
                 .build();
         StreamRecorder<StagingResponse> responseObserver = StreamRecorder.create();
-        endpoint.staging(request, responseObserver);
+        this.endpoint.staging(request, responseObserver);
 
         assertThat(responseObserver.getError()).isNotNull();
         assertThat(responseObserver.getError()).isInstanceOf(StatusRuntimeException.class);
@@ -448,7 +448,7 @@ public class CommunicationUserEndpointTests {
      */
     @Test
     public void cancelApi() {
-        when(repository.getById(DEFAULT_COMMUNICATION_ID))
+        when(this.repository.getById(DEFAULT_COMMUNICATION_ID))
                 .thenReturn(newNormalCommunication(
                         DEFAULT_COMMUNICATION_ID,
                         DEFAULT_VEHICLE_ID,
@@ -460,10 +460,10 @@ public class CommunicationUserEndpointTests {
                 .setId(DEFAULT_COMMUNICATION_ID.getId())
                 .build();
         StreamRecorder<CancelResponse> responseObserver = StreamRecorder.create();
-        endpoint.cancel(request, responseObserver);
+        this.endpoint.cancel(request, responseObserver);
 
         ArgumentCaptor<Communication> commCaptor = ArgumentCaptor.forClass(Communication.class);
-        verify(repository, times(1)).save(commCaptor.capture());
+        verify(this.repository, times(1)).save(commCaptor.capture());
 
         assertThat(commCaptor.getValue().getMissionId()).isNull();
 
@@ -485,7 +485,7 @@ public class CommunicationUserEndpointTests {
                 .setId(DEFAULT_COMMUNICATION_ID.getId())
                 .build();
         StreamRecorder<CancelResponse> responseObserver = StreamRecorder.create();
-        endpoint.cancel(request, responseObserver);
+        this.endpoint.cancel(request, responseObserver);
 
         assertThat(responseObserver.getError()).isNotNull();
         assertThat(responseObserver.getError()).isInstanceOf(StatusRuntimeException.class);
@@ -498,13 +498,13 @@ public class CommunicationUserEndpointTests {
      */
     @Test
     public void cancelApiInternalError() {
-        when(repository.getById(DEFAULT_COMMUNICATION_ID)).thenThrow(new IllegalStateException());
+        when(this.repository.getById(DEFAULT_COMMUNICATION_ID)).thenThrow(new IllegalStateException());
 
         CancelRequest request = CancelRequest.newBuilder()
                 .setId(DEFAULT_COMMUNICATION_ID.getId())
                 .build();
         StreamRecorder<CancelResponse> responseObserver = StreamRecorder.create();
-        endpoint.cancel(request, responseObserver);
+        this.endpoint.cancel(request, responseObserver);
 
         assertThat(responseObserver.getError()).isNotNull();
         assertThat(responseObserver.getError()).isInstanceOf(StatusRuntimeException.class);
@@ -517,7 +517,7 @@ public class CommunicationUserEndpointTests {
      */
     @Test
     public void controlApi() {
-        when(repository.getById(DEFAULT_COMMUNICATION_ID))
+        when(this.repository.getById(DEFAULT_COMMUNICATION_ID))
                 .thenReturn(newNormalCommunication(
                         DEFAULT_COMMUNICATION_ID,
                         DEFAULT_VEHICLE_ID,
@@ -529,10 +529,10 @@ public class CommunicationUserEndpointTests {
                 .setId(DEFAULT_COMMUNICATION_ID.getId())
                 .build();
         StreamRecorder<ControlResponse> responseObserver = StreamRecorder.create();
-        endpoint.control(request, responseObserver);
+        this.endpoint.control(request, responseObserver);
 
         ArgumentCaptor<Communication> commCaptor = ArgumentCaptor.forClass(Communication.class);
-        verify(repository, times(1)).save(commCaptor.capture());
+        verify(this.repository, times(1)).save(commCaptor.capture());
 
         assertThat(commCaptor.getValue().isControlled()).isTrue();
 
@@ -554,7 +554,7 @@ public class CommunicationUserEndpointTests {
                 .setId(DEFAULT_COMMUNICATION_ID.getId())
                 .build();
         StreamRecorder<ControlResponse> responseObserver = StreamRecorder.create();
-        endpoint.control(request, responseObserver);
+        this.endpoint.control(request, responseObserver);
 
         assertThat(responseObserver.getError()).isNotNull();
         assertThat(responseObserver.getError()).isInstanceOf(StatusRuntimeException.class);
@@ -567,13 +567,13 @@ public class CommunicationUserEndpointTests {
      */
     @Test
     public void controlApiInternalError() {
-        when(repository.getById(DEFAULT_COMMUNICATION_ID)).thenThrow(new IllegalStateException());
+        when(this.repository.getById(DEFAULT_COMMUNICATION_ID)).thenThrow(new IllegalStateException());
 
         ControlRequest request = ControlRequest.newBuilder()
                 .setId(DEFAULT_COMMUNICATION_ID.getId())
                 .build();
         StreamRecorder<ControlResponse> responseObserver = StreamRecorder.create();
-        endpoint.control(request, responseObserver);
+        this.endpoint.control(request, responseObserver);
 
         assertThat(responseObserver.getError()).isNotNull();
         assertThat(responseObserver.getError()).isInstanceOf(StatusRuntimeException.class);
@@ -586,7 +586,7 @@ public class CommunicationUserEndpointTests {
      */
     @Test
     public void uncontrolApi() {
-        when(repository.getById(DEFAULT_COMMUNICATION_ID))
+        when(this.repository.getById(DEFAULT_COMMUNICATION_ID))
                 .thenReturn(newNormalCommunication(
                         DEFAULT_COMMUNICATION_ID,
                         DEFAULT_VEHICLE_ID,
@@ -598,10 +598,10 @@ public class CommunicationUserEndpointTests {
                 .setId(DEFAULT_COMMUNICATION_ID.getId())
                 .build();
         StreamRecorder<UncontrolResponse> responseObserver = StreamRecorder.create();
-        endpoint.uncontrol(request, responseObserver);
+        this.endpoint.uncontrol(request, responseObserver);
 
         ArgumentCaptor<Communication> commCaptor = ArgumentCaptor.forClass(Communication.class);
-        verify(repository, times(1)).save(commCaptor.capture());
+        verify(this.repository, times(1)).save(commCaptor.capture());
 
         assertThat(commCaptor.getValue().isControlled()).isFalse();
 
@@ -623,7 +623,7 @@ public class CommunicationUserEndpointTests {
                 .setId(DEFAULT_COMMUNICATION_ID.getId())
                 .build();
         StreamRecorder<UncontrolResponse> responseObserver = StreamRecorder.create();
-        endpoint.uncontrol(request, responseObserver);
+        this.endpoint.uncontrol(request, responseObserver);
 
         assertThat(responseObserver.getError()).isNotNull();
         assertThat(responseObserver.getError()).isInstanceOf(StatusRuntimeException.class);
@@ -636,13 +636,13 @@ public class CommunicationUserEndpointTests {
      */
     @Test
     public void uncontrolApiInternalError() {
-        when(repository.getById(DEFAULT_COMMUNICATION_ID)).thenThrow(new IllegalStateException());
+        when(this.repository.getById(DEFAULT_COMMUNICATION_ID)).thenThrow(new IllegalStateException());
 
         UncontrolRequest request = UncontrolRequest.newBuilder()
                 .setId(DEFAULT_COMMUNICATION_ID.getId())
                 .build();
         StreamRecorder<UncontrolResponse> responseObserver = StreamRecorder.create();
-        endpoint.uncontrol(request, responseObserver);
+        this.endpoint.uncontrol(request, responseObserver);
 
         assertThat(responseObserver.getError()).isNotNull();
         assertThat(responseObserver.getError()).isInstanceOf(StatusRuntimeException.class);

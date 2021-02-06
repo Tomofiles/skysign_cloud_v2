@@ -11,24 +11,24 @@ import org.springframework.transaction.event.TransactionalEventListener;
 
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
-import net.tomofiles.skysign.communication.domain.vehicle.CommunicationIdChangedEvent;
-import net.tomofiles.skysign.communication.infra.event.listener.proto.CommunicationIdChangedEventPb;
+import net.tomofiles.skysign.communication.domain.vehicle.CommunicationIdGaveEvent;
+import net.tomofiles.skysign.communication.infra.event.listener.proto.CommunicationIdGaveEventPb;
 
 @Component
 @RequiredArgsConstructor
-public class CommunicationIdChangedEventHandler {
-    private static final Logger logger = LoggerFactory.getLogger(CommunicationIdChangedEventHandler.class);
+public class CommunicationIdGaveEventHandler {
+    private static final Logger logger = LoggerFactory.getLogger(CommunicationIdGaveEventHandler.class);
     
     private final RabbitTemplate rabbitTemplate;
 
-    @Value("${skysign.event.communication_id_changed_event}")
+    @Value("${skysign.event.communication_id_gave_event}")
     @Setter
     private String EXCHANGE_NAME;
 
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     @Async
-    public void processCommunicationIdChangedEvent(CommunicationIdChangedEvent event) {
-        CommunicationIdChangedEventPb eventPb = new CommunicationIdChangedEventPb(event);
+    public void processCommunicationIdGaveEvent(CommunicationIdGaveEvent event) {
+        CommunicationIdGaveEventPb eventPb = new CommunicationIdGaveEventPb(event);
         logger.info("PUBLISH , Event: {}, Message: {}", EXCHANGE_NAME, eventPb);
         this.rabbitTemplate.send(
             EXCHANGE_NAME,

@@ -11,13 +11,7 @@ import net.tomofiles.skysign.communication.event.Event;
 @Getter
 @EqualsAndHashCode
 @ToString
-public class CommunicationIdChangedEvent implements Event {
-    private final CommunicationId beforeId;
-    private final CommunicationId afterId;
-    private final VehicleId vehicleId;
+public class CommunicationIdRemovedEvent implements Event {
+    private final CommunicationId communicationId;
     private final Version version;
-
-    public boolean isFirst() {
-        return this.beforeId == null; // beforeIdがNullの場合、新規登録。
-    }
 }

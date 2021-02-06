@@ -71,6 +71,8 @@ public class ManageVehicleService {
 
         vehicle.setPublisher(this.publisher);
 
+        vehicle.removeCommId();
+
         this.vehicleRepository.remove(vehicle.getId(), vehicle.getVersion());
 
         responseDpo.setVehicle(vehicle);

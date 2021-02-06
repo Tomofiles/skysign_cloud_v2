@@ -76,7 +76,7 @@ public class CommunicateEdgeEndpointTests {
     public void beforeEach() {
         initMocks(this);
 
-        endpoint = new CommunicateEdgeEndpoint(service);
+        this.endpoint = new CommunicateEdgeEndpoint(this.service);
     }
 
     /**
@@ -85,7 +85,7 @@ public class CommunicateEdgeEndpointTests {
      */
     @Test
     public void pushTelemetryWithNoCommandApi() {
-        when(repository.getById(DEFAULT_COMMUNICATION_ID))
+        when(this.repository.getById(DEFAULT_COMMUNICATION_ID))
                 .thenReturn(CommunicationFactory.newInstance(
                         DEFAULT_COMMUNICATION_ID,
                         DEFAULT_VEHICLE_ID,
@@ -96,10 +96,10 @@ public class CommunicateEdgeEndpointTests {
                 .setTelemetry(newNormalTelemetryGrpc())
                 .build();
         StreamRecorder<PushTelemetryResponse> responseObserver = StreamRecorder.create();
-        endpoint.pushTelemetry(request, responseObserver);
+        this.endpoint.pushTelemetry(request, responseObserver);
 
         ArgumentCaptor<Communication> commCaptor = ArgumentCaptor.forClass(Communication.class);
-        verify(repository, times(1)).save(commCaptor.capture());
+        verify(this.repository, times(1)).save(commCaptor.capture());
 
         CommunicationComponentDto dto = CommunicationFactory.takeApart(commCaptor.getValue());
         assertThat(dto.getTelemetry())
@@ -121,7 +121,7 @@ public class CommunicateEdgeEndpointTests {
      */
     @Test
     public void pushTelemetryWithOneCommandApi() {
-        when(repository.getById(DEFAULT_COMMUNICATION_ID))
+        when(this.repository.getById(DEFAULT_COMMUNICATION_ID))
                 .thenReturn(newSingleCommandCommunication(
                         DEFAULT_COMMUNICATION_ID,
                         DEFAULT_VEHICLE_ID,
@@ -134,10 +134,10 @@ public class CommunicateEdgeEndpointTests {
                 .setTelemetry(newNormalTelemetryGrpc())
                 .build();
         StreamRecorder<PushTelemetryResponse> responseObserver = StreamRecorder.create();
-        endpoint.pushTelemetry(request, responseObserver);
+        this.endpoint.pushTelemetry(request, responseObserver);
 
         ArgumentCaptor<Communication> commCaptor = ArgumentCaptor.forClass(Communication.class);
-        verify(repository, times(1)).save(commCaptor.capture());
+        verify(this.repository, times(1)).save(commCaptor.capture());
 
         CommunicationComponentDto dto = CommunicationFactory.takeApart(commCaptor.getValue());
         assertThat(dto.getTelemetry())
@@ -163,7 +163,7 @@ public class CommunicateEdgeEndpointTests {
                 .setTelemetry(newNormalTelemetryGrpc())
                 .build();
         StreamRecorder<PushTelemetryResponse> responseObserver = StreamRecorder.create();
-        endpoint.pushTelemetry(request, responseObserver);
+        this.endpoint.pushTelemetry(request, responseObserver);
 
         assertThat(responseObserver.getError()).isNotNull();
         assertThat(responseObserver.getError()).isInstanceOf(StatusRuntimeException.class);
@@ -176,14 +176,14 @@ public class CommunicateEdgeEndpointTests {
      */
     @Test
     public void pushTelemetryApiInternalError() {
-        when(repository.getById(DEFAULT_COMMUNICATION_ID)).thenThrow(new IllegalStateException());
+        when(this.repository.getById(DEFAULT_COMMUNICATION_ID)).thenThrow(new IllegalStateException());
 
         PushTelemetryRequest request = PushTelemetryRequest.newBuilder()
                 .setId(DEFAULT_COMMUNICATION_ID.getId())
                 .setTelemetry(newNormalTelemetryGrpc())
                 .build();
         StreamRecorder<PushTelemetryResponse> responseObserver = StreamRecorder.create();
-        endpoint.pushTelemetry(request, responseObserver);
+        this.endpoint.pushTelemetry(request, responseObserver);
 
         assertThat(responseObserver.getError()).isNotNull();
         assertThat(responseObserver.getError()).isInstanceOf(StatusRuntimeException.class);
@@ -197,7 +197,7 @@ public class CommunicateEdgeEndpointTests {
      */
     @Test
     public void pullCommandApi() {
-        when(repository.getById(DEFAULT_COMMUNICATION_ID))
+        when(this.repository.getById(DEFAULT_COMMUNICATION_ID))
                 .thenReturn(newSingleCommandCommunication(
                         DEFAULT_COMMUNICATION_ID,
                         DEFAULT_VEHICLE_ID,
@@ -210,10 +210,10 @@ public class CommunicateEdgeEndpointTests {
                 .setCommandId(DEFAULT_COMMAND_ID.getId())
                 .build();
         StreamRecorder<PullCommandResponse> responseObserver = StreamRecorder.create();
-        endpoint.pullCommand(request, responseObserver);
+        this.endpoint.pullCommand(request, responseObserver);
 
         ArgumentCaptor<Communication> commCaptor = ArgumentCaptor.forClass(Communication.class);
-        verify(repository, times(1)).save(commCaptor.capture());
+        verify(this.repository, times(1)).save(commCaptor.capture());
 
         CommunicationComponentDto dto = CommunicationFactory.takeApart(commCaptor.getValue());
         assertThat(dto.getCommands()).hasSize(0);
@@ -240,7 +240,7 @@ public class CommunicateEdgeEndpointTests {
                 .setCommandId(DEFAULT_COMMAND_ID.getId())
                 .build();
         StreamRecorder<PullCommandResponse> responseObserver = StreamRecorder.create();
-        endpoint.pullCommand(request, responseObserver);
+        this.endpoint.pullCommand(request, responseObserver);
 
         assertThat(responseObserver.getError()).isNotNull();
         assertThat(responseObserver.getError()).isInstanceOf(StatusRuntimeException.class);
@@ -254,7 +254,7 @@ public class CommunicateEdgeEndpointTests {
      */
     @Test
     public void pullCommandApiNotFoundCommandInCommunicationError() {
-        when(repository.getById(DEFAULT_COMMUNICATION_ID))
+        when(this.repository.getById(DEFAULT_COMMUNICATION_ID))
                 .thenReturn(CommunicationFactory.newInstance(
                         DEFAULT_COMMUNICATION_ID,
                         DEFAULT_VEHICLE_ID,
@@ -265,7 +265,7 @@ public class CommunicateEdgeEndpointTests {
                 .setCommandId(DEFAULT_COMMAND_ID.getId())
                 .build();
         StreamRecorder<PullCommandResponse> responseObserver = StreamRecorder.create();
-        endpoint.pullCommand(request, responseObserver);
+        this.endpoint.pullCommand(request, responseObserver);
 
         assertThat(responseObserver.getError()).isNotNull();
         assertThat(responseObserver.getError()).isInstanceOf(StatusRuntimeException.class);
@@ -278,14 +278,14 @@ public class CommunicateEdgeEndpointTests {
      */
     @Test
     public void pullCommandApiInternalError() {
-        when(repository.getById(DEFAULT_COMMUNICATION_ID)).thenThrow(new IllegalStateException());
+        when(this.repository.getById(DEFAULT_COMMUNICATION_ID)).thenThrow(new IllegalStateException());
 
         PullCommandRequest request = PullCommandRequest.newBuilder()
                 .setId(DEFAULT_COMMUNICATION_ID.getId())
                 .setCommandId(DEFAULT_COMMAND_ID.getId())
                 .build();
         StreamRecorder<PullCommandResponse> responseObserver = StreamRecorder.create();
-        endpoint.pullCommand(request, responseObserver);
+        this.endpoint.pullCommand(request, responseObserver);
 
         assertThat(responseObserver.getError()).isNotNull();
         assertThat(responseObserver.getError()).isInstanceOf(StatusRuntimeException.class);
@@ -298,7 +298,7 @@ public class CommunicateEdgeEndpointTests {
      */
     @Test
     public void getCommunicationApi() {
-        when(repository.getById(DEFAULT_COMMUNICATION_ID))
+        when(this.repository.getById(DEFAULT_COMMUNICATION_ID))
                 .thenReturn(newNormalCommunication(
                         DEFAULT_COMMUNICATION_ID,
                         DEFAULT_VEHICLE_ID,
@@ -310,7 +310,7 @@ public class CommunicateEdgeEndpointTests {
                 .setId(DEFAULT_COMMUNICATION_ID.getId())
                 .build();
         StreamRecorder<proto.skysign.common.Communication> responseObserver = StreamRecorder.create();
-        endpoint.getCommunication(request, responseObserver);
+        this.endpoint.getCommunication(request, responseObserver);
 
         assertThat(responseObserver.getError()).isNull();
         List<proto.skysign.common.Communication> results = responseObserver.getValues();
@@ -330,7 +330,7 @@ public class CommunicateEdgeEndpointTests {
      */
     @Test
     public void getCommunicationNotStagingApi() {
-        when(repository.getById(DEFAULT_COMMUNICATION_ID))
+        when(this.repository.getById(DEFAULT_COMMUNICATION_ID))
                 .thenReturn(newNormalCommunication(
                         DEFAULT_COMMUNICATION_ID,
                         DEFAULT_VEHICLE_ID,
@@ -342,7 +342,7 @@ public class CommunicateEdgeEndpointTests {
                 .setId(DEFAULT_COMMUNICATION_ID.getId())
                 .build();
         StreamRecorder<proto.skysign.common.Communication> responseObserver = StreamRecorder.create();
-        endpoint.getCommunication(request, responseObserver);
+        this.endpoint.getCommunication(request, responseObserver);
 
         assertThat(responseObserver.getError()).isNull();
         List<proto.skysign.common.Communication> results = responseObserver.getValues();
@@ -365,7 +365,7 @@ public class CommunicateEdgeEndpointTests {
                 .setId(DEFAULT_COMMUNICATION_ID.getId())
                 .build();
         StreamRecorder<proto.skysign.common.Communication> responseObserver = StreamRecorder.create();
-        endpoint.getCommunication(request, responseObserver);
+        this.endpoint.getCommunication(request, responseObserver);
 
         assertThat(responseObserver.getError()).isNotNull();
         assertThat(responseObserver.getError()).isInstanceOf(StatusRuntimeException.class);
@@ -378,13 +378,13 @@ public class CommunicateEdgeEndpointTests {
      */
     @Test
     public void getCommunicationApiInternalError() {
-        when(repository.getById(DEFAULT_COMMUNICATION_ID)).thenThrow(new IllegalStateException());
+        when(this.repository.getById(DEFAULT_COMMUNICATION_ID)).thenThrow(new IllegalStateException());
 
         GetCommunicationRequest request = GetCommunicationRequest.newBuilder()
                 .setId(DEFAULT_COMMUNICATION_ID.getId())
                 .build();
         StreamRecorder<proto.skysign.common.Communication> responseObserver = StreamRecorder.create();
-        endpoint.getCommunication(request, responseObserver);
+        this.endpoint.getCommunication(request, responseObserver);
 
         assertThat(responseObserver.getError()).isNotNull();
         assertThat(responseObserver.getError()).isInstanceOf(StatusRuntimeException.class);
