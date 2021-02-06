@@ -81,7 +81,7 @@ public class ManageVehicleEndpointTests {
     public void beforeEach() {
         initMocks(this);
 
-        endpoint = new ManageVehicleEndpoint(service);
+        this.endpoint = new ManageVehicleEndpoint(this.service);
     }
 
     /**
@@ -89,7 +89,7 @@ public class ManageVehicleEndpointTests {
      */
     @Test
     public void getAllApi() {
-        when(repository.getAll()).thenReturn(Arrays.asList(new Vehicle[] {
+        when(this.repository.getAll()).thenReturn(Arrays.asList(new Vehicle[] {
             newNormalVehicle(DEFAULT_VEHICLE_ID, DEFAULT_VERSION1, DEFAULT_GENERATOR.get()),
             newNormalVehicle(DEFAULT_VEHICLE_ID, DEFAULT_VERSION1, DEFAULT_GENERATOR.get()),
             newNormalVehicle(DEFAULT_VEHICLE_ID, DEFAULT_VERSION1, DEFAULT_GENERATOR.get())
@@ -97,7 +97,7 @@ public class ManageVehicleEndpointTests {
 
         Empty request = Empty.newBuilder().build();
         StreamRecorder<ListVehiclesResponses> responseObserver = StreamRecorder.create();
-        endpoint.listVehicles(request, responseObserver);
+        this.endpoint.listVehicles(request, responseObserver);
 
         assertThat(responseObserver.getError()).isNull();
         List<ListVehiclesResponses> results = responseObserver.getValues();
@@ -117,7 +117,7 @@ public class ManageVehicleEndpointTests {
     public void getAllApiNotFoundError() {
         Empty request = Empty.newBuilder().build();
         StreamRecorder<ListVehiclesResponses> responseObserver = StreamRecorder.create();
-        endpoint.listVehicles(request, responseObserver);
+        this.endpoint.listVehicles(request, responseObserver);
 
         assertThat(responseObserver.getError()).isNull();
         List<ListVehiclesResponses> results = responseObserver.getValues();
@@ -131,11 +131,11 @@ public class ManageVehicleEndpointTests {
      */
     @Test
     public void getAllApiInternalError() {
-        when(repository.getAll()).thenThrow(new IllegalStateException());
+        when(this.repository.getAll()).thenThrow(new IllegalStateException());
 
         Empty request = Empty.newBuilder().build();
         StreamRecorder<ListVehiclesResponses> responseObserver = StreamRecorder.create();
-        endpoint.listVehicles(request, responseObserver);
+        this.endpoint.listVehicles(request, responseObserver);
 
         assertThat(responseObserver.getError()).isNotNull();
         assertThat(responseObserver.getError()).isInstanceOf(StatusRuntimeException.class);
@@ -148,7 +148,7 @@ public class ManageVehicleEndpointTests {
      */
     @Test
     public void getOneApi() {
-        when(repository.getById(DEFAULT_VEHICLE_ID))
+        when(this.repository.getById(DEFAULT_VEHICLE_ID))
                 .thenReturn(newNormalVehicle(
                         DEFAULT_VEHICLE_ID,
                         DEFAULT_VERSION1,
@@ -158,7 +158,7 @@ public class ManageVehicleEndpointTests {
                 .setId(DEFAULT_VEHICLE_ID.getId())
                 .build();
         StreamRecorder<proto.skysign.common.Vehicle> responseObserver = StreamRecorder.create();
-        endpoint.getVehicle(request, responseObserver);
+        this.endpoint.getVehicle(request, responseObserver);
 
         assertThat(responseObserver.getError()).isNull();
         List<proto.skysign.common.Vehicle> results = responseObserver.getValues();
@@ -176,7 +176,7 @@ public class ManageVehicleEndpointTests {
                 .setId(DEFAULT_VEHICLE_ID.getId())
                 .build();
         StreamRecorder<proto.skysign.common.Vehicle> responseObserver = StreamRecorder.create();
-        endpoint.getVehicle(request, responseObserver);
+        this.endpoint.getVehicle(request, responseObserver);
 
         assertThat(responseObserver.getError()).isNotNull();
         assertThat(responseObserver.getError()).isInstanceOf(StatusRuntimeException.class);
@@ -189,13 +189,13 @@ public class ManageVehicleEndpointTests {
      */
     @Test
     public void getOneApiInternalError() {
-        when(repository.getById(DEFAULT_VEHICLE_ID)).thenThrow(new IllegalStateException());
+        when(this.repository.getById(DEFAULT_VEHICLE_ID)).thenThrow(new IllegalStateException());
 
         GetVehicleRequest request = GetVehicleRequest.newBuilder()
                 .setId(DEFAULT_VEHICLE_ID.getId())
                 .build();
         StreamRecorder<proto.skysign.common.Vehicle> responseObserver = StreamRecorder.create();
-        endpoint.getVehicle(request, responseObserver);
+        this.endpoint.getVehicle(request, responseObserver);
 
         assertThat(responseObserver.getError()).isNotNull();
         assertThat(responseObserver.getError()).isInstanceOf(StatusRuntimeException.class);
@@ -208,14 +208,14 @@ public class ManageVehicleEndpointTests {
      */
     @Test
     public void createApi() {
-        when(generator.newVehicleId()).thenReturn(DEFAULT_VEHICLE_ID);
-        when(generator.newVersion()).thenReturn(DEFAULT_VERSION1);
+        when(this.generator.newVehicleId()).thenReturn(DEFAULT_VEHICLE_ID);
+        when(this.generator.newVersion()).thenReturn(DEFAULT_VERSION1);
 
         proto.skysign.common.Vehicle request = newNoIdVehicleGrpc();
         StreamRecorder<proto.skysign.common.Vehicle> responseObserver = StreamRecorder.create();
-        endpoint.createVehicle(request, responseObserver);
+        this.endpoint.createVehicle(request, responseObserver);
 
-        verify(repository, times(1)).save(newNormalVehicle(
+        verify(this.repository, times(1)).save(newNormalVehicle(
                 DEFAULT_VEHICLE_ID,
                 DEFAULT_VERSION1,
                 DEFAULT_GENERATOR.get()
@@ -233,11 +233,11 @@ public class ManageVehicleEndpointTests {
      */
     @Test
     public void createApiInternalError() {
-        doThrow(new IllegalStateException()).when(repository).save(any());
+        doThrow(new IllegalStateException()).when(this.repository).save(any());
 
         proto.skysign.common.Vehicle request = newNoIdVehicleGrpc();
         StreamRecorder<proto.skysign.common.Vehicle> responseObserver = StreamRecorder.create();
-        endpoint.createVehicle(request, responseObserver);
+        this.endpoint.createVehicle(request, responseObserver);
 
         assertThat(responseObserver.getError()).isNotNull();
         assertThat(responseObserver.getError()).isInstanceOf(StatusRuntimeException.class);
@@ -250,20 +250,20 @@ public class ManageVehicleEndpointTests {
      */
     @Test
     public void updateApi() {
-        when(repository.getById(DEFAULT_VEHICLE_ID))
+        when(this.repository.getById(DEFAULT_VEHICLE_ID))
                 .thenReturn(newNormalVehicle(
                         DEFAULT_VEHICLE_ID,
                         DEFAULT_VERSION1,
                         DEFAULT_GENERATOR.get()));
 
-        when(generator.newVehicleId()).thenReturn(DEFAULT_VEHICLE_ID);
-        when(generator.newVersion()).thenReturn(DEFAULT_VERSION1);
+        when(this.generator.newVehicleId()).thenReturn(DEFAULT_VEHICLE_ID);
+        when(this.generator.newVersion()).thenReturn(DEFAULT_VERSION1);
 
         proto.skysign.common.Vehicle request = newNormalVehicleGrpc(DEFAULT_VEHICLE_ID);
         StreamRecorder<proto.skysign.common.Vehicle> responseObserver = StreamRecorder.create();
-        endpoint.updateVehicle(request, responseObserver);
+        this.endpoint.updateVehicle(request, responseObserver);
 
-        verify(repository, times(1)).save(newNormalVehicle(
+        verify(this.repository, times(1)).save(newNormalVehicle(
                 DEFAULT_VEHICLE_ID,
                 DEFAULT_VERSION1,
                 DEFAULT_GENERATOR.get()
@@ -283,7 +283,7 @@ public class ManageVehicleEndpointTests {
     public void updateApiNotFoundError() {
         proto.skysign.common.Vehicle request = newNormalVehicleGrpc(DEFAULT_VEHICLE_ID);
         StreamRecorder<proto.skysign.common.Vehicle> responseObserver = StreamRecorder.create();
-        endpoint.updateVehicle(request, responseObserver);
+        this.endpoint.updateVehicle(request, responseObserver);
 
         assertThat(responseObserver.getError()).isNotNull();
         assertThat(responseObserver.getError()).isInstanceOf(StatusRuntimeException.class);
@@ -296,16 +296,16 @@ public class ManageVehicleEndpointTests {
      */
     @Test
     public void updateApiInternalError() {
-        when(repository.getById(DEFAULT_VEHICLE_ID))
+        when(this.repository.getById(DEFAULT_VEHICLE_ID))
                 .thenReturn(newNormalVehicle(
                         DEFAULT_VEHICLE_ID,
                         DEFAULT_VERSION1,
                         DEFAULT_GENERATOR.get()));
-        doThrow(new IllegalStateException()).when(repository).save(any());
+        doThrow(new IllegalStateException()).when(this.repository).save(any());
 
         proto.skysign.common.Vehicle request = newNormalVehicleGrpc(DEFAULT_VEHICLE_ID);
         StreamRecorder<proto.skysign.common.Vehicle> responseObserver = StreamRecorder.create();
-        endpoint.updateVehicle(request, responseObserver);
+        this.endpoint.updateVehicle(request, responseObserver);
 
         assertThat(responseObserver.getError()).isNotNull();
         assertThat(responseObserver.getError()).isInstanceOf(StatusRuntimeException.class);
@@ -318,7 +318,7 @@ public class ManageVehicleEndpointTests {
      */
     @Test
     public void deleteApi() {
-        when(repository.getById(DEFAULT_VEHICLE_ID))
+        when(this.repository.getById(DEFAULT_VEHICLE_ID))
                 .thenReturn(newNormalVehicle(
                         DEFAULT_VEHICLE_ID,
                         DEFAULT_VERSION1,
@@ -328,9 +328,9 @@ public class ManageVehicleEndpointTests {
                 .setId(DEFAULT_VEHICLE_ID.getId())
                 .build();
         StreamRecorder<Empty> responseObserver = StreamRecorder.create();
-        endpoint.deleteVehicle(request, responseObserver);
+        this.endpoint.deleteVehicle(request, responseObserver);
 
-        verify(repository, times(1)).remove(DEFAULT_VEHICLE_ID, DEFAULT_VERSION1);
+        verify(this.repository, times(1)).remove(DEFAULT_VEHICLE_ID, DEFAULT_VERSION1);
 
         assertThat(responseObserver.getError()).isNull();
         List<Empty> results = responseObserver.getValues();
@@ -346,7 +346,7 @@ public class ManageVehicleEndpointTests {
                 .setId(DEFAULT_VEHICLE_ID.getId())
                 .build();
         StreamRecorder<Empty> responseObserver = StreamRecorder.create();
-        endpoint.deleteVehicle(request, responseObserver);
+        this.endpoint.deleteVehicle(request, responseObserver);
 
         assertThat(responseObserver.getError()).isNotNull();
         assertThat(responseObserver.getError()).isInstanceOf(StatusRuntimeException.class);
@@ -359,18 +359,18 @@ public class ManageVehicleEndpointTests {
      */
     @Test
     public void deleteApiInternalError() {
-        when(repository.getById(DEFAULT_VEHICLE_ID))
+        when(this.repository.getById(DEFAULT_VEHICLE_ID))
                 .thenReturn(newNormalVehicle(
                         DEFAULT_VEHICLE_ID,
                         DEFAULT_VERSION1,
                         DEFAULT_GENERATOR.get()));
-        doThrow(new IllegalStateException()).when(repository).remove(any(), any());
+        doThrow(new IllegalStateException()).when(this.repository).remove(any(), any());
 
         DeleteVehicleRequest request = DeleteVehicleRequest.newBuilder()
                 .setId(DEFAULT_VEHICLE_ID.getId())
                 .build();
         StreamRecorder<Empty> responseObserver = StreamRecorder.create();
-        endpoint.deleteVehicle(request, responseObserver);
+        this.endpoint.deleteVehicle(request, responseObserver);
 
         assertThat(responseObserver.getError()).isNotNull();
         assertThat(responseObserver.getError()).isInstanceOf(StatusRuntimeException.class);

@@ -118,9 +118,8 @@ public class ManagementVehiclesTests {
         CommunicationId newCommId = new CommunicationId("new comm id");
         vehicle.giveCommId(newCommId);
 
-        CommunicationIdChangedEvent event
-                = new CommunicationIdChangedEvent(
-                    null,
+        CommunicationIdGaveEvent event
+                = new CommunicationIdGaveEvent(
                     newCommId,
                     DEFAULT_VEHICLE_ID,
                     DEFAULT_VERSION2
@@ -130,7 +129,7 @@ public class ManagementVehiclesTests {
             () -> assertThat(vehicle.getCommId()).isEqualTo(newCommId),
             () -> assertThat(vehicle.getVersion()).isEqualTo(DEFAULT_VERSION1),
             () -> assertThat(vehicle.getNewVersion()).isEqualTo(DEFAULT_VERSION2),
-            () -> verify(publisher, times(1)).publish(event)
+            () -> verify(this.publisher, times(1)).publish(event)
         );
     }
 
@@ -143,7 +142,7 @@ public class ManagementVehiclesTests {
      */
     @Test
     public void changePreExistVehiclesCommIdAndPublishEventTest() {
-        when(repository.getById(DEFAULT_VEHICLE_ID))
+        when(this.repository.getById(DEFAULT_VEHICLE_ID))
                 .thenReturn(newNormalVehicle(DEFAULT_VEHICLE_ID, DEFAULT_VERSION1, DEFAULT_GENERATOR_1CALL.get()));
 
         Vehicle vehicle = this.repository.getById(DEFAULT_VEHICLE_ID);
@@ -153,9 +152,14 @@ public class ManagementVehiclesTests {
         CommunicationId newCommId = new CommunicationId("new comm id");
         vehicle.giveCommId(newCommId);
 
-        CommunicationIdChangedEvent event
-                = new CommunicationIdChangedEvent(
+        CommunicationIdRemovedEvent removedEvent
+                = new CommunicationIdRemovedEvent(
                     DEFAULT_COMMUNICATION_ID,
+                    DEFAULT_VERSION2
+                );
+
+        CommunicationIdGaveEvent gaveEvent
+                = new CommunicationIdGaveEvent(
                     newCommId,
                     DEFAULT_VEHICLE_ID,
                     DEFAULT_VERSION2
@@ -165,7 +169,39 @@ public class ManagementVehiclesTests {
             () -> assertThat(vehicle.getCommId()).isEqualTo(newCommId),
             () -> assertThat(vehicle.getVersion()).isEqualTo(DEFAULT_VERSION1),
             () -> assertThat(vehicle.getNewVersion()).isEqualTo(DEFAULT_VERSION2),
-            () -> verify(publisher, times(1)).publish(event)
+            () -> verify(this.publisher, times(1)).publish(removedEvent),
+            () -> verify(this.publisher, times(1)).publish(gaveEvent)
+        );
+    }
+
+    /**
+     * Userが、既存のVehicleエンティティに対してCommunicationIDを更新する。<br>
+     * VehicleエンティティからCommunicationIDを削除することで、<br>
+     * イベントを生成して発行する。<br>
+     * その際、古いCommunicationIDが、購読者に通知されることを検証する。
+     */
+    @Test
+    public void removePreExistVehiclesCommIdAndPublishEventTest() {
+        when(this.repository.getById(DEFAULT_VEHICLE_ID))
+                .thenReturn(newNormalVehicle(DEFAULT_VEHICLE_ID, DEFAULT_VERSION1, DEFAULT_GENERATOR_1CALL.get()));
+
+        Vehicle vehicle = this.repository.getById(DEFAULT_VEHICLE_ID);
+
+        vehicle.setPublisher(this.publisher);
+
+        vehicle.removeCommId();
+
+        CommunicationIdRemovedEvent event
+                = new CommunicationIdRemovedEvent(
+                    DEFAULT_COMMUNICATION_ID,
+                    DEFAULT_VERSION2
+                );
+
+        assertAll(
+            () -> assertThat(vehicle.getCommId()).isNull(),
+            () -> assertThat(vehicle.getVersion()).isEqualTo(DEFAULT_VERSION1),
+            () -> assertThat(vehicle.getNewVersion()).isEqualTo(DEFAULT_VERSION2),
+            () -> verify(this.publisher, times(1)).publish(event)
         );
     }
 }

@@ -9,8 +9,8 @@ import net.tomofiles.skysign.communication.domain.communication.CommunicationFac
 import net.tomofiles.skysign.communication.domain.communication.CommunicationRepository;
 import net.tomofiles.skysign.communication.domain.communication.Generator;
 import net.tomofiles.skysign.communication.service.dpo.CreateCommunicationRequestDpo;
+import net.tomofiles.skysign.communication.service.dpo.DeleteCommunicationRequestDpo;
 import net.tomofiles.skysign.communication.service.dpo.ManageCommunicationResponseDpo;
-import net.tomofiles.skysign.communication.service.dpo.RecreateCommunicationRequestDpo;
 
 @Component
 @AllArgsConstructor
@@ -32,20 +32,15 @@ public class ManageCommunicationService {
     }
 
     @Transactional
-    public void recreateCommunication(RecreateCommunicationRequestDpo requestDpo, ManageCommunicationResponseDpo responseDpo) {
-        Communication oldComm = this.communicationRepository.getById(requestDpo.getBeforeCommId());
+    public void deleteCommunication(DeleteCommunicationRequestDpo requestDpo, ManageCommunicationResponseDpo responseDpo) {
+        Communication communication = this.communicationRepository.getById(requestDpo.getCommId());
 
-        if (oldComm != null) {
-            this.communicationRepository.remove(oldComm.getId());
+        if (communication == null) {
+            return;
         }
-        
-        Communication newComm = CommunicationFactory.newInstance(
-                requestDpo.getAfterCommId(),
-                requestDpo.getVehicleId(),
-                generator);
 
-        this.communicationRepository.save(newComm);
+        this.communicationRepository.remove(communication.getId());
 
-        responseDpo.setCommunication(newComm);
+        responseDpo.setCommunication(communication);
     }
 }

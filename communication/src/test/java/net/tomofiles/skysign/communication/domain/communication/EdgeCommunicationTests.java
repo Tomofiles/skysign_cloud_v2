@@ -87,13 +87,13 @@ public class EdgeCommunicationTests {
      */
     @Test
     public void pushTelemetryToCommunicationTest() {
-        when(repository.getById(DEFAULT_COMMUNICATION_ID))
+        when(this.repository.getById(DEFAULT_COMMUNICATION_ID))
                 .thenReturn(CommunicationFactory.newInstance(
                         DEFAULT_COMMUNICATION_ID,
                         DEFAULT_VEHICLE_ID,
                         DEFAULT_GENERATOR.get()));
 
-        Communication communication = repository.getById(DEFAULT_COMMUNICATION_ID);
+        Communication communication = this.repository.getById(DEFAULT_COMMUNICATION_ID);
 
         communication.pushTelemetry(newNormalTelemetrySnapshot());
 
@@ -107,7 +107,7 @@ public class EdgeCommunicationTests {
      */
     @Test
     public void pullCommandIDsFromCommunicationTest() {
-        when(repository.getById(DEFAULT_COMMUNICATION_ID))
+        when(this.repository.getById(DEFAULT_COMMUNICATION_ID))
                 .thenReturn(newSeveralCommandsCommunication(
                         DEFAULT_COMMUNICATION_ID,
                         DEFAULT_VEHICLE_ID,
@@ -115,7 +115,7 @@ public class EdgeCommunicationTests {
                         DEFAULT_MISSION_ID,
                         DEFAULT_GENERATOR_IN_RONDOM_ORDER.get()));
 
-        Communication communication = repository.getById(DEFAULT_COMMUNICATION_ID);
+        Communication communication = this.repository.getById(DEFAULT_COMMUNICATION_ID);
 
         List<CommandId> commandIds = communication.getCommandIds();
 
@@ -133,7 +133,7 @@ public class EdgeCommunicationTests {
      */
     @Test
     public void pullCommandFromCommunicationTest() {
-        when(repository.getById(DEFAULT_COMMUNICATION_ID))
+        when(this.repository.getById(DEFAULT_COMMUNICATION_ID))
                 .thenReturn(newSingleCommandCommunication(
                         DEFAULT_COMMUNICATION_ID,
                         DEFAULT_VEHICLE_ID,
@@ -141,7 +141,7 @@ public class EdgeCommunicationTests {
                         DEFAULT_MISSION_ID,
                         DEFAULT_GENERATOR.get()));
 
-        Communication communication = repository.getById(DEFAULT_COMMUNICATION_ID);
+        Communication communication = this.repository.getById(DEFAULT_COMMUNICATION_ID);
 
         CommandType type = communication.pullCommandById(DEFAULT_COMMAND_ID);
 
@@ -157,7 +157,7 @@ public class EdgeCommunicationTests {
      */
     @Test
     public void pullNoCommandFromCommunicationTest() {
-        when(repository.getById(DEFAULT_COMMUNICATION_ID))
+        when(this.repository.getById(DEFAULT_COMMUNICATION_ID))
                 .thenReturn(newNormalCommunication(
                         DEFAULT_COMMUNICATION_ID,
                         DEFAULT_VEHICLE_ID,
@@ -165,7 +165,7 @@ public class EdgeCommunicationTests {
                         DEFAULT_MISSION_ID,
                         DEFAULT_GENERATOR.get()));
 
-        Communication communication = repository.getById(DEFAULT_COMMUNICATION_ID);
+        Communication communication = this.repository.getById(DEFAULT_COMMUNICATION_ID);
 
         CommandType type = communication.pullCommandById(DEFAULT_COMMAND_ID);
 
