@@ -32,7 +32,7 @@ spec:
       - name: skysign-communication-backend
         image: ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com/skysign-cloud-v2:communication_${CIRCLE_SHA1}
         command: ["java"]
-        args: ["-cp", "app:app/lib/*", "net.tomofiles.skysign.communication.CommunicationApplication"]
+        args: ["-cp", "app:app/lib/*", "net.tomofiles.skysign.CommunicationApplication"]
         env:
         - name: db.host
           value: "skysign-db"

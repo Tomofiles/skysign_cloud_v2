@@ -25,8 +25,8 @@ import net.tomofiles.skysign.communication.domain.communication.CommunicationFac
 import net.tomofiles.skysign.communication.domain.communication.CommunicationId;
 import net.tomofiles.skysign.communication.domain.communication.Generator;
 import net.tomofiles.skysign.communication.domain.communication.MissionId;
+import net.tomofiles.skysign.communication.domain.communication.VehicleId;
 import net.tomofiles.skysign.communication.domain.communication.component.CommunicationComponentDto;
-import net.tomofiles.skysign.communication.domain.vehicle.VehicleId;
 
 import static net.tomofiles.skysign.communication.domain.communication.CommunicationObjectMother.newSingleCommandCommunication;
 import static net.tomofiles.skysign.communication.domain.communication.ComponentDtoObjectMother.newNormalCommunicationComponentDto;

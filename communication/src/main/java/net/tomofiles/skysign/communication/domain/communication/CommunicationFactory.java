@@ -5,7 +5,6 @@ import java.util.stream.Collectors;
 import net.tomofiles.skysign.communication.domain.communication.component.CommandComponentDto;
 import net.tomofiles.skysign.communication.domain.communication.component.CommunicationComponentDto;
 import net.tomofiles.skysign.communication.domain.communication.component.TelemetryComponentDto;
-import net.tomofiles.skysign.communication.domain.vehicle.VehicleId;
 
 public class CommunicationFactory {
 

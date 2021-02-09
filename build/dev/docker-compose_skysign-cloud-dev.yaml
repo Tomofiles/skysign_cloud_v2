@@ -53,7 +53,7 @@ services:
      - db.host=skysign-communication-db
      - mq.host=skysign-mq
      - mq.ssl.enabled=false
-    command: java -cp app:app/lib/* net.tomofiles.skysign.communication.CommunicationApplication
+    command: java -cp app:app/lib/* net.tomofiles.skysign.CommunicationApplication
     depends_on:
       - skysign-communication-db-for-debugging
       - skysign-mq-for-debugging

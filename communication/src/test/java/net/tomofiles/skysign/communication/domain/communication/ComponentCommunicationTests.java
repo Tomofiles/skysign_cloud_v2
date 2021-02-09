@@ -4,7 +4,6 @@ import static com.google.common.truth.Truth.assertThat;
 import org.junit.jupiter.api.Test;
 
 import net.tomofiles.skysign.communication.domain.communication.component.CommunicationComponentDto;
-import net.tomofiles.skysign.communication.domain.vehicle.VehicleId;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;

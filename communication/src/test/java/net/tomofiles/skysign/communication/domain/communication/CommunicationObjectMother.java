@@ -4,8 +4,6 @@ import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 
-import net.tomofiles.skysign.communication.domain.vehicle.VehicleId;
-
 public class CommunicationObjectMother {
     
     /**

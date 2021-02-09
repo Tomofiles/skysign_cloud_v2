@@ -28,7 +28,7 @@ import net.tomofiles.skysign.communication.domain.communication.CommunicationRep
 import net.tomofiles.skysign.communication.domain.communication.Generator;
 import net.tomofiles.skysign.communication.domain.communication.MissionId;
 import net.tomofiles.skysign.communication.domain.communication.component.CommunicationComponentDto;
-import net.tomofiles.skysign.communication.domain.vehicle.VehicleId;
+import net.tomofiles.skysign.communication.domain.communication.VehicleId;
 import net.tomofiles.skysign.communication.service.CommunicateEdgeService;
 import proto.skysign.common.CommandType;
 import proto.skysign.GetCommunicationRequest;

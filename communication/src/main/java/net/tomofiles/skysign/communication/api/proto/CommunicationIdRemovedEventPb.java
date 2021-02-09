@@ -2,9 +2,7 @@ package net.tomofiles.skysign.communication.api.proto;
 
 import com.google.protobuf.InvalidProtocolBufferException;
 
-import net.tomofiles.skysign.communication.domain.communication.CommunicationId;
-import net.tomofiles.skysign.communication.domain.vehicle.CommunicationIdRemovedEvent;
-import net.tomofiles.skysign.communication.domain.vehicle.Version;
+import net.tomofiles.skysign.communication.api.event.event.CommunicationIdRemovedEvent;
 
 public class CommunicationIdRemovedEventPb {
 
@@ -21,7 +19,7 @@ public class CommunicationIdRemovedEventPb {
 
     public CommunicationIdRemovedEvent getEvent() {
         return new CommunicationIdRemovedEvent(
-            new CommunicationId(this.event.getCommunicationId()),
-            new Version(this.event.getVersion()));
+            this.event.getCommunicationId(),
+            this.event.getVersion());
     }
 }
