@@ -13,6 +13,8 @@ import net.tomofiles.skysign.communication.api.grpc.PullTelemetryRequestDpoGrpc;
 import net.tomofiles.skysign.communication.api.grpc.PullTelemetryResponseDpoGrpc;
 import net.tomofiles.skysign.communication.api.grpc.PushCommandRequestDpoGrpc;
 import net.tomofiles.skysign.communication.api.grpc.PushCommandResponseDpoGrpc;
+import net.tomofiles.skysign.communication.api.grpc.PushUploadMissionRequestDpoGrpc;
+import net.tomofiles.skysign.communication.api.grpc.PushUploadMissionResponseDpoGrpc;
 import net.tomofiles.skysign.communication.api.grpc.UncontrolRequestDpoGrpc;
 import net.tomofiles.skysign.communication.api.grpc.UncontrolResponseDpoGrpc;
 import net.tomofiles.skysign.communication.service.CommunicationUserService;
@@ -24,6 +26,8 @@ import proto.skysign.PullTelemetryRequest;
 import proto.skysign.PullTelemetryResponse;
 import proto.skysign.PushCommandRequest;
 import proto.skysign.PushCommandResponse;
+import proto.skysign.PushUploadMissionRequest;
+import proto.skysign.PushUploadMissionResponse;
 import proto.skysign.UncontrolRequest;
 import proto.skysign.UncontrolResponse;
 import proto.skysign.CommunicationUserServiceGrpc.CommunicationUserServiceImplBase;
@@ -106,6 +110,37 @@ public class CommunicationUserEndpoint extends CommunicationUserServiceImplBase 
         PushCommandResponse r = PushCommandResponse.newBuilder()
                 .setId(request.getId())
                 .setType(request.getType())
+                .build();
+        responseObserver.onNext(r); 
+        responseObserver.onCompleted();
+    }
+
+    @Override
+    public void pushUploadMission(PushUploadMissionRequest request, StreamObserver<PushUploadMissionResponse> responseObserver) {
+        PushUploadMissionRequestDpoGrpc requestDpo = new PushUploadMissionRequestDpoGrpc(request);
+        PushUploadMissionResponseDpoGrpc responseDpo = new PushUploadMissionResponseDpoGrpc();
+
+        try {
+            this.service.pushUploadMission(requestDpo, responseDpo);
+        } catch (Exception e) {
+            responseObserver.onError(Status
+                    .INTERNAL
+                    .withCause(e)
+                    .asRuntimeException());
+            return;
+        }
+
+        if (responseDpo.isEmpty()) {
+            responseObserver.onError(Status
+                    .NOT_FOUND
+                    .withDescription("communication-idに合致するcommunicationが存在しません。")
+                    .asRuntimeException());
+            return;
+        }
+
+        PushUploadMissionResponse r = PushUploadMissionResponse.newBuilder()
+                .setId(request.getId())
+                .setMissionId(request.getMissionId())
                 .build();
         responseObserver.onNext(r); 
         responseObserver.onCompleted();

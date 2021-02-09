@@ -93,12 +93,12 @@ public class UserCommunicationTests {
     }
 
     /**
-     * Userが、既存のCommunicationエンティティにUploadMissionCommandを追加する。<br>
+     * Userが、既存のCommunicationエンティティにUploadMissionを追加する。<br>
      * Commandが追加され、IDとTimeが付与されていることを検証する。<br>
      * また、UploadMissionが追加され、CommandIDとMissionIDが付与されていることを検証する。
      */
     @Test
-    public void pushUploadMissionCommandToCommunicationTest() {
+    public void pushUploadMissionToCommunicationTest() {
         when(this.repository.getById(DEFAULT_COMMUNICATION_ID))
                 .thenReturn(CommunicationFactory.newInstance(
                         DEFAULT_COMMUNICATION_ID,
@@ -107,7 +107,7 @@ public class UserCommunicationTests {
 
         Communication communication = this.repository.getById(DEFAULT_COMMUNICATION_ID);
 
-        communication.pushUploadMissionCommand(DEFAULT_MISSION_ID);
+        communication.pushUploadMission(DEFAULT_MISSION_ID);
 
         assertAll(
             () -> assertThat(communication.getCommandIds()).hasSize(1),

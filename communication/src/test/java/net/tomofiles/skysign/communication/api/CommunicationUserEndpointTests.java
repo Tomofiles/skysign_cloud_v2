@@ -27,6 +27,7 @@ import net.tomofiles.skysign.communication.domain.communication.CommunicationFac
 import net.tomofiles.skysign.communication.domain.communication.CommunicationId;
 import net.tomofiles.skysign.communication.domain.communication.CommunicationRepository;
 import net.tomofiles.skysign.communication.domain.communication.Generator;
+import net.tomofiles.skysign.communication.domain.communication.MissionId;
 import net.tomofiles.skysign.communication.domain.communication.component.CommunicationComponentDto;
 import net.tomofiles.skysign.communication.domain.communication.VehicleId;
 import net.tomofiles.skysign.communication.service.CommunicationUserService;
@@ -39,6 +40,8 @@ import proto.skysign.PullTelemetryRequest;
 import proto.skysign.PullTelemetryResponse;
 import proto.skysign.PushCommandRequest;
 import proto.skysign.PushCommandResponse;
+import proto.skysign.PushUploadMissionRequest;
+import proto.skysign.PushUploadMissionResponse;
 import proto.skysign.UncontrolRequest;
 import proto.skysign.UncontrolResponse;
 
@@ -46,6 +49,7 @@ import static net.tomofiles.skysign.communication.api.GrpcObjectMother.newNormal
 import static net.tomofiles.skysign.communication.api.GrpcObjectMother.newNormalPullTelemetryResponseGrpc;
 import static net.tomofiles.skysign.communication.domain.communication.CommunicationObjectMother.newNormalCommunication;
 import static net.tomofiles.skysign.communication.domain.communication.ComponentDtoObjectMother.newSingleCommandComponentDto;
+import static net.tomofiles.skysign.communication.domain.communication.ComponentDtoObjectMother.newSingleUploadMissionComponentDto;
 
 public class CommunicationUserEndpointTests {
     
@@ -53,6 +57,7 @@ public class CommunicationUserEndpointTests {
     private static final CommandId DEFAULT_COMMAND_ID = new CommandId(UUID.randomUUID().toString());
     private static final String DEFAULT_COMMAND_TYPE = "ARM";
     private static final VehicleId DEFAULT_VEHICLE_ID = new VehicleId(UUID.randomUUID().toString());
+    private static final MissionId DEFAULT_MISSION_ID = new MissionId(UUID.randomUUID().toString());
     private static final boolean DEFAULT_CONTROLLED = true;
     private static final LocalDateTime DEFAULT_COMMAND_TIME = LocalDateTime.of(2020, 1, 1, 0, 0, 0);
     private static final Supplier<Generator> DEFAULT_GENERATOR = () -> {
@@ -189,7 +194,9 @@ public class CommunicationUserEndpointTests {
         CommunicationComponentDto dto = CommunicationFactory.takeApart(commCaptor.getValue());
         assertThat(dto.getCommands()).hasSize(1);
         assertThat(dto.getCommands().get(0))
-                .isEqualTo(newSingleCommandComponentDto(DEFAULT_GENERATOR.get()));
+                .isEqualTo(newSingleCommandComponentDto(DEFAULT_GENERATOR.get(),
+                        net.tomofiles.skysign.communication.domain.communication.CommandType.valueOf(DEFAULT_COMMAND_TYPE)
+                ));
 
         assertThat(responseObserver.getError()).isNull();
         List<PushCommandResponse> results = responseObserver.getValues();
@@ -232,6 +239,85 @@ public class CommunicationUserEndpointTests {
                 .build();
         StreamRecorder<PushCommandResponse> responseObserver = StreamRecorder.create();
         this.endpoint.pushCommand(request, responseObserver);
+
+        assertThat(responseObserver.getError()).isNotNull();
+        assertThat(responseObserver.getError()).isInstanceOf(StatusRuntimeException.class);
+        assertThat(((StatusRuntimeException)responseObserver.getError()).getStatus().getCode())
+                .isEqualTo(Status.INTERNAL.getCode());
+    }
+
+    /**
+     * ユーザーは、ミッションアップロード送信APIを実行し、対象のCommunicationにコマンドを送信できる。
+     */
+    @Test
+    public void pushUploadMissionApi() {
+        when(this.repository.getById(DEFAULT_COMMUNICATION_ID))
+                .thenReturn(newNormalCommunication(
+                        DEFAULT_COMMUNICATION_ID,
+                        DEFAULT_VEHICLE_ID,
+                        DEFAULT_CONTROLLED,
+                        DEFAULT_GENERATOR.get()));
+
+        PushUploadMissionRequest request = PushUploadMissionRequest.newBuilder()
+                .setId(DEFAULT_COMMUNICATION_ID.getId())
+                .setMissionId(DEFAULT_MISSION_ID.getId())
+                .build();
+        StreamRecorder<PushUploadMissionResponse> responseObserver = StreamRecorder.create();
+        this.endpoint.pushUploadMission(request, responseObserver);
+
+        ArgumentCaptor<Communication> commCaptor = ArgumentCaptor.forClass(Communication.class);
+        verify(this.repository, times(1)).save(commCaptor.capture());
+
+        CommunicationComponentDto dto = CommunicationFactory.takeApart(commCaptor.getValue());
+        assertThat(dto.getCommands()).hasSize(1);
+        assertThat(dto.getCommands().get(0))
+                .isEqualTo(newSingleCommandComponentDto(DEFAULT_GENERATOR.get(),
+                        net.tomofiles.skysign.communication.domain.communication.CommandType.UPLOAD));
+        assertThat(dto.getUploadMissions()).hasSize(1);
+        assertThat(dto.getUploadMissions().get(0))
+                .isEqualTo(newSingleUploadMissionComponentDto(DEFAULT_GENERATOR.get(), DEFAULT_MISSION_ID));
+
+        assertThat(responseObserver.getError()).isNull();
+        List<PushUploadMissionResponse> results = responseObserver.getValues();
+        assertThat(results).hasSize(1);
+        PushUploadMissionResponse response = results.get(0);
+        assertThat(response).isEqualTo(PushUploadMissionResponse.newBuilder()
+                .setId(DEFAULT_COMMUNICATION_ID.getId())
+                .setMissionId(DEFAULT_MISSION_ID.getId())
+                .build());
+    }
+
+    /**
+     * ユーザーは、ミッションアップロード送信APIを実行し、未存在のID指定によりNOT_FOUNDエラーを検出できる。
+     */
+    @Test
+    public void pushUploadMissionApiNotFoundError() {
+        PushUploadMissionRequest request = PushUploadMissionRequest.newBuilder()
+                .setId(DEFAULT_COMMUNICATION_ID.getId())
+                .setMissionId(DEFAULT_MISSION_ID.getId())
+                .build();
+        StreamRecorder<PushUploadMissionResponse> responseObserver = StreamRecorder.create();
+        this.endpoint.pushUploadMission(request, responseObserver);
+
+        assertThat(responseObserver.getError()).isNotNull();
+        assertThat(responseObserver.getError()).isInstanceOf(StatusRuntimeException.class);
+        assertThat(((StatusRuntimeException)responseObserver.getError()).getStatus().getCode())
+                .isEqualTo(Status.NOT_FOUND.getCode());
+    }
+
+    /**
+     * ユーザーは、ミッションアップロード送信APIを実行し、DBエラーのよりINTERNALエラーを検出できる。
+     */
+    @Test
+    public void pushUploadMissionApiInternalError() {
+        when(this.repository.getById(DEFAULT_COMMUNICATION_ID)).thenThrow(new IllegalStateException());
+
+        PushUploadMissionRequest request = PushUploadMissionRequest.newBuilder()
+                .setId(DEFAULT_COMMUNICATION_ID.getId())
+                .setMissionId(DEFAULT_MISSION_ID.getId())
+                .build();
+        StreamRecorder<PushUploadMissionResponse> responseObserver = StreamRecorder.create();
+        this.endpoint.pushUploadMission(request, responseObserver);
 
         assertThat(responseObserver.getError()).isNotNull();
         assertThat(responseObserver.getError()).isInstanceOf(StatusRuntimeException.class);

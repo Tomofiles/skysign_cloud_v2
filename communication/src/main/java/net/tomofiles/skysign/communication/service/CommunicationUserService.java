@@ -16,6 +16,8 @@ import net.tomofiles.skysign.communication.service.dpo.PullTelemetryRequestDpo;
 import net.tomofiles.skysign.communication.service.dpo.PullTelemetryResponseDpo;
 import net.tomofiles.skysign.communication.service.dpo.PushCommandRequestDpo;
 import net.tomofiles.skysign.communication.service.dpo.PushCommandResponseDpo;
+import net.tomofiles.skysign.communication.service.dpo.PushUploadMissionRequestDpo;
+import net.tomofiles.skysign.communication.service.dpo.PushUploadMissionResponseDpo;
 import net.tomofiles.skysign.communication.service.dpo.UncontrolRequestDpo;
 import net.tomofiles.skysign.communication.service.dpo.UncontrolResponseDpo;
 
@@ -71,6 +73,21 @@ public class CommunicationUserService {
         }
 
         communication.pushCommand(requestDpo.getCommandType());
+
+        this.communicationRepository.save(communication);
+
+        responseDpo.setCommunication(communication);
+    }
+
+    @Transactional
+    public void pushUploadMission(PushUploadMissionRequestDpo requestDpo, PushUploadMissionResponseDpo responseDpo) {
+        Communication communication = this.communicationRepository.getById(requestDpo.getCommId());
+
+        if (communication == null) {
+            return;
+        }
+
+        communication.pushUploadMission(requestDpo.getMissionId());
 
         this.communicationRepository.save(communication);
 

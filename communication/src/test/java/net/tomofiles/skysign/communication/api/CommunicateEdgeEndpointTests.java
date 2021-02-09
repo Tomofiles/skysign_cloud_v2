@@ -26,12 +26,15 @@ import net.tomofiles.skysign.communication.domain.communication.CommunicationFac
 import net.tomofiles.skysign.communication.domain.communication.CommunicationId;
 import net.tomofiles.skysign.communication.domain.communication.CommunicationRepository;
 import net.tomofiles.skysign.communication.domain.communication.Generator;
+import net.tomofiles.skysign.communication.domain.communication.MissionId;
 import net.tomofiles.skysign.communication.domain.communication.component.CommunicationComponentDto;
 import net.tomofiles.skysign.communication.domain.communication.VehicleId;
 import net.tomofiles.skysign.communication.service.CommunicateEdgeService;
 import proto.skysign.common.CommandType;
 import proto.skysign.PullCommandRequest;
 import proto.skysign.PullCommandResponse;
+import proto.skysign.PullUploadMissionRequest;
+import proto.skysign.PullUploadMissionResponse;
 import proto.skysign.PushTelemetryRequest;
 import proto.skysign.PushTelemetryResponse;
 
@@ -45,6 +48,7 @@ public class CommunicateEdgeEndpointTests {
     private static final CommandId DEFAULT_COMMAND_ID = new CommandId(UUID.randomUUID().toString());
     private static final String DEFAULT_COMMAND_TYPE = "ARM";
     private static final VehicleId DEFAULT_VEHICLE_ID = new VehicleId(UUID.randomUUID().toString());
+    private static final MissionId DEFAULT_MISSION_ID = new MissionId("MISSION_ID_SAMPLE_1");
     private static final boolean DEFAULT_CONTROLLED = true;
     private static final LocalDateTime DEFAULT_COMMAND_TIME = LocalDateTime.of(2020, 1, 1, 0, 0, 0);
     private static final Supplier<Generator> DEFAULT_GENERATOR = () -> {
@@ -284,6 +288,109 @@ public class CommunicateEdgeEndpointTests {
                 .build();
         StreamRecorder<PullCommandResponse> responseObserver = StreamRecorder.create();
         this.endpoint.pullCommand(request, responseObserver);
+
+        assertThat(responseObserver.getError()).isNotNull();
+        assertThat(responseObserver.getError()).isInstanceOf(StatusRuntimeException.class);
+        assertThat(((StatusRuntimeException)responseObserver.getError()).getStatus().getCode())
+                .isEqualTo(Status.INTERNAL.getCode());
+    }
+
+    /**
+     * エッジは、アップロードミッション受信APIを実行し、対象のCommunicationからアップロードミッションを受信できる。<br>
+     * Communicationからアップロードミッションを取得すると、エンティティ内から削除されることを検証する。
+     */
+    @Test
+    public void pullUploadMissionApi() {
+        when(this.repository.getById(DEFAULT_COMMUNICATION_ID))
+                .thenReturn(newSingleCommandCommunication(
+                        DEFAULT_COMMUNICATION_ID,
+                        DEFAULT_VEHICLE_ID,
+                        DEFAULT_CONTROLLED,
+                        DEFAULT_GENERATOR.get(),
+                        DEFAULT_GENERATOR.get(),
+                        DEFAULT_GENERATOR.get()));
+
+        PullUploadMissionRequest request = PullUploadMissionRequest.newBuilder()
+                .setId(DEFAULT_COMMUNICATION_ID.getId())
+                .setCommandId(DEFAULT_COMMAND_ID.getId())
+                .build();
+        StreamRecorder<PullUploadMissionResponse> responseObserver = StreamRecorder.create();
+        this.endpoint.pullUploadMission(request, responseObserver);
+
+        ArgumentCaptor<Communication> commCaptor = ArgumentCaptor.forClass(Communication.class);
+        verify(this.repository, times(1)).save(commCaptor.capture());
+
+        CommunicationComponentDto dto = CommunicationFactory.takeApart(commCaptor.getValue());
+        assertThat(dto.getUploadMissions()).hasSize(0);
+
+        assertThat(responseObserver.getError()).isNull();
+        List<PullUploadMissionResponse> results = responseObserver.getValues();
+        assertThat(results).hasSize(1);
+        PullUploadMissionResponse response = results.get(0);
+        assertThat(response).isEqualTo(PullUploadMissionResponse.newBuilder()
+                .setId(DEFAULT_COMMUNICATION_ID.getId())
+                .setCommandId(DEFAULT_COMMAND_ID.getId())
+                .setMissionId(DEFAULT_MISSION_ID.getId())
+                .build());
+    }
+
+    /**
+     * エッジは、アップロードミッション受信APIを実行し、未存在のID指定によりNOT_FOUNDエラーを検出できる。<br>
+     * Communicationエンティティが存在しないケース。
+     */
+    @Test
+    public void pullUploadMissionApiNotFoundCommunicationError() {
+        PullUploadMissionRequest request = PullUploadMissionRequest.newBuilder()
+                .setId(DEFAULT_COMMUNICATION_ID.getId())
+                .setCommandId(DEFAULT_COMMAND_ID.getId())
+                .build();
+        StreamRecorder<PullUploadMissionResponse> responseObserver = StreamRecorder.create();
+        this.endpoint.pullUploadMission(request, responseObserver);
+
+        assertThat(responseObserver.getError()).isNotNull();
+        assertThat(responseObserver.getError()).isInstanceOf(StatusRuntimeException.class);
+        assertThat(((StatusRuntimeException)responseObserver.getError()).getStatus().getCode())
+                .isEqualTo(Status.NOT_FOUND.getCode());
+    }
+
+    /**
+     * エッジは、アップロードミッション受信APIを実行し、未存在のID指定によりNOT_FOUNDエラーを検出できる。<br>
+     * Communicationエンティティ内のコマンドが存在しないケース。
+     */
+    @Test
+    public void pullUploadMissionApiNotFoundCommandInCommunicationError() {
+        when(this.repository.getById(DEFAULT_COMMUNICATION_ID))
+                .thenReturn(CommunicationFactory.newInstance(
+                        DEFAULT_COMMUNICATION_ID,
+                        DEFAULT_VEHICLE_ID,
+                        DEFAULT_GENERATOR.get()));
+
+        PullUploadMissionRequest request = PullUploadMissionRequest.newBuilder()
+                .setId(DEFAULT_COMMUNICATION_ID.getId())
+                .setCommandId(DEFAULT_COMMAND_ID.getId())
+                .build();
+        StreamRecorder<PullUploadMissionResponse> responseObserver = StreamRecorder.create();
+        this.endpoint.pullUploadMission(request, responseObserver);
+
+        assertThat(responseObserver.getError()).isNotNull();
+        assertThat(responseObserver.getError()).isInstanceOf(StatusRuntimeException.class);
+        assertThat(((StatusRuntimeException)responseObserver.getError()).getStatus().getCode())
+                .isEqualTo(Status.NOT_FOUND.getCode());
+    }
+
+    /**
+     * エッジは、アップロードミッション受信APIを実行し、DBエラーのよりINTERNALエラーを検出できる。
+     */
+    @Test
+    public void pullUploadMissionApiInternalError() {
+        when(this.repository.getById(DEFAULT_COMMUNICATION_ID)).thenThrow(new IllegalStateException());
+
+        PullUploadMissionRequest request = PullUploadMissionRequest.newBuilder()
+                .setId(DEFAULT_COMMUNICATION_ID.getId())
+                .setCommandId(DEFAULT_COMMAND_ID.getId())
+                .build();
+        StreamRecorder<PullUploadMissionResponse> responseObserver = StreamRecorder.create();
+        this.endpoint.pullUploadMission(request, responseObserver);
 
         assertThat(responseObserver.getError()).isNotNull();
         assertThat(responseObserver.getError()).isInstanceOf(StatusRuntimeException.class);

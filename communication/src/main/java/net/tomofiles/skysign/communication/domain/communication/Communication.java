@@ -101,7 +101,7 @@ public class Communication {
         return id;
     }
 
-    public CommandId pushUploadMissionCommand(MissionId missionId) {
+    public CommandId pushUploadMission(MissionId missionId) {
         CommandId id = this.pushCommand(CommandType.UPLOAD);
         this.uploadMissions.add(new UploadMission(id, missionId));
         return id;

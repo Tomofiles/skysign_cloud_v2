@@ -8,11 +8,15 @@ import io.grpc.stub.StreamObserver;
 import lombok.AllArgsConstructor;
 import net.tomofiles.skysign.communication.api.grpc.PullCommandRequestDpoGrpc;
 import net.tomofiles.skysign.communication.api.grpc.PullCommandResponseDpoGrpc;
+import net.tomofiles.skysign.communication.api.grpc.PullUploadMissionRequestDpoGrpc;
+import net.tomofiles.skysign.communication.api.grpc.PullUploadMissionResponseDpoGrpc;
 import net.tomofiles.skysign.communication.api.grpc.PushTelemetryRequestDpoGrpc;
 import net.tomofiles.skysign.communication.api.grpc.PushTelemetryResponseDpoGrpc;
 import net.tomofiles.skysign.communication.service.CommunicateEdgeService;
 import proto.skysign.PullCommandRequest;
 import proto.skysign.PullCommandResponse;
+import proto.skysign.PullUploadMissionRequest;
+import proto.skysign.PullUploadMissionResponse;
 import proto.skysign.PushTelemetryRequest;
 import proto.skysign.PushTelemetryResponse;
 import proto.skysign.CommunicationEdgeServiceGrpc.CommunicationEdgeServiceImplBase;
@@ -78,6 +82,41 @@ public class CommunicateEdgeEndpoint extends CommunicationEdgeServiceImplBase {
             responseObserver.onError(Status
                     .NOT_FOUND
                     .withDescription("command-idに合致するCommandが存在しません。")
+                    .asRuntimeException());
+            return;
+        }
+
+        responseObserver.onNext(responseDpo.getGrpcResponse()); 
+        responseObserver.onCompleted();
+    }
+
+    @Override
+    public void pullUploadMission(PullUploadMissionRequest request, StreamObserver<PullUploadMissionResponse> responseObserver) {
+        PullUploadMissionRequestDpoGrpc requestDpo = new PullUploadMissionRequestDpoGrpc(request);
+        PullUploadMissionResponseDpoGrpc responseDpo = new PullUploadMissionResponseDpoGrpc(request);
+        
+        try {
+            this.service.pullUploadMission(requestDpo, responseDpo);
+        } catch (Exception e) {
+            responseObserver.onError(Status
+                    .INTERNAL
+                    .withCause(e)
+                    .asRuntimeException());
+            return;
+        }
+
+        if (responseDpo.notExistCommunication()) {
+            responseObserver.onError(Status
+                    .NOT_FOUND
+                    .withDescription("communication-idに合致するCommunicationが存在しません。")
+                    .asRuntimeException());
+            return;
+        }
+
+        if (responseDpo.notExistCommand()) {
+            responseObserver.onError(Status
+                    .NOT_FOUND
+                    .withDescription("command-idに合致するUploadMissionが存在しません。")
                     .asRuntimeException());
             return;
         }

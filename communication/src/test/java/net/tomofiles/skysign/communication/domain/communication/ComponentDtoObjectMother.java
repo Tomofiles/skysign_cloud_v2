@@ -60,13 +60,12 @@ public class ComponentDtoObjectMother {
     }
 
     /**
-     * 1
-     * 件のテスト用CommandオブジェクトのDTOコンポーネントを生成する。
+     * 1件のテスト用CommandオブジェクトのDTOコンポーネントを生成する。
      */
-    public static CommandComponentDto newSingleCommandComponentDto(Generator generator) {
+    public static CommandComponentDto newSingleCommandComponentDto(Generator generator, CommandType type) {
         return new CommandComponentDto(
                 generator.newCommandId().getId(),
-                CommandType.ARM.name(),
+                type.name(),
                 generator.newTime());
     }
 
@@ -88,6 +87,15 @@ public class ComponentDtoObjectMother {
                         CommandType.UPLOAD.name(),
                         generator.newTime()),
         });
+    }
+
+    /**
+     * 1件のテスト用UploadMissionオブジェクトのDTOコンポーネントを生成する。
+     */
+    public static UploadMissionComponentDto newSingleUploadMissionComponentDto(Generator generator, MissionId missionId) {
+        return new UploadMissionComponentDto(
+                generator.newCommandId().getId(),
+                missionId.getId());
     }
 
     /**
