@@ -53,7 +53,7 @@ public class CommunicationUserEndpoint extends CommunicationUserServiceImplBase 
             return;
         }
 
-        responseObserver.onNext(responsesDpo.getGrpcResponse()); 
+        responseObserver.onNext(responsesDpo.getGrpcResponse());
         responseObserver.onCompleted();
     }
 
@@ -80,14 +80,14 @@ public class CommunicationUserEndpoint extends CommunicationUserServiceImplBase 
             return;
         }
 
-        responseObserver.onNext(responseDpo.getGrpcResponse()); 
+        responseObserver.onNext(responseDpo.getGrpcResponse());
         responseObserver.onCompleted();
     }
 
     @Override
     public void pushCommand(PushCommandRequest request, StreamObserver<PushCommandResponse> responseObserver) {
         PushCommandRequestDpoGrpc requestDpo = new PushCommandRequestDpoGrpc(request);
-        PushCommandResponseDpoGrpc responseDpo = new PushCommandResponseDpoGrpc();
+        PushCommandResponseDpoGrpc responseDpo = new PushCommandResponseDpoGrpc(request);
 
         try {
             this.service.pushCommand(requestDpo, responseDpo);
@@ -107,18 +107,14 @@ public class CommunicationUserEndpoint extends CommunicationUserServiceImplBase 
             return;
         }
 
-        PushCommandResponse r = PushCommandResponse.newBuilder()
-                .setId(request.getId())
-                .setType(request.getType())
-                .build();
-        responseObserver.onNext(r); 
+        responseObserver.onNext(responseDpo.getGrpcResponse());
         responseObserver.onCompleted();
     }
 
     @Override
     public void pushUploadMission(PushUploadMissionRequest request, StreamObserver<PushUploadMissionResponse> responseObserver) {
         PushUploadMissionRequestDpoGrpc requestDpo = new PushUploadMissionRequestDpoGrpc(request);
-        PushUploadMissionResponseDpoGrpc responseDpo = new PushUploadMissionResponseDpoGrpc();
+        PushUploadMissionResponseDpoGrpc responseDpo = new PushUploadMissionResponseDpoGrpc(request);
 
         try {
             this.service.pushUploadMission(requestDpo, responseDpo);
@@ -138,18 +134,14 @@ public class CommunicationUserEndpoint extends CommunicationUserServiceImplBase 
             return;
         }
 
-        PushUploadMissionResponse r = PushUploadMissionResponse.newBuilder()
-                .setId(request.getId())
-                .setMissionId(request.getMissionId())
-                .build();
-        responseObserver.onNext(r); 
+        responseObserver.onNext(responseDpo.getGrpcResponse());
         responseObserver.onCompleted();
     }
 
     @Override
     public void control(ControlRequest request, StreamObserver<ControlResponse> responseObserver) {
         ControlRequestDpoGrpc requestDpo = new ControlRequestDpoGrpc(request);
-        ControlResponseDpoGrpc responseDpo = new ControlResponseDpoGrpc();
+        ControlResponseDpoGrpc responseDpo = new ControlResponseDpoGrpc(request);
 
         try {
             this.service.control(requestDpo, responseDpo);
@@ -169,17 +161,14 @@ public class CommunicationUserEndpoint extends CommunicationUserServiceImplBase 
             return;
         }
 
-        ControlResponse r = ControlResponse.newBuilder()
-                .setId(request.getId())
-                .build();
-        responseObserver.onNext(r); 
+        responseObserver.onNext(responseDpo.getGrpcResponse());
         responseObserver.onCompleted();
     }
 
     @Override
     public void uncontrol(UncontrolRequest request, StreamObserver<UncontrolResponse> responseObserver) {
         UncontrolRequestDpoGrpc requestDpo = new UncontrolRequestDpoGrpc(request);
-        UncontrolResponseDpoGrpc responseDpo = new UncontrolResponseDpoGrpc();
+        UncontrolResponseDpoGrpc responseDpo = new UncontrolResponseDpoGrpc(request);
 
         try {
             this.service.uncontrol(requestDpo, responseDpo);
@@ -199,10 +188,7 @@ public class CommunicationUserEndpoint extends CommunicationUserServiceImplBase 
             return;
         }
 
-        UncontrolResponse r = UncontrolResponse.newBuilder()
-                .setId(request.getId())
-                .build();
-        responseObserver.onNext(r); 
+        responseObserver.onNext(responseDpo.getGrpcResponse());
         responseObserver.onCompleted();
     }
 }
