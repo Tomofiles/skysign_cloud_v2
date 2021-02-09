@@ -10,8 +10,6 @@ import net.tomofiles.skysign.communication.domain.communication.CommandType;
 import net.tomofiles.skysign.communication.domain.communication.Communication;
 import net.tomofiles.skysign.communication.domain.communication.CommunicationRepository;
 import net.tomofiles.skysign.communication.domain.communication.MissionId;
-import net.tomofiles.skysign.communication.service.dpo.GetCommunicationRequestDpo;
-import net.tomofiles.skysign.communication.service.dpo.GetCommunicationResponseDpo;
 import net.tomofiles.skysign.communication.service.dpo.PullCommandRequestDpo;
 import net.tomofiles.skysign.communication.service.dpo.PullCommandResponseDpo;
 import net.tomofiles.skysign.communication.service.dpo.PullUploadMissionRequestDpo;
