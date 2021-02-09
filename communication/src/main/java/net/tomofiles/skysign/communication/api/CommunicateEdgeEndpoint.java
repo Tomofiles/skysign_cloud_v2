@@ -6,15 +6,11 @@ import org.springframework.stereotype.Controller;
 import io.grpc.Status;
 import io.grpc.stub.StreamObserver;
 import lombok.AllArgsConstructor;
-import net.tomofiles.skysign.communication.api.grpc.GetCommunicationRequestDpoGrpc;
-import net.tomofiles.skysign.communication.api.grpc.GetCommunicationResponseDpoGrpc;
 import net.tomofiles.skysign.communication.api.grpc.PullCommandRequestDpoGrpc;
 import net.tomofiles.skysign.communication.api.grpc.PullCommandResponseDpoGrpc;
 import net.tomofiles.skysign.communication.api.grpc.PushTelemetryRequestDpoGrpc;
 import net.tomofiles.skysign.communication.api.grpc.PushTelemetryResponseDpoGrpc;
 import net.tomofiles.skysign.communication.service.CommunicateEdgeService;
-import proto.skysign.common.Communication;
-import proto.skysign.GetCommunicationRequest;
 import proto.skysign.PullCommandRequest;
 import proto.skysign.PullCommandResponse;
 import proto.skysign.PushTelemetryRequest;
@@ -82,33 +78,6 @@ public class CommunicateEdgeEndpoint extends CommunicationEdgeServiceImplBase {
             responseObserver.onError(Status
                     .NOT_FOUND
                     .withDescription("command-idに合致するCommandが存在しません。")
-                    .asRuntimeException());
-            return;
-        }
-
-        responseObserver.onNext(responseDpo.getGrpcResponse()); 
-        responseObserver.onCompleted();
-    }
-
-    @Override
-    public void getCommunication(GetCommunicationRequest request, StreamObserver<Communication> responseObserver) {
-        GetCommunicationRequestDpoGrpc requestDpo = new GetCommunicationRequestDpoGrpc(request);
-        GetCommunicationResponseDpoGrpc responseDpo = new GetCommunicationResponseDpoGrpc();
-        
-        try {
-            this.service.getCommunication(requestDpo, responseDpo);
-        } catch (Exception e) {
-            responseObserver.onError(Status
-                    .INTERNAL
-                    .withCause(e)
-                    .asRuntimeException());
-            return;
-        }
-
-        if (responseDpo.notExistCommunication()) {
-            responseObserver.onError(Status
-                    .NOT_FOUND
-                    .withDescription("communication-idに合致するCommunicationが存在しません。")
                     .asRuntimeException());
             return;
         }

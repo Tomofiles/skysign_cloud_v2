@@ -6,7 +6,6 @@ import java.util.List;
 import net.tomofiles.skysign.communication.domain.communication.CommandType;
 import net.tomofiles.skysign.communication.domain.communication.CommunicationId;
 import net.tomofiles.skysign.communication.domain.communication.Generator;
-import net.tomofiles.skysign.communication.domain.communication.MissionId;
 import net.tomofiles.skysign.communication.domain.communication.VehicleId;
 
 public class RecordObjectMother {
@@ -14,8 +13,8 @@ public class RecordObjectMother {
     /**
      * 通常のCommunicationレコードを生成する。
      */
-    public static CommunicationRecord newNormalCommunicationRecord(CommunicationId id, VehicleId vehicleId, boolean controlled, MissionId missionId) {
-        return new CommunicationRecord(id.getId(), vehicleId.getId(), controlled, missionId.getId());
+    public static CommunicationRecord newNormalCommunicationRecord(CommunicationId id, VehicleId vehicleId, boolean controlled) {
+        return new CommunicationRecord(id.getId(), vehicleId.getId(), controlled);
     }
     
     /**

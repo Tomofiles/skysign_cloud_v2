@@ -26,19 +26,16 @@ import net.tomofiles.skysign.communication.domain.communication.CommunicationFac
 import net.tomofiles.skysign.communication.domain.communication.CommunicationId;
 import net.tomofiles.skysign.communication.domain.communication.CommunicationRepository;
 import net.tomofiles.skysign.communication.domain.communication.Generator;
-import net.tomofiles.skysign.communication.domain.communication.MissionId;
 import net.tomofiles.skysign.communication.domain.communication.component.CommunicationComponentDto;
 import net.tomofiles.skysign.communication.domain.communication.VehicleId;
 import net.tomofiles.skysign.communication.service.CommunicateEdgeService;
 import proto.skysign.common.CommandType;
-import proto.skysign.GetCommunicationRequest;
 import proto.skysign.PullCommandRequest;
 import proto.skysign.PullCommandResponse;
 import proto.skysign.PushTelemetryRequest;
 import proto.skysign.PushTelemetryResponse;
 
 import static net.tomofiles.skysign.communication.api.GrpcObjectMother.newNormalTelemetryGrpc;
-import static net.tomofiles.skysign.communication.domain.communication.CommunicationObjectMother.newNormalCommunication;
 import static net.tomofiles.skysign.communication.domain.communication.CommunicationObjectMother.newSingleCommandCommunication;
 import static net.tomofiles.skysign.communication.domain.communication.ComponentDtoObjectMother.newNormalTelemetryComponentDto;
 
@@ -49,7 +46,6 @@ public class CommunicateEdgeEndpointTests {
     private static final String DEFAULT_COMMAND_TYPE = "ARM";
     private static final VehicleId DEFAULT_VEHICLE_ID = new VehicleId(UUID.randomUUID().toString());
     private static final boolean DEFAULT_CONTROLLED = true;
-    private static final MissionId DEFAULT_MISSION_ID = new MissionId(UUID.randomUUID().toString());
     private static final LocalDateTime DEFAULT_COMMAND_TIME = LocalDateTime.of(2020, 1, 1, 0, 0, 0);
     private static final Supplier<Generator> DEFAULT_GENERATOR = () -> {
         return new Generator(){
@@ -126,7 +122,6 @@ public class CommunicateEdgeEndpointTests {
                         DEFAULT_COMMUNICATION_ID,
                         DEFAULT_VEHICLE_ID,
                         DEFAULT_CONTROLLED,
-                        DEFAULT_MISSION_ID,
                         DEFAULT_GENERATOR.get()));
 
         PushTelemetryRequest request = PushTelemetryRequest.newBuilder()
@@ -202,7 +197,6 @@ public class CommunicateEdgeEndpointTests {
                         DEFAULT_COMMUNICATION_ID,
                         DEFAULT_VEHICLE_ID,
                         DEFAULT_CONTROLLED,
-                        DEFAULT_MISSION_ID,
                         DEFAULT_GENERATOR.get()));
 
         PullCommandRequest request = PullCommandRequest.newBuilder()
@@ -286,105 +280,6 @@ public class CommunicateEdgeEndpointTests {
                 .build();
         StreamRecorder<PullCommandResponse> responseObserver = StreamRecorder.create();
         this.endpoint.pullCommand(request, responseObserver);
-
-        assertThat(responseObserver.getError()).isNotNull();
-        assertThat(responseObserver.getError()).isInstanceOf(StatusRuntimeException.class);
-        assertThat(((StatusRuntimeException)responseObserver.getError()).getStatus().getCode())
-                .isEqualTo(Status.INTERNAL.getCode());
-    }
-
-    /**
-     * エッジは、１件取得APIを実行し、対象のCommunicationを取得できる。
-     */
-    @Test
-    public void getCommunicationApi() {
-        when(this.repository.getById(DEFAULT_COMMUNICATION_ID))
-                .thenReturn(newNormalCommunication(
-                        DEFAULT_COMMUNICATION_ID,
-                        DEFAULT_VEHICLE_ID,
-                        DEFAULT_CONTROLLED,
-                        DEFAULT_MISSION_ID,
-                        DEFAULT_GENERATOR.get()));
-
-        GetCommunicationRequest request = GetCommunicationRequest.newBuilder()
-                .setId(DEFAULT_COMMUNICATION_ID.getId())
-                .build();
-        StreamRecorder<proto.skysign.common.Communication> responseObserver = StreamRecorder.create();
-        this.endpoint.getCommunication(request, responseObserver);
-
-        assertThat(responseObserver.getError()).isNull();
-        List<proto.skysign.common.Communication> results = responseObserver.getValues();
-        assertThat(results).hasSize(1);
-        proto.skysign.common.Communication response = results.get(0);
-        assertThat(response).isEqualTo(proto.skysign.common.Communication.newBuilder()
-                .setId(DEFAULT_COMMUNICATION_ID.getId())
-                .setVehicleId(DEFAULT_VEHICLE_ID.getId())
-                .setIsControlled(DEFAULT_CONTROLLED)
-                .setMissionId(DEFAULT_MISSION_ID.getId())
-                .build());
-    }
-
-    /**
-     * エッジは、１件取得APIを実行し、対象のCommunicationを取得できる。<br>
-     * Communicationはすべて未ステージングであり、MissionIdが空であること。
-     */
-    @Test
-    public void getCommunicationNotStagingApi() {
-        when(this.repository.getById(DEFAULT_COMMUNICATION_ID))
-                .thenReturn(newNormalCommunication(
-                        DEFAULT_COMMUNICATION_ID,
-                        DEFAULT_VEHICLE_ID,
-                        DEFAULT_CONTROLLED,
-                        null,
-                        DEFAULT_GENERATOR.get()));
-
-        GetCommunicationRequest request = GetCommunicationRequest.newBuilder()
-                .setId(DEFAULT_COMMUNICATION_ID.getId())
-                .build();
-        StreamRecorder<proto.skysign.common.Communication> responseObserver = StreamRecorder.create();
-        this.endpoint.getCommunication(request, responseObserver);
-
-        assertThat(responseObserver.getError()).isNull();
-        List<proto.skysign.common.Communication> results = responseObserver.getValues();
-        assertThat(results).hasSize(1);
-        proto.skysign.common.Communication response = results.get(0);
-        assertThat(response).isEqualTo(proto.skysign.common.Communication.newBuilder()
-                .setId(DEFAULT_COMMUNICATION_ID.getId())
-                .setVehicleId(DEFAULT_VEHICLE_ID.getId())
-                .setIsControlled(DEFAULT_CONTROLLED)
-                // .setMissionId(DEFAULT_MISSION_ID.getId()) // MissionIdは空
-                .build());
-    }
-
-    /**
-     * エッジは、１件取得APIを実行し、未存在のID指定によりNOT_FOUNDエラーを検出できる。
-     */
-    @Test
-    public void getCommunicationApiNotFoundError() {
-        GetCommunicationRequest request = GetCommunicationRequest.newBuilder()
-                .setId(DEFAULT_COMMUNICATION_ID.getId())
-                .build();
-        StreamRecorder<proto.skysign.common.Communication> responseObserver = StreamRecorder.create();
-        this.endpoint.getCommunication(request, responseObserver);
-
-        assertThat(responseObserver.getError()).isNotNull();
-        assertThat(responseObserver.getError()).isInstanceOf(StatusRuntimeException.class);
-        assertThat(((StatusRuntimeException)responseObserver.getError()).getStatus().getCode())
-                .isEqualTo(Status.NOT_FOUND.getCode());
-    }
-
-    /**
-     * エッジは、１件取得APIを実行し、DBエラーのよりINTERNALエラーを検出できる。
-     */
-    @Test
-    public void getCommunicationApiInternalError() {
-        when(this.repository.getById(DEFAULT_COMMUNICATION_ID)).thenThrow(new IllegalStateException());
-
-        GetCommunicationRequest request = GetCommunicationRequest.newBuilder()
-                .setId(DEFAULT_COMMUNICATION_ID.getId())
-                .build();
-        StreamRecorder<proto.skysign.common.Communication> responseObserver = StreamRecorder.create();
-        this.endpoint.getCommunication(request, responseObserver);
 
         assertThat(responseObserver.getError()).isNotNull();
         assertThat(responseObserver.getError()).isInstanceOf(StatusRuntimeException.class);

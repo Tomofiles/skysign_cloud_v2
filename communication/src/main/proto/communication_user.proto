@@ -23,23 +23,16 @@ service CommunicationUserService {
         };
     };
 
+    rpc PushUploadMission (PushUploadMissionRequest) returns (PushUploadMissionResponse) {
+        option (google.api.http) = {
+            post: "/api/v1/communications/{id}/uploadmissions"
+            body: "*"
+        };
+    };
+
     rpc PullTelemetry (PullTelemetryRequest) returns (PullTelemetryResponse) {
         option (google.api.http) = {
             get: "/api/v1/communications/{id}/telemetry"
-        };
-    };
-
-    rpc Staging (StagingRequest) returns (StagingResponse) {
-        option (google.api.http) = {
-            post: "/api/v1/communications/{id}/staging"
-            body: "*"
-        };
-    };
-
-    rpc Cancel (CancelRequest) returns (CancelResponse) {
-        option (google.api.http) = {
-            post: "/api/v1/communications/{id}/cancel"
-            body: "*"
         };
     };
 
@@ -70,6 +63,18 @@ message PushCommandRequest {
 message PushCommandResponse {
     string id = 1;
     CommandType type = 2;
+    string commandId = 3;
+}
+
+message PushUploadMissionRequest {
+    string id = 1;
+    string missionId = 2;
+}
+
+message PushUploadMissionResponse {
+    string id = 1;
+    string missionId = 2;
+    string commandId = 3;
 }
 
 message PullTelemetryRequest {
@@ -79,24 +84,6 @@ message PullTelemetryRequest {
 message PullTelemetryResponse {
     string id = 1;
     Telemetry telemetry = 2;
-}
-
-message StagingRequest {
-    string id = 1;
-    string missionId = 2;
-}
-
-message StagingResponse {
-    string id = 1;
-    string missionId = 2;
-}
-
-message CancelRequest {
-    string id = 1;
-}
-
-message CancelResponse {
-    string id = 1;
 }
 
 message ControlRequest {

@@ -15,7 +15,6 @@ public class CommunicationComponentDto {
     private String id;
     private String vehicleId;
     private boolean controlled;
-    private String missionId;
     private TelemetryComponentDto telemetry;
     private List<CommandComponentDto> commands;
 }

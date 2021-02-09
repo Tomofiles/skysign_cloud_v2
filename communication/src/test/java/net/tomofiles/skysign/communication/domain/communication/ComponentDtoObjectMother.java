@@ -16,13 +16,11 @@ public class ComponentDtoObjectMother {
             CommunicationId communicationId,
             VehicleId vehicleId,
             boolean controlled,
-            MissionId missionId,
             Generator generator) {
         return new CommunicationComponentDto(
                 communicationId.getId(),
                 vehicleId.getId(),
                 controlled,
-                missionId.getId(),
                 newNormalTelemetryComponentDto(),
                 newSeveralCommandsComponentDto(generator)
         );

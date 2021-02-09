@@ -21,7 +21,6 @@ public class CommunicationFactory {
                 generator
         );
         communication.setControlled(componentDto.isControlled());
-        communication.setMissionId(new MissionId(componentDto.getMissionId()));
         communication.setTelemetry(Telemetry.newInstance()
                 .setPosition(
                         componentDto.getTelemetry().getLatitude(),
@@ -55,7 +54,6 @@ public class CommunicationFactory {
                 communication.getId().getId(),
                 communication.getVehicleId().getId(),
                 communication.isControlled(),
-                communication.getMissionId() == null ? null : communication.getMissionId().getId(),
                 new TelemetryComponentDto(
                         communication.getTelemetry().getPosition().getLatitude(),
                         communication.getTelemetry().getPosition().getLongitude(),

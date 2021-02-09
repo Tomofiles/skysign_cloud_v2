@@ -83,7 +83,6 @@ public class CommunicationEventHandlerTests {
                         DEFAULT_COMMUNICATION_ID,
                         DEFAULT_VEHICLE_ID,
                         DEFAULT_CONTROLLED,
-                        null, // テストに使用しないためNull
                         null)); // テストに使用しないためNull
 
         this.eventHandler.processCommunicationIdRemovedEvent(

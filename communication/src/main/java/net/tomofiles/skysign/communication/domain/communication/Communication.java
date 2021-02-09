@@ -27,10 +27,6 @@ public class Communication {
     @Setter(value = AccessLevel.PACKAGE)
     private boolean controlled = false;
 
-    @Getter
-    @Setter(value = AccessLevel.PACKAGE)
-    private MissionId missionId = null;
-
     @Getter(value = AccessLevel.PACKAGE)
     @Setter(value = AccessLevel.PACKAGE)
     private Telemetry telemetry = null;
@@ -84,14 +80,6 @@ public class Communication {
                 .sorted(Comparator.comparing(Command::getTime))
                 .map(Command::getId)
                 .collect(Collectors.toList());
-    }
-
-    public void staging(MissionId missionId) {
-        this.missionId = missionId;
-    }
-
-    public void cancel() {
-        this.missionId = null;
     }
 
     public void control() {

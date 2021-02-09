@@ -6,8 +6,6 @@ import org.springframework.stereotype.Controller;
 import io.grpc.Status;
 import io.grpc.stub.StreamObserver;
 import lombok.AllArgsConstructor;
-import net.tomofiles.skysign.communication.api.grpc.CancelRequestDpoGrpc;
-import net.tomofiles.skysign.communication.api.grpc.CancelResponseDpoGrpc;
 import net.tomofiles.skysign.communication.api.grpc.ControlRequestDpoGrpc;
 import net.tomofiles.skysign.communication.api.grpc.ControlResponseDpoGrpc;
 import net.tomofiles.skysign.communication.api.grpc.ListCommunicationsResponsesDpoGrpc;
@@ -15,13 +13,9 @@ import net.tomofiles.skysign.communication.api.grpc.PullTelemetryRequestDpoGrpc;
 import net.tomofiles.skysign.communication.api.grpc.PullTelemetryResponseDpoGrpc;
 import net.tomofiles.skysign.communication.api.grpc.PushCommandRequestDpoGrpc;
 import net.tomofiles.skysign.communication.api.grpc.PushCommandResponseDpoGrpc;
-import net.tomofiles.skysign.communication.api.grpc.StagingRequestDpoGrpc;
-import net.tomofiles.skysign.communication.api.grpc.StagingResponseDpoGrpc;
 import net.tomofiles.skysign.communication.api.grpc.UncontrolRequestDpoGrpc;
 import net.tomofiles.skysign.communication.api.grpc.UncontrolResponseDpoGrpc;
 import net.tomofiles.skysign.communication.service.CommunicationUserService;
-import proto.skysign.CancelRequest;
-import proto.skysign.CancelResponse;
 import proto.skysign.ControlRequest;
 import proto.skysign.ControlResponse;
 import proto.skysign.common.Empty;
@@ -30,8 +24,6 @@ import proto.skysign.PullTelemetryRequest;
 import proto.skysign.PullTelemetryResponse;
 import proto.skysign.PushCommandRequest;
 import proto.skysign.PushCommandResponse;
-import proto.skysign.StagingRequest;
-import proto.skysign.StagingResponse;
 import proto.skysign.UncontrolRequest;
 import proto.skysign.UncontrolResponse;
 import proto.skysign.CommunicationUserServiceGrpc.CommunicationUserServiceImplBase;
@@ -114,67 +106,6 @@ public class CommunicationUserEndpoint extends CommunicationUserServiceImplBase 
         PushCommandResponse r = PushCommandResponse.newBuilder()
                 .setId(request.getId())
                 .setType(request.getType())
-                .build();
-        responseObserver.onNext(r); 
-        responseObserver.onCompleted();
-    }
-
-    @Override
-    public void staging(StagingRequest request, StreamObserver<StagingResponse> responseObserver) {
-        StagingRequestDpoGrpc requestDpo = new StagingRequestDpoGrpc(request);
-        StagingResponseDpoGrpc responseDpo = new StagingResponseDpoGrpc();
-
-        try {
-            this.service.staging(requestDpo, responseDpo);
-        } catch (Exception e) {
-            responseObserver.onError(Status
-                    .INTERNAL
-                    .withCause(e)
-                    .asRuntimeException());
-            return;
-        }
-
-        if (responseDpo.isEmpty()) {
-            responseObserver.onError(Status
-                    .NOT_FOUND
-                    .withDescription("communication-idに合致するcommunicationが存在しません。")
-                    .asRuntimeException());
-            return;
-        }
-
-        StagingResponse r = StagingResponse.newBuilder()
-                .setMissionId(request.getMissionId())
-                .setId(request.getId())
-                .build();
-        responseObserver.onNext(r); 
-        responseObserver.onCompleted();
-    }
-
-    @Override
-    public void cancel(CancelRequest request, StreamObserver<CancelResponse> responseObserver) {
-        CancelRequestDpoGrpc requestDpo = new CancelRequestDpoGrpc(request);
-        CancelResponseDpoGrpc responseDpo = new CancelResponseDpoGrpc();
-
-        try {
-            this.service.cancel(requestDpo, responseDpo);
-        } catch (Exception e) {
-            responseObserver.onError(Status
-                    .INTERNAL
-                    .withCause(e)
-                    .asRuntimeException());
-            return;
-        }
-
-        if (responseDpo.isEmpty()) {
-            responseObserver.onError(Status
-                    .NOT_FOUND
-                    .withDescription("communication-idに合致するcommunicationが存在しません。")
-                    .asRuntimeException());
-            return;
-        }
-
-        CancelResponse r = CancelResponse.newBuilder()
-                .setId(request.getId())
                 .build();
         responseObserver.onNext(r); 
         responseObserver.onCompleted();

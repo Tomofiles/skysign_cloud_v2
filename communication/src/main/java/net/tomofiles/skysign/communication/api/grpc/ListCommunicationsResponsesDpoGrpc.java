@@ -24,18 +24,11 @@ public class ListCommunicationsResponsesDpoGrpc implements ListCommunicationsRes
         List<proto.skysign.common.Communication> r = this.communications.stream()
                 .map(CommunicationFactory::takeApart)
                 .map(communication -> {
-                    proto.skysign.common.Communication nonMissionIdComm =  proto.skysign.common.Communication.newBuilder()
+                    return proto.skysign.common.Communication.newBuilder()
                             .setId(communication.getId())
                             .setVehicleId(communication.getVehicleId())
                             .setIsControlled(communication.isControlled())
                             .build();
-                    if (communication.getMissionId() == null) {
-                        return nonMissionIdComm;
-                    } else {
-                        return proto.skysign.common.Communication.newBuilder(nonMissionIdComm)
-                                .setMissionId(communication.getMissionId())
-                                .build();
-                    }
                 })
                 .collect(Collectors.toList());
         return proto.skysign.ListCommunicationsResponses.newBuilder()
