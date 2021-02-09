@@ -34,10 +34,14 @@ public class Communication {
     @Getter(value = AccessLevel.PACKAGE)
     private final List<Command> commands;
 
+    @Getter(value = AccessLevel.PACKAGE)
+    private final List<UploadMission> uploadMissions;
+
     Communication(CommunicationId id, VehicleId vehicleId, Generator generator) {
         this.id = id;
         this.vehicleId = vehicleId;
         this.commands = new ArrayList<>();
+        this.uploadMissions = new ArrayList<>();
 
         this.generator = generator;
     }
@@ -97,6 +101,12 @@ public class Communication {
         return id;
     }
 
+    public CommandId pushUploadMissionCommand(MissionId missionId) {
+        CommandId id = this.pushCommand(CommandType.UPLOAD);
+        this.uploadMissions.add(new UploadMission(id, missionId));
+        return id;
+    }
+
     public CommandType pullCommandById(CommandId id) {
         Command command = this.commands.stream()
                 .filter(Command.empty(id)::equals)
@@ -107,5 +117,17 @@ public class Communication {
         }
         this.commands.remove(command);
         return command.getType();
+    }
+
+    public MissionId pullUploadMissionById(CommandId id) {
+        UploadMission uploadMission = this.uploadMissions.stream()
+                .filter(UploadMission.empty(id)::equals)
+                .findAny()
+                .orElse(null);
+        if (uploadMission == null) {
+            return null;
+        }
+        this.uploadMissions.remove(uploadMission);
+        return uploadMission.getMissionId();
     }
 }

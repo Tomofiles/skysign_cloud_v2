@@ -16,6 +16,7 @@ import net.tomofiles.skysign.communication.domain.communication.Generator;
 import net.tomofiles.skysign.communication.domain.communication.component.CommandComponentDto;
 import net.tomofiles.skysign.communication.domain.communication.component.CommunicationComponentDto;
 import net.tomofiles.skysign.communication.domain.communication.component.TelemetryComponentDto;
+import net.tomofiles.skysign.communication.domain.communication.component.UploadMissionComponentDto;
 
 @Component
 @RequiredArgsConstructor
@@ -24,6 +25,7 @@ public class CommunicationRepositoryImpl implements CommunicationRepository {
     private final CommunicationMapper communicationMapper;
     private final TelemetryMapper telemetryMapper;
     private final CommandMapper commandMapper;
+    private final UploadMissionMapper uploadMissionMapper;
     private final Generator generator;
 
     @Override
@@ -31,6 +33,7 @@ public class CommunicationRepositoryImpl implements CommunicationRepository {
         boolean isCreate = false;
         TelemetryRecord telemetry = null;
         List<CommandRecord> commandsInDB = new ArrayList<>();
+        List<UploadMissionRecord> uploadMissionsInDB = new ArrayList<>();
 
         CommunicationComponentDto componentDto = CommunicationFactory.takeApart(comm); 
 
@@ -46,6 +49,7 @@ public class CommunicationRepositoryImpl implements CommunicationRepository {
         } else {
             telemetry = this.telemetryMapper.find(componentDto.getId());
             commandsInDB.addAll(this.commandMapper.findByCommId(componentDto.getId()));
+            uploadMissionsInDB.addAll(this.uploadMissionMapper.findByCommId(componentDto.getId()));
         }
 
         communication.setVehicleId(componentDto.getVehicleId());
@@ -69,11 +73,19 @@ public class CommunicationRepositoryImpl implements CommunicationRepository {
                 })
                 .collect(Collectors.toList());
 
+        List<UploadMissionRecord> uploadMissions = componentDto.getUploadMissions().stream()
+                .map(um -> {
+                        return new UploadMissionRecord(um.getId(), componentDto.getId(), um.getMissionId());
+                })
+                .collect(Collectors.toList());
+
         if (isCreate) {
             this.communicationMapper.create(communication);
             this.telemetryMapper.create(telemetry);
             commands.stream()
                     .forEach(this.commandMapper::create);
+            uploadMissions.stream()
+                    .forEach(this.uploadMissionMapper::create);
         } else {
             this.communicationMapper.update(communication);
             this.telemetryMapper.update(telemetry);
@@ -85,6 +97,14 @@ public class CommunicationRepositoryImpl implements CommunicationRepository {
                     .filter(c -> !commands.contains(c))
                     .map(CommandRecord::getId)
                     .forEach(this.commandMapper::delete);
+
+            uploadMissions.stream()
+                    .filter(um -> !uploadMissionsInDB.contains(um))
+                    .forEach(this.uploadMissionMapper::create);
+            uploadMissionsInDB.stream()
+                    .filter(um -> !uploadMissions.contains(um))
+                    .map(UploadMissionRecord::getId)
+                    .forEach(this.uploadMissionMapper::delete);
         }
     }
 
@@ -105,6 +125,7 @@ public class CommunicationRepositoryImpl implements CommunicationRepository {
 
         TelemetryRecord telemetry = this.telemetryMapper.find(id.getId());
         List<CommandRecord> commands = this.commandMapper.findByCommId(communication.getId());
+        List<UploadMissionRecord> uploadMissions = this.uploadMissionMapper.findByCommId(communication.getId());
 
         return CommunicationFactory.assembleFrom(
                 new CommunicationComponentDto(
@@ -129,6 +150,12 @@ public class CommunicationRepositoryImpl implements CommunicationRepository {
                                     c.getType(),
                                     c.getTime()
                                 ))
+                                .collect(Collectors.toList()),
+                        uploadMissions.stream()
+                                .map(c -> new UploadMissionComponentDto(
+                                    c.getId(),
+                                    c.getMissionId()
+                                ))
                                 .collect(Collectors.toList())
                     ),
                 generator
@@ -148,6 +175,7 @@ public class CommunicationRepositoryImpl implements CommunicationRepository {
 
             TelemetryRecord telemetry = this.telemetryMapper.find(commRecord.getId());
             List<CommandRecord> commands = this.commandMapper.findByCommId(commRecord.getId());
+            List<UploadMissionRecord> uploadMissions = this.uploadMissionMapper.findByCommId(commRecord.getId());
     
             Communication communication = CommunicationFactory.assembleFrom(
                     new CommunicationComponentDto(
@@ -171,6 +199,12 @@ public class CommunicationRepositoryImpl implements CommunicationRepository {
                                         c.getId(),
                                         c.getType(),
                                         c.getTime()
+                                    ))
+                                    .collect(Collectors.toList()),
+                            uploadMissions.stream()
+                                    .map(c -> new UploadMissionComponentDto(
+                                        c.getId(),
+                                        c.getMissionId()
                                     ))
                                     .collect(Collectors.toList())
                         ),

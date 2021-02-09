@@ -62,6 +62,7 @@ public class ComponentCommunicationTests {
                         DEFAULT_COMMUNICATION_ID,
                         DEFAULT_VEHICLE_ID,
                         DEFAULT_CONTROLLED,
+                        DEFAULT_GENERATOR.get(),
                         DEFAULT_GENERATOR.get()
                 ),
                 DEFAULT_GENERATOR.get()
@@ -86,6 +87,8 @@ public class ComponentCommunicationTests {
                         DEFAULT_COMMUNICATION_ID,
                         DEFAULT_VEHICLE_ID,
                         DEFAULT_CONTROLLED,
+                        DEFAULT_GENERATOR.get(),
+                        DEFAULT_GENERATOR.get(),
                         DEFAULT_GENERATOR.get()
                 )
         );
@@ -95,6 +98,7 @@ public class ComponentCommunicationTests {
                         DEFAULT_COMMUNICATION_ID,
                         DEFAULT_VEHICLE_ID,
                         DEFAULT_CONTROLLED,
+                        DEFAULT_GENERATOR.get(),
                         DEFAULT_GENERATOR.get()
                 ));
     }

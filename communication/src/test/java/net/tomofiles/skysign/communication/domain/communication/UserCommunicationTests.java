@@ -21,6 +21,7 @@ public class UserCommunicationTests {
     private static final CommunicationId DEFAULT_COMMUNICATION_ID = new CommunicationId(UUID.randomUUID().toString());
     private static final CommandId DEFAULT_COMMAND_ID = new CommandId(UUID.randomUUID().toString());
     private static final VehicleId DEFAULT_VEHICLE_ID = new VehicleId(UUID.randomUUID().toString());
+    private static final MissionId DEFAULT_MISSION_ID = new MissionId(UUID.randomUUID().toString());
     private static final boolean DEFAULT_CONTROLLED = true;
     private static final boolean DEFAULT_UNCONTROLLED = false;
     private static final LocalDateTime DEFAULT_COMMAND_TIME = LocalDateTime.of(2020, 1, 1, 0, 0, 0);
@@ -88,6 +89,35 @@ public class UserCommunicationTests {
             () -> assertThat(communication.getCommands().get(0).getId()).isEqualTo(DEFAULT_COMMAND_ID),
             () -> assertThat(communication.getCommands().get(0).getType()).isEqualTo(CommandType.ARM),
             () -> assertThat(communication.getCommands().get(0).getTime()).isEqualTo(DEFAULT_COMMAND_TIME)
+        );
+    }
+
+    /**
+     * Userが、既存のCommunicationエンティティにUploadMissionCommandを追加する。<br>
+     * Commandが追加され、IDとTimeが付与されていることを検証する。<br>
+     * また、UploadMissionが追加され、CommandIDとMissionIDが付与されていることを検証する。
+     */
+    @Test
+    public void pushUploadMissionCommandToCommunicationTest() {
+        when(this.repository.getById(DEFAULT_COMMUNICATION_ID))
+                .thenReturn(CommunicationFactory.newInstance(
+                        DEFAULT_COMMUNICATION_ID,
+                        DEFAULT_VEHICLE_ID,
+                        DEFAULT_GENERATOR.get()));
+
+        Communication communication = this.repository.getById(DEFAULT_COMMUNICATION_ID);
+
+        communication.pushUploadMissionCommand(DEFAULT_MISSION_ID);
+
+        assertAll(
+            () -> assertThat(communication.getCommandIds()).hasSize(1),
+            () -> assertThat(communication.getCommandIds().get(0)).isEqualTo(DEFAULT_COMMAND_ID),
+            () -> assertThat(communication.getCommands()).hasSize(1),
+            () -> assertThat(communication.getCommands().get(0).getId()).isEqualTo(DEFAULT_COMMAND_ID),
+            () -> assertThat(communication.getCommands().get(0).getType()).isEqualTo(CommandType.UPLOAD),
+            () -> assertThat(communication.getCommands().get(0).getTime()).isEqualTo(DEFAULT_COMMAND_TIME),
+            () -> assertThat(communication.getUploadMissions().get(0).getId()).isEqualTo(DEFAULT_COMMAND_ID),
+            () -> assertThat(communication.getUploadMissions().get(0).getMissionId()).isEqualTo(DEFAULT_MISSION_ID)
         );
     }
 

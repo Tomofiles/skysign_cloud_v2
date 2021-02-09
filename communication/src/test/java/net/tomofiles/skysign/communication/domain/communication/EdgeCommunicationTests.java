@@ -27,6 +27,7 @@ public class EdgeCommunicationTests {
     private static final CommunicationId DEFAULT_COMMUNICATION_ID = new CommunicationId(UUID.randomUUID().toString());
     private static final CommandId DEFAULT_COMMAND_ID = new CommandId(UUID.randomUUID().toString());
     private static final VehicleId DEFAULT_VEHICLE_ID = new VehicleId(UUID.randomUUID().toString());
+    private static final MissionId DEFAULT_MISSION_ID = new MissionId("MISSION_ID_SAMPLE_1");
     private static final boolean DEFAULT_CONTROLLED = true;
     private static final LocalDateTime DEFAULT_COMMAND_TIME = LocalDateTime.of(2020, 1, 1, 0, 0, 0);
     private static final Supplier<Generator> DEFAULT_GENERATOR = () -> {
@@ -109,6 +110,8 @@ public class EdgeCommunicationTests {
                         DEFAULT_COMMUNICATION_ID,
                         DEFAULT_VEHICLE_ID,
                         DEFAULT_CONTROLLED,
+                        DEFAULT_GENERATOR_IN_RONDOM_ORDER.get(),
+                        DEFAULT_GENERATOR_IN_RONDOM_ORDER.get(),
                         DEFAULT_GENERATOR_IN_RONDOM_ORDER.get()));
 
         Communication communication = this.repository.getById(DEFAULT_COMMUNICATION_ID);
@@ -134,6 +137,8 @@ public class EdgeCommunicationTests {
                         DEFAULT_COMMUNICATION_ID,
                         DEFAULT_VEHICLE_ID,
                         DEFAULT_CONTROLLED,
+                        DEFAULT_GENERATOR.get(),
+                        DEFAULT_GENERATOR.get(),
                         DEFAULT_GENERATOR.get()));
 
         Communication communication = this.repository.getById(DEFAULT_COMMUNICATION_ID);
@@ -169,4 +174,31 @@ public class EdgeCommunicationTests {
             () -> assertThat(communication.getCommands()).hasSize(0)
         );
     }
+
+    /**
+     * Edgeが、既存のCommunicationエンティティからUploadMissionを取得する。<br>
+     * CommandIDに合致するUploadMissionが返却され、Communicationエンティティから<br>
+     * UploadMissionが削除されることを検証する。
+     */
+    @Test
+    public void pullUploadMissionFromCommunicationTest() {
+        when(this.repository.getById(DEFAULT_COMMUNICATION_ID))
+                .thenReturn(newSingleCommandCommunication(
+                        DEFAULT_COMMUNICATION_ID,
+                        DEFAULT_VEHICLE_ID,
+                        DEFAULT_CONTROLLED,
+                        DEFAULT_GENERATOR.get(),
+                        DEFAULT_GENERATOR.get(),
+                        DEFAULT_GENERATOR.get()));
+
+        Communication communication = this.repository.getById(DEFAULT_COMMUNICATION_ID);
+
+        MissionId missionId = communication.pullUploadMissionById(DEFAULT_COMMAND_ID);
+
+        assertAll(
+            () -> assertThat(missionId).isEqualTo(DEFAULT_MISSION_ID),
+            () -> assertThat(communication.getUploadMissions()).hasSize(0)
+        );
+    }
+
 }

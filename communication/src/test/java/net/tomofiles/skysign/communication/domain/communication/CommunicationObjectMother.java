@@ -27,10 +27,13 @@ public class CommunicationObjectMother {
             CommunicationId communicationId,
             VehicleId vehicleId,
             boolean controlled,
-            Generator generator) {
+            Generator generator,
+            Generator generatorCommand,
+            Generator generatorUploadMission) {
         Communication communication = CommunicationFactory.newInstance(communicationId, vehicleId, generator);
         communication.setControlled(controlled);
-        communication.getCommands().addAll(newSingleCommands(generator, CommandType.ARM));
+        communication.getCommands().addAll(newSingleCommands(generatorCommand, CommandType.ARM));
+        communication.getUploadMissions().addAll(newSingleUploadMissions(generatorUploadMission));
         communication.setTelemetry(newNormalTelemetry());
         return communication;
     }
@@ -42,10 +45,13 @@ public class CommunicationObjectMother {
             CommunicationId communicationId,
             VehicleId vehicleId,
             boolean controlled,
-            Generator generator) {
+            Generator generator,
+            Generator generatorCommand,
+            Generator generatorUploadMission) {
         Communication communication = CommunicationFactory.newInstance(communicationId, vehicleId, generator);
         communication.setControlled(controlled);
-        communication.getCommands().addAll(newSeveralCommands(generator));
+        communication.getCommands().addAll(newSeveralCommands(generatorCommand));
+        communication.getUploadMissions().addAll(newSeveralUploadMissions(generatorUploadMission));
         communication.setTelemetry(newNormalTelemetry());
         return communication;
     }
@@ -101,6 +107,33 @@ public class CommunicationObjectMother {
                     generator.newCommandId(),
                     CommandType.UPLOAD,
                     generator.newTime()),
+        });
+    }
+
+    /**
+     * 1件のテスト用UploadMissionオブジェクトのリストを生成する。
+     */
+    public static List<UploadMission> newSingleUploadMissions(Generator generator) {
+        CommandId id = generator.newCommandId();
+        return Arrays.asList(new UploadMission[] {
+            new UploadMission(id, new MissionId("MISSION_ID_SAMPLE_1"))
+        });
+    }
+
+    /**
+     * 複数件のテスト用UploadMissionオブジェクトのリストを生成する。
+     */
+    public static List<UploadMission> newSeveralUploadMissions(Generator generator) {
+        return Arrays.asList(new UploadMission[] {
+            new UploadMission(
+                    generator.newCommandId(),
+                    new MissionId("MISSION_ID_SAMPLE_1")),
+            new UploadMission(
+                    generator.newCommandId(),
+                    new MissionId("MISSION_ID_SAMPLE_2")),
+            new UploadMission(
+                    generator.newCommandId(),
+                    new MissionId("MISSION_ID_SAMPLE_3")),
         });
     }
 }

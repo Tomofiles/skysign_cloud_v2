@@ -122,6 +122,8 @@ public class CommunicateEdgeEndpointTests {
                         DEFAULT_COMMUNICATION_ID,
                         DEFAULT_VEHICLE_ID,
                         DEFAULT_CONTROLLED,
+                        DEFAULT_GENERATOR.get(),
+                        DEFAULT_GENERATOR.get(),
                         DEFAULT_GENERATOR.get()));
 
         PushTelemetryRequest request = PushTelemetryRequest.newBuilder()
@@ -197,6 +199,8 @@ public class CommunicateEdgeEndpointTests {
                         DEFAULT_COMMUNICATION_ID,
                         DEFAULT_VEHICLE_ID,
                         DEFAULT_CONTROLLED,
+                        DEFAULT_GENERATOR.get(),
+                        DEFAULT_GENERATOR.get(),
                         DEFAULT_GENERATOR.get()));
 
         PullCommandRequest request = PullCommandRequest.newBuilder()

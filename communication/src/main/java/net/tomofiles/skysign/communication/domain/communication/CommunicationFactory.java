@@ -5,6 +5,7 @@ import java.util.stream.Collectors;
 import net.tomofiles.skysign.communication.domain.communication.component.CommandComponentDto;
 import net.tomofiles.skysign.communication.domain.communication.component.CommunicationComponentDto;
 import net.tomofiles.skysign.communication.domain.communication.component.TelemetryComponentDto;
+import net.tomofiles.skysign.communication.domain.communication.component.UploadMissionComponentDto;
 
 public class CommunicationFactory {
 
@@ -46,6 +47,15 @@ public class CommunicationFactory {
                         })
                         .collect(Collectors.toList())
         );
+        communication.getUploadMissions().addAll(
+                componentDto.getUploadMissions().stream()
+                        .map(um -> {
+                                return new UploadMission(
+                                    new CommandId(um.getId()),
+                                    new MissionId(um.getMissionId()));
+                        })
+                        .collect(Collectors.toList())
+        );
         return communication;
     }
 
@@ -71,6 +81,12 @@ public class CommunicationFactory {
                             c.getId().getId(),
                             c.getType().toString(),
                             c.getTime()
+                        ))
+                        .collect(Collectors.toList()),
+                communication.getUploadMissions().stream()
+                        .map(um -> new UploadMissionComponentDto(
+                            um.getId().getId(),
+                            um.getMissionId().getId()
                         ))
                         .collect(Collectors.toList()));
     }

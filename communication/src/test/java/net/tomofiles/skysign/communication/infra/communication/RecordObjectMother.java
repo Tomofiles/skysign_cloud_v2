@@ -91,4 +91,34 @@ public class RecordObjectMother {
                         generator.newTime()),
         });
     }
+
+    /**
+     * 1件のUploadMissionレコードを生成する。
+     */
+    public static UploadMissionRecord newSingleUploadMissionRecord(CommunicationId id, Generator generator) {
+        return new UploadMissionRecord(
+                generator.newCommandId().getId(),
+                id.getId(),
+                "MISSION_ID_SAMPLE_1");
+    }
+
+    /**
+     * 複数件のUploadMissionレコードを生成する。
+     */
+    public static List<UploadMissionRecord> newSeveralUploadMissionRecords(CommunicationId id, Generator generator) {
+        return Arrays.asList(new UploadMissionRecord[] {
+                new UploadMissionRecord(
+                        generator.newCommandId().getId(),
+                        id.getId(),
+                        "MISSION_ID_SAMPLE_1"),
+                new UploadMissionRecord(
+                        generator.newCommandId().getId(),
+                        id.getId(),
+                        "MISSION_ID_SAMPLE_2"),
+                new UploadMissionRecord(
+                        generator.newCommandId().getId(),
+                        id.getId(),
+                        "MISSION_ID_SAMPLE_3"),
+        });
+    }
 }

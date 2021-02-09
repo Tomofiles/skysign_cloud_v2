@@ -34,6 +34,8 @@ import static net.tomofiles.skysign.communication.infra.communication.RecordObje
 import static net.tomofiles.skysign.communication.infra.communication.RecordObjectMother.newEmptyTelemetryRecord;
 import static net.tomofiles.skysign.communication.infra.communication.RecordObjectMother.newSingleCommandRecord;
 import static net.tomofiles.skysign.communication.infra.communication.RecordObjectMother.newSeveralCommandRecords;
+import static net.tomofiles.skysign.communication.infra.communication.RecordObjectMother.newSingleUploadMissionRecord;
+import static net.tomofiles.skysign.communication.infra.communication.RecordObjectMother.newSeveralUploadMissionRecords;
 
 public class CommunicationRepositoryTests {
 
@@ -102,6 +104,9 @@ public class CommunicationRepositoryTests {
     @Mock
     private CommandMapper commandMapper;
 
+    @Mock
+    private UploadMissionMapper uploadMissionMapper;
+
     @InjectMocks
     private CommunicationRepositoryImpl repository;
 
@@ -136,6 +141,10 @@ public class CommunicationRepositoryTests {
                 .thenReturn(newSeveralCommandRecords(
                         DEFAULT_COMMUNICATION_ID,
                         DEFAULT_GENERATOR.get()));
+        when(this.uploadMissionMapper.findByCommId(DEFAULT_COMMUNICATION_ID.getId()))
+                .thenReturn(newSeveralUploadMissionRecords(
+                        DEFAULT_COMMUNICATION_ID,
+                        DEFAULT_GENERATOR.get()));
 
         List<Communication> communications = this.repository.getAll();
 
@@ -144,6 +153,7 @@ public class CommunicationRepositoryTests {
                 DEFAULT_COMMUNICATION_ID,
                 DEFAULT_VEHICLE_ID,
                 DEFAULT_CONTROLLED,
+                DEFAULT_GENERATOR.get(),
                 DEFAULT_GENERATOR.get());
         
         assertAll(
@@ -180,6 +190,10 @@ public class CommunicationRepositoryTests {
                 .thenReturn(newSeveralCommandRecords(
                         DEFAULT_COMMUNICATION_ID,
                         DEFAULT_GENERATOR.get()));
+        when(this.uploadMissionMapper.findByCommId(DEFAULT_COMMUNICATION_ID.getId()))
+                .thenReturn(newSeveralUploadMissionRecords(
+                        DEFAULT_COMMUNICATION_ID,
+                        DEFAULT_GENERATOR.get()));
 
         Communication communication = this.repository.getById(DEFAULT_COMMUNICATION_ID);
         
@@ -188,6 +202,7 @@ public class CommunicationRepositoryTests {
                 DEFAULT_COMMUNICATION_ID,
                 DEFAULT_VEHICLE_ID,
                 DEFAULT_CONTROLLED,
+                DEFAULT_GENERATOR.get(),
                 DEFAULT_GENERATOR.get());
 
         assertThat(dto).isEqualTo(expectDto);
@@ -214,6 +229,8 @@ public class CommunicationRepositoryTests {
                 DEFAULT_COMMUNICATION_ID,
                 DEFAULT_VEHICLE_ID,
                 DEFAULT_CONTROLLED,
+                DEFAULT_GENERATOR.get(),
+                DEFAULT_GENERATOR_SINGLE_1.get(),
                 DEFAULT_GENERATOR_SINGLE_1.get()));
 
         verify(this.communicationMapper, times(1))
@@ -227,6 +244,10 @@ public class CommunicationRepositoryTests {
                 .create(newSingleCommandRecord(
                         DEFAULT_COMMUNICATION_ID,
                         DEFAULT_GENERATOR_SINGLE_1.get()));
+        verify(this.uploadMissionMapper, times(1))
+                .create(newSingleUploadMissionRecord(
+                        DEFAULT_COMMUNICATION_ID,
+                        DEFAULT_GENERATOR.get()));
     }
 
     /**
@@ -248,11 +269,19 @@ public class CommunicationRepositoryTests {
                                 DEFAULT_COMMUNICATION_ID,
                                 DEFAULT_GENERATOR_SINGLE_1.get())
                 }));
+        when(this.uploadMissionMapper.findByCommId(DEFAULT_COMMUNICATION_ID.getId()))
+                .thenReturn(Arrays.asList(new UploadMissionRecord[] {
+                        newSingleUploadMissionRecord(
+                                DEFAULT_COMMUNICATION_ID,
+                                DEFAULT_GENERATOR_SINGLE_1.get())
+                }));
 
         this.repository.save(newSingleCommandCommunication(
                 DEFAULT_COMMUNICATION_ID,
                 DEFAULT_VEHICLE_ID,
                 DEFAULT_CONTROLLED,
+                DEFAULT_GENERATOR.get(),
+                DEFAULT_GENERATOR_SINGLE_2.get(),
                 DEFAULT_GENERATOR_SINGLE_2.get()));
 
         verify(this.communicationMapper, times(1))
@@ -267,6 +296,12 @@ public class CommunicationRepositoryTests {
                         DEFAULT_COMMUNICATION_ID,
                         DEFAULT_GENERATOR_SINGLE_2.get()));
         verify(this.commandMapper, times(1))
+                .delete(DEFAULT_COMMAND_ID1.getId());
+        verify(this.uploadMissionMapper, times(1))
+                .create(newSingleUploadMissionRecord(
+                        DEFAULT_COMMUNICATION_ID,
+                        DEFAULT_GENERATOR_SINGLE_2.get()));
+        verify(this.uploadMissionMapper, times(1))
                 .delete(DEFAULT_COMMAND_ID1.getId());
     }
 

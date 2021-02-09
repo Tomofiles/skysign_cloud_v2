@@ -17,4 +17,5 @@ public class CommunicationComponentDto {
     private boolean controlled;
     private TelemetryComponentDto telemetry;
     private List<CommandComponentDto> commands;
+    private List<UploadMissionComponentDto> uploadMissions;
 }
