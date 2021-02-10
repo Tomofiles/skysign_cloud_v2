@@ -1,5 +1,5 @@
 # To bring up this system:
-# export CLOUD_ADDRESS=<ip>:<port>
+# export CLOUD_ADDRESS=<protocol>://<ip>:<port>
 # export PX4_HOME_LAT=<latitude>
 # export PX4_HOME_LON=<longitude>
 # export PX4_HOME_ALT=<altitude>

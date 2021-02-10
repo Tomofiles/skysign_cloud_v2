@@ -11,7 +11,7 @@ import (
 
 var (
 	mavsdk = "localhost:50051"
-	cloud  = "localhost:8080"
+	cloud  = "http://localhost:8080"
 )
 
 func main() {

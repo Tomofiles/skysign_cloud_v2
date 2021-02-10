@@ -15,7 +15,7 @@ func PullCommand(cloud string, vehicleID, commandID string) (*edge.Command, erro
 
 	req, err := http.NewRequest(
 		"POST",
-		"http://"+cloud+"/api/v1/communications/"+vehicleID+"/commands/"+commandID,
+		cloud+"/api/v1/communications/"+vehicleID+"/commands/"+commandID,
 		strings.NewReader("{}"),
 	)
 	if err != nil {
