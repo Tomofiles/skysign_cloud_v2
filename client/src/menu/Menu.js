@@ -14,7 +14,7 @@ import {
 } from '@material-ui/core';
 import { grey } from '@material-ui/core/colors';
 import Flight from '@material-ui/icons/Flight';
-import Send from '@material-ui/icons/Send';
+import EventNote from '@material-ui/icons/EventNote';
 import Timeline from '@material-ui/icons/Timeline';
 import Settings from '@material-ui/icons/Settings';
 import Games from '@material-ui/icons/Games';
@@ -67,7 +67,7 @@ const Menu = (props) => {
             <Grid container className={props.classes.menuItem} >
               <Grid item xs={12}>
                 <Badge color="secondary" variant="dot" invisible={!props.plansOpen}>
-                  <Send style={{ color: grey[50] }} fontSize="large" />
+                  <EventNote style={{ color: grey[50] }} fontSize="large" />
                 </Badge>
               </Grid>
               <Grid item xs={12}>

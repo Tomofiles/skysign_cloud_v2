@@ -8,6 +8,8 @@ import {
 } from '@material-ui/core';
 import { grey } from '@material-ui/core/colors';
 import Settings from '@material-ui/icons/Settings';
+import PlanCalendar from './calendar/PlanCalendar';
+import MyFlightplans from './flightplans/MyFlightplans';
 
 const Plans = (props) => {
   return (
@@ -35,6 +37,8 @@ const Plans = (props) => {
           </Grid>
         </Box>
       </Box>
+      <PlanCalendar classes={props.classes} />
+      <MyFlightplans classes={props.classes} />
     </Drawer>
   );
 }

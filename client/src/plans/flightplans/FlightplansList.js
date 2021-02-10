@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 
 import {
   Typography,
@@ -13,21 +13,23 @@ import {
   Button
 } from '@material-ui/core';
 import { grey } from '@material-ui/core/colors';
-import Timeline from '@material-ui/icons/Timeline';
+import EventNote from '@material-ui/icons/EventNote';
 
-import { getMissions } from './MissionUtils'
-
-const MissionsList = (props) => {
-  const [rows, setRows] = useState([]);
-
-  useEffect(() => {
-    if (props.open) {
-      getMissions()
-        .then(data => {
-          setRows(data.missions);
-        })
-    }
-  }, [props.open])
+const FlightplansList = (props) => {
+  const rows = useState([
+    {name: "sample plan"},
+    {name: "sample plan"},
+    {name: "sample plan"},
+    {name: "sample plan"},
+    {name: "sample plan"},
+    {name: "sample plan"},
+    {name: "sample plan"},
+    {name: "sample plan"},
+    {name: "sample plan"},
+    {name: "sample plan"},
+    {name: "sample plan"},
+    {name: "sample plan"},
+  ])[0];
 
   const onClickNew = () => {
     props.openNew();
@@ -43,13 +45,13 @@ const MissionsList = (props) => {
         <List 
           className={props.classes.funcPanelDetails} >
           {rows.length === 0 &&
-            <Typography>No Missions</Typography>
+            <Typography>No Flightplans</Typography>
           }
           {rows.map((row) => (
             <Box key={row.id} pb={1} onClick={() => onSelect(row.id)} >
               <ListItem button component={Paper} className={props.classes.funcListItem}>
                 <ListItemIcon>
-                  <Timeline style={{ color: grey[50] }} />
+                  <EventNote style={{ color: grey[50] }} />
                 </ListItemIcon>
                 <ListItemText >{row.name}</ListItemText>
               </ListItem>
@@ -64,4 +66,4 @@ const MissionsList = (props) => {
   );
 }
 
-export default MissionsList;
+export default FlightplansList;
