@@ -9,12 +9,7 @@ participant "Edge on Vehicle" as E
 UC -> MS : POST /api/v1/missions\n(body mission data)
 note left: User creates\nnew Mission
 MS -> UC : Success, new Mission\n(including mission-id)
-UC -> CSC : POST /api/v1/communications/<communication-id>/staging\n(body mission-id)
-note left: User associates Mission\nwith Communication
-CSC -> CSC : 
-note right: Link mission-id and communication-id
-CSC -> UC : Success, staging
-UC -> CSC : POST /api/v1/communications/<communication-id>/commands\n(body command-type: UPLOAD)
+UC -> CSC : POST /api/v1/communications/<communication-id>/uploadmissions\n(body mission-id)
 note left: User sends\ncommand to Edge\n(relay to Communication)
 CSC -> UC : Success, sends to Edge
 E -> CSC : POST /api/v1/communications/<communication-id>/telemetry\n(body Telemetry)
@@ -22,7 +17,7 @@ CSC -> E : Existing Command for Edge\n(including command-id)
 E -> CSC : POST /api/v1/communications/<communication-id>/commands/<command-id>
 CSC -> E : Server sends Command to Edge\n(body command-type: UPLOAD)
 note right: Edge retrieves Command from server,\nand finds command-type is UPLOAD 
-E -> CSC : GET /api/v1/communications/<communication-id>
+E -> CSC : GET /api/v1/communications/<communication-id>/uploadmissions/<command-id>
 CSC -> E : Associated Mission with Communication\n(including mission-id)
 note right: Edge retrieves\nassociated Mission
 E -> MS : GET /api/v1/missions/<mission-id>
