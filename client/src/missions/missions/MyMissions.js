@@ -15,7 +15,7 @@ import MissionsDetail from './MissionsDetail'
 
 const MISSION_MODE = Object.freeze({"NEW":1, "EDIT":2, "DETAIL":3, "LIST":4});
 
-const Missions = (props) => {
+const MyMissions = (props) => {
   const [ mode, setMode ] = useState(MISSION_MODE.LIST);
   const [ selected, setSelected ] = useState(undefined);
 
@@ -67,4 +67,4 @@ const Missions = (props) => {
   );
 }
 
-export default Missions;
+export default MyMissions;

@@ -12,7 +12,7 @@ import StagingEdit from './StagingEdit';
 
 import { getCommunications, control, uncontrol, staging as stagingApi, cancel as cancelApi } from './StagingUtils'
 import { getVehicle } from '../../assets/vehicles/VehicleUtils'
-import { getMission } from '../../plans/missions/MissionUtils'
+import { getMission } from '../../missions/missions/MissionUtils'
 import { AppContext } from '../../context/Context';
 
 const STAGING_MODE = Object.freeze({"EDIT":1, "LIST":2});

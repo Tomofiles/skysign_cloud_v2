@@ -9,7 +9,7 @@ import {
 import { grey } from '@material-ui/core/colors';
 import Settings from '@material-ui/icons/Settings';
 
-import Vehicles from './vehicles/Vehicles'
+import MyVehicles from './vehicles/MyVehicles'
 
 const Assets = (props) => {
   return (
@@ -37,7 +37,7 @@ const Assets = (props) => {
           </Grid>
         </Box>
       </Box>
-      <Vehicles classes={props.classes} open={props.open} />
+      <MyVehicles classes={props.classes} open={props.open} />
     </Drawer>
   );
 }

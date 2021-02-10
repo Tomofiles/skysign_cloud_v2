@@ -15,7 +15,7 @@ import VehiclesDetail from './VehiclesDetail'
 
 const VEHICLE_MODE = Object.freeze({"NEW":1, "EDIT":2, "DETAIL":3, "LIST":4});
 
-const Vehicles = (props) => {
+const MyVehicles = (props) => {
   const [mode, setMode] = useState(VEHICLE_MODE.LIST);
   const [selected, setSelected] = useState(undefined);
 
@@ -67,4 +67,4 @@ const Vehicles = (props) => {
   );
 }
 
-export default Vehicles;
+export default MyVehicles;

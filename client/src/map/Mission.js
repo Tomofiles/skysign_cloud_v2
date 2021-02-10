@@ -1,9 +1,9 @@
 import React, { useEffect, useReducer } from 'react';
 
-import { getMission } from '../plans/missions/MissionUtils'
+import { getMission } from '../missions/missions/MissionUtils'
 import Waypoint from './Waypoint';
 import Path from './Path';
-import { getPathsForDisplayToMap, getWaypointsForDisplayToMap } from '../plans/missions/MissionHelper';
+import { getPathsForDisplayToMap, getWaypointsForDisplayToMap } from '../missions/missions/MissionHelper';
 import { editMissionReducer, initialEditMission } from '../context/EditMission';
 
 const Mission = (props) => {

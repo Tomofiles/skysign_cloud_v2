@@ -9,7 +9,9 @@ import {
 import { grey } from '@material-ui/core/colors';
 import Settings from '@material-ui/icons/Settings';
 
-const Plans = (props) => {
+import MyMissions from './missions/MyMissions'
+
+const Missions = (props) => {
   return (
     <Drawer
         className={props.classes.func}
@@ -28,15 +30,16 @@ const Plans = (props) => {
             </Grid>
             <Grid item xs={3}>
               <Typography align="left" component="div">
-                Plans
+                Missions
               </Typography>
             </Grid>
             <Grid item xs={4} />
           </Grid>
         </Box>
       </Box>
+      <MyMissions classes={props.classes} open={props.open}/>
     </Drawer>
   );
 }
 
-export default Plans;
+export default Missions;

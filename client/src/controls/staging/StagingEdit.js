@@ -16,7 +16,7 @@ import {
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import { grey } from '@material-ui/core/colors';
 
-import { getMissions } from '../../plans/missions/MissionUtils'
+import { getMissions } from '../../missions/missions/MissionUtils'
 
 const noSelected = {
   "id": "no-selected",
