@@ -6,6 +6,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import lombok.AllArgsConstructor;
+import net.tomofiles.skysign.communication.domain.communication.CommandId;
 import net.tomofiles.skysign.communication.domain.communication.Communication;
 import net.tomofiles.skysign.communication.domain.communication.CommunicationRepository;
 import net.tomofiles.skysign.communication.domain.communication.TelemetrySnapshot;
@@ -72,11 +73,12 @@ public class CommunicationUserService {
             return;
         }
 
-        communication.pushCommand(requestDpo.getCommandType());
+        CommandId commandId = communication.pushCommand(requestDpo.getCommandType());
 
         this.communicationRepository.save(communication);
 
         responseDpo.setCommunication(communication);
+        responseDpo.setCommandId(commandId);
     }
 
     @Transactional
@@ -87,11 +89,12 @@ public class CommunicationUserService {
             return;
         }
 
-        communication.pushUploadMission(requestDpo.getMissionId());
+        CommandId commandId = communication.pushUploadMission(requestDpo.getMissionId());
 
         this.communicationRepository.save(communication);
 
         responseDpo.setCommunication(communication);
+        responseDpo.setCommandId(commandId);
     }
 
     @Transactional

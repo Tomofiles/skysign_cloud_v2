@@ -205,6 +205,7 @@ public class CommunicationUserEndpointTests {
         assertThat(response).isEqualTo(PushCommandResponse.newBuilder()
                 .setId(DEFAULT_COMMUNICATION_ID.getId())
                 .setType(CommandType.valueOf(DEFAULT_COMMAND_TYPE))
+                .setCommandId(DEFAULT_COMMAND_ID.getId())
                 .build());
     }
 
@@ -284,6 +285,7 @@ public class CommunicationUserEndpointTests {
         assertThat(response).isEqualTo(PushUploadMissionResponse.newBuilder()
                 .setId(DEFAULT_COMMUNICATION_ID.getId())
                 .setMissionId(DEFAULT_MISSION_ID.getId())
+                .setCommandId(DEFAULT_COMMAND_ID.getId())
                 .build());
     }
 
