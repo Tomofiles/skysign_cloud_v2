@@ -21,6 +21,10 @@ const FlightplansDetail = (props) => {
     props.openList();  
   }
 
+  const onClickAssign = () => {
+    props.openAssignDetail(props.id);
+  }
+
   return (
     <div>
       <ExpansionPanelDetails>
@@ -45,9 +49,50 @@ const FlightplansDetail = (props) => {
               </Grid>
             </Box>
           </Grid>
+          <Grid item xs={12}>
+            <Box  p={1} m={1} borderRadius={7} >
+              <Grid container className={props.classes.textLabel}>
+                <Grid item xs={12}>
+                  <Typography style={{fontSize: "12px"}}>The number of vehicles</Typography>
+                </Grid>
+                <Grid item xs={12}>
+                  <Typography>3</Typography>
+                </Grid>
+              </Grid>
+            </Box>
+          </Grid>
+          <Grid item xs={12}>
+            <Box  p={1} m={1} borderRadius={7} >
+              <Grid container className={props.classes.textLabel}>
+                <Grid item xs={12}>
+                  <Typography style={{fontSize: "12px"}}>Flight Start Time</Typography>
+                </Grid>
+                <Grid item xs={12}>
+                  <Typography>2021/02/11 12:00</Typography>
+                </Grid>
+              </Grid>
+            </Box>
+          </Grid>
+          <Grid item xs={12}>
+            <Box  p={1} m={1} borderRadius={7} >
+              <Grid container className={props.classes.textLabel}>
+                <Grid item xs={12}>
+                  <Typography style={{fontSize: "12px"}}>Flight End Time</Typography>
+                </Grid>
+                <Grid item xs={12}>
+                  <Typography>2021/02/11 15:00</Typography>
+                </Grid>
+              </Grid>
+            </Box>
+          </Grid>
         </Grid>
       </ExpansionPanelDetails>
       <ExpansionPanelActions >
+        <Button
+            className={props.classes.funcButton}
+            onClick={onClickAssign}>
+          Assign
+        </Button>
         <Button
             className={props.classes.funcButton}
             onClick={onClickEdit}>

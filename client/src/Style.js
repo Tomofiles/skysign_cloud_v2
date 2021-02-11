@@ -2,7 +2,6 @@ import { makeStyles, createMuiTheme } from "@material-ui/core/styles";
 
 const menuWidth = 70;
 const menuWidthItem = 38;
-const funcWidth = 320;
 
 export const useStyles = makeStyles(theme => ({
   root: {
@@ -37,28 +36,21 @@ export const useStyles = makeStyles(theme => ({
     right: 0,
     bottom: 0
   },
-  plannerArea: {
+  func: {
     position: "absolute",
     top: 0,
     left: menuWidth,
     right: 0,
     bottom: 0,
-    background: 'rgba(0, 0, 0, 0.5)',
-  },
-  plannerChart: {
-    position: "absolute",
-    left: menuWidth,
-    right: funcWidth + menuWidth,
-    background: '#fafafa',
-  },
-  func: {
-    width: funcWidth,
     flexShrink: 0,
-  },
-  funcPaper: {
     background: 'rgba(0, 0, 0, 0.7)',
     color: '#fafafa',
-    width: funcWidth,
+  },
+  funcPaper: {
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
   },
   funcPanel: {
     background: 'transparent',
@@ -123,6 +115,27 @@ export const theme = createMuiTheme({
     MuiListItemIcon: {
       "root": {
         minWidth: 38,
+      }
+    },
+    MuiTableHead: {
+      "root": {
+        backgroundColor: '#303437',
+      },
+    },
+    MuiTableRow: {
+      "root": {
+        backgroundColor: '#303437',
+        '&:hover': {
+          backgroundColor: 'rgba(0, 173, 181, 1.0)',
+        }
+      },
+    },
+    MuiTableCell: {
+      "head": {
+        color: '#fafafa',
+      },
+      "body": {
+        color: '#fafafa',
       }
     }
   }

@@ -12,8 +12,10 @@ import FlightplansDetail from './FlightplansDetail';
 import FlightplansList from './FlightplansList';
 import FlightplansNew from './FlightplansNew';
 import FlightplansEdit from './FlightplansEdit';
+import AssignDetail from './AssignDetail';
+import AssignEdit from './AssignEdit';
 
-const FLIGHTPLAN_MODE = Object.freeze({"NEW":1, "EDIT":2, "DETAIL":3, "LIST":4});
+const FLIGHTPLAN_MODE = Object.freeze({"NEW":1, "EDIT":2, "DETAIL":3, "LIST":4, "ASSIGN_EDIT":5, "ASSIGN_DETAIL":6});
 
 const MyFlightplans = (props) => {
   const [ mode, setMode ] = useState(FLIGHTPLAN_MODE.LIST);
@@ -39,6 +41,16 @@ const MyFlightplans = (props) => {
     setSelected(undefined);
   }
 
+  const openAssignEdit = (id) => {
+    setMode(FLIGHTPLAN_MODE.ASSIGN_EDIT);
+    setSelected(id);
+  }
+
+  const openAssignDetail = (id) => {
+    setMode(FLIGHTPLAN_MODE.ASSIGN_DETAIL);
+    setSelected(id);
+  }
+
   return (
     <ExpansionPanel
         className={props.classes.funcPanel}
@@ -58,10 +70,16 @@ const MyFlightplans = (props) => {
         <FlightplansNew classes={props.classes} openList={openList} />
       }
       {mode === FLIGHTPLAN_MODE.DETAIL &&
-        <FlightplansDetail classes={props.classes} openList={openList} openEdit={openEdit} id={selected} />
+        <FlightplansDetail classes={props.classes} openList={openList} openEdit={openEdit} openAssignDetail={openAssignDetail} id={selected} />
       }
       {mode === FLIGHTPLAN_MODE.LIST &&
         <FlightplansList classes={props.classes} openDetail={openDetail} openNew={openNew} id={selected} open={props.open} />
+      }
+      {mode === FLIGHTPLAN_MODE.ASSIGN_EDIT &&
+        <AssignEdit classes={props.classes} openList={openList} openAssignDetail={openAssignDetail} id={selected} open={props.open} />
+      }
+      {mode === FLIGHTPLAN_MODE.ASSIGN_DETAIL &&
+        <AssignDetail classes={props.classes} openDetail={openDetail} openAssignEdit={openAssignEdit} id={selected} open={props.open} />
       }
     </ExpansionPanel>
   );
