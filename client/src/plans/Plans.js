@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext, useEffect } from 'react';
 
 import {
   Drawer,
@@ -10,8 +10,19 @@ import { grey } from '@material-ui/core/colors';
 import Settings from '@material-ui/icons/Settings';
 import PlanCalendar from './calendar/PlanCalendar';
 import MyFlightplans from './flightplans/MyFlightplans';
+import { AppContext } from '../context/Context';
 
 const Plans = (props) => {
+  const { dispatchPlannerMode } = useContext(AppContext);
+
+  useEffect(() => {
+    if (props.open) {
+      dispatchPlannerMode({ type: 'PLANNING' });
+    } else {
+      dispatchPlannerMode({ type: 'NONE' });
+    }
+  }, [ props.open, dispatchPlannerMode ])
+
   return (
     <Drawer
         className={props.classes.func}

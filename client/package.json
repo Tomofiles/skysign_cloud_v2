@@ -22,7 +22,8 @@
     "resium": "^1.12.0-beta.2",
     "use-interval": "^1.2.1",
     "uuid": "^8.2.0",
-    "react-calendar": "3.3.1"
+    "react-calendar": "3.3.1",
+    "react-google-charts": "3.0.15"
   },
   "scripts": {
     "start": "craco start",
