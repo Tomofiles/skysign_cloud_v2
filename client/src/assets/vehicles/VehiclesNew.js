@@ -2,12 +2,12 @@ import React from 'react';
 
 import {
   Typography,
-  ExpansionPanelDetails,
-  ExpansionPanelActions,
   Button,
   TextField,
   Grid,
-  Box
+  Box,
+  Paper,
+  Divider
 } from '@material-ui/core';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import { grey } from '@material-ui/core/colors';
@@ -25,22 +25,30 @@ const VehiclesNew = (props) => {
       });
   }
 
+  const onClickCancel = () => {
+    props.openList();  
+  }
+
   const onClickReturn = () => {
     props.openList();  
   }
 
   return (
-    <div>
-      <form onSubmit={handleSubmit(onClickSave)}>
-        <ExpansionPanelDetails>
+    <form onSubmit={handleSubmit(onClickSave)}>
+      <Box>
+        <Button onClick={onClickReturn}>
+          <ChevronLeftIcon style={{ color: grey[50] }} />
+        </Button>
+        <Box p={2} style={{display: 'flex'}}>
+          <Typography>Create Vehicle</Typography>
+        </Box>
+      </Box>
+      <Paper className={props.classes.funcPanelEdit}>
+        <Box p={3}>
           <Grid container className={props.classes.textLabel}>
             <Grid item xs={12}>
-              <Button onClick={onClickReturn}>
-                <ChevronLeftIcon style={{ color: grey[50] }} />
-              </Button>
-            </Grid>
-            <Grid item xs={12}>
-              <Typography>New Vehicle</Typography>
+              <Typography>Vehicle settings</Typography>
+              <Divider/>
             </Grid>
             <Grid item xs={12}>
               <Box className={props.classes.textInput}
@@ -69,16 +77,28 @@ const VehiclesNew = (props) => {
               </Box>
             </Grid>
           </Grid>
-        </ExpansionPanelDetails>
-        <ExpansionPanelActions >
-          <Button
-              className={props.classes.funcButton}
-              type="submit" >
-            Save
-          </Button>
-        </ExpansionPanelActions>
-      </form>
-    </div>
+          <Divider/>
+        </Box>
+        <Box p={3}>
+          <Box style={{display: 'flex', justifyContent: 'flex-end'}}>
+            <Box px={1}>
+              <Button
+                  className={props.classes.funcButton}
+                  onClick={onClickCancel}>
+                Cancel
+              </Button>
+            </Box>
+            <Box px={1}>
+              <Button
+                  className={props.classes.funcButton}
+                  type="submit" >
+                Save
+              </Button>
+            </Box>
+          </Box>
+        </Box>
+      </Paper>
+    </form>
   );
 }
 

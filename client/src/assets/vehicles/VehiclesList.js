@@ -4,16 +4,15 @@ import {
   Typography,
   Box,
   Paper,
-  List,
-  ListItem,
-  ListItemIcon,
-  ListItemText,
-  ExpansionPanelDetails,
-  ExpansionPanelActions,
-  Button
+  Button,
+  TableContainer,
+  Table,
+  TableHead,
+  TableCell,
+  TableBody,
+  TableRow,
+  Divider
 } from '@material-ui/core';
-import { grey } from '@material-ui/core/colors';
-import Flight from '@material-ui/icons/Flight';
 
 import { getVehicles } from './VehicleUtils'
 
@@ -27,7 +26,7 @@ const VehiclesList = (props) => {
           setRows(data.vehicles);
         })
     }
-  }, [props.open])
+  }, [ props.open ])
 
   const onClickNew = () => {
     props.openNew();
@@ -38,29 +37,35 @@ const VehiclesList = (props) => {
   }
 
   return (
-    <div>
-      <ExpansionPanelDetails>
-        <List 
-          className={props.classes.funcPanelDetails} >
-          {rows.length === 0 &&
-            <Typography>No Vehicles</Typography>
-          }
-          {rows.map((row) => (
-            <Box key={row.id} pb={1} onClick={() => onSelect(row.id)} >
-              <ListItem button component={Paper} className={props.classes.funcListItem}>
-                <ListItemIcon>
-                  <Flight style={{ color: grey[50] }} />
-                </ListItemIcon>
-                <ListItemText >{row.name}</ListItemText>
-              </ListItem>
-            </Box>
-          ))}
-        </List>
-      </ExpansionPanelDetails>
-      <ExpansionPanelActions >
-        <Button className={props.classes.funcButton} onClick={onClickNew}>New</Button>
-      </ExpansionPanelActions>
-    </div>
+    <Paper className={props.classes.funcPanelList}>
+      <Box p={3}>
+        <Box style={{display: 'flex', justifyContent: 'space-between'}}>
+          <Typography>Your Vehicles</Typography>
+          <Button className={props.classes.funcButton} onClick={onClickNew}>Create Vehicle</Button>
+        </Box>
+        <Divider/>
+        <Box py={2}>
+          <TableContainer component={Paper} style={{maxHeight: '300px'}}>
+            <Table aria-label="simple table" stickyHeader>
+              <TableHead>
+                <TableCell>Name</TableCell>
+                <TableCell>Communication ID</TableCell>
+              </TableHead>
+              <TableBody>
+                {rows.map((row) => (
+                  <TableRow key={row.id} onClick={() => onSelect(row.id)}>
+                    <TableCell component="th" scope="row">
+                      {row.name}
+                    </TableCell>
+                    <TableCell>{row.commId}</TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
+        </Box>
+      </Box>
+    </Paper>
   );
 }
 

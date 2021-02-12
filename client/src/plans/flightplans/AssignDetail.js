@@ -81,7 +81,7 @@ const AssignDetail = (props) => {
           <Grid item xs={12}>
             <Box p={2}>
               <TableContainer component={Paper} style={{maxHeight: '300px'}}>
-                <Table aria-label="simple table">
+                <Table aria-label="simple table" stickyHeader>
                   <TableHead>
                     <TableCell>Fleet</TableCell>
                     <TableCell>Vehicle</TableCell>

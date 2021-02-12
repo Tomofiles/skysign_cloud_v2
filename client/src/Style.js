@@ -43,7 +43,7 @@ export const useStyles = makeStyles(theme => ({
     right: 0,
     bottom: 0,
     flexShrink: 0,
-    background: 'rgba(0, 0, 0, 0.7)',
+    background: '#222222',
     color: '#fafafa',
   },
   funcPaper: {
@@ -52,8 +52,14 @@ export const useStyles = makeStyles(theme => ({
     right: 0,
     bottom: 0,
   },
-  funcPanel: {
-    background: 'transparent',
+  funcPanelEdit: {
+    background: '#333333',
+    color: '#fafafa',
+    maxWidth: '650px',
+  },
+  funcPanelList: {
+    background: '#333333',
+    color: '#fafafa',
   },
   funcPanelSummary: {
     background: '#303437',
@@ -86,10 +92,10 @@ export const useStyles = makeStyles(theme => ({
     }
   },
   funcButton: {
-    background: '#303437',
+    background: 'rgba(0, 173, 181, 1.0)',
     color: '#fafafa',
     "&:hover": {
-      background: 'rgba(0, 173, 181, 1.0)'
+      background: '#00939a'
     }
   },
   textLabel: {
@@ -117,26 +123,12 @@ export const theme = createMuiTheme({
         minWidth: 38,
       }
     },
-    MuiTableHead: {
-      "root": {
-        backgroundColor: '#303437',
-      },
-    },
     MuiTableRow: {
       "root": {
-        backgroundColor: '#303437',
         '&:hover': {
           backgroundColor: 'rgba(0, 173, 181, 1.0)',
         }
       },
     },
-    MuiTableCell: {
-      "head": {
-        color: '#fafafa',
-      },
-      "body": {
-        color: '#fafafa',
-      }
-    }
   }
 });
