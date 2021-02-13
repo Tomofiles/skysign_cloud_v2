@@ -2,11 +2,11 @@ import React from 'react';
 
 import {
   Typography,
-  ExpansionPanelDetails,
-  ExpansionPanelActions,
   Button,
   Grid,
   Box,
+  Paper,
+  Divider,
 } from '@material-ui/core';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import { grey } from '@material-ui/core/colors';
@@ -21,84 +21,109 @@ const FlightplansDetail = (props) => {
     props.openList();  
   }
 
-  const onClickAssign = () => {
-    props.openAssignDetail(props.id);
+  const onClickAssignVehicle = () => {
+    props.openAssignVehicleDetail(props.id);
+  }
+
+  const onClickAssignMission = () => {
+    props.openAssignMissionDetail(props.id);
   }
 
   return (
-    <div>
-      <ExpansionPanelDetails>
-        <Grid container className={props.classes.textLabel}>
-          <Grid item xs={12}>
-            <Button onClick={onClickReturn}>
-              <ChevronLeftIcon style={{ color: grey[50] }} />
+    <div className={props.classes.funcPanel}>
+      <Box>
+        <Button onClick={onClickReturn}>
+          <ChevronLeftIcon style={{ color: grey[50] }} />
+        </Button>
+        <Box p={2} style={{display: 'flex'}}>
+          <Typography>Sample Flightplan</Typography>
+        </Box>
+      </Box>
+      <Box pb={2}>
+        <Paper className={props.classes.funcPanelEdit}>
+          <Box p={3}>
+            <Grid container className={props.classes.textLabel}>
+              <Grid item xs={12}>
+                <Typography>Basic configuration</Typography>
+                <Divider/>
+              </Grid>
+              <Grid item xs={12}>
+                <Box  p={1} m={1} borderRadius={7} >
+                  <Grid container className={props.classes.textLabel}>
+                    <Grid item xs={12}>
+                      <Typography style={{fontSize: "12px"}}>Name</Typography>
+                    </Grid>
+                    <Grid item xs={12}>
+                      <Typography>Sample Flightplan</Typography>
+                    </Grid>
+                  </Grid>
+                </Box>
+              </Grid>
+              <Grid item xs={12}>
+                <Box  p={1} m={1} borderRadius={7} >
+                  <Grid container className={props.classes.textLabel}>
+                    <Grid item xs={12}>
+                      <Typography style={{fontSize: "12px"}}>The number of vehicles</Typography>
+                    </Grid>
+                    <Grid item xs={12}>
+                      <Typography>3</Typography>
+                    </Grid>
+                  </Grid>
+                </Box>
+              </Grid>
+              <Grid item xs={12}>
+                <Box  p={1} m={1} borderRadius={7} >
+                  <Grid container className={props.classes.textLabel}>
+                    <Grid item xs={12}>
+                      <Typography style={{fontSize: "12px"}}>Flight Start Time</Typography>
+                    </Grid>
+                    <Grid item xs={12}>
+                      <Typography>2021/02/11 12:00</Typography>
+                    </Grid>
+                  </Grid>
+                </Box>
+              </Grid>
+              <Grid item xs={12}>
+                <Box  p={1} m={1} borderRadius={7} >
+                  <Grid container className={props.classes.textLabel}>
+                    <Grid item xs={12}>
+                      <Typography style={{fontSize: "12px"}}>Flight End Time</Typography>
+                    </Grid>
+                    <Grid item xs={12}>
+                      <Typography>2021/02/11 15:00</Typography>
+                    </Grid>
+                  </Grid>
+                </Box>
+              </Grid>
+            </Grid>
+          </Box>
+        </Paper>
+      </Box>
+      <Box>
+        <Box style={{display: 'flex', justifyContent: 'flex-end'}}>
+          <Box px={1}>
+            <Button
+                className={props.classes.funcButton}
+                onClick={onClickAssignMission}>
+              Assign Mission
             </Button>
-          </Grid>
-          <Grid item xs={12}>
-            <Typography>Detail Flightplan</Typography>
-          </Grid>
-          <Grid item xs={12}>
-            <Box  p={1} m={1} borderRadius={7} >
-              <Grid container className={props.classes.textLabel}>
-                <Grid item xs={12}>
-                  <Typography style={{fontSize: "12px"}}>Name</Typography>
-                </Grid>
-                <Grid item xs={12}>
-                  <Typography>Sample Flightplan</Typography>
-                </Grid>
-              </Grid>
-            </Box>
-          </Grid>
-          <Grid item xs={12}>
-            <Box  p={1} m={1} borderRadius={7} >
-              <Grid container className={props.classes.textLabel}>
-                <Grid item xs={12}>
-                  <Typography style={{fontSize: "12px"}}>The number of vehicles</Typography>
-                </Grid>
-                <Grid item xs={12}>
-                  <Typography>3</Typography>
-                </Grid>
-              </Grid>
-            </Box>
-          </Grid>
-          <Grid item xs={12}>
-            <Box  p={1} m={1} borderRadius={7} >
-              <Grid container className={props.classes.textLabel}>
-                <Grid item xs={12}>
-                  <Typography style={{fontSize: "12px"}}>Flight Start Time</Typography>
-                </Grid>
-                <Grid item xs={12}>
-                  <Typography>2021/02/11 12:00</Typography>
-                </Grid>
-              </Grid>
-            </Box>
-          </Grid>
-          <Grid item xs={12}>
-            <Box  p={1} m={1} borderRadius={7} >
-              <Grid container className={props.classes.textLabel}>
-                <Grid item xs={12}>
-                  <Typography style={{fontSize: "12px"}}>Flight End Time</Typography>
-                </Grid>
-                <Grid item xs={12}>
-                  <Typography>2021/02/11 15:00</Typography>
-                </Grid>
-              </Grid>
-            </Box>
-          </Grid>
-        </Grid>
-      </ExpansionPanelDetails>
-      <ExpansionPanelActions >
-        <Button
-            className={props.classes.funcButton}
-            onClick={onClickAssign}>
-          Assign
-        </Button>
-        <Button
-            className={props.classes.funcButton}
-            onClick={onClickEdit}>
-          Edit
-        </Button>
-      </ExpansionPanelActions>
+          </Box>
+          <Box px={1}>
+            <Button
+                className={props.classes.funcButton}
+                onClick={onClickAssignVehicle}>
+              Assign Vehicle
+            </Button>
+          </Box>
+          <Box px={1}>
+            <Button
+                className={props.classes.funcButton}
+                onClick={onClickEdit}>
+              Edit
+            </Button>
+          </Box>
+        </Box>
+      </Box>
     </div>
   );
 }

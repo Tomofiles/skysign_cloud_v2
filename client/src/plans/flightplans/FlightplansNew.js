@@ -2,56 +2,128 @@ import React from 'react';
 
 import {
   Typography,
-  ExpansionPanelDetails,
-  ExpansionPanelActions,
   Button,
   TextField,
   Grid,
   Box,
+  Paper,
+  Divider,
 } from '@material-ui/core';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import { grey } from '@material-ui/core/colors';
+import { useForm } from 'react-hook-form';
 
 const FlightplansNew = (props) => {
+  const { register, handleSubmit, errors } = useForm();
 
   const onClickSave = () => {
     props.openList();
   }
 
+  const onClickCancel = () => {
+    props.openList();  
+  }
+
   const onClickReturn = () => {
-    props.openList();
+    props.openList();  
   }
 
   return (
-    <div>
-      <ExpansionPanelDetails>
-        <Grid container className={props.classes.textLabel}>
-          <Grid item xs={12}>
-            <Button onClick={onClickReturn}>
-              <ChevronLeftIcon style={{ color: grey[50] }} />
-            </Button>
-          </Grid>
-          <Grid item xs={12}>
-            <Typography>New Flightplan</Typography>
-          </Grid>
-          <Grid item xs={12}>
-            <Box className={props.classes.textInput}
-                p={1} m={1} borderRadius={7} >
-              <TextField
-                label="Name"
-                name="name"
-                fullWidth />
+    <div className={props.classes.funcPanel}>
+      <form onSubmit={handleSubmit(onClickSave)}>
+        <Box>
+          <Button onClick={onClickReturn}>
+            <ChevronLeftIcon style={{ color: grey[50] }} />
+          </Button>
+          <Box p={2} style={{display: 'flex'}}>
+            <Typography>Create Flightplan</Typography>
+          </Box>
+        </Box>
+        <Box pb={2}>
+          <Paper className={props.classes.funcPanelEdit}>
+            <Box p={3}>
+              <Grid container className={props.classes.textLabel}>
+                <Grid item xs={12}>
+                  <Typography>Basic configuration</Typography>
+                  <Divider/>
+                </Grid>
+                <Grid item xs={12}>
+                  <Box className={props.classes.textInput}
+                      p={1} m={1} borderRadius={7} >
+                    <TextField
+                      label="Name"
+                      type="text"
+                      name="name"
+                      fullWidth
+                      inputRef={register({ required: true, maxLength: 50 })}
+                      error={Boolean(errors.name)}
+                      helperText={errors.name} />
+                  </Box>
+                </Grid>
+                <Grid item xs={12}>
+                  <Box className={props.classes.textInput}
+                      p={1} m={1} borderRadius={7} >
+                    <TextField
+                      label="The number of vehicles"
+                      type="text"
+                      name="commId"
+                      fullWidth
+                      inputRef={register({ required: true, maxLength: 50 })}
+                      error={Boolean(errors.commId)}
+                      helperText={errors.commId} />
+                  </Box>
+                </Grid>
+                <Grid item xs={12}>
+                  <Box className={props.classes.textInput}
+                      p={1} m={1} borderRadius={7} >
+                    <TextField
+                      label="Flight Start Time"
+                      type="datetime-local"
+                      defaultValue="2017-05-24T10:30"
+                      name="commId"
+                      fullWidth
+                      inputRef={register({ required: true, maxLength: 50 })}
+                      error={Boolean(errors.commId)}
+                      helperText={errors.commId} />
+                  </Box>
+                </Grid>
+                <Grid item xs={12}>
+                  <Box className={props.classes.textInput}
+                      p={1} m={1} borderRadius={7} >
+                    <TextField
+                      label="Flight End Time"
+                      type="datetime-local"
+                      defaultValue="2017-05-24T10:30"
+                      name="commId"
+                      fullWidth
+                      inputRef={register({ required: true, maxLength: 50 })}
+                      error={Boolean(errors.commId)}
+                      helperText={errors.commId} />
+                  </Box>
+                </Grid>
+              </Grid>
             </Box>
-          </Grid>
-        </Grid>
-      </ExpansionPanelDetails>
-      <ExpansionPanelActions >
-        <Button
-            className={props.classes.funcButton}
-            onClick={onClickSave}>
-          Save
-        </Button>
-      </ExpansionPanelActions>
+          </Paper>
+        </Box>
+        <Box>
+          <Box style={{display: 'flex', justifyContent: 'flex-end'}}>
+            <Box px={1}>
+              <Button
+                  className={props.classes.funcButton}
+                  onClick={onClickCancel}>
+                Cancel
+              </Button>
+            </Box>
+            <Box px={1}>
+              <Button
+                  className={props.classes.funcButton}
+                  type="submit" >
+                Save
+              </Button>
+            </Box>
+          </Box>
+        </Box>
+      </form>
     </div>
   );
 }

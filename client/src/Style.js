@@ -2,6 +2,7 @@ import { makeStyles, createMuiTheme } from "@material-ui/core/styles";
 
 const menuWidth = 70;
 const menuWidthItem = 38;
+const funcWidth = 450;
 
 export const useStyles = makeStyles(theme => ({
   root: {
@@ -56,10 +57,12 @@ export const useStyles = makeStyles(theme => ({
     right: 0,
     bottom: 0,
   },
+  funcPanel: {
+    maxWidth: funcWidth
+  },
   funcPanelEdit: {
     background: '#333333',
     color: '#fafafa',
-    maxWidth: '450px',
   },
   funcPanelList: {
     background: '#333333',
