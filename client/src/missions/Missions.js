@@ -1,20 +1,21 @@
 import React, { useContext, useEffect, useState } from 'react';
 
 import {
-  Grid,
   Typography,
   Box,
 } from '@material-ui/core';
 import { grey } from '@material-ui/core/colors';
 import Settings from '@material-ui/icons/Settings';
 
-import MyMissions from './missions/MyMissions'
+import YourMissions from './missions/YourMissions'
 import { AppContext } from '../context/Context';
 import { FUNC_MODE } from '../context/FuncMode';
+import { EDIT_MODE } from '../context/EditMode';
 
 const Missions = (props) => {
-  const { funcMode } = useContext(AppContext);
+  const { funcMode, editMode } = useContext(AppContext);
   const [ open, setOpen ] = useState(false);
+  const [ edit, setEdit ] = useState(false);
 
   useEffect(() => {
     switch (funcMode) {
@@ -26,28 +27,30 @@ const Missions = (props) => {
     }
   }, [ funcMode ])
 
+  useEffect(() => {
+    switch (editMode) {
+      case EDIT_MODE.MISSION:
+        setEdit(true);
+        break;
+      default:
+        setEdit(false);
+    }
+  }, [ editMode ])
+
   return (
     <>
       {open && (
-        <div className={props.classes.func} >
+        <div className={props.classes.func + ` ${edit ? props.classes.funcEditable : ''}`} >
           <div className={props.classes.funcPaper} >
-            <Box m={2} alignContent="center">
-              <Box >
-                <Grid container>
-                  <Grid item xs={4} />
-                  <Grid item xs={1}>
-                    <Settings style={{ color: grey[50] }} fontSize="small" />
-                  </Grid>
-                  <Grid item xs={3}>
-                    <Typography align="left" component="div">
-                      Missions
-                    </Typography>
-                  </Grid>
-                  <Grid item xs={4} />
-                </Grid>
+            <Box m={4}>
+              <Box style={{display: 'flex'}}>
+                <Settings style={{ color: grey[50] }} fontSize="small" />
+                <Typography align="left" component="div">
+                  Missions
+                </Typography>
               </Box>
             </Box>
-            <MyMissions classes={props.classes} open={open}/>
+            <YourMissions classes={props.classes} open={open}/>
           </div>
         </div>
       )}

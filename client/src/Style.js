@@ -32,9 +32,10 @@ export const useStyles = makeStyles(theme => ({
   mapArea: {
     position: "absolute",
     top: 0,
-    left: menuWidth,
+    left: 0,
     right: 0,
-    bottom: 0
+    bottom: 0,
+    'z-index': -1
   },
   func: {
     position: "absolute",
@@ -43,8 +44,11 @@ export const useStyles = makeStyles(theme => ({
     right: 0,
     bottom: 0,
     flexShrink: 0,
-    background: '#222222',
+    background: 'rgba(0, 0, 0, 0.4)',
     color: '#fafafa',
+  },
+  funcEditable: {
+    right: 'auto',
   },
   funcPaper: {
     top: 0,
@@ -55,7 +59,7 @@ export const useStyles = makeStyles(theme => ({
   funcPanelEdit: {
     background: '#333333',
     color: '#fafafa',
-    maxWidth: '650px',
+    maxWidth: '450px',
   },
   funcPanelList: {
     background: '#333333',
@@ -85,10 +89,10 @@ export const useStyles = makeStyles(theme => ({
     color: '#fafafa',
   },
   missionListItem: {
-    background: '#303437',
-    color: '#fafafa',
+    background: '#fafafa',
     "&:hover": {
-      background: 'rgba(0, 173, 181, 1.0)'
+      background: 'rgba(0, 173, 181, 1.0)',
+      color: '#fafafa',
     }
   },
   funcButton: {

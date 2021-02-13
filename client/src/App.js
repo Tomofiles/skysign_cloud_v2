@@ -14,7 +14,7 @@ const App = () => {
     <MuiThemeProvider theme={theme}>
       <AppContextProvider>
         <Func classes={classes} />
-        {/* <Map classes={classes} /> */}
+        <Map classes={classes} />
       </AppContextProvider>
     </MuiThemeProvider>
   );

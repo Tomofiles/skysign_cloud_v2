@@ -40,7 +40,7 @@ const VehiclesEdit = (props) => {
   }
 
   const onClickReturn = () => {
-    props.openList();  
+    props.openDetail(id);
   }
 
   return (

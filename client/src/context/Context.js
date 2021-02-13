@@ -4,6 +4,7 @@ import { initialEditMission, editMissionReducer } from './EditMission';
 import { initialEditMode, editModeReducer } from './EditMode';
 import { funcModeReducer, initialFuncMode } from './FuncMode';
 import { initialMapMode, mapModeReducer } from './MapMode';
+import { initialMapPosition, mapPositionReducer } from './MapPosition';
 import { initialStagingRows, stagingRowsReducer } from './StagingRows';
 
 export const AppContext = createContext();
@@ -14,6 +15,7 @@ const AppContextProvider = ({children}) => {
   const [ editMode, dispatchEditMode ] = useReducer(editModeReducer, initialEditMode);
   const [ mapMode, dispatchMapMode ] = useReducer(mapModeReducer, initialMapMode);
   const [ funcMode, dispatchFuncMode ] = useReducer(funcModeReducer, initialFuncMode);
+  const [ mapPosition, dispatchMapPosition ] = useReducer(mapPositionReducer, initialMapPosition);
 
   return (
     <AppContext.Provider
@@ -28,6 +30,8 @@ const AppContextProvider = ({children}) => {
         dispatchMapMode,
         funcMode,
         dispatchFuncMode,
+        mapPosition,
+        dispatchMapPosition,
         }}>
       {children}
     </AppContext.Provider>

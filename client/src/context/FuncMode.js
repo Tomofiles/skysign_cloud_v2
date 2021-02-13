@@ -6,7 +6,7 @@ export const FUNC_MODE = {
   CONTROLS: 4
 }
 
-export const initialFuncMode = FUNC_MODE.ASSETS;
+export const initialFuncMode = FUNC_MODE.MISSIONS;
 
 export const funcModeReducer = (state, action) => {
   switch (action.type) {

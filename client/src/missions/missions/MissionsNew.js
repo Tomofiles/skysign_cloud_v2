@@ -2,13 +2,13 @@ import React, { useState, useContext, useEffect } from 'react';
 
 import {
   Typography,
-  ExpansionPanelDetails,
-  ExpansionPanelActions,
   Button,
   TextField,
   Grid,
   Box,
-  List
+  List,
+  Paper,
+  Divider
 } from '@material-ui/core';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import { grey } from '@material-ui/core/colors';
@@ -18,27 +18,30 @@ import WaypointItem from './WaypointItem';
 import { AppContext } from '../../context/Context';
 
 const MissionsNew = (props) => {
-  const { editMission, dispatchEditMission } = useContext(AppContext);
-  const { dispatchEditMode } = useContext(AppContext);
+  const { editMission, dispatchEditMission, dispatchEditMode } = useContext(AppContext);
   const [ missionName, setMissionName ] = useState("");
 
   useEffect(() => {
     dispatchEditMode({ type: 'MISSION' });
     dispatchEditMission({ type: "CLEAR"});
+    return () => {
+      dispatchEditMode({ type: 'NONE' });
+      dispatchEditMission({ type: "CLEAR"});
+    }
   }, [ dispatchEditMode, dispatchEditMission ])
 
   const onClickSave = () => {
     createMission(editMission)
       .then(ret => {
-        dispatchEditMode({ type: 'NONE' });
-        dispatchEditMission({ type: "CLEAR"});
         props.openList();
       });
   }
 
   const onClickReturn = () => {
-    dispatchEditMode({ type: 'NONE' });
-    dispatchEditMission({ type: "CLEAR"});
+    props.openList();
+  }
+
+  const onClickCancel = () => {
     props.openList();
   }
 
@@ -80,47 +83,54 @@ const MissionsNew = (props) => {
   }
 
   return (
-    <div>
-      <ExpansionPanelDetails>
-        <Grid container className={props.classes.textLabel}>
-          <Grid item xs={12}>
-            <Button onClick={onClickReturn}>
-              <ChevronLeftIcon style={{ color: grey[50] }} />
-            </Button>
-          </Grid>
-          <Grid item xs={12}>
-            <Typography>New Mission</Typography>
-          </Grid>
-          <Grid item xs={12}>
-            <Box className={props.classes.textInput}
-                p={1} m={1} borderRadius={7} >
-              <TextField
-                label="Name"
-                name="name"
-                value={missionName}
-                onChange={changeName}
-                fullWidth />
-            </Box>
-          </Grid>
-          <Grid item xs={12}>
-            <Box  p={1} m={1} borderRadius={7} >
-              <Grid container className={props.classes.textLabel}>
-                <Grid item xs={12}>
-                  <Typography style={{fontSize: "12px"}}>Takeoff Ground Height</Typography>
+    <>
+      <Box>
+        <Button onClick={onClickReturn}>
+          <ChevronLeftIcon style={{ color: grey[50] }} />
+        </Button>
+        <Box p={2} style={{display: 'flex'}}>
+          <Typography>Create Mission</Typography>
+        </Box>
+      </Box>
+      <Paper className={props.classes.funcPanelEdit}>
+        <Box p={3}>
+          <Grid container className={props.classes.textLabel}>
+            <Grid item xs={12}>
+              <Typography>Mission settings</Typography>
+              <Divider/>
+            </Grid>
+            <Grid item xs={12}>
+              <Box className={props.classes.textInput}
+                  p={1} m={1} borderRadius={7} >
+                <TextField
+                  label="Name"
+                  name="name"
+                  value={missionName}
+                  onChange={changeName}
+                  fullWidth />
+              </Box>
+            </Grid>
+            <Grid item xs={12}>
+              <Box  p={1} m={1} borderRadius={7} >
+                <Grid container className={props.classes.textLabel}>
+                  <Grid item xs={12}>
+                    <Typography style={{fontSize: "12px"}}>Takeoff Ground Height</Typography>
+                  </Grid>
+                  <Grid item xs={12}>
+                    <Typography>
+                      {editMission.takeoffPointGroundHeight === undefined ?
+                        "-"
+                      :
+                        editMission.takeoffPointGroundHeight} m
+                      </Typography>
+                  </Grid>
                 </Grid>
-                <Grid item xs={12}>
-                  <Typography>
-                    {editMission.takeoffPointGroundHeight === undefined ?
-                      "-"
-                    :
-                      editMission.takeoffPointGroundHeight} m
-                    </Typography>
-                </Grid>
-              </Grid>
-            </Box>
+              </Box>
+            </Grid>
           </Grid>
           <Grid item xs={12}>
-            <Typography>Waypoints</Typography>
+            <Typography>Waypoints settings</Typography>
+            <Divider/>
           </Grid>
           <Grid item xs={12}>
             <List 
@@ -141,16 +151,27 @@ const MissionsNew = (props) => {
               ))}
             </List>
           </Grid>
-        </Grid>
-      </ExpansionPanelDetails>
-      <ExpansionPanelActions >
-        <Button
-            className={props.classes.funcButton}
-            onClick={onClickSave}>
-          Save
-        </Button>
-      </ExpansionPanelActions>
-    </div>
+        </Box>
+        <Box p={3}>
+          <Box style={{display: 'flex', justifyContent: 'flex-end'}}>
+            <Box px={1}>
+              <Button
+                  className={props.classes.funcButton}
+                  onClick={onClickCancel}>
+                Cancel
+              </Button>
+            </Box>
+            <Box px={1}>
+              <Button
+                  className={props.classes.funcButton}
+                  onClick={onClickSave}>
+                Save
+              </Button>
+            </Box>
+          </Box>
+        </Box>
+      </Paper>
+    </>
   );
 }
 
