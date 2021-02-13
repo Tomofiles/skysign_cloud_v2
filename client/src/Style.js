@@ -134,5 +134,12 @@ export const theme = createMuiTheme({
         }
       },
     },
+    MuiTableBody: {
+      "root": {
+        '&:hover': {
+          cursor: 'pointer',
+        }
+      }
+    }
   }
 });

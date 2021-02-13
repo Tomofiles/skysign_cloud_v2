@@ -48,7 +48,9 @@ const MissionsList = (props) => {
           <TableContainer component={Paper} style={{maxHeight: '300px'}}>
             <Table aria-label="simple table" stickyHeader>
               <TableHead>
-                <TableCell>Name</TableCell>
+                <TableRow>
+                  <TableCell>Name</TableCell>
+                </TableRow>
               </TableHead>
               <TableBody>
                 {rows.map((row) => (

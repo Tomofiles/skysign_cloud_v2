@@ -35,10 +35,6 @@ const CameraCurrentPosition = () => {
     setPosition({ id: uuidv4(), cartesian3: pos });
   }, [ mapPosition ])
 
-  useEffect(() => {
-    console.log(position.cartesian3);
-  }, [ position ])
-
   return (
     <>
       {position.cartesian3 && (

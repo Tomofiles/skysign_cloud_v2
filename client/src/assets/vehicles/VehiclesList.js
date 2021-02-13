@@ -48,8 +48,10 @@ const VehiclesList = (props) => {
           <TableContainer component={Paper} style={{maxHeight: '300px'}}>
             <Table aria-label="simple table" stickyHeader>
               <TableHead>
-                <TableCell>Name</TableCell>
-                <TableCell>Communication ID</TableCell>
+                <TableRow>
+                  <TableCell>Name</TableCell>
+                  <TableCell>Communication ID</TableCell>
+                </TableRow>
               </TableHead>
               <TableBody>
                 {rows.map((row) => (
