@@ -83,7 +83,7 @@ const MissionsNew = (props) => {
   }
 
   return (
-    <>
+    <div className={props.classes.funcPanel}>
       <Box>
         <Button onClick={onClickReturn}>
           <ChevronLeftIcon style={{ color: grey[50] }} />
@@ -171,7 +171,7 @@ const MissionsNew = (props) => {
           </Box>
         </Box>
       </Paper>
-    </>
+    </div>
   );
 }
 
