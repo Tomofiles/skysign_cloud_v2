@@ -15,6 +15,7 @@ import {
 } from '@material-ui/core';
 
 import { getVehicles } from './VehicleUtils'
+import { Refresh } from '@material-ui/icons';
 
 const VehiclesList = (props) => {
   const [rows, setRows] = useState([]);
@@ -32,6 +33,14 @@ const VehiclesList = (props) => {
     props.openNew();
   }
 
+  const onClickRefresh = () => {
+    setRows([]);
+    getVehicles()
+      .then(data => {
+        setRows(data.vehicles);
+      })
+  }
+
   const onSelect = (id) => {
     props.openDetail(id);
   }
@@ -41,7 +50,16 @@ const VehiclesList = (props) => {
       <Box p={3}>
         <Box style={{display: 'flex', justifyContent: 'space-between'}}>
           <Typography>Your Vehicles</Typography>
-          <Button className={props.classes.funcButton} onClick={onClickNew}>Create Vehicle</Button>
+          <Box style={{display: 'flex'}}>
+            <Box px={1}>
+              <Button className={props.classes.funcButton} onClick={onClickRefresh}>
+                <Refresh />
+              </Button>
+            </Box>
+            <Box px={1}>
+              <Button className={props.classes.funcButton} onClick={onClickNew}>Create Vehicle</Button>
+            </Box>
+          </Box>
         </Box>
         <Divider/>
         <Box py={2}>

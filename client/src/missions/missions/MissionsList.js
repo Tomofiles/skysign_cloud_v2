@@ -15,6 +15,7 @@ import {
 } from '@material-ui/core';
 
 import { getMissions } from './MissionUtils'
+import Refresh from '@material-ui/icons/Refresh';
 
 const MissionsList = (props) => {
   const [rows, setRows] = useState([]);
@@ -32,6 +33,14 @@ const MissionsList = (props) => {
     props.openNew();
   }
 
+  const onClickRefresh = () => {
+    setRows([]);
+    getMissions()
+      .then(data => {
+        setRows(data.missions);
+      })
+  }
+
   const onSelect = (id) => {
     props.openDetail(id);
   }
@@ -41,7 +50,16 @@ const MissionsList = (props) => {
       <Box p={3}>
         <Box style={{display: 'flex', justifyContent: 'space-between'}}>
           <Typography>Your Missions</Typography>
-          <Button className={props.classes.funcButton} onClick={onClickNew}>Create Mission</Button>
+          <Box style={{display: 'flex'}}>
+            <Box px={1}>
+              <Button className={props.classes.funcButton} onClick={onClickRefresh}>
+                <Refresh />
+              </Button>
+            </Box>
+            <Box px={1}>
+              <Button className={props.classes.funcButton} onClick={onClickNew}>Create Mission</Button>
+            </Box>
+          </Box>
         </Box>
         <Divider/>
         <Box py={2}>
