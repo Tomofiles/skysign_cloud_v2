@@ -4,21 +4,17 @@ import FlightplansDetail from './FlightplansDetail';
 import FlightplansList from './FlightplansList';
 import FlightplansNew from './FlightplansNew';
 import FlightplansEdit from './FlightplansEdit';
-import AssignVehicleDetail from './AssignVehicleDetail';
-import AssignVehicleEdit from './AssignVehicleEdit';
+import AssignDetail from './AssignDetail';
+import AssignEdit from './AssignEdit';
 import { Box } from '@material-ui/core';
-import AssignMissionEdit from './AssignMissionEdit';
-import AssignMissionDetail from './AssignMissionDetail';
 
 const FLIGHTPLAN_MODE = Object.freeze({
   "NEW":1,
   "EDIT":2,
   "DETAIL":3,
   "LIST":4,
-  "ASSIGN_VEHICLE_EDIT":5,
-  "ASSIGN_VEHICLE_DETAIL":6,
-  "ASSIGN_MISSION_EDIT":7,
-  "ASSIGN_MISSION_DETAIL":8
+  "ASSIGN_EDIT":5,
+  "ASSIGN_DETAIL":6,
 });
 
 const YourFlightplans = (props) => {
@@ -45,23 +41,13 @@ const YourFlightplans = (props) => {
     setSelected(undefined);
   }
 
-  const openAssignVehicleEdit = (id) => {
-    setMode(FLIGHTPLAN_MODE.ASSIGN_VEHICLE_EDIT);
+  const openAssignEdit = (id) => {
+    setMode(FLIGHTPLAN_MODE.ASSIGN_EDIT);
     setSelected(id);
   }
 
-  const openAssignVehicleDetail = (id) => {
-    setMode(FLIGHTPLAN_MODE.ASSIGN_VEHICLE_DETAIL);
-    setSelected(id);
-  }
-
-  const openAssignMissionEdit = (id) => {
-    setMode(FLIGHTPLAN_MODE.ASSIGN_MISSION_EDIT);
-    setSelected(id);
-  }
-
-  const openAssignMissionDetail = (id) => {
-    setMode(FLIGHTPLAN_MODE.ASSIGN_MISSION_DETAIL);
+  const openAssignDetail = (id) => {
+    setMode(FLIGHTPLAN_MODE.ASSIGN_DETAIL);
     setSelected(id);
   }
 
@@ -84,8 +70,7 @@ const YourFlightplans = (props) => {
           classes={props.classes}
           openList={openList}
           openEdit={openEdit}
-          openAssignVehicleDetail={openAssignVehicleDetail}
-          openAssignMissionDetail={openAssignMissionDetail}
+          openAssignDetail={openAssignDetail}
           id={selected} />
       }
       {mode === FLIGHTPLAN_MODE.LIST &&
@@ -96,35 +81,19 @@ const YourFlightplans = (props) => {
           id={selected}
           open={props.open} />
       }
-      {mode === FLIGHTPLAN_MODE.ASSIGN_VEHICLE_EDIT &&
-        <AssignVehicleEdit
+      {mode === FLIGHTPLAN_MODE.ASSIGN_EDIT &&
+        <AssignEdit
           classes={props.classes}
           openList={openList}
-          openAssignVehicleDetail={openAssignVehicleDetail}
+          openAssignDetail={openAssignDetail}
           id={selected}
           open={props.open} />
       }
-      {mode === FLIGHTPLAN_MODE.ASSIGN_VEHICLE_DETAIL &&
-        <AssignVehicleDetail
+      {mode === FLIGHTPLAN_MODE.ASSIGN_DETAIL &&
+        <AssignDetail
           classes={props.classes}
           openDetail={openDetail}
-          openAssignVehicleEdit={openAssignVehicleEdit}
-          id={selected}
-          open={props.open} />
-      }
-      {mode === FLIGHTPLAN_MODE.ASSIGN_MISSION_EDIT &&
-        <AssignMissionEdit
-          classes={props.classes}
-          openList={openList}
-          openAssignMissionDetail={openAssignMissionDetail}
-          id={selected}
-          open={props.open} />
-      }
-      {mode === FLIGHTPLAN_MODE.ASSIGN_MISSION_DETAIL &&
-        <AssignMissionDetail
-          classes={props.classes}
-          openDetail={openDetail}
-          openAssignMissionEdit={openAssignMissionEdit}
+          openAssignEdit={openAssignEdit}
           id={selected}
           open={props.open} />
       }

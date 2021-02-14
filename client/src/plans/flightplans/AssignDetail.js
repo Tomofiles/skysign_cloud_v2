@@ -17,24 +17,27 @@ import {
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import { grey } from '@material-ui/core/colors';
 
-const AssignMissionDetail = (props) => {
-  const fleetRows = [
+const AssignDetail = (props) => {
+  const rows = [
     {
       fleet: "vehicle -- 1",
+      vehicle: "PX4 gazebo",
       mission: "公園フライト",
     },
     {
       fleet: "vehicle -- 2",
+      vehicle: "-",
       mission: "-",
     },
     {
       fleet: "vehicle -- 3",
+      vehicle: "-",
       mission: "-",
     },
   ];
 
   const onClickEdit = () => {
-    props.openAssignMissionEdit(props.id);
+    props.openAssignEdit(props.id);
   }
 
   const onClickReturn = () => {
@@ -48,7 +51,7 @@ const AssignMissionDetail = (props) => {
           <ChevronLeftIcon style={{ color: grey[50] }} />
         </Button>
         <Box p={2} style={{display: 'flex'}}>
-          <Typography>Assign Missions</Typography>
+          <Typography>Assign Assets</Typography>
         </Box>
       </Box>
       <Box pb={2}>
@@ -56,7 +59,7 @@ const AssignMissionDetail = (props) => {
           <Box p={3}>
             <Grid container className={props.classes.textLabel}>
               <Grid item xs={12}>
-                <Typography>Mission planning</Typography>
+                <Typography>Fleet formation</Typography>
                 <Divider/>
               </Grid>
               <Grid item xs={12}>
@@ -66,15 +69,17 @@ const AssignMissionDetail = (props) => {
                       <TableHead>
                         <TableRow>
                             <TableCell>Fleet</TableCell>
+                            <TableCell>Vehicle</TableCell>
                             <TableCell>Mission</TableCell>
                           </TableRow>
                       </TableHead>
                       <TableBody>
-                        {fleetRows.map((row) => (
+                        {rows.map((row) => (
                           <TableRow key={row.fleet}>
                             <TableCell component="th" scope="row">
                               {row.fleet}
                             </TableCell>
+                            <TableCell>{row.vehicle}</TableCell>
                             <TableCell>{row.mission}</TableCell>
                           </TableRow>
                         ))}
@@ -102,4 +107,4 @@ const AssignMissionDetail = (props) => {
   );
 }
 
-export default AssignMissionDetail;
+export default AssignDetail;

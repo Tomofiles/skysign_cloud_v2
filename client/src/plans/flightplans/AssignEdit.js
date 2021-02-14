@@ -4,41 +4,51 @@ import {
   Typography,
   Button,
   Grid,
+  Box,
+  Paper,
+  Divider,
   TableContainer,
   Table,
   TableHead,
-  TableRow,
   TableCell,
   TableBody,
-  Paper,
-  Box,
-  Divider,
+  TableRow,
+  FormControl,
+  Select,
+  MenuItem,
 } from '@material-ui/core';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import { grey } from '@material-ui/core/colors';
 
-const AssignVehicleDetail = (props) => {
-  const fleetRows = [
+const AssignEdit = (props) => {
+  const rows = [
     {
       fleet: "vehicle -- 1",
       vehicle: "PX4 gazebo",
+      mission: "公園フライト",
     },
     {
       fleet: "vehicle -- 2",
       vehicle: "-",
+      mission: "-",
     },
     {
       fleet: "vehicle -- 3",
       vehicle: "-",
+      mission: "-",
     },
   ];
 
-  const onClickEdit = () => {
-    props.openAssignVehicleEdit(props.id);
+  const onClickCancel = () => {
+    props.openAssignDetail(props.id);
+  }
+
+  const onClickSave = () => {
+    props.openList();
   }
 
   const onClickReturn = () => {
-    props.openDetail(props.id);  
+    props.openAssignDetail(props.id);
   }
 
   return (
@@ -48,7 +58,7 @@ const AssignVehicleDetail = (props) => {
           <ChevronLeftIcon style={{ color: grey[50] }} />
         </Button>
         <Box p={2} style={{display: 'flex'}}>
-          <Typography>Assign Vehicles</Typography>
+          <Typography>Edit assignments</Typography>
         </Box>
       </Box>
       <Box pb={2}>
@@ -65,17 +75,41 @@ const AssignVehicleDetail = (props) => {
                     <Table aria-label="simple table" stickyHeader>
                       <TableHead>
                         <TableRow>
-                            <TableCell>Fleet</TableCell>
-                            <TableCell>Vehicle</TableCell>
-                          </TableRow>
+                          <TableCell>Fleet</TableCell>
+                          <TableCell>Vehicle</TableCell>
+                          <TableCell>Mission</TableCell>
+                        </TableRow>
                       </TableHead>
                       <TableBody>
-                        {fleetRows.map((row) => (
+                        {rows.map((row) => (
                           <TableRow key={row.fleet}>
                             <TableCell component="th" scope="row">
                               {row.fleet}
                             </TableCell>
-                            <TableCell>{row.vehicle}</TableCell>
+                            <TableCell>
+                              <FormControl>
+                                <Select
+                                  labelId="Vehicle"
+                                  fullWidth
+                                >
+                                  <MenuItem value={10}>PX4 gazebo</MenuItem>
+                                  <MenuItem value={20}>Matrice 200</MenuItem>
+                                  <MenuItem value={30}>-</MenuItem>
+                                </Select>
+                              </FormControl>
+                            </TableCell>
+                            <TableCell>
+                              <FormControl>
+                                <Select
+                                  labelId="Mission"
+                                  fullWidth
+                                >
+                                  <MenuItem value={10}>公園フライト</MenuItem>
+                                  <MenuItem value={20}>空き地フライト</MenuItem>
+                                  <MenuItem value={30}>-</MenuItem>
+                                </Select>
+                              </FormControl>
+                            </TableCell>
                           </TableRow>
                         ))}
                       </TableBody>
@@ -92,8 +126,15 @@ const AssignVehicleDetail = (props) => {
           <Box px={1}>
             <Button
                 className={props.classes.funcButton}
-                onClick={onClickEdit}>
-              Edit
+                onClick={onClickCancel}>
+              Cancel
+            </Button>
+          </Box>
+          <Box px={1}>
+            <Button
+                className={props.classes.funcButton}
+                onClick={onClickSave}>
+              Save
             </Button>
           </Box>
         </Box>
@@ -102,4 +143,4 @@ const AssignVehicleDetail = (props) => {
   );
 }
 
-export default AssignVehicleDetail;
+export default AssignEdit;

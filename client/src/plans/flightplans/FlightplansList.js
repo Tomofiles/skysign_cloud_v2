@@ -67,8 +67,6 @@ const FlightplansList = (props) => {
                 <TableRow>
                   <TableCell>Name</TableCell>
                   <TableCell>The number of vehicles</TableCell>
-                  <TableCell>Flight Start Time</TableCell>
-                  <TableCell>Flight End Time</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
@@ -78,8 +76,6 @@ const FlightplansList = (props) => {
                       {row.name}
                     </TableCell>
                     <TableCell>3</TableCell>
-                    <TableCell>2021/02/11 12:00</TableCell>
-                    <TableCell>2021/02/11 15:00</TableCell>
                   </TableRow>
                 ))}
               </TableBody>

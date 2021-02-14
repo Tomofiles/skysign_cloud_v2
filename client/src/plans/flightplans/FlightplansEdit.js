@@ -71,30 +71,6 @@ const FlightplansEdit = (props) => {
                       fullWidth />
                   </Box>
                 </Grid>
-                <Grid item xs={12}>
-                  <Box className={props.classes.textInput}
-                      p={1} m={1} borderRadius={7} >
-                    <TextField
-                      label="Flight Start Time"
-                      type="datetime-local"
-                      defaultValue="2017-05-24T10:30"
-                      name="commId"
-                      control={control}
-                      fullWidth />
-                  </Box>
-                </Grid>
-                <Grid item xs={12}>
-                  <Box className={props.classes.textInput}
-                      p={1} m={1} borderRadius={7} >
-                    <TextField
-                      label="Flight End Time"
-                      type="datetime-local"
-                      defaultValue="2017-05-24T10:30"
-                      name="commId"
-                      control={control}
-                      fullWidth />
-                  </Box>
-                </Grid>
               </Grid>
             </Box>
           </Paper>
