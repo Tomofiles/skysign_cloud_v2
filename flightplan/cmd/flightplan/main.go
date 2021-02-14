@@ -33,6 +33,7 @@ func run() error {
 	svc := api.NewGrpcServer(application)
 
 	proto.RegisterManageFlightplanServiceServer(s, &svc)
+	proto.RegisterAssignAssetsToFlightplanServiceServer(s, &svc)
 
 	return s.Serve(listen)
 }
