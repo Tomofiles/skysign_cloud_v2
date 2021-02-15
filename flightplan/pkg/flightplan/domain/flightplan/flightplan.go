@@ -8,12 +8,12 @@ type Version string
 
 // Flightplan .
 type Flightplan struct {
-	id               ID
-	name             string
-	numberOfVehicles int
-	version          Version
-	newVersion       Version
-	generator        Generator
+	id          ID
+	name        string
+	description string
+	version     Version
+	newVersion  Version
+	generator   Generator
 }
 
 // GetID .
@@ -26,9 +26,9 @@ func (f *Flightplan) GetName() string {
 	return f.name
 }
 
-// GetNumberOfVehicles .
-func (f *Flightplan) GetNumberOfVehicles() int {
-	return f.numberOfVehicles
+// GetDescription .
+func (f *Flightplan) GetDescription() string {
+	return f.description
 }
 
 // GetVersion .
@@ -44,6 +44,12 @@ func (f *Flightplan) GetNewVersion() Version {
 // NameFlightplan .
 func (f *Flightplan) NameFlightplan(name string) {
 	f.name = name
+	f.newVersion = f.generator.NewVersion()
+}
+
+// ChangeDescription .
+func (f *Flightplan) ChangeDescription(description string) {
+	f.description = description
 	f.newVersion = f.generator.NewVersion()
 }
 
@@ -63,5 +69,4 @@ func NewInstance(generator Generator) *Flightplan {
 type Generator interface {
 	NewID() ID
 	NewVersion() Version
-	NewAssignmentID() AssignmentID
 }
