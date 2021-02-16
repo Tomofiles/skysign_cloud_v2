@@ -58,6 +58,7 @@ func TestCreateSingleFleetNewFleet(t *testing.T) {
 	}
 
 	a.Equal(fleet.GetID(), DefaultID)
+	a.Equal(fleet.GetFlightplanID(), DefaultFlightplanID)
 	a.Equal(fleet.GetNumberOfVehicles(), 1)
 	a.Len(fleet.GetVehicleAssignments(), 1)
 	a.Equal(fleet.GetVehicleAssignments()[0], expectAssignment)
@@ -88,6 +89,7 @@ func TestCreateMultipleFleetNewFleet(t *testing.T) {
 	}
 
 	a.Equal(fleet.GetID(), DefaultID)
+	a.Equal(fleet.GetFlightplanID(), DefaultFlightplanID)
 	a.Equal(fleet.GetNumberOfVehicles(), 3)
 	a.Len(fleet.GetVehicleAssignments(), 3)
 	a.Equal(fleet.GetVehicleAssignments()[0], expectAssignment1)

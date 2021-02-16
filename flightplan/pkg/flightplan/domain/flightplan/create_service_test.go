@@ -22,7 +22,7 @@ func TestCreateNewFlightplanService(t *testing.T) {
 	repo.On("Save", mock.Anything).Return(nil)
 	pub := &publisherMock{}
 
-	ret := CreateNewFlightplan(ctx, gen, repo, pub, DefaultName, DefaultDescription)
+	id, ret := CreateNewFlightplan(ctx, gen, repo, pub, DefaultName, DefaultDescription)
 
 	expectFlightplan := Flightplan{
 		id:          DefaultID,
@@ -34,6 +34,7 @@ func TestCreateNewFlightplanService(t *testing.T) {
 	}
 	expectEvent := CreatedEvent{id: DefaultID}
 
+	a.Equal(id, string(DefaultID))
 	a.Len(repo.saveFlightplans, 1)
 	a.Equal(repo.saveFlightplans[0], &expectFlightplan)
 	a.Len(pub.events, 1)
@@ -55,11 +56,11 @@ func TestSaveErrorWhenCreateNewFlightplanService(t *testing.T) {
 	repo.On("Save", mock.Anything).Return(errors.New("save error"))
 	pub := &publisherMock{}
 
-	ret := CreateNewFlightplan(ctx, gen, repo, pub, DefaultName, DefaultDescription)
+	id, ret := CreateNewFlightplan(ctx, gen, repo, pub, DefaultName, DefaultDescription)
 
+	a.Empty(id)
 	a.Len(repo.saveFlightplans, 0)
 	a.Len(pub.events, 0)
-
 	a.Equal(ret, errors.New("save error"))
 }
 
@@ -69,6 +70,9 @@ type repositoryMockCreateService struct {
 	saveFlightplans []*Flightplan
 }
 
+func (rm *repositoryMockCreateService) GetAll(ctx context.Context) ([]*Flightplan, error) {
+	panic("implement me")
+}
 func (rm *repositoryMockCreateService) GetByID(ctx context.Context, id ID) (*Flightplan, error) {
 	panic("implement me")
 }

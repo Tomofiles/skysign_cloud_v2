@@ -112,6 +112,9 @@ type repositoryMockDeleteService struct {
 	deleteIDs       []ID
 }
 
+func (rm *repositoryMockDeleteService) GetAll(ctx context.Context) ([]*Flightplan, error) {
+	panic("implement me")
+}
 func (rm *repositoryMockDeleteService) GetByID(ctx context.Context, id ID) (*Flightplan, error) {
 	ret := rm.Called(id)
 	var f *Flightplan

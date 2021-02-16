@@ -7,6 +7,7 @@ import (
 
 	"flightplan/pkg/flightplan/api"
 	"flightplan/pkg/flightplan/app"
+	"flightplan/pkg/flightplan/domain/bridge"
 	proto "flightplan/pkg/skysign_proto"
 
 	"github.com/golang/glog"
@@ -31,6 +32,9 @@ func run() error {
 	application := app.NewApplication(ctx)
 
 	svc := api.NewGrpcServer(application)
+	evt := api.NewEventHandler(application)
+
+	bridge.Bind(evt, application)
 
 	proto.RegisterManageFlightplanServiceServer(s, &svc)
 	proto.RegisterAssignAssetsToFlightplanServiceServer(s, &svc)

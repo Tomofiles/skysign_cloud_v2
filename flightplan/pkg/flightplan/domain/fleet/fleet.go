@@ -47,6 +47,11 @@ func (f *Fleet) GetID() ID {
 	return f.id
 }
 
+// GetFlightplanID .
+func (f *Fleet) GetFlightplanID() flightplan.ID {
+	return f.flightplanID
+}
+
 // GetNumberOfVehicles .
 func (f *Fleet) GetNumberOfVehicles() int {
 	return len(f.vehicleAssignments)

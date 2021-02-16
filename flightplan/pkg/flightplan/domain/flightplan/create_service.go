@@ -13,16 +13,16 @@ func CreateNewFlightplan(
 	pub event.Publisher,
 	name string,
 	description string,
-) error {
+) (string, error) {
 	flightplan := NewInstance(gen)
 
 	flightplan.NameFlightplan(name)
 	flightplan.ChangeDescription(description)
 
 	if err := repo.Save(ctx, flightplan); err != nil {
-		return err
+		return "", err
 	}
 
 	pub.Publish(CreatedEvent{id: flightplan.GetID()})
-	return nil
+	return string(flightplan.GetID()), nil
 }
