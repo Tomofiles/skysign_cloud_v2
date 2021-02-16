@@ -1,6 +1,7 @@
 package fleet
 
 import (
+	"errors"
 	"flightplan/pkg/flightplan/domain/flightplan"
 )
 
@@ -63,12 +64,104 @@ func (f *Fleet) GetEventPlannings() []*EventPlanning {
 
 // AssignVehicle .
 func (f *Fleet) AssignVehicle(assignmentID AssignmentID, vehicleID VehicleID) error {
-	return nil
+	contains := false
+	for _, va := range f.vehicleAssignments {
+		if va.assignmentID != assignmentID && va.vehicleID == vehicleID {
+			contains = true
+		}
+	}
+	if contains {
+		return errors.New("this vehicle has already assigned")
+	}
+
+	for _, va := range f.vehicleAssignments {
+		if va.assignmentID == assignmentID {
+			va.vehicleID = vehicleID
+			return nil
+		}
+	}
+	return errors.New("assignment not found")
 }
 
-// CancelAssignment .
-func (f *Fleet) CancelAssignment(assignmentID AssignmentID) error {
-	return nil
+// CancelVehiclesAssignment .
+func (f *Fleet) CancelVehiclesAssignment(assignmentID AssignmentID) error {
+	for _, va := range f.vehicleAssignments {
+		if va.assignmentID == assignmentID {
+			va.vehicleID = ""
+			return nil
+		}
+	}
+	return errors.New("assignment not found")
+}
+
+// AddNewEvent .
+func (f *Fleet) AddNewEvent(assignmentID AssignmentID) (EventID, error) {
+	notContains := true
+	for _, va := range f.vehicleAssignments {
+		if va.assignmentID == assignmentID {
+			notContains = false
+		}
+	}
+	if notContains {
+		return "", errors.New("this id not assigned")
+	}
+
+	eventID := f.generator.NewEventID()
+	f.eventPlannings = append(
+		f.eventPlannings,
+		&EventPlanning{
+			eventID:      eventID,
+			assignmentID: assignmentID,
+		},
+	)
+	return eventID, nil
+}
+
+// RemoveEvent .
+func (f *Fleet) RemoveEvent(eventID EventID) error {
+	var eventPlannings []*EventPlanning
+	for _, ep := range f.eventPlannings {
+		if ep.eventID != eventID {
+			eventPlannings = append(eventPlannings, ep)
+		}
+	}
+	if len(eventPlannings) != len(f.eventPlannings) {
+		f.eventPlannings = eventPlannings
+		return nil
+	}
+	return errors.New("event not found")
+}
+
+// AssignMission .
+func (f *Fleet) AssignMission(eventID EventID, missionID MissionID) error {
+	contains := false
+	for _, ep := range f.eventPlannings {
+		if ep.eventID != eventID && ep.missionID == missionID {
+			contains = true
+		}
+	}
+	if contains {
+		return errors.New("this mission has already assigned")
+	}
+
+	for _, ep := range f.eventPlannings {
+		if ep.eventID == eventID {
+			ep.missionID = missionID
+			return nil
+		}
+	}
+	return errors.New("event not found")
+}
+
+// CancelMission .
+func (f *Fleet) CancelMission(eventID EventID) error {
+	for _, ep := range f.eventPlannings {
+		if ep.eventID == eventID {
+			ep.missionID = ""
+			return nil
+		}
+	}
+	return errors.New("event not found")
 }
 
 // NewInstance .
