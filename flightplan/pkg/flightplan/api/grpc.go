@@ -130,7 +130,25 @@ func (s *GrpcServer) GetAssignments(
 	ctx context.Context,
 	request *proto.GetAssignmentsRequest,
 ) (*proto.GetAssignmentsResponse, error) {
-	return nil, errors.New("")
+	response := &proto.GetAssignmentsResponse{}
+	ret := s.app.Services.AssignFleet.GetAssignments(
+		request,
+		func(id, assignmentId, vehicleId, missionId string) {
+			response.Assignments = append(
+				response.Assignments,
+				&proto.Assignment{
+					Id:           id,
+					AssignmentId: assignmentId,
+					VehicleId:    vehicleId,
+					MissionId:    missionId,
+				},
+			)
+		},
+	)
+	if ret != nil {
+		return nil, ret
+	}
+	return response, nil
 }
 
 // UpdateAssignments .

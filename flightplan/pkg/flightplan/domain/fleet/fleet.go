@@ -57,14 +57,19 @@ func (f *Fleet) GetNumberOfVehicles() int {
 	return len(f.vehicleAssignments)
 }
 
-// GetVehicleAssignments .
-func (f *Fleet) GetVehicleAssignments() []*VehicleAssignment {
-	return f.vehicleAssignments
-}
-
-// GetEventPlannings .
-func (f *Fleet) GetEventPlannings() []*EventPlanning {
-	return f.eventPlannings
+// ProvideAssignmentsInterest .
+func (f *Fleet) ProvideAssignmentsInterest(
+	assignment func(assignmentID, vehicleID string),
+	event func(eventID, assignmentID, missionID string),
+) {
+	for _, va := range f.vehicleAssignments {
+		assignment(string(va.assignmentID), string(va.vehicleID))
+		for _, ep := range f.eventPlannings {
+			if ep.assignmentID == va.assignmentID {
+				event(string(ep.eventID), string(ep.assignmentID), string(ep.missionID))
+			}
+		}
+	}
 }
 
 // AssignVehicle .

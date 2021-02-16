@@ -60,9 +60,9 @@ func TestCreateSingleFleetNewFleet(t *testing.T) {
 	a.Equal(fleet.GetID(), DefaultID)
 	a.Equal(fleet.GetFlightplanID(), DefaultFlightplanID)
 	a.Equal(fleet.GetNumberOfVehicles(), 1)
-	a.Len(fleet.GetVehicleAssignments(), 1)
-	a.Equal(fleet.GetVehicleAssignments()[0], expectAssignment)
-	a.Len(fleet.GetEventPlannings(), 0)
+	a.Len(fleet.vehicleAssignments, 1)
+	a.Equal(fleet.vehicleAssignments[0], expectAssignment)
+	a.Len(fleet.eventPlannings, 0)
 }
 
 func TestCreateMultipleFleetNewFleet(t *testing.T) {
@@ -91,11 +91,11 @@ func TestCreateMultipleFleetNewFleet(t *testing.T) {
 	a.Equal(fleet.GetID(), DefaultID)
 	a.Equal(fleet.GetFlightplanID(), DefaultFlightplanID)
 	a.Equal(fleet.GetNumberOfVehicles(), 3)
-	a.Len(fleet.GetVehicleAssignments(), 3)
-	a.Equal(fleet.GetVehicleAssignments()[0], expectAssignment1)
-	a.Equal(fleet.GetVehicleAssignments()[1], expectAssignment2)
-	a.Equal(fleet.GetVehicleAssignments()[2], expectAssignment3)
-	a.Len(fleet.GetEventPlannings(), 0)
+	a.Len(fleet.vehicleAssignments, 3)
+	a.Equal(fleet.vehicleAssignments[0], expectAssignment1)
+	a.Equal(fleet.vehicleAssignments[1], expectAssignment2)
+	a.Equal(fleet.vehicleAssignments[2], expectAssignment3)
+	a.Len(fleet.eventPlannings, 0)
 }
 
 func TestAssignVehicle(t *testing.T) {
@@ -114,8 +114,8 @@ func TestAssignVehicle(t *testing.T) {
 		vehicleID:    DefaultVehicleID,
 	}
 
-	a.Len(fleet.GetVehicleAssignments(), 1)
-	a.Equal(fleet.GetVehicleAssignments()[0], expectAssignment)
+	a.Len(fleet.vehicleAssignments, 1)
+	a.Equal(fleet.vehicleAssignments[0], expectAssignment)
 	a.Nil(ret)
 }
 
@@ -136,8 +136,8 @@ func TestVehicleHasAlreadyAssignedWhenAssignVehicle(t *testing.T) {
 		vehicleID:    "",
 	}
 
-	a.Len(fleet.GetVehicleAssignments(), 3)
-	a.Equal(fleet.GetVehicleAssignments()[0], expectAssignment)
+	a.Len(fleet.vehicleAssignments, 3)
+	a.Equal(fleet.vehicleAssignments[0], expectAssignment)
 	a.Equal(ret, errors.New("this vehicle has already assigned"))
 }
 
@@ -157,8 +157,8 @@ func TestNotFoundErrorWhenAssignVehicle(t *testing.T) {
 		vehicleID:    "",
 	}
 
-	a.Len(fleet.GetVehicleAssignments(), 1)
-	a.Equal(fleet.GetVehicleAssignments()[0], expectAssignment)
+	a.Len(fleet.vehicleAssignments, 1)
+	a.Equal(fleet.vehicleAssignments[0], expectAssignment)
 	a.Equal(ret, errors.New("assignment not found"))
 }
 
@@ -179,8 +179,8 @@ func TestCancelVehiclesAssignment(t *testing.T) {
 		vehicleID:    "",
 	}
 
-	a.Len(fleet.GetVehicleAssignments(), 1)
-	a.Equal(fleet.GetVehicleAssignments()[0], expectAssignment)
+	a.Len(fleet.vehicleAssignments, 1)
+	a.Equal(fleet.vehicleAssignments[0], expectAssignment)
 	a.Nil(ret)
 }
 
@@ -201,8 +201,8 @@ func TestNotFoundErrorWhenCancelVehiclesAssignment(t *testing.T) {
 		vehicleID:    DefaultVehicleID,
 	}
 
-	a.Len(fleet.GetVehicleAssignments(), 1)
-	a.Equal(fleet.GetVehicleAssignments()[0], expectAssignment)
+	a.Len(fleet.vehicleAssignments, 1)
+	a.Equal(fleet.vehicleAssignments[0], expectAssignment)
 	a.Equal(ret, errors.New("assignment not found"))
 }
 
@@ -224,8 +224,8 @@ func TestAddNewEvent(t *testing.T) {
 		missionID:    "",
 	}
 
-	a.Len(fleet.GetEventPlannings(), 1)
-	a.Equal(fleet.GetEventPlannings()[0], expectEvent)
+	a.Len(fleet.eventPlannings, 1)
+	a.Equal(fleet.eventPlannings[0], expectEvent)
 	a.Equal(eventID, DefaultEventID1)
 	a.Nil(ret)
 }
@@ -242,7 +242,7 @@ func TestNotAssignedErrorWhenAddNewEvent(t *testing.T) {
 
 	eventID, ret := fleet.AddNewEvent(DefaultAssignmentID2)
 
-	a.Len(fleet.GetEventPlannings(), 0)
+	a.Len(fleet.eventPlannings, 0)
 	a.Empty(eventID)
 	a.Equal(ret, errors.New("this id not assigned"))
 }
@@ -266,7 +266,7 @@ func TestRemoveEvent(t *testing.T) {
 
 	ret := fleet.RemoveEvent(DefaultEventID1)
 
-	a.Len(fleet.GetEventPlannings(), 0)
+	a.Len(fleet.eventPlannings, 0)
 	a.Nil(ret)
 }
 
@@ -289,7 +289,7 @@ func TestNotFoundWhenRemoveEvent(t *testing.T) {
 
 	ret := fleet.RemoveEvent(DefaultEventID2)
 
-	a.Len(fleet.GetEventPlannings(), 1)
+	a.Len(fleet.eventPlannings, 1)
 	a.Equal(ret, errors.New("event not found"))
 }
 
@@ -318,8 +318,8 @@ func TestAssignMission(t *testing.T) {
 		missionID:    DefaultMissionID,
 	}
 
-	a.Len(fleet.GetEventPlannings(), 1)
-	a.Equal(fleet.GetEventPlannings()[0], expectEvent)
+	a.Len(fleet.eventPlannings, 1)
+	a.Equal(fleet.eventPlannings[0], expectEvent)
 	a.Nil(ret)
 }
 
@@ -364,8 +364,8 @@ func TestMissionHasAlreadyAssignedWhenAssignMission(t *testing.T) {
 		missionID:    "",
 	}
 
-	a.Len(fleet.GetEventPlannings(), 3)
-	a.Equal(fleet.GetEventPlannings()[0], expectEvent)
+	a.Len(fleet.eventPlannings, 3)
+	a.Equal(fleet.eventPlannings[0], expectEvent)
 	a.Equal(ret, errors.New("this mission has already assigned"))
 }
 
@@ -394,8 +394,8 @@ func TestNotFoundErrorWhenAssignMission(t *testing.T) {
 		missionID:    "",
 	}
 
-	a.Len(fleet.GetEventPlannings(), 1)
-	a.Equal(fleet.GetEventPlannings()[0], expectEvent)
+	a.Len(fleet.eventPlannings, 1)
+	a.Equal(fleet.eventPlannings[0], expectEvent)
 	a.Equal(ret, errors.New("event not found"))
 }
 
@@ -424,8 +424,8 @@ func TestCancelMission(t *testing.T) {
 		missionID:    "",
 	}
 
-	a.Len(fleet.GetEventPlannings(), 1)
-	a.Equal(fleet.GetEventPlannings()[0], expectEvent)
+	a.Len(fleet.eventPlannings, 1)
+	a.Equal(fleet.eventPlannings[0], expectEvent)
 	a.Nil(ret)
 }
 
@@ -454,7 +454,7 @@ func TestNotFoundErrorWhenCancelMission(t *testing.T) {
 		missionID:    DefaultMissionID,
 	}
 
-	a.Len(fleet.GetEventPlannings(), 1)
-	a.Equal(fleet.GetEventPlannings()[0], expectEvent)
+	a.Len(fleet.eventPlannings, 1)
+	a.Equal(fleet.eventPlannings[0], expectEvent)
 	a.Equal(ret, errors.New("event not found"))
 }

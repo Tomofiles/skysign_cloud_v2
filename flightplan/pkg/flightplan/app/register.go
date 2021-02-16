@@ -23,6 +23,7 @@ func newApplication(ctx context.Context) Application {
 		Services: Services{
 			ManageFlightplan: service.NewManageFlightplanService(flightplanGen, flightplanRepo, pub),
 			ManageFleet:      service.NewManageFleetService(fleetGen, fleetRepo, pub),
+			AssignFleet:      service.NewAssignFleetService(fleetGen, fleetRepo, pub),
 		},
 	}
 }
