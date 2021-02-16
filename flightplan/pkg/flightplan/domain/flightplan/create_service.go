@@ -23,6 +23,6 @@ func CreateNewFlightplan(
 		return err
 	}
 
-	pub.Publish(CreatedEvent{})
+	pub.Publish(CreatedEvent{id: flightplan.GetID()})
 	return nil
 }

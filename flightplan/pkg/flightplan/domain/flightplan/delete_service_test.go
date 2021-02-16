@@ -30,7 +30,7 @@ func TestDeleteFlightplanService(t *testing.T) {
 
 	ret := DeleteFlightplan(ctx, repo, pub, DefaultID)
 
-	expectEvent := DeletedEvent{}
+	expectEvent := DeletedEvent{id: DefaultID}
 
 	a.Len(repo.deleteIDs, 1)
 	a.Equal(repo.deleteIDs[0], DefaultID)
