@@ -3,35 +3,36 @@ import React, { useEffect } from 'react';
 import {
   Typography,
   Button,
-  TextField,
   Grid,
   Box,
   Paper,
   Divider,
+  TextField,
 } from '@material-ui/core';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import { grey } from '@material-ui/core/colors';
 import { Controller, useForm } from 'react-hook-form';
 
-import { getFlightplan, updateFlightplan } from './FlightplansUtils';
+import { changeNumberOfVehicles, getAssignments } from './FlightplansUtils';
 
-const FlightplansEdit = (props) => {
+const ChangeNumberOfVehicles = (props) => {
   const { control, handleSubmit, setValue } = useForm();
 
   useEffect(() => {
-    getFlightplan(props.id)
-      .then(data => {
-        setValue("name", data.name);
-        setValue("description", data.description);
-      })
-  }, [ props.id, setValue ])
+    if (props.open) {
+      getAssignments(props.id)
+        .then(data => {
+          setValue("numberOfVehicles", data.assignments.length);
+        })
+    }
+  }, [ props.open, props.id ])
 
   const onClickCancel = () => {
     props.openDetail(props.id);
   }
 
   const onClickSave = (data) => {
-    updateFlightplan(props.id, data)
+    changeNumberOfVehicles(props.id, data)
       .then(ret => {
         props.openList();
       });
@@ -49,7 +50,7 @@ const FlightplansEdit = (props) => {
             <ChevronLeftIcon style={{ color: grey[50] }} />
           </Button>
           <Box p={2} style={{display: 'flex'}}>
-            <Typography>Edit Flightplan</Typography>
+            <Typography>Change number of vehicles</Typography>
           </Box>
         </Box>
         <Box pb={2}>
@@ -57,7 +58,7 @@ const FlightplansEdit = (props) => {
             <Box p={3}>
               <Grid container className={props.classes.textLabel}>
                 <Grid item xs={12}>
-                  <Typography>Basic configuration</Typography>
+                  <Typography>Fleet formation configuration</Typography>
                   <Divider/>
                 </Grid>
                 <Grid item xs={12}>
@@ -65,22 +66,8 @@ const FlightplansEdit = (props) => {
                       p={1} m={1} borderRadius={7} >
                     <Controller
                       as={TextField}
-                      label="Name"
-                      name="name"
-                      control={control}
-                      defaultValue=""
-                      fullWidth />
-                  </Box>
-                </Grid>
-                <Grid item xs={12}>
-                  <Box className={props.classes.textInput}
-                      p={1} m={1} borderRadius={7} >
-                    <Controller
-                      as={TextField}
-                      label="Description"
-                      name="description"
-                      multiline
-                      rows={4}
+                      label="Number of vehicles"
+                      name="numberOfVehicles"
                       control={control}
                       defaultValue=""
                       fullWidth />
@@ -113,4 +100,4 @@ const FlightplansEdit = (props) => {
   );
 }
 
-export default FlightplansEdit;
+export default ChangeNumberOfVehicles;

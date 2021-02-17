@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import {
   Typography,
@@ -15,28 +15,30 @@ import {
 } from '@material-ui/core';
 import { Refresh } from '@material-ui/icons';
 
+import { getFlightplans } from './FlightplansUtils';
+
 const FlightplansList = (props) => {
-  const rows = useState([
-    {name: "sample plan"},
-    {name: "sample plan"},
-    {name: "sample plan"},
-    {name: "sample plan"},
-    {name: "sample plan"},
-    {name: "sample plan"},
-    {name: "sample plan"},
-    {name: "sample plan"},
-    {name: "sample plan"},
-    {name: "sample plan"},
-    {name: "sample plan"},
-    {name: "sample plan"},
-  ])[0];
+  const [ rows, setRows ] = useState([]);
+
+  useEffect(() => {
+    if (props.open) {
+      getFlightplans()
+        .then(data => {
+          setRows(data.flightplans);
+        })
+    }
+  }, [props.open])
 
   const onClickNew = () => {
     props.openNew();
   }
 
   const onClickRefresh = () => {
-
+    setRows([]);
+    getFlightplans()
+      .then(data => {
+        setRows(data.flightplans);
+      })
   }
 
   const onSelect = (id) => {
@@ -66,7 +68,7 @@ const FlightplansList = (props) => {
               <TableHead>
                 <TableRow>
                   <TableCell>Name</TableCell>
-                  <TableCell>The number of vehicles</TableCell>
+                  <TableCell>Description</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
@@ -75,7 +77,7 @@ const FlightplansList = (props) => {
                     <TableCell component="th" scope="row">
                       {row.name}
                     </TableCell>
-                    <TableCell>3</TableCell>
+                    <TableCell>{row.description}</TableCell>
                   </TableRow>
                 ))}
               </TableBody>

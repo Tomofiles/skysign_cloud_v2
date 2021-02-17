@@ -13,11 +13,16 @@ import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import { grey } from '@material-ui/core/colors';
 import { useForm } from 'react-hook-form';
 
+import { createFlightplan } from './FlightplansUtils';
+
 const FlightplansNew = (props) => {
   const { register, handleSubmit, errors } = useForm();
 
-  const onClickSave = () => {
-    props.openList();
+  const onClickSave = (data) => {
+    createFlightplan(data)
+      .then(ret => {
+        props.openList();
+      });
   }
 
   const onClickCancel = () => {
@@ -64,13 +69,15 @@ const FlightplansNew = (props) => {
                   <Box className={props.classes.textInput}
                       p={1} m={1} borderRadius={7} >
                     <TextField
-                      label="The number of vehicles"
+                      label="Description"
                       type="text"
-                      name="commId"
+                      name="description"
+                      multiline
+                      rows={4}
                       fullWidth
                       inputRef={register({ required: true, maxLength: 50 })}
-                      error={Boolean(errors.commId)}
-                      helperText={errors.commId} />
+                      error={Boolean(errors.description)}
+                      helperText={errors.description} />
                   </Box>
                 </Grid>
               </Grid>

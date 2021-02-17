@@ -4,9 +4,10 @@ import FlightplansDetail from './FlightplansDetail';
 import FlightplansList from './FlightplansList';
 import FlightplansNew from './FlightplansNew';
 import FlightplansEdit from './FlightplansEdit';
-import AssignDetail from './AssignDetail';
-import AssignEdit from './AssignEdit';
+import AssignAssetsDetail from './AssignAssetsDetail';
+import AssignAssetsEdit from './AssignAssetsEdit';
 import { Box } from '@material-ui/core';
+import ChangeNumberOfVehicles from './ChangeNumberOfVehicles';
 
 const FLIGHTPLAN_MODE = Object.freeze({
   "NEW":1,
@@ -15,6 +16,7 @@ const FLIGHTPLAN_MODE = Object.freeze({
   "LIST":4,
   "ASSIGN_EDIT":5,
   "ASSIGN_DETAIL":6,
+  "CHANGE_NUMBER_OF_VEHICLES":7,
 });
 
 const YourFlightplans = (props) => {
@@ -51,6 +53,11 @@ const YourFlightplans = (props) => {
     setSelected(id);
   }
 
+  const openChangeNumberOfVehicles = (id) => {
+    setMode(FLIGHTPLAN_MODE.CHANGE_NUMBER_OF_VEHICLES);
+    setSelected(id);
+  }
+
   return (
     <Box px={4}>
       {mode === FLIGHTPLAN_MODE.EDIT &&
@@ -71,6 +78,7 @@ const YourFlightplans = (props) => {
           openList={openList}
           openEdit={openEdit}
           openAssignDetail={openAssignDetail}
+          openChangeNumberOfVehicles={openChangeNumberOfVehicles}
           id={selected} />
       }
       {mode === FLIGHTPLAN_MODE.LIST &&
@@ -82,7 +90,7 @@ const YourFlightplans = (props) => {
           open={props.open} />
       }
       {mode === FLIGHTPLAN_MODE.ASSIGN_EDIT &&
-        <AssignEdit
+        <AssignAssetsEdit
           classes={props.classes}
           openList={openList}
           openAssignDetail={openAssignDetail}
@@ -90,10 +98,18 @@ const YourFlightplans = (props) => {
           open={props.open} />
       }
       {mode === FLIGHTPLAN_MODE.ASSIGN_DETAIL &&
-        <AssignDetail
+        <AssignAssetsDetail
           classes={props.classes}
           openDetail={openDetail}
           openAssignEdit={openAssignEdit}
+          id={selected}
+          open={props.open} />
+      }
+      {mode === FLIGHTPLAN_MODE.CHANGE_NUMBER_OF_VEHICLES &&
+        <ChangeNumberOfVehicles
+          classes={props.classes}
+          openList={openList}
+          openDetail={openDetail}
           id={selected}
           open={props.open} />
       }

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 
 import {
   Typography,
@@ -20,24 +20,31 @@ import {
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import { grey } from '@material-ui/core/colors';
 
-const AssignEdit = (props) => {
-  const rows = [
-    {
-      fleet: "vehicle -- 1",
-      vehicle: "PX4 gazebo",
-      mission: "公園フライト",
-    },
-    {
-      fleet: "vehicle -- 2",
-      vehicle: "-",
-      mission: "-",
-    },
-    {
-      fleet: "vehicle -- 3",
-      vehicle: "-",
-      mission: "-",
-    },
-  ];
+import { getAssignments } from './FlightplansUtils';
+import { getVehicles } from '../../assets/vehicles/VehicleUtils';
+import { getMissions } from '../../missions/missions/MissionUtils';
+
+const AssignAssetsEdit = (props) => {
+  const [ rows, setRows ] = useState([]);
+  const [ vehicles, setVehicles ] = useState([]);
+  const [ missions, setMissions ] = useState([]);
+
+  useEffect(() => {
+    if (props.open) {
+      getAssignments(props.id)
+        .then(data => {
+          setRows(data.assignments);
+        })
+      getVehicles()
+        .then(data => {
+          setVehicles(data.vehicles);
+        })
+      getMissions()
+        .then(data => {
+          setMissions(data.missions);
+        })
+    }
+  }, [ props.open, props.id ])
 
   const onClickCancel = () => {
     props.openAssignDetail(props.id);
@@ -82,19 +89,24 @@ const AssignEdit = (props) => {
                       </TableHead>
                       <TableBody>
                         {rows.map((row) => (
-                          <TableRow key={row.fleet}>
+                          <TableRow key={row.assignmentId}>
                             <TableCell component="th" scope="row">
-                              {row.fleet}
+                              {row.assignmentId}
                             </TableCell>
                             <TableCell>
                               <FormControl>
                                 <Select
                                   labelId="Vehicle"
+                                  value={row.vehicleId}
                                   fullWidth
                                 >
-                                  <MenuItem value={10}>PX4 gazebo</MenuItem>
-                                  <MenuItem value={20}>Matrice 200</MenuItem>
-                                  <MenuItem value={30}>-</MenuItem>
+                                  {vehicles.map(vehicle => (
+                                    <MenuItem
+                                      key={vehicle.id}
+                                      value={vehicle.id}>
+                                        {vehicle.name}
+                                    </MenuItem>
+                                  ))}
                                 </Select>
                               </FormControl>
                             </TableCell>
@@ -102,11 +114,16 @@ const AssignEdit = (props) => {
                               <FormControl>
                                 <Select
                                   labelId="Mission"
+                                  value={row.missionId}
                                   fullWidth
                                 >
-                                  <MenuItem value={10}>公園フライト</MenuItem>
-                                  <MenuItem value={20}>空き地フライト</MenuItem>
-                                  <MenuItem value={30}>-</MenuItem>
+                                {missions.map(mission => (
+                                  <MenuItem
+                                    key={mission.id}
+                                    value={mission.id}>
+                                      {mission.name}
+                                  </MenuItem>
+                                ))}
                                 </Select>
                               </FormControl>
                             </TableCell>
@@ -143,4 +160,4 @@ const AssignEdit = (props) => {
   );
 }
 
-export default AssignEdit;
+export default AssignAssetsEdit;

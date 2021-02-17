@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 
 import {
   Typography,
@@ -17,24 +17,31 @@ import {
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import { grey } from '@material-ui/core/colors';
 
-const AssignDetail = (props) => {
-  const rows = [
-    {
-      fleet: "vehicle -- 1",
-      vehicle: "PX4 gazebo",
-      mission: "公園フライト",
-    },
-    {
-      fleet: "vehicle -- 2",
-      vehicle: "-",
-      mission: "-",
-    },
-    {
-      fleet: "vehicle -- 3",
-      vehicle: "-",
-      mission: "-",
-    },
-  ];
+import { getAssignments } from './FlightplansUtils';
+import { getVehicles } from '../../assets/vehicles/VehicleUtils';
+import { getMissions } from '../../missions/missions/MissionUtils';
+
+const AssignAssetsDetail = (props) => {
+  const [ rows, setRows ] = useState([]);
+  const [ vehicles, setVehicles ] = useState([]);
+  const [ missions, setMissions ] = useState([]);
+
+  useEffect(() => {
+    if (props.open) {
+      getAssignments(props.id)
+        .then(data => {
+          setRows(data.assignments);
+        })
+      // getVehicles()
+      //   .then(data => {
+      //     setVehicles(data.vehicles);
+      //   })
+      // getMissions()
+      //   .then(data => {
+      //     setMissions(data.missions);
+      //   })
+    }
+  }, [ props.open, props.id ])
 
   const onClickEdit = () => {
     props.openAssignEdit(props.id);
@@ -75,12 +82,12 @@ const AssignDetail = (props) => {
                       </TableHead>
                       <TableBody>
                         {rows.map((row) => (
-                          <TableRow key={row.fleet}>
+                          <TableRow key={row.assignmentId}>
                             <TableCell component="th" scope="row">
-                              {row.fleet}
+                              {row.assignmentId}
                             </TableCell>
-                            <TableCell>{row.vehicle}</TableCell>
-                            <TableCell>{row.mission}</TableCell>
+                            <TableCell>{row.vehicleId}</TableCell>
+                            <TableCell>{row.missionId}</TableCell>
                           </TableRow>
                         ))}
                       </TableBody>
@@ -107,4 +114,4 @@ const AssignDetail = (props) => {
   );
 }
 
-export default AssignDetail;
+export default AssignAssetsDetail;
