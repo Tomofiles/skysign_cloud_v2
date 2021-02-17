@@ -57,6 +57,15 @@ func (f *Fleet) GetNumberOfVehicles() int {
 	return len(f.vehicleAssignments)
 }
 
+// GetAllAssignmentID .
+func (f *Fleet) GetAllAssignmentID() []AssignmentID {
+	var assignmentIDs []AssignmentID
+	for _, va := range f.vehicleAssignments {
+		assignmentIDs = append(assignmentIDs, va.assignmentID)
+	}
+	return assignmentIDs
+}
+
 // ProvideAssignmentsInterest .
 func (f *Fleet) ProvideAssignmentsInterest(
 	assignment func(assignmentID, vehicleID string),
@@ -175,9 +184,9 @@ func (f *Fleet) CancelMission(eventID EventID) error {
 }
 
 // NewInstance .
-func NewInstance(generator Generator, flightplanID flightplan.ID, numberOfVehicles int) *Fleet {
+func NewInstance(generator Generator, flightplanID flightplan.ID, numberOfVehicles int32) *Fleet {
 	var vehicleAssignments []*VehicleAssignment
-	vaIndex := 0
+	var vaIndex int32
 	for vaIndex < numberOfVehicles {
 		vehicleAssignments = append(vehicleAssignments, &VehicleAssignment{
 			assignmentID: generator.NewAssignmentID(),

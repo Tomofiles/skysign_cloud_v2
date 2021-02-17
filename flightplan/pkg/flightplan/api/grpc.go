@@ -122,7 +122,18 @@ func (s *GrpcServer) ChangeNumberOfVehicles(
 	ctx context.Context,
 	request *proto.ChangeNumberOfVehiclesRequest,
 ) (*proto.ChangeNumberOfVehiclesResponse, error) {
-	return nil, errors.New("")
+	response := &proto.ChangeNumberOfVehiclesResponse{}
+	ret := s.app.Services.AssignFleet.ChangeNumberOfVehicles(
+		request,
+		func(id string, numberOfVehicles int32) {
+			response.Id = id
+			response.NumberOfVehicles = numberOfVehicles
+		},
+	)
+	if ret != nil {
+		return nil, ret
+	}
+	return response, nil
 }
 
 // GetAssignments .
@@ -148,6 +159,7 @@ func (s *GrpcServer) GetAssignments(
 	if ret != nil {
 		return nil, ret
 	}
+	response.Id = request.Id
 	return response, nil
 }
 
@@ -156,5 +168,23 @@ func (s *GrpcServer) UpdateAssignments(
 	ctx context.Context,
 	request *proto.UpdateAssignmentsRequest,
 ) (*proto.UpdateAssignmentsResponse, error) {
+	response := &proto.UpdateAssignmentsResponse{}
+	for _, assignment := range request.Assignments {
+		s.app.Services.AssignFleet.UpdateAssignment(
+			assignment,
+			func(id, assignmentId, vehicleId, missionId string) {
+				response.Assignments = append(
+					response.Assignments,
+					&proto.Assignment{
+						Id:           id,
+						AssignmentId: assignmentId,
+						VehicleId:    vehicleId,
+						MissionId:    missionId,
+					},
+				)
+			},
+		)
+	}
+	response.Id = request.Id
 	return nil, errors.New("")
 }
