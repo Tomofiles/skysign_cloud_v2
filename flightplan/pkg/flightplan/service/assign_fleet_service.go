@@ -134,7 +134,7 @@ func (s *AssignFleetService) UpdateAssignment(
 
 	aFleet, err := s.repo.GetByFlightplanID(
 		ctx,
-		flightplan.ID(requestDpo.GetId()),
+		flightplan.ID(requestDpo.GetFlightplanId()),
 	)
 	if err != nil {
 		return err
@@ -143,16 +143,35 @@ func (s *AssignFleetService) UpdateAssignment(
 		return errors.New("fleet not found")
 	}
 
-	aFleet.AssignVehicle(
-		fleet.AssignmentID(requestDpo.GetAssignmentId()),
-		fleet.VehicleID(requestDpo.GetVehicleId()),
-	)
-	aFleet.AssignMission(
-		fleet.EventID(requestDpo.GetId()),
-		fleet.MissionID(requestDpo.GetMissionId()),
-	)
-	ret := s.repo.Save(ctx, aFleet)
-	if ret != nil {
+	if requestDpo.GetVehicleId() != "" {
+		if ret := aFleet.AssignVehicle(
+			fleet.AssignmentID(requestDpo.GetAssignmentId()),
+			fleet.VehicleID(requestDpo.GetVehicleId()),
+		); ret != nil {
+			return ret
+		}
+	} else {
+		if ret := aFleet.CancelVehiclesAssignment(
+			fleet.AssignmentID(requestDpo.GetAssignmentId()),
+		); ret != nil {
+			return ret
+		}
+	}
+	if requestDpo.GetMissionId() != "" {
+		if ret := aFleet.AssignMission(
+			fleet.EventID(requestDpo.GetId()),
+			fleet.MissionID(requestDpo.GetMissionId()),
+		); ret != nil {
+			return ret
+		}
+	} else {
+		if ret := aFleet.CancelMission(
+			fleet.EventID(requestDpo.GetId()),
+		); ret != nil {
+			return ret
+		}
+	}
+	if ret := s.repo.Save(ctx, aFleet); ret != nil {
 		return ret
 	}
 
@@ -194,6 +213,7 @@ type eventMission struct {
 
 // UpdateAssignmentRequestDpo .
 type UpdateAssignmentRequestDpo interface {
+	GetFlightplanId() string
 	GetId() string
 	GetAssignmentId() string
 	GetVehicleId() string

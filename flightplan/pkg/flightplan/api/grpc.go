@@ -2,7 +2,6 @@ package api
 
 import (
 	"context"
-	"errors"
 
 	"flightplan/pkg/flightplan/app"
 	proto "flightplan/pkg/skysign_proto"
@@ -170,8 +169,12 @@ func (s *GrpcServer) UpdateAssignments(
 ) (*proto.UpdateAssignmentsResponse, error) {
 	response := &proto.UpdateAssignmentsResponse{}
 	for _, assignment := range request.Assignments {
-		s.app.Services.AssignFleet.UpdateAssignment(
-			assignment,
+		requestDpo := &updateAssignmentsRequestDpo{
+			flightplanId: request.Id,
+			assignment:   assignment,
+		}
+		ret := s.app.Services.AssignFleet.UpdateAssignment(
+			requestDpo,
 			func(id, assignmentId, vehicleId, missionId string) {
 				response.Assignments = append(
 					response.Assignments,
@@ -184,7 +187,31 @@ func (s *GrpcServer) UpdateAssignments(
 				)
 			},
 		)
+		if ret != nil {
+			return nil, ret
+		}
 	}
 	response.Id = request.Id
-	return nil, errors.New("")
+	return response, nil
+}
+
+type updateAssignmentsRequestDpo struct {
+	flightplanId string
+	assignment   *proto.Assignment
+}
+
+func (r *updateAssignmentsRequestDpo) GetFlightplanId() string {
+	return r.flightplanId
+}
+func (r *updateAssignmentsRequestDpo) GetId() string {
+	return r.assignment.Id
+}
+func (r *updateAssignmentsRequestDpo) GetAssignmentId() string {
+	return r.assignment.AssignmentId
+}
+func (r *updateAssignmentsRequestDpo) GetVehicleId() string {
+	return r.assignment.VehicleId
+}
+func (r *updateAssignmentsRequestDpo) GetMissionId() string {
+	return r.assignment.MissionId
 }
