@@ -25,7 +25,7 @@ const ChangeNumberOfVehicles = (props) => {
           setValue("numberOfVehicles", data.assignments.length);
         })
     }
-  }, [ props.open, props.id ])
+  }, [ props.open, props.id, setValue ])
 
   const onClickCancel = () => {
     props.openDetail(props.id);

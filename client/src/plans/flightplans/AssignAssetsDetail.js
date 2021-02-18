@@ -23,23 +23,25 @@ import { getMissions } from '../../missions/missions/MissionUtils';
 
 const AssignAssetsDetail = (props) => {
   const [ rows, setRows ] = useState([]);
-  const [ vehicles, setVehicles ] = useState([]);
-  const [ missions, setMissions ] = useState([]);
 
   useEffect(() => {
     if (props.open) {
-      getAssignments(props.id)
-        .then(data => {
-          setRows(data.assignments);
-        })
-      // getVehicles()
-      //   .then(data => {
-      //     setVehicles(data.vehicles);
-      //   })
-      // getMissions()
-      //   .then(data => {
-      //     setMissions(data.missions);
-      //   })
+      Promise.all([
+        getVehicles(),
+        getMissions(),
+      ]).then(vm => {
+        getAssignments(props.id)
+          .then(data => {
+            let rows = data.assignments.slice(0, data.assignments.length);
+            rows.forEach(row => {
+              let vehicle = vm[0].vehicles.find(v => v.id === row.vehicleId);
+              let mission = vm[1].missions.find(m => m.id === row.missionId);
+              row.vehicleName = vehicle === undefined ? "-" : vehicle.name;
+              row.missionName = mission === undefined ? "-" : mission.name;
+            });
+            setRows(data.assignments);
+          })
+      })
     }
   }, [ props.open, props.id ])
 
@@ -86,8 +88,8 @@ const AssignAssetsDetail = (props) => {
                             <TableCell component="th" scope="row">
                               {row.assignmentId}
                             </TableCell>
-                            <TableCell>{row.vehicleId}</TableCell>
-                            <TableCell>{row.missionId}</TableCell>
+                            <TableCell>{row.vehicleName}</TableCell>
+                            <TableCell>{row.missionName}</TableCell>
                           </TableRow>
                         ))}
                       </TableBody>

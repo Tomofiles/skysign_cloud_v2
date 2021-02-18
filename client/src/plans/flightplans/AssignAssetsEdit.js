@@ -20,7 +20,7 @@ import {
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import { grey } from '@material-ui/core/colors';
 
-import { getAssignments } from './FlightplansUtils';
+import { getAssignments, updateAssignments } from './FlightplansUtils';
 import { getVehicles } from '../../assets/vehicles/VehicleUtils';
 import { getMissions } from '../../missions/missions/MissionUtils';
 
@@ -51,11 +51,35 @@ const AssignAssetsEdit = (props) => {
   }
 
   const onClickSave = () => {
-    props.openList();
+    let assignments = { assignments: rows };
+    updateAssignments(props.id, assignments)
+    .then(ret => {
+      props.openList();
+    });
   }
 
   const onClickReturn = () => {
     props.openAssignDetail(props.id);
+  }
+
+  const hancleVehicleChange = (id, e) => {
+    setRows(rows => {
+      let newRows = rows.slice(0, rows.length);
+      newRows
+        .filter(row => row.id === id)
+        .forEach(row => row.vehicleId = e.target.value);
+      return newRows;
+    })
+  }
+
+  const hancleMissionChange = (id, e) => {
+    setRows(rows => {
+      let newRows = rows.slice(0, rows.length);
+      newRows
+        .filter(row => row.id === id)
+        .forEach(row => row.missionId = e.target.value);
+      return newRows;
+    })
   }
 
   return (
@@ -98,8 +122,14 @@ const AssignAssetsEdit = (props) => {
                                 <Select
                                   labelId="Vehicle"
                                   value={row.vehicleId}
+                                  onChange={e => hancleVehicleChange(row.id, e)}
                                   fullWidth
                                 >
+                                  <MenuItem
+                                    key={""}
+                                    value={""}>
+                                      {"-"}
+                                  </MenuItem>
                                   {vehicles.map(vehicle => (
                                     <MenuItem
                                       key={vehicle.id}
@@ -115,15 +145,21 @@ const AssignAssetsEdit = (props) => {
                                 <Select
                                   labelId="Mission"
                                   value={row.missionId}
+                                  onChange={e => hancleMissionChange(row.id, e)}
                                   fullWidth
                                 >
-                                {missions.map(mission => (
                                   <MenuItem
-                                    key={mission.id}
-                                    value={mission.id}>
-                                      {mission.name}
+                                    key={""}
+                                    value={""}>
+                                      {"-"}
                                   </MenuItem>
-                                ))}
+                                  {missions.map(mission => (
+                                    <MenuItem
+                                      key={mission.id}
+                                      value={mission.id}>
+                                        {mission.name}
+                                    </MenuItem>
+                                  ))}
                                 </Select>
                               </FormControl>
                             </TableCell>

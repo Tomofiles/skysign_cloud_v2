@@ -66,6 +66,16 @@ export async function getAssignments(id) {
   }
 }
 
+export async function updateAssignments(id, data) {
+  try {
+    const res = await axios
+      .put(`/api/v1/flightplans/${id}/assignments`, data)
+    return res.data;
+  } catch(error) {
+    console.log(error);
+  }
+}
+
 export async function changeNumberOfVehicles(id, data) {
   try {
     const res = await axios
