@@ -1,11 +1,13 @@
 package flightplan
 
-import "context"
+import (
+	"flightplan/pkg/flightplan/txmanager"
+)
 
 // Repository .
 type Repository interface {
-	GetAll(context.Context) ([]*Flightplan, error)
-	GetByID(context.Context, ID) (*Flightplan, error)
-	Save(context.Context, *Flightplan) error
-	Delete(context.Context, ID) error
+	GetAll(txmanager.Tx) ([]*Flightplan, error)
+	GetByID(txmanager.Tx, ID) (*Flightplan, error)
+	Save(txmanager.Tx, *Flightplan) error
+	Delete(txmanager.Tx, ID) error
 }

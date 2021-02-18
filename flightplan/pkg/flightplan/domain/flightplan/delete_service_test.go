@@ -3,6 +3,7 @@ package flightplan
 import (
 	"context"
 	"errors"
+	"flightplan/pkg/flightplan/txmanager"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -20,7 +21,7 @@ func TestDeleteFlightplanService(t *testing.T) {
 		description: DefaultDescription,
 		version:     DefaultVersion1,
 		newVersion:  DefaultVersion1,
-		generator:   nil,
+		gen:         nil,
 	}
 	repo := &repositoryMockDeleteService{}
 	repo.On("GetByID", DefaultID).Return(&testFlightplan, nil)
@@ -89,7 +90,7 @@ func TestDeleteErrorWhenDeleteFlightplanService(t *testing.T) {
 		description: DefaultDescription,
 		version:     DefaultVersion1,
 		newVersion:  DefaultVersion1,
-		generator:   nil,
+		gen:         nil,
 	}
 	repo := &repositoryMockDeleteService{}
 	repo.On("GetByID", DefaultID).Return(&testFlightplan, nil)
@@ -112,10 +113,10 @@ type repositoryMockDeleteService struct {
 	deleteIDs       []ID
 }
 
-func (rm *repositoryMockDeleteService) GetAll(ctx context.Context) ([]*Flightplan, error) {
+func (rm *repositoryMockDeleteService) GetAll(tx txmanager.Tx) ([]*Flightplan, error) {
 	panic("implement me")
 }
-func (rm *repositoryMockDeleteService) GetByID(ctx context.Context, id ID) (*Flightplan, error) {
+func (rm *repositoryMockDeleteService) GetByID(tx txmanager.Tx, id ID) (*Flightplan, error) {
 	ret := rm.Called(id)
 	var f *Flightplan
 	if ret.Get(0) == nil {
@@ -125,10 +126,10 @@ func (rm *repositoryMockDeleteService) GetByID(ctx context.Context, id ID) (*Fli
 	}
 	return f, ret.Error(1)
 }
-func (rm *repositoryMockDeleteService) Save(ctx context.Context, f *Flightplan) error {
+func (rm *repositoryMockDeleteService) Save(tx txmanager.Tx, f *Flightplan) error {
 	panic("implement me")
 }
-func (rm *repositoryMockDeleteService) Delete(ctx context.Context, id ID) error {
+func (rm *repositoryMockDeleteService) Delete(tx txmanager.Tx, id ID) error {
 	ret := rm.Called(id)
 	if ret.Error(0) == nil {
 		rm.deleteIDs = append(rm.deleteIDs, id)

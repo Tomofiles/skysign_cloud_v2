@@ -1,19 +1,19 @@
 package flightplan
 
 import (
-	"context"
 	"errors"
 	"flightplan/pkg/flightplan/event"
+	"flightplan/pkg/flightplan/txmanager"
 )
 
 // DeleteFlightplan .
 func DeleteFlightplan(
-	ctx context.Context,
+	tx txmanager.Tx,
 	repo Repository,
 	pub event.Publisher,
 	id ID,
 ) error {
-	flightplan, err := repo.GetByID(ctx, id)
+	flightplan, err := repo.GetByID(tx, id)
 	if err != nil {
 		return err
 	}
@@ -21,7 +21,7 @@ func DeleteFlightplan(
 		return errors.New("flightplan not found")
 	}
 
-	if err := repo.Delete(ctx, id); err != nil {
+	if err := repo.Delete(tx, id); err != nil {
 		return err
 	}
 

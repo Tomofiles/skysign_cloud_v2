@@ -1,13 +1,13 @@
 package flightplan
 
 import (
-	"context"
 	"flightplan/pkg/flightplan/event"
+	"flightplan/pkg/flightplan/txmanager"
 )
 
 // CreateNewFlightplan .
 func CreateNewFlightplan(
-	ctx context.Context,
+	tx txmanager.Tx,
 	gen Generator,
 	repo Repository,
 	pub event.Publisher,
@@ -19,7 +19,7 @@ func CreateNewFlightplan(
 	flightplan.NameFlightplan(name)
 	flightplan.ChangeDescription(description)
 
-	if err := repo.Save(ctx, flightplan); err != nil {
+	if err := repo.Save(tx, flightplan); err != nil {
 		return "", err
 	}
 

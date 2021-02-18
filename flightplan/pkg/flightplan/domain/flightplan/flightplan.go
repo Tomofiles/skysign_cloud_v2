@@ -13,7 +13,7 @@ type Flightplan struct {
 	description string
 	version     Version
 	newVersion  Version
-	generator   Generator
+	gen         Generator
 }
 
 // GetID .
@@ -44,13 +44,13 @@ func (f *Flightplan) GetNewVersion() Version {
 // NameFlightplan .
 func (f *Flightplan) NameFlightplan(name string) {
 	f.name = name
-	f.newVersion = f.generator.NewVersion()
+	f.newVersion = f.gen.NewVersion()
 }
 
 // ChangeDescription .
 func (f *Flightplan) ChangeDescription(description string) {
 	f.description = description
-	f.newVersion = f.generator.NewVersion()
+	f.newVersion = f.gen.NewVersion()
 }
 
 // NewInstance .
@@ -61,12 +61,45 @@ func NewInstance(generator Generator) *Flightplan {
 		id:         id,
 		version:    version,
 		newVersion: version,
-		generator:  generator,
+		gen:        generator,
 	}
+}
+
+// AssembleFrom .
+func AssembleFrom(gen Generator, comp Component) *Flightplan {
+	return &Flightplan{
+		id:          ID(comp.GetID()),
+		name:        comp.GetName(),
+		description: comp.GetDescription(),
+		version:     Version(comp.GetVersion()),
+		newVersion:  Version(comp.GetVersion()),
+		gen:         gen,
+	}
+}
+
+// TakeApart .
+func TakeApart(
+	flightplan *Flightplan,
+	component func(id, name, description, version string),
+) {
+	component(
+		string(flightplan.id),
+		flightplan.name,
+		flightplan.description,
+		string(flightplan.version),
+	)
 }
 
 // Generator .
 type Generator interface {
 	NewID() ID
 	NewVersion() Version
+}
+
+// Component .
+type Component interface {
+	GetID() string
+	GetName() string
+	GetDescription() string
+	GetVersion() string
 }

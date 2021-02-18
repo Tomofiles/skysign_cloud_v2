@@ -20,7 +20,7 @@ func TestCreateNewFlightplan(t *testing.T) {
 	a.Equal(flightplan.GetDescription(), "")
 	a.Equal(flightplan.GetVersion(), DefaultVersion1)
 	a.Equal(flightplan.GetNewVersion(), DefaultVersion1)
-	a.Equal(flightplan.generator, gen)
+	a.Equal(flightplan.gen, gen)
 }
 
 func TestChangeFlightplansName(t *testing.T) {

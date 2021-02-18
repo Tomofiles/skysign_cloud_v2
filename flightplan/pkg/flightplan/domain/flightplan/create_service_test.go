@@ -3,6 +3,7 @@ package flightplan
 import (
 	"context"
 	"errors"
+	"flightplan/pkg/flightplan/txmanager"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -30,7 +31,7 @@ func TestCreateNewFlightplanService(t *testing.T) {
 		description: DefaultDescription,
 		version:     DefaultVersion1,
 		newVersion:  DefaultVersion3,
-		generator:   gen,
+		gen:         gen,
 	}
 	expectEvent := CreatedEvent{id: DefaultID}
 
@@ -70,19 +71,19 @@ type repositoryMockCreateService struct {
 	saveFlightplans []*Flightplan
 }
 
-func (rm *repositoryMockCreateService) GetAll(ctx context.Context) ([]*Flightplan, error) {
+func (rm *repositoryMockCreateService) GetAll(tx txmanager.Tx) ([]*Flightplan, error) {
 	panic("implement me")
 }
-func (rm *repositoryMockCreateService) GetByID(ctx context.Context, id ID) (*Flightplan, error) {
+func (rm *repositoryMockCreateService) GetByID(tx txmanager.Tx, id ID) (*Flightplan, error) {
 	panic("implement me")
 }
-func (rm *repositoryMockCreateService) Save(ctx context.Context, f *Flightplan) error {
+func (rm *repositoryMockCreateService) Save(tx txmanager.Tx, f *Flightplan) error {
 	ret := rm.Called(f)
 	if ret.Error(0) == nil {
 		rm.saveFlightplans = append(rm.saveFlightplans, f)
 	}
 	return ret.Error(0)
 }
-func (rm *repositoryMockCreateService) Delete(ctx context.Context, id ID) error {
+func (rm *repositoryMockCreateService) Delete(tx txmanager.Tx, id ID) error {
 	panic("implement me")
 }
