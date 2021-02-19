@@ -1,7 +1,6 @@
 package postgresql
 
 import (
-	"errors"
 	fpl "flightplan/pkg/flightplan/domain/flightplan"
 	"flightplan/pkg/flightplan/domain/txmanager"
 
@@ -56,11 +55,12 @@ func (r *FlightplanRepository) GetByID(
 
 	record := Flightplan{}
 
-	if err := txGorm.First(&record, "id = ?", string(id)).Error; err != nil {
-		if errors.Is(err, gorm.ErrRecordNotFound) {
-			return nil, nil
-		}
+	if err := txGorm.Limit(1).Find(&record, "id = ?", string(id)).Error; err != nil {
 		return nil, err
+	}
+
+	if record.ID == "" {
+		return nil, nil
 	}
 
 	flightplan := fpl.AssembleFrom(r.gen, &record)
@@ -81,10 +81,11 @@ func (r *FlightplanRepository) Save(
 	record := Flightplan{}
 
 	isCreate := false
-	if err := txGorm.First(&record, "id = ?", string(flightplan.GetID())).Error; err != nil {
-		if !errors.Is(err, gorm.ErrRecordNotFound) {
-			return err
-		}
+	if err := txGorm.Limit(1).Find(&record, "id = ?", string(flightplan.GetID())).Error; err != nil {
+		return err
+	}
+
+	if record.ID == "" {
 		isCreate = true
 		record.ID = string(flightplan.GetID())
 	}
@@ -122,11 +123,12 @@ func (r *FlightplanRepository) Delete(
 
 	record := Flightplan{}
 
-	if err := txGorm.First(&record, "id = ?", string(id)).Error; err != nil {
-		if errors.Is(err, gorm.ErrRecordNotFound) {
-			return nil
-		}
+	if err := txGorm.Limit(1).Find(&record, "id = ?", string(id)).Error; err != nil {
 		return err
+	}
+
+	if record.ID == "" {
+		return nil
 	}
 
 	if err := txGorm.Delete(&record).Error; err != nil {

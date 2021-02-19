@@ -19,3 +19,8 @@ func (p *PublisherDirect) Publish(event interface{}) {
 		p.DeletedEventHandler(deletedEvent)
 	}
 }
+
+// Flush .
+func (p *PublisherDirect) Flush() error {
+	return nil
+}

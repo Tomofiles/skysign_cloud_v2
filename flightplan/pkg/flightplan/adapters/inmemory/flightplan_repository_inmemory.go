@@ -3,7 +3,6 @@ package inmemory
 import (
 	fpl "flightplan/pkg/flightplan/domain/flightplan"
 	"flightplan/pkg/flightplan/domain/txmanager"
-	"log"
 )
 
 // FlightplanRepository .
@@ -36,7 +35,6 @@ func (r *FlightplanRepository) Save(
 	tx txmanager.Tx,
 	flightplan *fpl.Flightplan,
 ) error {
-	log.Println(flightplan)
 	var flightplans []*fpl.Flightplan
 	for _, f := range r.flightplans {
 		if f.GetID() != flightplan.GetID() {

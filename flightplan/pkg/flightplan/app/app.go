@@ -1,13 +1,11 @@
 package app
 
 import (
-	"flightplan/pkg/flightplan/domain/event"
 	"flightplan/pkg/flightplan/service"
 )
 
 // Application .
 type Application struct {
-	Pub      event.Publisher
 	Services Services
 }
 

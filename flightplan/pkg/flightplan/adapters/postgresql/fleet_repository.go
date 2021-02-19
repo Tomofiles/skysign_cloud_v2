@@ -1,7 +1,6 @@
 package postgresql
 
 import (
-	"errors"
 	fl "flightplan/pkg/flightplan/domain/fleet"
 	"flightplan/pkg/flightplan/domain/flightplan"
 	"flightplan/pkg/flightplan/domain/txmanager"
@@ -35,11 +34,11 @@ func (r *FleetRepository) GetByFlightplanID(
 	var assignmentRecords []*Assignment
 	var eventRecords []*Event
 
-	if err := txGorm.First(&fleetRecord, "flightplan_id = ?", string(flightplanID)).Error; err != nil {
-		if errors.Is(err, gorm.ErrRecordNotFound) {
-			return nil, nil
-		}
+	if err := txGorm.Limit(1).Find(&fleetRecord, "flightplan_id = ?", string(flightplanID)).Error; err != nil {
 		return nil, err
+	}
+	if fleetRecord.ID == "" {
+		return nil, nil
 	}
 	if err := txGorm.Where("fleet_id = ?", fleetRecord.ID).Find(&assignmentRecords).Error; err != nil {
 		return nil, err
@@ -71,10 +70,11 @@ func (r *FleetRepository) Save(
 	eventRecords := []*Event{}
 
 	isCreate := false
-	if err := txGorm.First(&fleetRecord, "flightplan_id = ?", string(fleet.GetFlightplanID())).Error; err != nil {
-		if !errors.Is(err, gorm.ErrRecordNotFound) {
-			return err
-		}
+	if err := txGorm.Limit(1).Find(&fleetRecord, "flightplan_id = ?", string(fleet.GetFlightplanID())).Error; err != nil {
+		return err
+	}
+
+	if fleetRecord.ID == "" {
 		isCreate = true
 		fleetRecord.ID = string(fleet.GetID())
 	}
@@ -161,11 +161,11 @@ func (r *FleetRepository) DeleteByFlightplanID(
 	assignmentRecord := Assignment{}
 	eventRecord := Event{}
 
-	if err := txGorm.First(&fleetRecord, "flightplan_id = ?", string(flightplanID)).Error; err != nil {
-		if errors.Is(err, gorm.ErrRecordNotFound) {
-			return nil
-		}
+	if err := txGorm.Limit(1).Find(&fleetRecord, "flightplan_id = ?", string(flightplanID)).Error; err != nil {
 		return err
+	}
+	if fleetRecord.ID == "" {
+		return nil
 	}
 	if err := txGorm.Delete(&fleetRecord).Error; err != nil {
 		return err

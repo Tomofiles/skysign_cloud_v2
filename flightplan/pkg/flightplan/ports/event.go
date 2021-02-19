@@ -3,8 +3,18 @@ package ports
 import (
 	"context"
 	"flightplan/pkg/flightplan/app"
-	"flightplan/pkg/flightplan/domain/flightplan"
-	"log"
+	"flightplan/pkg/skysign_proto"
+
+	"github.com/golang/glog"
+	"github.com/pkg/errors"
+	"google.golang.org/protobuf/proto"
+)
+
+const (
+	// FlightplanCreatedEventExchangeName .
+	FlightplanCreatedEventExchangeName = "flightplan.flightplan_created_event"
+	// FlightplanDeletedEventExchangeName .
+	FlightplanDeletedEventExchangeName = "flightplan.flightplan_deleted_event"
 )
 
 // EventHandler .
@@ -20,25 +30,41 @@ func NewEventHandler(application app.Application) EventHandler {
 // HandleCreatedEvent .
 func (h *EventHandler) HandleCreatedEvent(
 	ctx context.Context,
-	event flightplan.CreatedEvent,
-) {
-	requestDpo := requestDpoHolder{id: event.GetFlightplanID()}
+	event []byte,
+) error {
+	eventPb := skysign_proto.FlightplanCreatedEvent{}
+	if err := proto.Unmarshal(event, &eventPb); err != nil {
+		return err
+	}
+
+	glog.Infof("RECEIVE , Event: %s, Message: %s", FlightplanCreatedEventExchangeName, eventPb.String())
+
+	requestDpo := requestDpoHolder{id: eventPb.GetFlightplanId()}
 	ret := h.app.Services.ManageFleet.CreateFleet(&requestDpo)
 	if ret != nil {
-		log.Println("handle created event error")
+		return errors.Wrap(ret, "handle created event error")
 	}
+	return nil
 }
 
 // HandleDeletedEvent .
 func (h *EventHandler) HandleDeletedEvent(
 	ctx context.Context,
-	event flightplan.DeletedEvent,
-) {
-	requestDpo := requestDpoHolder{id: event.GetFlightplanID()}
+	event []byte,
+) error {
+	eventPb := skysign_proto.FlightplanDeletedEvent{}
+	if err := proto.Unmarshal(event, &eventPb); err != nil {
+		return err
+	}
+
+	glog.Infof("RECEIVE , Event: %s, Message: %s", FlightplanDeletedEventExchangeName, eventPb.String())
+
+	requestDpo := requestDpoHolder{id: eventPb.GetFlightplanId()}
 	ret := h.app.Services.ManageFleet.DeleteFleet(&requestDpo)
 	if ret != nil {
-		log.Println("handle created event error")
+		return errors.Wrap(ret, "handle deleted event error")
 	}
+	return nil
 }
 
 type requestDpoHolder struct {

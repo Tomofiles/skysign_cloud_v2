@@ -30,3 +30,7 @@ type publisherMock struct {
 func (rm *publisherMock) Publish(event interface{}) {
 	rm.events = append(rm.events, event)
 }
+
+func (rm *publisherMock) Flush() error {
+	return nil
+}

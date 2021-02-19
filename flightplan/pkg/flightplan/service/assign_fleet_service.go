@@ -2,7 +2,6 @@ package service
 
 import (
 	"errors"
-	"flightplan/pkg/flightplan/domain/event"
 	"flightplan/pkg/flightplan/domain/fleet"
 	"flightplan/pkg/flightplan/domain/flightplan"
 	"flightplan/pkg/flightplan/domain/txmanager"
@@ -12,7 +11,6 @@ import (
 type AssignFleetService struct {
 	gen  fleet.Generator
 	repo fleet.Repository
-	pub  event.Publisher
 	txm  txmanager.TransactionManager
 }
 
@@ -20,13 +18,11 @@ type AssignFleetService struct {
 func NewAssignFleetService(
 	gen fleet.Generator,
 	repo fleet.Repository,
-	pub event.Publisher,
 	txm txmanager.TransactionManager,
 ) AssignFleetService {
 	return AssignFleetService{
 		gen:  gen,
 		repo: repo,
-		pub:  pub,
 		txm:  txm,
 	}
 }

@@ -4,7 +4,6 @@ import (
 	fl "flightplan/pkg/flightplan/domain/fleet"
 	"flightplan/pkg/flightplan/domain/flightplan"
 	"flightplan/pkg/flightplan/domain/txmanager"
-	"log"
 )
 
 // FleetRepository .
@@ -30,7 +29,6 @@ func (r *FleetRepository) Save(
 	tx txmanager.Tx,
 	fleet *fl.Fleet,
 ) error {
-	log.Println(fleet)
 	var fleets []*fl.Fleet
 	for _, f := range r.fleets {
 		if f.GetID() != fleet.GetID() {

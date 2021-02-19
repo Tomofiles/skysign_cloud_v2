@@ -4,10 +4,11 @@ import (
 	"context"
 	"flag"
 	"net"
+	"time"
 
 	"flightplan/pkg/flightplan/adapters/postgresql"
+	"flightplan/pkg/flightplan/adapters/rabbitmq"
 	"flightplan/pkg/flightplan/app"
-	"flightplan/pkg/flightplan/domain/bridge"
 	"flightplan/pkg/flightplan/ports"
 	proto "flightplan/pkg/skysign_proto"
 
@@ -28,7 +29,8 @@ func run() error {
 	if err != nil {
 		return err
 	}
-	s := grpc.NewServer()
+	defer listen.Close()
+	s := grpc.NewServer(grpc.UnaryInterceptor(ports.LogBodyInterceptor()))
 
 	db, err := postgresql.NewPostgresqlConnection()
 	if err != nil {
@@ -36,12 +38,36 @@ func run() error {
 	}
 	txm := postgresql.NewGormTransactionManager(db)
 
-	application := app.NewApplication(ctx, txm)
+	conn, err := rabbitmq.NewRabbitMQConnection()
+	if err != nil {
+		return err
+	}
+	defer conn.Close()
+	psm := rabbitmq.NewPubSubManager(conn)
+
+	application := app.NewApplication(ctx, txm, psm)
 
 	svc := ports.NewGrpcServer(application)
 	evt := ports.NewEventHandler(application)
 
-	bridge.Bind(evt, application)
+	psm.SetConsumer(
+		ctx,
+		ports.FlightplanCreatedEventExchangeName,
+		func(event []byte) {
+			if err := evt.HandleCreatedEvent(ctx, event); err != nil {
+				glog.Error(err)
+			}
+		},
+	)
+	psm.SetConsumer(
+		ctx,
+		ports.FlightplanDeletedEventExchangeName,
+		func(event []byte) {
+			if err := evt.HandleDeletedEvent(ctx, event); err != nil {
+				glog.Error(err)
+			}
+		},
+	)
 
 	proto.RegisterManageFlightplanServiceServer(s, &svc)
 	proto.RegisterAssignAssetsToFlightplanServiceServer(s, &svc)
@@ -54,7 +80,12 @@ func main() {
 	flag.Parse()
 	defer glog.Flush()
 
-	if err := run(); err != nil {
-		glog.Fatal(err)
+	for {
+		if err := run(); err != nil {
+			glog.Error(err)
+			time.Sleep(10 * time.Second)
+		} else {
+			glog.Info("restarted")
+		}
 	}
 }

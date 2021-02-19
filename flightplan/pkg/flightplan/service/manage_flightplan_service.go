@@ -11,22 +11,22 @@ import (
 type ManageFlightplanService struct {
 	gen  flightplan.Generator
 	repo flightplan.Repository
-	pub  event.Publisher
 	txm  txmanager.TransactionManager
+	psm  event.PubSubManager
 }
 
 // NewManageFlightplanService .
 func NewManageFlightplanService(
 	gen flightplan.Generator,
 	repo flightplan.Repository,
-	pub event.Publisher,
 	txm txmanager.TransactionManager,
+	psm event.PubSubManager,
 ) ManageFlightplanService {
 	return ManageFlightplanService{
 		gen:  gen,
 		repo: repo,
-		pub:  pub,
 		txm:  txm,
+		psm:  psm,
 	}
 }
 
@@ -79,21 +79,32 @@ func (s *ManageFlightplanService) CreateFlightplan(
 	requestDpo CreateFlightplanRequestDpo,
 	responseDpo CreateFlightplanResponseDpo,
 ) error {
-	return s.txm.Do(func(tx txmanager.Tx) error {
-		id, ret := flightplan.CreateNewFlightplan(
-			tx,
-			s.gen,
-			s.repo,
-			s.pub,
-			requestDpo.GetName(),
-			requestDpo.GetDescription())
-		if ret != nil {
-			return ret
-		}
+	pub, connClose, err := s.psm.GetPublisher()
+	if err != nil {
+		return err
+	}
+	defer connClose()
 
-		responseDpo(id, requestDpo.GetName(), requestDpo.GetDescription())
-		return nil
-	})
+	return s.txm.DoAndEndHook(
+		func(tx txmanager.Tx) error {
+			id, ret := flightplan.CreateNewFlightplan(
+				tx,
+				s.gen,
+				s.repo,
+				pub,
+				requestDpo.GetName(),
+				requestDpo.GetDescription())
+			if ret != nil {
+				return ret
+			}
+
+			responseDpo(id, requestDpo.GetName(), requestDpo.GetDescription())
+			return nil
+		},
+		func() error {
+			return pub.Flush()
+		},
+	)
 }
 
 // UpdateFlightplan .
@@ -131,18 +142,29 @@ func (s *ManageFlightplanService) UpdateFlightplan(
 func (s *ManageFlightplanService) DeleteFlightplan(
 	requestDpo DeleteFlightplanRequestDpo,
 ) error {
-	return s.txm.Do(func(tx txmanager.Tx) error {
-		ret := flightplan.DeleteFlightplan(
-			tx,
-			s.repo,
-			s.pub,
-			flightplan.ID(requestDpo.GetId()))
-		if ret != nil {
-			return ret
-		}
+	pub, connClose, err := s.psm.GetPublisher()
+	if err != nil {
+		return err
+	}
+	defer connClose()
 
-		return nil
-	})
+	return s.txm.DoAndEndHook(
+		func(tx txmanager.Tx) error {
+			ret := flightplan.DeleteFlightplan(
+				tx,
+				s.repo,
+				pub,
+				flightplan.ID(requestDpo.GetId()))
+			if ret != nil {
+				return ret
+			}
+
+			return nil
+		},
+		func() error {
+			return pub.Flush()
+		},
+	)
 }
 
 // CreateFlightplanRequestDpo .

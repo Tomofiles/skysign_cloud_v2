@@ -5,7 +5,27 @@ import (
 
 	"flightplan/pkg/flightplan/app"
 	proto "flightplan/pkg/skysign_proto"
+
+	"github.com/golang/glog"
+	"google.golang.org/grpc"
 )
+
+// LogBodyInterceptor .
+func LogBodyInterceptor() grpc.UnaryServerInterceptor {
+	return func(ctx context.Context, req interface{}, info *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (interface{}, error) {
+		glog.Infof("REQUEST , API: %s, Message: %+v", info.FullMethod, req)
+
+		resp, err := handler(ctx, req)
+		if err != nil {
+			glog.Errorf("RESPONSE, API: %s, Error: %+v", info.FullMethod, err)
+			return nil, err
+		}
+
+		glog.Infof("RESPONSE, API: %s, Message: %+v", info.FullMethod, resp)
+
+		return resp, nil
+	}
+}
 
 // GrpcServer .
 type GrpcServer struct {
