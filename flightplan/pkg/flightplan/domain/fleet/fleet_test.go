@@ -18,6 +18,9 @@ const DefaultEventID2 = EventID("event-id-2")
 const DefaultEventID3 = EventID("event-id-3")
 const DefaultVehicleID = VehicleID("vehicle-id")
 const DefaultMissionID = MissionID("mission-id")
+const DefaultVersion1 = Version("version-1")
+const DefaultVersion2 = Version("version-2")
+const DefaultVersion3 = Version("version-3")
 
 type testGenerator struct {
 	Generator
@@ -26,6 +29,8 @@ type testGenerator struct {
 	assignmentIDIndex int
 	eventIDs          []EventID
 	eventIDIndex      int
+	versions          []Version
+	versionIndex      int
 }
 
 func (gen *testGenerator) NewID() ID {
@@ -41,6 +46,11 @@ func (gen *testGenerator) NewEventID() EventID {
 	gen.eventIDIndex++
 	return eventID
 }
+func (gen *testGenerator) NewVersion() Version {
+	version := gen.versions[gen.versionIndex]
+	gen.versionIndex++
+	return version
+}
 
 func TestCreateSingleFleetNewFleet(t *testing.T) {
 	a := assert.New(t)
@@ -49,6 +59,7 @@ func TestCreateSingleFleetNewFleet(t *testing.T) {
 		id:            DefaultID,
 		assignmentIDs: []AssignmentID{DefaultAssignmentID1},
 		eventIDs:      []EventID{DefaultEventID1},
+		versions:      []Version{DefaultVersion1},
 	}
 	fleet := NewInstance(gen, DefaultFlightplanID, 1)
 
@@ -61,6 +72,8 @@ func TestCreateSingleFleetNewFleet(t *testing.T) {
 	a.Equal(fleet.GetFlightplanID(), DefaultFlightplanID)
 	a.Equal(fleet.GetNumberOfVehicles(), 1)
 	a.Equal(fleet.GetAllAssignmentID(), []AssignmentID{DefaultAssignmentID1})
+	a.Equal(fleet.GetVersion(), DefaultVersion1)
+	a.Equal(fleet.GetNewVersion(), DefaultVersion1)
 	a.Len(fleet.vehicleAssignments, 1)
 	a.Equal(fleet.vehicleAssignments[0], expectAssignment)
 	a.Len(fleet.eventPlannings, 0)
@@ -73,6 +86,7 @@ func TestCreateMultipleFleetNewFleet(t *testing.T) {
 		id:            DefaultID,
 		assignmentIDs: []AssignmentID{DefaultAssignmentID1, DefaultAssignmentID2, DefaultAssignmentID3},
 		eventIDs:      []EventID{DefaultEventID1, DefaultEventID2, DefaultEventID3},
+		versions:      []Version{DefaultVersion1},
 	}
 	fleet := NewInstance(gen, DefaultFlightplanID, 3)
 
@@ -93,6 +107,8 @@ func TestCreateMultipleFleetNewFleet(t *testing.T) {
 	a.Equal(fleet.GetFlightplanID(), DefaultFlightplanID)
 	a.Equal(fleet.GetNumberOfVehicles(), 3)
 	a.Equal(fleet.GetAllAssignmentID(), []AssignmentID{DefaultAssignmentID1, DefaultAssignmentID2, DefaultAssignmentID3})
+	a.Equal(fleet.GetVersion(), DefaultVersion1)
+	a.Equal(fleet.GetNewVersion(), DefaultVersion1)
 	a.Len(fleet.vehicleAssignments, 3)
 	a.Equal(fleet.vehicleAssignments[0], expectAssignment1)
 	a.Equal(fleet.vehicleAssignments[1], expectAssignment2)
@@ -106,6 +122,7 @@ func TestAssignVehicle(t *testing.T) {
 	gen := &testGenerator{
 		id:            DefaultID,
 		assignmentIDs: []AssignmentID{DefaultAssignmentID1},
+		versions:      []Version{DefaultVersion1, DefaultVersion2},
 	}
 	fleet := NewInstance(gen, DefaultFlightplanID, 1)
 
@@ -119,6 +136,8 @@ func TestAssignVehicle(t *testing.T) {
 	a.Len(fleet.vehicleAssignments, 1)
 	a.Equal(fleet.vehicleAssignments[0], expectAssignment)
 	a.Nil(ret)
+	a.Equal(fleet.GetVersion(), DefaultVersion1)
+	a.Equal(fleet.GetNewVersion(), DefaultVersion2)
 }
 
 func TestVehicleHasAlreadyAssignedWhenAssignVehicle(t *testing.T) {
@@ -127,6 +146,7 @@ func TestVehicleHasAlreadyAssignedWhenAssignVehicle(t *testing.T) {
 	gen := &testGenerator{
 		id:            DefaultID,
 		assignmentIDs: []AssignmentID{DefaultAssignmentID1, DefaultAssignmentID2, DefaultAssignmentID3},
+		versions:      []Version{DefaultVersion1, DefaultVersion2},
 	}
 	fleet := NewInstance(gen, DefaultFlightplanID, 3)
 	fleet.vehicleAssignments[2].vehicleID = DefaultVehicleID
@@ -141,6 +161,8 @@ func TestVehicleHasAlreadyAssignedWhenAssignVehicle(t *testing.T) {
 	a.Len(fleet.vehicleAssignments, 3)
 	a.Equal(fleet.vehicleAssignments[0], expectAssignment)
 	a.Equal(ret, errors.New("this vehicle has already assigned"))
+	a.Equal(fleet.GetVersion(), DefaultVersion1)
+	a.Equal(fleet.GetNewVersion(), DefaultVersion1)
 }
 
 func TestNotFoundErrorWhenAssignVehicle(t *testing.T) {
@@ -149,6 +171,7 @@ func TestNotFoundErrorWhenAssignVehicle(t *testing.T) {
 	gen := &testGenerator{
 		id:            DefaultID,
 		assignmentIDs: []AssignmentID{DefaultAssignmentID1},
+		versions:      []Version{DefaultVersion1, DefaultVersion2},
 	}
 	fleet := NewInstance(gen, DefaultFlightplanID, 1)
 
@@ -162,6 +185,8 @@ func TestNotFoundErrorWhenAssignVehicle(t *testing.T) {
 	a.Len(fleet.vehicleAssignments, 1)
 	a.Equal(fleet.vehicleAssignments[0], expectAssignment)
 	a.Equal(ret, errors.New("assignment not found"))
+	a.Equal(fleet.GetVersion(), DefaultVersion1)
+	a.Equal(fleet.GetNewVersion(), DefaultVersion1)
 }
 
 func TestCancelVehiclesAssignment(t *testing.T) {
@@ -170,6 +195,7 @@ func TestCancelVehiclesAssignment(t *testing.T) {
 	gen := &testGenerator{
 		id:            DefaultID,
 		assignmentIDs: []AssignmentID{DefaultAssignmentID1},
+		versions:      []Version{DefaultVersion1, DefaultVersion2},
 	}
 	fleet := NewInstance(gen, DefaultFlightplanID, 1)
 	fleet.vehicleAssignments[0].vehicleID = DefaultVehicleID
@@ -184,6 +210,8 @@ func TestCancelVehiclesAssignment(t *testing.T) {
 	a.Len(fleet.vehicleAssignments, 1)
 	a.Equal(fleet.vehicleAssignments[0], expectAssignment)
 	a.Nil(ret)
+	a.Equal(fleet.GetVersion(), DefaultVersion1)
+	a.Equal(fleet.GetNewVersion(), DefaultVersion2)
 }
 
 func TestNotFoundErrorWhenCancelVehiclesAssignment(t *testing.T) {
@@ -192,6 +220,7 @@ func TestNotFoundErrorWhenCancelVehiclesAssignment(t *testing.T) {
 	gen := &testGenerator{
 		id:            DefaultID,
 		assignmentIDs: []AssignmentID{DefaultAssignmentID1},
+		versions:      []Version{DefaultVersion1, DefaultVersion2},
 	}
 	fleet := NewInstance(gen, DefaultFlightplanID, 1)
 	fleet.vehicleAssignments[0].vehicleID = DefaultVehicleID
@@ -206,6 +235,8 @@ func TestNotFoundErrorWhenCancelVehiclesAssignment(t *testing.T) {
 	a.Len(fleet.vehicleAssignments, 1)
 	a.Equal(fleet.vehicleAssignments[0], expectAssignment)
 	a.Equal(ret, errors.New("assignment not found"))
+	a.Equal(fleet.GetVersion(), DefaultVersion1)
+	a.Equal(fleet.GetNewVersion(), DefaultVersion1)
 }
 
 func TestAddNewEvent(t *testing.T) {
@@ -215,6 +246,7 @@ func TestAddNewEvent(t *testing.T) {
 		id:            DefaultID,
 		assignmentIDs: []AssignmentID{DefaultAssignmentID1},
 		eventIDs:      []EventID{DefaultEventID1},
+		versions:      []Version{DefaultVersion1, DefaultVersion2},
 	}
 	fleet := NewInstance(gen, DefaultFlightplanID, 1)
 
@@ -230,6 +262,8 @@ func TestAddNewEvent(t *testing.T) {
 	a.Equal(fleet.eventPlannings[0], expectEvent)
 	a.Equal(eventID, DefaultEventID1)
 	a.Nil(ret)
+	a.Equal(fleet.GetVersion(), DefaultVersion1)
+	a.Equal(fleet.GetNewVersion(), DefaultVersion2)
 }
 
 func TestNotAssignedErrorWhenAddNewEvent(t *testing.T) {
@@ -239,6 +273,7 @@ func TestNotAssignedErrorWhenAddNewEvent(t *testing.T) {
 		id:            DefaultID,
 		assignmentIDs: []AssignmentID{DefaultAssignmentID1},
 		eventIDs:      []EventID{DefaultEventID1},
+		versions:      []Version{DefaultVersion1, DefaultVersion2},
 	}
 	fleet := NewInstance(gen, DefaultFlightplanID, 1)
 
@@ -247,6 +282,8 @@ func TestNotAssignedErrorWhenAddNewEvent(t *testing.T) {
 	a.Len(fleet.eventPlannings, 0)
 	a.Empty(eventID)
 	a.Equal(ret, errors.New("this id not assigned"))
+	a.Equal(fleet.GetVersion(), DefaultVersion1)
+	a.Equal(fleet.GetNewVersion(), DefaultVersion1)
 }
 
 func TestRemoveEvent(t *testing.T) {
@@ -255,6 +292,7 @@ func TestRemoveEvent(t *testing.T) {
 	gen := &testGenerator{
 		id:            DefaultID,
 		assignmentIDs: []AssignmentID{DefaultAssignmentID1},
+		versions:      []Version{DefaultVersion1, DefaultVersion2},
 	}
 	fleet := NewInstance(gen, DefaultFlightplanID, 1)
 	fleet.eventPlannings = append(
@@ -270,6 +308,8 @@ func TestRemoveEvent(t *testing.T) {
 
 	a.Len(fleet.eventPlannings, 0)
 	a.Nil(ret)
+	a.Equal(fleet.GetVersion(), DefaultVersion1)
+	a.Equal(fleet.GetNewVersion(), DefaultVersion2)
 }
 
 func TestNotFoundWhenRemoveEvent(t *testing.T) {
@@ -278,6 +318,7 @@ func TestNotFoundWhenRemoveEvent(t *testing.T) {
 	gen := &testGenerator{
 		id:            DefaultID,
 		assignmentIDs: []AssignmentID{DefaultAssignmentID1},
+		versions:      []Version{DefaultVersion1, DefaultVersion2},
 	}
 	fleet := NewInstance(gen, DefaultFlightplanID, 1)
 	fleet.eventPlannings = append(
@@ -293,6 +334,8 @@ func TestNotFoundWhenRemoveEvent(t *testing.T) {
 
 	a.Len(fleet.eventPlannings, 1)
 	a.Equal(ret, errors.New("event not found"))
+	a.Equal(fleet.GetVersion(), DefaultVersion1)
+	a.Equal(fleet.GetNewVersion(), DefaultVersion1)
 }
 
 func TestAssignMission(t *testing.T) {
@@ -301,6 +344,7 @@ func TestAssignMission(t *testing.T) {
 	gen := &testGenerator{
 		id:            DefaultID,
 		assignmentIDs: []AssignmentID{DefaultAssignmentID1},
+		versions:      []Version{DefaultVersion1, DefaultVersion2},
 	}
 	fleet := NewInstance(gen, DefaultFlightplanID, 1)
 	fleet.eventPlannings = append(
@@ -323,6 +367,8 @@ func TestAssignMission(t *testing.T) {
 	a.Len(fleet.eventPlannings, 1)
 	a.Equal(fleet.eventPlannings[0], expectEvent)
 	a.Nil(ret)
+	a.Equal(fleet.GetVersion(), DefaultVersion1)
+	a.Equal(fleet.GetNewVersion(), DefaultVersion2)
 }
 
 func TestMissionHasAlreadyAssignedWhenAssignMission(t *testing.T) {
@@ -331,6 +377,7 @@ func TestMissionHasAlreadyAssignedWhenAssignMission(t *testing.T) {
 	gen := &testGenerator{
 		id:            DefaultID,
 		assignmentIDs: []AssignmentID{DefaultAssignmentID1, DefaultAssignmentID2, DefaultAssignmentID3},
+		versions:      []Version{DefaultVersion1, DefaultVersion2},
 	}
 	fleet := NewInstance(gen, DefaultFlightplanID, 2)
 	fleet.eventPlannings = append(
@@ -369,6 +416,8 @@ func TestMissionHasAlreadyAssignedWhenAssignMission(t *testing.T) {
 	a.Len(fleet.eventPlannings, 3)
 	a.Equal(fleet.eventPlannings[0], expectEvent)
 	a.Equal(ret, errors.New("this mission has already assigned"))
+	a.Equal(fleet.GetVersion(), DefaultVersion1)
+	a.Equal(fleet.GetNewVersion(), DefaultVersion1)
 }
 
 func TestNotFoundErrorWhenAssignMission(t *testing.T) {
@@ -377,6 +426,7 @@ func TestNotFoundErrorWhenAssignMission(t *testing.T) {
 	gen := &testGenerator{
 		id:            DefaultID,
 		assignmentIDs: []AssignmentID{DefaultAssignmentID1},
+		versions:      []Version{DefaultVersion1, DefaultVersion2},
 	}
 	fleet := NewInstance(gen, DefaultFlightplanID, 1)
 	fleet.eventPlannings = append(
@@ -399,6 +449,8 @@ func TestNotFoundErrorWhenAssignMission(t *testing.T) {
 	a.Len(fleet.eventPlannings, 1)
 	a.Equal(fleet.eventPlannings[0], expectEvent)
 	a.Equal(ret, errors.New("event not found"))
+	a.Equal(fleet.GetVersion(), DefaultVersion1)
+	a.Equal(fleet.GetNewVersion(), DefaultVersion1)
 }
 
 func TestCancelMission(t *testing.T) {
@@ -407,6 +459,7 @@ func TestCancelMission(t *testing.T) {
 	gen := &testGenerator{
 		id:            DefaultID,
 		assignmentIDs: []AssignmentID{DefaultAssignmentID1},
+		versions:      []Version{DefaultVersion1, DefaultVersion2},
 	}
 	fleet := NewInstance(gen, DefaultFlightplanID, 1)
 	fleet.eventPlannings = append(
@@ -429,6 +482,8 @@ func TestCancelMission(t *testing.T) {
 	a.Len(fleet.eventPlannings, 1)
 	a.Equal(fleet.eventPlannings[0], expectEvent)
 	a.Nil(ret)
+	a.Equal(fleet.GetVersion(), DefaultVersion1)
+	a.Equal(fleet.GetNewVersion(), DefaultVersion2)
 }
 
 func TestNotFoundErrorWhenCancelMission(t *testing.T) {
@@ -437,6 +492,7 @@ func TestNotFoundErrorWhenCancelMission(t *testing.T) {
 	gen := &testGenerator{
 		id:            DefaultID,
 		assignmentIDs: []AssignmentID{DefaultAssignmentID1},
+		versions:      []Version{DefaultVersion1, DefaultVersion2},
 	}
 	fleet := NewInstance(gen, DefaultFlightplanID, 1)
 	fleet.eventPlannings = append(
@@ -459,4 +515,6 @@ func TestNotFoundErrorWhenCancelMission(t *testing.T) {
 	a.Len(fleet.eventPlannings, 1)
 	a.Equal(fleet.eventPlannings[0], expectEvent)
 	a.Equal(ret, errors.New("event not found"))
+	a.Equal(fleet.GetVersion(), DefaultVersion1)
+	a.Equal(fleet.GetNewVersion(), DefaultVersion1)
 }

@@ -1,9 +1,9 @@
 package infra
 
 import (
-	"context"
 	fl "flightplan/pkg/flightplan/domain/fleet"
 	"flightplan/pkg/flightplan/domain/flightplan"
+	"flightplan/pkg/flightplan/txmanager"
 	"log"
 )
 
@@ -14,7 +14,7 @@ type InmemoryFleetRepository struct {
 
 // GetByFlightplanID .
 func (r *InmemoryFleetRepository) GetByFlightplanID(
-	ctx context.Context,
+	tx txmanager.Tx,
 	flightplanID flightplan.ID,
 ) (*fl.Fleet, error) {
 	for _, f := range r.fleets {
@@ -27,7 +27,7 @@ func (r *InmemoryFleetRepository) GetByFlightplanID(
 
 // Save .
 func (r *InmemoryFleetRepository) Save(
-	ctx context.Context,
+	tx txmanager.Tx,
 	fleet *fl.Fleet,
 ) error {
 	log.Println(fleet)
@@ -44,7 +44,7 @@ func (r *InmemoryFleetRepository) Save(
 
 // DeleteByFlightplanID .
 func (r *InmemoryFleetRepository) DeleteByFlightplanID(
-	ctx context.Context,
+	tx txmanager.Tx,
 	flightplanID flightplan.ID,
 ) error {
 	var fleets []*fl.Fleet

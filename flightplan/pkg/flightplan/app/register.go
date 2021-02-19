@@ -22,14 +22,14 @@ func newApplication(ctx context.Context) Application {
 	flightplanGen := &generator.FlightplanUUID{}
 	fleetGen := &generator.FleetUUID{}
 	flightplanRepo := postgresql.NewFlightplanRepository(flightplanGen)
-	fleetRepo := &infra.InmemoryFleetRepository{}
+	fleetRepo := postgresql.NewFleetRepository(fleetGen)
 	pub := &infra.PublisherDirect{}
 	return Application{
 		Pub: pub,
 		Services: Services{
 			ManageFlightplan: service.NewManageFlightplanService(flightplanGen, flightplanRepo, pub, txm),
-			ManageFleet:      service.NewManageFleetService(fleetGen, fleetRepo, pub),
-			AssignFleet:      service.NewAssignFleetService(fleetGen, fleetRepo, pub),
+			ManageFleet:      service.NewManageFleetService(fleetGen, fleetRepo, pub, txm),
+			AssignFleet:      service.NewAssignFleetService(fleetGen, fleetRepo, pub, txm),
 		},
 	}
 }

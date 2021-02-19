@@ -1,13 +1,13 @@
 package fleet
 
 import (
-	"context"
 	"flightplan/pkg/flightplan/domain/flightplan"
+	"flightplan/pkg/flightplan/txmanager"
 )
 
 // Repository .
 type Repository interface {
-	GetByFlightplanID(context.Context, flightplan.ID) (*Fleet, error)
-	Save(context.Context, *Fleet) error
-	DeleteByFlightplanID(context.Context, flightplan.ID) error
+	GetByFlightplanID(txmanager.Tx, flightplan.ID) (*Fleet, error)
+	Save(txmanager.Tx, *Fleet) error
+	DeleteByFlightplanID(txmanager.Tx, flightplan.ID) error
 }

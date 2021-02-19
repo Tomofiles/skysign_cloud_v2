@@ -3,6 +3,7 @@ package fleet
 import (
 	"errors"
 	"flightplan/pkg/flightplan/domain/flightplan"
+	"log"
 )
 
 // ID .
@@ -20,13 +21,18 @@ type EventID string
 // MissionID .
 type MissionID string
 
+// Version .
+type Version string
+
 // Fleet .
 type Fleet struct {
 	id                 ID
 	flightplanID       flightplan.ID
 	vehicleAssignments []*VehicleAssignment
 	eventPlannings     []*EventPlanning
-	generator          Generator
+	version            Version
+	newVersion         Version
+	gen                Generator
 }
 
 // VehicleAssignment .
@@ -66,6 +72,16 @@ func (f *Fleet) GetAllAssignmentID() []AssignmentID {
 	return assignmentIDs
 }
 
+// GetVersion .
+func (f *Fleet) GetVersion() Version {
+	return f.version
+}
+
+// GetNewVersion .
+func (f *Fleet) GetNewVersion() Version {
+	return f.newVersion
+}
+
 // ProvideAssignmentsInterest .
 func (f *Fleet) ProvideAssignmentsInterest(
 	assignment func(assignmentID, vehicleID string),
@@ -96,6 +112,7 @@ func (f *Fleet) AssignVehicle(assignmentID AssignmentID, vehicleID VehicleID) er
 	for _, va := range f.vehicleAssignments {
 		if va.assignmentID == assignmentID {
 			va.vehicleID = vehicleID
+			f.newVersion = f.gen.NewVersion()
 			return nil
 		}
 	}
@@ -107,6 +124,7 @@ func (f *Fleet) CancelVehiclesAssignment(assignmentID AssignmentID) error {
 	for _, va := range f.vehicleAssignments {
 		if va.assignmentID == assignmentID {
 			va.vehicleID = ""
+			f.newVersion = f.gen.NewVersion()
 			return nil
 		}
 	}
@@ -125,7 +143,7 @@ func (f *Fleet) AddNewEvent(assignmentID AssignmentID) (EventID, error) {
 		return "", errors.New("this id not assigned")
 	}
 
-	eventID := f.generator.NewEventID()
+	eventID := f.gen.NewEventID()
 	f.eventPlannings = append(
 		f.eventPlannings,
 		&EventPlanning{
@@ -133,6 +151,7 @@ func (f *Fleet) AddNewEvent(assignmentID AssignmentID) (EventID, error) {
 			assignmentID: assignmentID,
 		},
 	)
+	f.newVersion = f.gen.NewVersion()
 	return eventID, nil
 }
 
@@ -146,6 +165,7 @@ func (f *Fleet) RemoveEvent(eventID EventID) error {
 	}
 	if len(eventPlannings) != len(f.eventPlannings) {
 		f.eventPlannings = eventPlannings
+		f.newVersion = f.gen.NewVersion()
 		return nil
 	}
 	return errors.New("event not found")
@@ -166,6 +186,7 @@ func (f *Fleet) AssignMission(eventID EventID, missionID MissionID) error {
 	for _, ep := range f.eventPlannings {
 		if ep.eventID == eventID {
 			ep.missionID = missionID
+			f.newVersion = f.gen.NewVersion()
 			return nil
 		}
 	}
@@ -177,6 +198,7 @@ func (f *Fleet) CancelMission(eventID EventID) error {
 	for _, ep := range f.eventPlannings {
 		if ep.eventID == eventID {
 			ep.missionID = ""
+			f.newVersion = f.gen.NewVersion()
 			return nil
 		}
 	}
@@ -184,20 +206,87 @@ func (f *Fleet) CancelMission(eventID EventID) error {
 }
 
 // NewInstance .
-func NewInstance(generator Generator, flightplanID flightplan.ID, numberOfVehicles int32) *Fleet {
+func NewInstance(gen Generator, flightplanID flightplan.ID, numberOfVehicles int32) *Fleet {
 	var vehicleAssignments []*VehicleAssignment
 	var vaIndex int32
 	for vaIndex < numberOfVehicles {
 		vehicleAssignments = append(vehicleAssignments, &VehicleAssignment{
-			assignmentID: generator.NewAssignmentID(),
+			assignmentID: gen.NewAssignmentID(),
 		})
 		vaIndex++
 	}
+	version := gen.NewVersion()
 	return &Fleet{
-		id:                 generator.NewID(),
+		id:                 gen.NewID(),
 		flightplanID:       flightplanID,
 		vehicleAssignments: vehicleAssignments,
-		generator:          generator,
+		version:            version,
+		newVersion:         version,
+		gen:                gen,
+	}
+}
+
+// AssembleFrom .
+func AssembleFrom(gen Generator, comp Component) *Fleet {
+	var vehicleAssignments []*VehicleAssignment
+	for _, a := range comp.GetAssignments() {
+		log.Println(a)
+		vehicleAssignments = append(
+			vehicleAssignments,
+			&VehicleAssignment{
+				assignmentID: AssignmentID(a.GetID()),
+				vehicleID:    VehicleID(a.GetVehicleID()),
+			},
+		)
+	}
+	var eventPlannings []*EventPlanning
+	for _, e := range comp.GetEvents() {
+		eventPlannings = append(
+			eventPlannings,
+			&EventPlanning{
+				eventID:      EventID(e.GetID()),
+				assignmentID: AssignmentID(e.GetAssignmentID()),
+				missionID:    MissionID(e.GetMissionID()),
+			},
+		)
+	}
+	return &Fleet{
+		id:                 ID(comp.GetID()),
+		flightplanID:       flightplan.ID(comp.GetFlightplanID()),
+		vehicleAssignments: vehicleAssignments,
+		eventPlannings:     eventPlannings,
+		version:            Version(comp.GetVersion()),
+		newVersion:         Version(comp.GetVersion()),
+		gen:                gen,
+	}
+}
+
+// TakeApart .
+func TakeApart(
+	fleet *Fleet,
+	fleetComp func(id, flightplanID, version string),
+	assignmentComp func(id, fleetID, vehicleID string),
+	eventComp func(id, fleetID, assignmentID, missionID string),
+) {
+	fleetComp(
+		string(fleet.id),
+		string(fleet.flightplanID),
+		string(fleet.version),
+	)
+	for _, a := range fleet.vehicleAssignments {
+		assignmentComp(
+			string(a.assignmentID),
+			string(fleet.id),
+			string(a.vehicleID),
+		)
+	}
+	for _, e := range fleet.eventPlannings {
+		eventComp(
+			string(e.eventID),
+			string(fleet.id),
+			string(e.assignmentID),
+			string(e.missionID),
+		)
 	}
 }
 
@@ -206,4 +295,29 @@ type Generator interface {
 	NewID() ID
 	NewAssignmentID() AssignmentID
 	NewEventID() EventID
+	NewVersion() Version
+}
+
+// Component .
+type Component interface {
+	GetID() string
+	GetFlightplanID() string
+	GetVersion() string
+	GetAssignments() []AssignmentComponent
+	GetEvents() []EventComponent
+}
+
+// AssignmentComponent .
+type AssignmentComponent interface {
+	GetID() string
+	GetFleetID() string
+	GetVehicleID() string
+}
+
+// EventComponent .
+type EventComponent interface {
+	GetID() string
+	GetFleetID() string
+	GetAssignmentID() string
+	GetMissionID() string
 }

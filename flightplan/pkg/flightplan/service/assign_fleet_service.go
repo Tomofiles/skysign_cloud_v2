@@ -1,11 +1,11 @@
 package service
 
 import (
-	"context"
 	"errors"
 	"flightplan/pkg/flightplan/domain/fleet"
 	"flightplan/pkg/flightplan/domain/flightplan"
 	"flightplan/pkg/flightplan/event"
+	"flightplan/pkg/flightplan/txmanager"
 )
 
 // AssignFleetService .
@@ -13,6 +13,7 @@ type AssignFleetService struct {
 	gen  fleet.Generator
 	repo fleet.Repository
 	pub  event.Publisher
+	txm  txmanager.TransactionManager
 }
 
 // NewAssignFleetService .
@@ -20,11 +21,13 @@ func NewAssignFleetService(
 	gen fleet.Generator,
 	repo fleet.Repository,
 	pub event.Publisher,
+	txm txmanager.TransactionManager,
 ) AssignFleetService {
 	return AssignFleetService{
 		gen:  gen,
 		repo: repo,
 		pub:  pub,
+		txm:  txm,
 	}
 }
 
@@ -33,41 +36,41 @@ func (s *AssignFleetService) ChangeNumberOfVehicles(
 	requestDpo ChangeNumberOfVehiclesRequestDpo,
 	responseDpo ChangeNumberOfVehiclesResponseDpo,
 ) error {
-	ctx := context.Background()
+	return s.txm.Do(func(tx txmanager.Tx) error {
+		oldFleet, err := s.repo.GetByFlightplanID(
+			tx,
+			flightplan.ID(requestDpo.GetId()),
+		)
+		if err != nil {
+			return err
+		}
+		if oldFleet == nil {
+			return errors.New("fleet not found")
+		}
 
-	oldFleet, err := s.repo.GetByFlightplanID(
-		ctx,
-		flightplan.ID(requestDpo.GetId()),
-	)
-	if err != nil {
-		return err
-	}
-	if oldFleet == nil {
-		return errors.New("fleet not found")
-	}
+		err = s.repo.DeleteByFlightplanID(
+			tx,
+			flightplan.ID(requestDpo.GetId()),
+		)
+		if err != nil {
+			return err
+		}
 
-	err = s.repo.DeleteByFlightplanID(
-		ctx,
-		flightplan.ID(requestDpo.GetId()),
-	)
-	if err != nil {
-		return err
-	}
+		newFleet := fleet.NewInstance(
+			s.gen,
+			flightplan.ID(requestDpo.GetId()),
+			requestDpo.GetNumberOfVehicles())
+		for _, assignmentID := range newFleet.GetAllAssignmentID() {
+			newFleet.AddNewEvent(assignmentID)
+		}
+		ret := s.repo.Save(tx, newFleet)
+		if ret != nil {
+			return ret
+		}
 
-	newFleet := fleet.NewInstance(
-		s.gen,
-		flightplan.ID(requestDpo.GetId()),
-		requestDpo.GetNumberOfVehicles())
-	for _, assignmentID := range newFleet.GetAllAssignmentID() {
-		newFleet.AddNewEvent(assignmentID)
-	}
-	ret := s.repo.Save(ctx, newFleet)
-	if ret != nil {
-		return ret
-	}
-
-	responseDpo(requestDpo.GetId(), requestDpo.GetNumberOfVehicles())
-	return nil
+		responseDpo(requestDpo.GetId(), requestDpo.GetNumberOfVehicles())
+		return nil
+	})
 }
 
 // GetAssignments .
@@ -75,54 +78,54 @@ func (s *AssignFleetService) GetAssignments(
 	requestDpo GetAssignmentsRequestDpo,
 	responseEachDpo GetAssignmentsResponseDpo,
 ) error {
-	ctx := context.Background()
+	return s.txm.Do(func(tx txmanager.Tx) error {
+		fleet, err := s.repo.GetByFlightplanID(
+			tx,
+			flightplan.ID(requestDpo.GetId()),
+		)
+		if err != nil {
+			return err
+		}
+		if fleet == nil {
+			return errors.New("fleet not found")
+		}
 
-	fleet, err := s.repo.GetByFlightplanID(
-		ctx,
-		flightplan.ID(requestDpo.GetId()),
-	)
-	if err != nil {
-		return err
-	}
-	if fleet == nil {
-		return errors.New("fleet not found")
-	}
-
-	var assignments []*assignmentVehicle
-	fleet.ProvideAssignmentsInterest(
-		func(assignmentID string, vehicleID string) {
-			assignments = append(
-				assignments,
-				&assignmentVehicle{
-					assignmentID: assignmentID,
-					vehicleID:    vehicleID,
-				},
-			)
-		},
-		func(eventID string, assignmentID string, missionID string) {
-			for _, av := range assignments {
-				if av.assignmentID == assignmentID {
-					av.events = append(
-						av.events,
-						&eventMission{
-							eventID:   eventID,
-							missionID: missionID,
-						},
-					)
+		var assignments []assignmentVehicle
+		fleet.ProvideAssignmentsInterest(
+			func(assignmentID string, vehicleID string) {
+				assignments = append(
+					assignments,
+					assignmentVehicle{
+						assignmentID: assignmentID,
+						vehicleID:    vehicleID,
+					},
+				)
+			},
+			func(eventID string, assignmentID string, missionID string) {
+				for _, av := range assignments {
+					if av.assignmentID == assignmentID {
+						av.events = append(
+							av.events,
+							eventMission{
+								eventID:   eventID,
+								missionID: missionID,
+							},
+						)
+					}
 				}
-			}
-		},
-	)
-	for _, a := range assignments {
-		for _, e := range a.events {
+			},
+		)
+		for _, a := range assignments {
+			eventID := a.events[0].eventID
+			missionID := a.events[0].missionID
 			responseEachDpo(
-				e.eventID,
+				eventID,
 				a.assignmentID,
 				a.vehicleID,
-				e.missionID)
+				missionID)
 		}
-	}
-	return nil
+		return nil
+	})
 }
 
 // UpdateAssignment .
@@ -130,58 +133,58 @@ func (s *AssignFleetService) UpdateAssignment(
 	requestDpo UpdateAssignmentRequestDpo,
 	responseDpo UpdateAssignmentResponseDpo,
 ) error {
-	ctx := context.Background()
+	return s.txm.Do(func(tx txmanager.Tx) error {
+		aFleet, err := s.repo.GetByFlightplanID(
+			tx,
+			flightplan.ID(requestDpo.GetFlightplanId()),
+		)
+		if err != nil {
+			return err
+		}
+		if aFleet == nil {
+			return errors.New("fleet not found")
+		}
 
-	aFleet, err := s.repo.GetByFlightplanID(
-		ctx,
-		flightplan.ID(requestDpo.GetFlightplanId()),
-	)
-	if err != nil {
-		return err
-	}
-	if aFleet == nil {
-		return errors.New("fleet not found")
-	}
+		if requestDpo.GetVehicleId() != "" {
+			if ret := aFleet.AssignVehicle(
+				fleet.AssignmentID(requestDpo.GetAssignmentId()),
+				fleet.VehicleID(requestDpo.GetVehicleId()),
+			); ret != nil {
+				return ret
+			}
+		} else {
+			if ret := aFleet.CancelVehiclesAssignment(
+				fleet.AssignmentID(requestDpo.GetAssignmentId()),
+			); ret != nil {
+				return ret
+			}
+		}
+		if requestDpo.GetMissionId() != "" {
+			if ret := aFleet.AssignMission(
+				fleet.EventID(requestDpo.GetId()),
+				fleet.MissionID(requestDpo.GetMissionId()),
+			); ret != nil {
+				return ret
+			}
+		} else {
+			if ret := aFleet.CancelMission(
+				fleet.EventID(requestDpo.GetId()),
+			); ret != nil {
+				return ret
+			}
+		}
+		if ret := s.repo.Save(tx, aFleet); ret != nil {
+			return ret
+		}
 
-	if requestDpo.GetVehicleId() != "" {
-		if ret := aFleet.AssignVehicle(
-			fleet.AssignmentID(requestDpo.GetAssignmentId()),
-			fleet.VehicleID(requestDpo.GetVehicleId()),
-		); ret != nil {
-			return ret
-		}
-	} else {
-		if ret := aFleet.CancelVehiclesAssignment(
-			fleet.AssignmentID(requestDpo.GetAssignmentId()),
-		); ret != nil {
-			return ret
-		}
-	}
-	if requestDpo.GetMissionId() != "" {
-		if ret := aFleet.AssignMission(
-			fleet.EventID(requestDpo.GetId()),
-			fleet.MissionID(requestDpo.GetMissionId()),
-		); ret != nil {
-			return ret
-		}
-	} else {
-		if ret := aFleet.CancelMission(
-			fleet.EventID(requestDpo.GetId()),
-		); ret != nil {
-			return ret
-		}
-	}
-	if ret := s.repo.Save(ctx, aFleet); ret != nil {
-		return ret
-	}
-
-	responseDpo(
-		requestDpo.GetId(),
-		requestDpo.GetAssignmentId(),
-		requestDpo.GetVehicleId(),
-		requestDpo.GetMissionId(),
-	)
-	return nil
+		responseDpo(
+			requestDpo.GetId(),
+			requestDpo.GetAssignmentId(),
+			requestDpo.GetVehicleId(),
+			requestDpo.GetMissionId(),
+		)
+		return nil
+	})
 }
 
 // ChangeNumberOfVehiclesRequestDpo .
@@ -204,7 +207,7 @@ type GetAssignmentsResponseDpo = func(id, assignmentId, vehicleId, missionId str
 type assignmentVehicle struct {
 	assignmentID string
 	vehicleID    string
-	events       []*eventMission
+	events       []eventMission
 }
 type eventMission struct {
 	eventID   string

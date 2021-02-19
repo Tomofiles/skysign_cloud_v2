@@ -1,10 +1,10 @@
 package service
 
 import (
-	"context"
 	"flightplan/pkg/flightplan/domain/fleet"
 	"flightplan/pkg/flightplan/domain/flightplan"
 	"flightplan/pkg/flightplan/event"
+	"flightplan/pkg/flightplan/txmanager"
 )
 
 // ManageFleetService .
@@ -12,6 +12,7 @@ type ManageFleetService struct {
 	gen  fleet.Generator
 	repo fleet.Repository
 	pub  event.Publisher
+	txm  txmanager.TransactionManager
 }
 
 // NewManageFleetService .
@@ -19,11 +20,13 @@ func NewManageFleetService(
 	gen fleet.Generator,
 	repo fleet.Repository,
 	pub event.Publisher,
+	txm txmanager.TransactionManager,
 ) ManageFleetService {
 	return ManageFleetService{
 		gen:  gen,
 		repo: repo,
 		pub:  pub,
+		txm:  txm,
 	}
 }
 
@@ -31,32 +34,32 @@ func NewManageFleetService(
 func (s *ManageFleetService) CreateFleet(
 	requestDpo CreateFleetRequestDpo,
 ) error {
-	ctx := context.Background()
+	return s.txm.Do(func(tx txmanager.Tx) error {
+		fleet := fleet.NewInstance(
+			s.gen,
+			flightplan.ID(requestDpo.GetFlightplanID()),
+			0)
+		ret := s.repo.Save(tx, fleet)
+		if ret != nil {
+			return ret
+		}
 
-	fleet := fleet.NewInstance(
-		s.gen,
-		flightplan.ID(requestDpo.GetFlightplanID()),
-		0)
-	ret := s.repo.Save(ctx, fleet)
-	if ret != nil {
-		return ret
-	}
-
-	return nil
+		return nil
+	})
 }
 
 // DeleteFleet .
 func (s *ManageFleetService) DeleteFleet(
 	requestDpo DeleteFleetRequestDpo,
 ) error {
-	ctx := context.Background()
+	return s.txm.Do(func(tx txmanager.Tx) error {
+		ret := s.repo.DeleteByFlightplanID(tx, flightplan.ID(requestDpo.GetFlightplanID()))
+		if ret != nil {
+			return ret
+		}
 
-	ret := s.repo.DeleteByFlightplanID(ctx, flightplan.ID(requestDpo.GetFlightplanID()))
-	if ret != nil {
-		return ret
-	}
-
-	return nil
+		return nil
+	})
 }
 
 // CreateFleetRequestDpo .
