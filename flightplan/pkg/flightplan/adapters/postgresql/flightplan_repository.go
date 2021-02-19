@@ -3,7 +3,7 @@ package postgresql
 import (
 	"errors"
 	fpl "flightplan/pkg/flightplan/domain/flightplan"
-	"flightplan/pkg/flightplan/txmanager"
+	"flightplan/pkg/flightplan/domain/txmanager"
 
 	"gorm.io/gorm"
 )

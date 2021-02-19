@@ -2,7 +2,7 @@ package fleet
 
 import (
 	"flightplan/pkg/flightplan/domain/flightplan"
-	"flightplan/pkg/flightplan/txmanager"
+	"flightplan/pkg/flightplan/domain/txmanager"
 )
 
 // Repository .

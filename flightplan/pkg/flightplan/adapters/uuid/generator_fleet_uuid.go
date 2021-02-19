@@ -1,4 +1,4 @@
-package generator
+package uuid
 
 import (
 	"flightplan/pkg/flightplan/domain/fleet"
@@ -8,6 +8,11 @@ import (
 
 // FleetUUID .
 type FleetUUID struct{}
+
+// NewFleetUUID .
+func NewFleetUUID() *FleetUUID {
+	return &FleetUUID{}
+}
 
 // NewID .
 func (g *FleetUUID) NewID() fleet.ID {

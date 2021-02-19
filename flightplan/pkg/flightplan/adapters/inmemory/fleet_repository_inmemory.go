@@ -1,19 +1,19 @@
-package infra
+package inmemory
 
 import (
 	fl "flightplan/pkg/flightplan/domain/fleet"
 	"flightplan/pkg/flightplan/domain/flightplan"
-	"flightplan/pkg/flightplan/txmanager"
+	"flightplan/pkg/flightplan/domain/txmanager"
 	"log"
 )
 
-// InmemoryFleetRepository .
-type InmemoryFleetRepository struct {
+// FleetRepository .
+type FleetRepository struct {
 	fleets []*fl.Fleet
 }
 
 // GetByFlightplanID .
-func (r *InmemoryFleetRepository) GetByFlightplanID(
+func (r *FleetRepository) GetByFlightplanID(
 	tx txmanager.Tx,
 	flightplanID flightplan.ID,
 ) (*fl.Fleet, error) {
@@ -26,7 +26,7 @@ func (r *InmemoryFleetRepository) GetByFlightplanID(
 }
 
 // Save .
-func (r *InmemoryFleetRepository) Save(
+func (r *FleetRepository) Save(
 	tx txmanager.Tx,
 	fleet *fl.Fleet,
 ) error {
@@ -43,7 +43,7 @@ func (r *InmemoryFleetRepository) Save(
 }
 
 // DeleteByFlightplanID .
-func (r *InmemoryFleetRepository) DeleteByFlightplanID(
+func (r *FleetRepository) DeleteByFlightplanID(
 	tx txmanager.Tx,
 	flightplanID flightplan.ID,
 ) error {

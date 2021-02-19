@@ -2,9 +2,9 @@ package service
 
 import (
 	"errors"
+	"flightplan/pkg/flightplan/domain/event"
 	"flightplan/pkg/flightplan/domain/flightplan"
-	"flightplan/pkg/flightplan/event"
-	"flightplan/pkg/flightplan/txmanager"
+	"flightplan/pkg/flightplan/domain/txmanager"
 )
 
 // ManageFlightplanService .

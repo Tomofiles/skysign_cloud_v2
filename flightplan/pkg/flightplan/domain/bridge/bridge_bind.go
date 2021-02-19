@@ -2,15 +2,15 @@ package bridge
 
 import (
 	"context"
-	"flightplan/pkg/flightplan/api"
+	"flightplan/pkg/flightplan/adapters/inmemory"
 	"flightplan/pkg/flightplan/app"
 	"flightplan/pkg/flightplan/domain/flightplan"
-	"flightplan/pkg/flightplan/infra"
+	"flightplan/pkg/flightplan/ports"
 )
 
 // Bind .
-func Bind(eventHandler api.EventHandler, app app.Application) {
-	if pub, ok := app.Pub.(*infra.PublisherDirect); ok {
+func Bind(eventHandler ports.EventHandler, app app.Application) {
+	if pub, ok := app.Pub.(*inmemory.PublisherDirect); ok {
 		pub.CreatedEventHandler = func(event flightplan.CreatedEvent) {
 			ctx := context.Background()
 			eventHandler.HandleCreatedEvent(ctx, event)

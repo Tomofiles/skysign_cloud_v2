@@ -1,25 +1,25 @@
-package infra
+package inmemory
 
 import (
 	fpl "flightplan/pkg/flightplan/domain/flightplan"
-	"flightplan/pkg/flightplan/txmanager"
+	"flightplan/pkg/flightplan/domain/txmanager"
 	"log"
 )
 
-// InmemoryFlightplanRepository .
-type InmemoryFlightplanRepository struct {
+// FlightplanRepository .
+type FlightplanRepository struct {
 	flightplans []*fpl.Flightplan
 }
 
 // GetAll .
-func (r *InmemoryFlightplanRepository) GetAll(
+func (r *FlightplanRepository) GetAll(
 	tx txmanager.Tx,
 ) ([]*fpl.Flightplan, error) {
 	return r.flightplans, nil
 }
 
 // GetByID .
-func (r *InmemoryFlightplanRepository) GetByID(
+func (r *FlightplanRepository) GetByID(
 	tx txmanager.Tx,
 	id fpl.ID,
 ) (*fpl.Flightplan, error) {
@@ -32,7 +32,7 @@ func (r *InmemoryFlightplanRepository) GetByID(
 }
 
 // Save .
-func (r *InmemoryFlightplanRepository) Save(
+func (r *FlightplanRepository) Save(
 	tx txmanager.Tx,
 	flightplan *fpl.Flightplan,
 ) error {
@@ -49,7 +49,7 @@ func (r *InmemoryFlightplanRepository) Save(
 }
 
 // Delete .
-func (r *InmemoryFlightplanRepository) Delete(
+func (r *FlightplanRepository) Delete(
 	tx txmanager.Tx,
 	id fpl.ID,
 ) error {

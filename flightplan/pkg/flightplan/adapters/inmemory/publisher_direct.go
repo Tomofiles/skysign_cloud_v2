@@ -1,4 +1,4 @@
-package infra
+package inmemory
 
 import (
 	"flightplan/pkg/flightplan/domain/flightplan"

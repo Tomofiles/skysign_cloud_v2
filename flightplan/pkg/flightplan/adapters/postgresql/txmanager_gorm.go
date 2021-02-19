@@ -1,7 +1,7 @@
 package postgresql
 
 import (
-	"flightplan/pkg/flightplan/txmanager"
+	"flightplan/pkg/flightplan/domain/txmanager"
 
 	"gorm.io/gorm"
 )

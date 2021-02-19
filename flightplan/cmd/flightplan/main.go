@@ -5,10 +5,10 @@ import (
 	"flag"
 	"net"
 
-	"flightplan/pkg/flightplan/api"
+	"flightplan/pkg/flightplan/adapters/postgresql"
 	"flightplan/pkg/flightplan/app"
 	"flightplan/pkg/flightplan/domain/bridge"
-	"flightplan/pkg/flightplan/infra/postgresql"
+	"flightplan/pkg/flightplan/ports"
 	proto "flightplan/pkg/skysign_proto"
 
 	"github.com/golang/glog"
@@ -32,14 +32,14 @@ func run() error {
 
 	db, err := postgresql.NewPostgresqlConnection()
 	if err != nil {
-		panic(err)
+		return err
 	}
 	txm := postgresql.NewGormTransactionManager(db)
 
 	application := app.NewApplication(ctx, txm)
 
-	svc := api.NewGrpcServer(application)
-	evt := api.NewEventHandler(application)
+	svc := ports.NewGrpcServer(application)
+	evt := ports.NewEventHandler(application)
 
 	bridge.Bind(evt, application)
 

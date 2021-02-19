@@ -1,7 +1,7 @@
 package flightplan
 
 import (
-	"flightplan/pkg/flightplan/txmanager"
+	"flightplan/pkg/flightplan/domain/txmanager"
 )
 
 // Repository .

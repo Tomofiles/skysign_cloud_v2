@@ -1,10 +1,10 @@
 package service
 
 import (
+	"flightplan/pkg/flightplan/domain/event"
 	"flightplan/pkg/flightplan/domain/fleet"
 	"flightplan/pkg/flightplan/domain/flightplan"
-	"flightplan/pkg/flightplan/event"
-	"flightplan/pkg/flightplan/txmanager"
+	"flightplan/pkg/flightplan/domain/txmanager"
 )
 
 // ManageFleetService .

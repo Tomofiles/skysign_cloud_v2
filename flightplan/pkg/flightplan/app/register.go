@@ -2,9 +2,9 @@ package app
 
 import (
 	"context"
-	"flightplan/pkg/flightplan/generator"
-	"flightplan/pkg/flightplan/infra"
-	"flightplan/pkg/flightplan/infra/postgresql"
+	"flightplan/pkg/flightplan/adapters/inmemory"
+	"flightplan/pkg/flightplan/adapters/postgresql"
+	"flightplan/pkg/flightplan/adapters/uuid"
 	"flightplan/pkg/flightplan/service"
 )
 
@@ -20,11 +20,11 @@ func newApplication(
 	ctx context.Context,
 	txm *postgresql.GormTransactionManager,
 ) Application {
-	flightplanGen := &generator.FlightplanUUID{}
-	fleetGen := &generator.FleetUUID{}
+	flightplanGen := uuid.NewFlightplanUUID()
+	fleetGen := uuid.NewFleetUUID()
 	flightplanRepo := postgresql.NewFlightplanRepository(flightplanGen)
 	fleetRepo := postgresql.NewFleetRepository(fleetGen)
-	pub := &infra.PublisherDirect{}
+	pub := &inmemory.PublisherDirect{}
 	return Application{
 		Pub: pub,
 		Services: Services{

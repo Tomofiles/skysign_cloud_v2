@@ -2,8 +2,8 @@ package flightplan
 
 import (
 	"errors"
-	"flightplan/pkg/flightplan/event"
-	"flightplan/pkg/flightplan/txmanager"
+	"flightplan/pkg/flightplan/domain/event"
+	"flightplan/pkg/flightplan/domain/txmanager"
 )
 
 // DeleteFlightplan .

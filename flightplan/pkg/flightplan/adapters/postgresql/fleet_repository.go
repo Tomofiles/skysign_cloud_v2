@@ -4,7 +4,7 @@ import (
 	"errors"
 	fl "flightplan/pkg/flightplan/domain/fleet"
 	"flightplan/pkg/flightplan/domain/flightplan"
-	"flightplan/pkg/flightplan/txmanager"
+	"flightplan/pkg/flightplan/domain/txmanager"
 
 	"gorm.io/gorm"
 )

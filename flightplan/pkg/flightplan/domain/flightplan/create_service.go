@@ -1,8 +1,8 @@
 package flightplan
 
 import (
-	"flightplan/pkg/flightplan/event"
-	"flightplan/pkg/flightplan/txmanager"
+	"flightplan/pkg/flightplan/domain/event"
+	"flightplan/pkg/flightplan/domain/txmanager"
 )
 
 // CreateNewFlightplan .

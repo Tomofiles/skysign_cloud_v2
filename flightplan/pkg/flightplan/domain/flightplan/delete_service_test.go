@@ -3,7 +3,7 @@ package flightplan
 import (
 	"context"
 	"errors"
-	"flightplan/pkg/flightplan/txmanager"
+	"flightplan/pkg/flightplan/domain/txmanager"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
