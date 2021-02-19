@@ -9,16 +9,17 @@ import (
 )
 
 // NewApplication .
-func NewApplication(ctx context.Context) Application {
-	return newApplication(ctx)
+func NewApplication(
+	ctx context.Context,
+	txm *postgresql.GormTransactionManager,
+) Application {
+	return newApplication(ctx, txm)
 }
 
-func newApplication(ctx context.Context) Application {
-	db, err := postgresql.NewPostgresqlConnection()
-	if err != nil {
-		panic(err)
-	}
-	txm := postgresql.NewGormTransactionManager(db)
+func newApplication(
+	ctx context.Context,
+	txm *postgresql.GormTransactionManager,
+) Application {
 	flightplanGen := &generator.FlightplanUUID{}
 	fleetGen := &generator.FleetUUID{}
 	flightplanRepo := postgresql.NewFlightplanRepository(flightplanGen)
