@@ -34,8 +34,8 @@ func (f *Flightplan) GetVersion() string {
 type Fleet struct {
 	ID           string `gorm:"primaryKey"`
 	FlightplanID string
-	Assignments  []Assignment `gorm:"-"`
-	Events       []Event      `gorm:"-"`
+	Assignments  []*Assignment `gorm:"-"`
+	Events       []*Event      `gorm:"-"`
 	Version      string
 }
 
@@ -58,7 +58,7 @@ func (f *Fleet) GetVersion() string {
 func (f *Fleet) GetAssignments() []fleet.AssignmentComponent {
 	var assignments []fleet.AssignmentComponent
 	for _, a := range f.Assignments {
-		assignments = append(assignments, &a)
+		assignments = append(assignments, a)
 	}
 	return assignments
 }
@@ -67,7 +67,7 @@ func (f *Fleet) GetAssignments() []fleet.AssignmentComponent {
 func (f *Fleet) GetEvents() []fleet.EventComponent {
 	var events []fleet.EventComponent
 	for _, e := range f.Events {
-		events = append(events, &e)
+		events = append(events, e)
 	}
 	return events
 }

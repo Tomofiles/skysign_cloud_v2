@@ -3,7 +3,6 @@ package fleet
 import (
 	"errors"
 	"flightplan/pkg/flightplan/domain/flightplan"
-	"log"
 )
 
 // ID .
@@ -80,21 +79,6 @@ func (f *Fleet) GetVersion() Version {
 // GetNewVersion .
 func (f *Fleet) GetNewVersion() Version {
 	return f.newVersion
-}
-
-// ProvideAssignmentsInterest .
-func (f *Fleet) ProvideAssignmentsInterest(
-	assignment func(assignmentID, vehicleID string),
-	event func(eventID, assignmentID, missionID string),
-) {
-	for _, va := range f.vehicleAssignments {
-		assignment(string(va.assignmentID), string(va.vehicleID))
-		for _, ep := range f.eventPlannings {
-			if ep.assignmentID == va.assignmentID {
-				event(string(ep.eventID), string(ep.assignmentID), string(ep.missionID))
-			}
-		}
-	}
 }
 
 // AssignVehicle .
@@ -205,6 +189,21 @@ func (f *Fleet) CancelMission(eventID EventID) error {
 	return errors.New("event not found")
 }
 
+// ProvideAssignmentsInterest .
+func (f *Fleet) ProvideAssignmentsInterest(
+	assignment func(assignmentID, vehicleID string),
+	event func(eventID, assignmentID, missionID string),
+) {
+	for _, va := range f.vehicleAssignments {
+		assignment(string(va.assignmentID), string(va.vehicleID))
+		for _, ep := range f.eventPlannings {
+			if ep.assignmentID == va.assignmentID {
+				event(string(ep.eventID), string(ep.assignmentID), string(ep.missionID))
+			}
+		}
+	}
+}
+
 // NewInstance .
 func NewInstance(gen Generator, flightplanID flightplan.ID, numberOfVehicles int32) *Fleet {
 	var vehicleAssignments []*VehicleAssignment
@@ -230,7 +229,6 @@ func NewInstance(gen Generator, flightplanID flightplan.ID, numberOfVehicles int
 func AssembleFrom(gen Generator, comp Component) *Fleet {
 	var vehicleAssignments []*VehicleAssignment
 	for _, a := range comp.GetAssignments() {
-		log.Println(a)
 		vehicleAssignments = append(
 			vehicleAssignments,
 			&VehicleAssignment{

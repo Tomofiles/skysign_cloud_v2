@@ -91,6 +91,7 @@ func (s *AssignFleetService) GetAssignments(
 		}
 
 		var assignments []assignmentVehicle
+		var events []eventMission
 		fleet.ProvideAssignmentsInterest(
 			func(assignmentID string, vehicleID string) {
 				assignments = append(
@@ -102,22 +103,25 @@ func (s *AssignFleetService) GetAssignments(
 				)
 			},
 			func(eventID string, assignmentID string, missionID string) {
-				for _, av := range assignments {
-					if av.assignmentID == assignmentID {
-						av.events = append(
-							av.events,
-							eventMission{
-								eventID:   eventID,
-								missionID: missionID,
-							},
-						)
-					}
-				}
+				events = append(
+					events,
+					eventMission{
+						eventID:      eventID,
+						assignmentID: assignmentID,
+						missionID:    missionID,
+					},
+				)
 			},
 		)
+
 		for _, a := range assignments {
-			eventID := a.events[0].eventID
-			missionID := a.events[0].missionID
+			var eventID, missionID string
+			for _, e := range events {
+				if a.assignmentID == e.assignmentID {
+					eventID = e.eventID
+					missionID = e.missionID
+				}
+			}
 			responseEachDpo(
 				eventID,
 				a.assignmentID,
@@ -207,11 +211,11 @@ type GetAssignmentsResponseDpo = func(id, assignmentId, vehicleId, missionId str
 type assignmentVehicle struct {
 	assignmentID string
 	vehicleID    string
-	events       []eventMission
 }
 type eventMission struct {
-	eventID   string
-	missionID string
+	eventID      string
+	assignmentID string
+	missionID    string
 }
 
 // UpdateAssignmentRequestDpo .

@@ -32,8 +32,8 @@ func (r *FleetRepository) GetByFlightplanID(
 	}
 
 	fleetRecord := Fleet{}
-	var assignmentRecords []Assignment
-	var eventRecords []Event
+	var assignmentRecords []*Assignment
+	var eventRecords []*Event
 
 	if err := txGorm.First(&fleetRecord, "flightplan_id = ?", string(flightplanID)).Error; err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
