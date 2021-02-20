@@ -1,136 +1,28 @@
 package fleet
 
 import (
-	"errors"
-	"flightplan/pkg/flightplan/domain/flightplan"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
 )
 
-const DefaultID = ID("fleet-id")
-const DefaultFlightplanID = flightplan.ID("flightplan-id")
-const DefaultAssignmentID1 = AssignmentID("assignment-id-1")
-const DefaultAssignmentID2 = AssignmentID("assignment-id-2")
-const DefaultAssignmentID3 = AssignmentID("assignment-id-3")
-const DefaultEventID1 = EventID("event-id-1")
-const DefaultEventID2 = EventID("event-id-2")
-const DefaultEventID3 = EventID("event-id-3")
-const DefaultVehicleID = VehicleID("vehicle-id")
-const DefaultMissionID = MissionID("mission-id")
-const DefaultVersion1 = Version("version-1")
-const DefaultVersion2 = Version("version-2")
-const DefaultVersion3 = Version("version-3")
-
-type testGenerator struct {
-	Generator
-	id                ID
-	assignmentIDs     []AssignmentID
-	assignmentIDIndex int
-	eventIDs          []EventID
-	eventIDIndex      int
-	versions          []Version
-	versionIndex      int
-}
-
-func (gen *testGenerator) NewID() ID {
-	return gen.id
-}
-func (gen *testGenerator) NewAssignmentID() AssignmentID {
-	assignmentID := gen.assignmentIDs[gen.assignmentIDIndex]
-	gen.assignmentIDIndex++
-	return assignmentID
-}
-func (gen *testGenerator) NewEventID() EventID {
-	eventID := gen.eventIDs[gen.eventIDIndex]
-	gen.eventIDIndex++
-	return eventID
-}
-func (gen *testGenerator) NewVersion() Version {
-	version := gen.versions[gen.versionIndex]
-	gen.versionIndex++
-	return version
-}
-
-func TestCreateSingleFleetNewFleet(t *testing.T) {
-	a := assert.New(t)
-
-	gen := &testGenerator{
-		id:            DefaultID,
-		assignmentIDs: []AssignmentID{DefaultAssignmentID1},
-		eventIDs:      []EventID{DefaultEventID1},
-		versions:      []Version{DefaultVersion1},
-	}
-	fleet := NewInstance(gen, DefaultFlightplanID, 1)
-
-	expectAssignment := &VehicleAssignment{
-		assignmentID: DefaultAssignmentID1,
-		vehicleID:    "",
-	}
-
-	a.Equal(fleet.GetID(), DefaultID)
-	a.Equal(fleet.GetFlightplanID(), DefaultFlightplanID)
-	a.Equal(fleet.GetNumberOfVehicles(), 1)
-	a.Equal(fleet.GetAllAssignmentID(), []AssignmentID{DefaultAssignmentID1})
-	a.Equal(fleet.GetVersion(), DefaultVersion1)
-	a.Equal(fleet.GetNewVersion(), DefaultVersion1)
-	a.Len(fleet.vehicleAssignments, 1)
-	a.Equal(fleet.vehicleAssignments[0], expectAssignment)
-	a.Len(fleet.eventPlannings, 0)
-}
-
-func TestCreateMultipleFleetNewFleet(t *testing.T) {
-	a := assert.New(t)
-
-	gen := &testGenerator{
-		id:            DefaultID,
-		assignmentIDs: []AssignmentID{DefaultAssignmentID1, DefaultAssignmentID2, DefaultAssignmentID3},
-		eventIDs:      []EventID{DefaultEventID1, DefaultEventID2, DefaultEventID3},
-		versions:      []Version{DefaultVersion1},
-	}
-	fleet := NewInstance(gen, DefaultFlightplanID, 3)
-
-	expectAssignment1 := &VehicleAssignment{
-		assignmentID: DefaultAssignmentID1,
-		vehicleID:    "",
-	}
-	expectAssignment2 := &VehicleAssignment{
-		assignmentID: DefaultAssignmentID2,
-		vehicleID:    "",
-	}
-	expectAssignment3 := &VehicleAssignment{
-		assignmentID: DefaultAssignmentID3,
-		vehicleID:    "",
-	}
-
-	a.Equal(fleet.GetID(), DefaultID)
-	a.Equal(fleet.GetFlightplanID(), DefaultFlightplanID)
-	a.Equal(fleet.GetNumberOfVehicles(), 3)
-	a.Equal(fleet.GetAllAssignmentID(), []AssignmentID{DefaultAssignmentID1, DefaultAssignmentID2, DefaultAssignmentID3})
-	a.Equal(fleet.GetVersion(), DefaultVersion1)
-	a.Equal(fleet.GetNewVersion(), DefaultVersion1)
-	a.Len(fleet.vehicleAssignments, 3)
-	a.Equal(fleet.vehicleAssignments[0], expectAssignment1)
-	a.Equal(fleet.vehicleAssignments[1], expectAssignment2)
-	a.Equal(fleet.vehicleAssignments[2], expectAssignment3)
-	a.Len(fleet.eventPlannings, 0)
-}
-
+// FleetのAssignementにVehicleを割り当てる。
+// 割り当てられた後の内部状態と、バージョンが更新されることを検証する。
 func TestAssignVehicle(t *testing.T) {
 	a := assert.New(t)
 
-	gen := &testGenerator{
+	gen := &generatorMock{
 		id:            DefaultID,
 		assignmentIDs: []AssignmentID{DefaultAssignmentID1},
 		versions:      []Version{DefaultVersion1, DefaultVersion2},
 	}
 	fleet := NewInstance(gen, DefaultFlightplanID, 1)
 
-	ret := fleet.AssignVehicle(DefaultAssignmentID1, DefaultVehicleID)
+	ret := fleet.AssignVehicle(DefaultAssignmentID1, DefaultVehicleID1)
 
 	expectAssignment := &VehicleAssignment{
 		assignmentID: DefaultAssignmentID1,
-		vehicleID:    DefaultVehicleID,
+		vehicleID:    DefaultVehicleID1,
 	}
 
 	a.Len(fleet.vehicleAssignments, 1)
@@ -140,18 +32,21 @@ func TestAssignVehicle(t *testing.T) {
 	a.Equal(fleet.GetNewVersion(), DefaultVersion2)
 }
 
+// FleetのAssignementにVehicleを割り当てる。
+// 割り当ての際、同Vehicleが別のAssignmentに割り当てられている場合、
+// エラーとなり、割り当てが失敗となることを検証する。
 func TestVehicleHasAlreadyAssignedWhenAssignVehicle(t *testing.T) {
 	a := assert.New(t)
 
-	gen := &testGenerator{
+	gen := &generatorMock{
 		id:            DefaultID,
 		assignmentIDs: []AssignmentID{DefaultAssignmentID1, DefaultAssignmentID2, DefaultAssignmentID3},
 		versions:      []Version{DefaultVersion1, DefaultVersion2},
 	}
 	fleet := NewInstance(gen, DefaultFlightplanID, 3)
-	fleet.vehicleAssignments[2].vehicleID = DefaultVehicleID
+	fleet.vehicleAssignments[2].vehicleID = DefaultVehicleID1
 
-	ret := fleet.AssignVehicle(DefaultAssignmentID1, DefaultVehicleID)
+	ret := fleet.AssignVehicle(DefaultAssignmentID1, DefaultVehicleID1)
 
 	expectAssignment := &VehicleAssignment{
 		assignmentID: DefaultAssignmentID1,
@@ -160,22 +55,25 @@ func TestVehicleHasAlreadyAssignedWhenAssignVehicle(t *testing.T) {
 
 	a.Len(fleet.vehicleAssignments, 3)
 	a.Equal(fleet.vehicleAssignments[0], expectAssignment)
-	a.Equal(ret, errors.New("this vehicle has already assigned"))
+	a.Equal(ret, ErrVehicleHasAlreadyAssigned)
 	a.Equal(fleet.GetVersion(), DefaultVersion1)
 	a.Equal(fleet.GetNewVersion(), DefaultVersion1)
 }
 
+// FleetのAssignementにVehicleを割り当てる。
+// 割り当ての際、指定されたAssingmentが存在しない場合
+// エラーとなり、割り当てが失敗となることを検証する。
 func TestNotFoundErrorWhenAssignVehicle(t *testing.T) {
 	a := assert.New(t)
 
-	gen := &testGenerator{
+	gen := &generatorMock{
 		id:            DefaultID,
 		assignmentIDs: []AssignmentID{DefaultAssignmentID1},
 		versions:      []Version{DefaultVersion1, DefaultVersion2},
 	}
 	fleet := NewInstance(gen, DefaultFlightplanID, 1)
 
-	ret := fleet.AssignVehicle(DefaultAssignmentID2, DefaultVehicleID)
+	ret := fleet.AssignVehicle(DefaultAssignmentID2, DefaultVehicleID1)
 
 	expectAssignment := &VehicleAssignment{
 		assignmentID: DefaultAssignmentID1,
@@ -184,21 +82,23 @@ func TestNotFoundErrorWhenAssignVehicle(t *testing.T) {
 
 	a.Len(fleet.vehicleAssignments, 1)
 	a.Equal(fleet.vehicleAssignments[0], expectAssignment)
-	a.Equal(ret, errors.New("assignment not found"))
+	a.Equal(ret, ErrAssignmentNotFound)
 	a.Equal(fleet.GetVersion(), DefaultVersion1)
 	a.Equal(fleet.GetNewVersion(), DefaultVersion1)
 }
 
+// FleetのAssignementのVehicle割り当てをキャンセルする。
+// キャンセル後の内部状態と、バージョンが更新されることを検証する。
 func TestCancelVehiclesAssignment(t *testing.T) {
 	a := assert.New(t)
 
-	gen := &testGenerator{
+	gen := &generatorMock{
 		id:            DefaultID,
 		assignmentIDs: []AssignmentID{DefaultAssignmentID1},
 		versions:      []Version{DefaultVersion1, DefaultVersion2},
 	}
 	fleet := NewInstance(gen, DefaultFlightplanID, 1)
-	fleet.vehicleAssignments[0].vehicleID = DefaultVehicleID
+	fleet.vehicleAssignments[0].vehicleID = DefaultVehicleID1
 
 	ret := fleet.CancelVehiclesAssignment(DefaultAssignmentID1)
 
@@ -214,35 +114,40 @@ func TestCancelVehiclesAssignment(t *testing.T) {
 	a.Equal(fleet.GetNewVersion(), DefaultVersion2)
 }
 
+// FleetのAssignementのVehicle割り当てをキャンセルする。
+// キャンセルの際、指定されたAssingmentが存在しない場合
+// エラーとなり、割り当てのキャンセルが失敗となることを検証する。
 func TestNotFoundErrorWhenCancelVehiclesAssignment(t *testing.T) {
 	a := assert.New(t)
 
-	gen := &testGenerator{
+	gen := &generatorMock{
 		id:            DefaultID,
 		assignmentIDs: []AssignmentID{DefaultAssignmentID1},
 		versions:      []Version{DefaultVersion1, DefaultVersion2},
 	}
 	fleet := NewInstance(gen, DefaultFlightplanID, 1)
-	fleet.vehicleAssignments[0].vehicleID = DefaultVehicleID
+	fleet.vehicleAssignments[0].vehicleID = DefaultVehicleID1
 
 	ret := fleet.CancelVehiclesAssignment(DefaultAssignmentID2)
 
 	expectAssignment := &VehicleAssignment{
 		assignmentID: DefaultAssignmentID1,
-		vehicleID:    DefaultVehicleID,
+		vehicleID:    DefaultVehicleID1,
 	}
 
 	a.Len(fleet.vehicleAssignments, 1)
 	a.Equal(fleet.vehicleAssignments[0], expectAssignment)
-	a.Equal(ret, errors.New("assignment not found"))
+	a.Equal(ret, ErrAssignmentNotFound)
 	a.Equal(fleet.GetVersion(), DefaultVersion1)
 	a.Equal(fleet.GetNewVersion(), DefaultVersion1)
 }
 
+// FleetのAssignementのEventを作成して追加する。
+// Event作成後の内部状態と、バージョンが更新されることを検証する。
 func TestAddNewEvent(t *testing.T) {
 	a := assert.New(t)
 
-	gen := &testGenerator{
+	gen := &generatorMock{
 		id:            DefaultID,
 		assignmentIDs: []AssignmentID{DefaultAssignmentID1},
 		eventIDs:      []EventID{DefaultEventID1},
@@ -266,10 +171,13 @@ func TestAddNewEvent(t *testing.T) {
 	a.Equal(fleet.GetNewVersion(), DefaultVersion2)
 }
 
+// FleetのAssignementのEventを作成して追加する。
+// 指定されたAssignmentが存在しない場合、エラーが発生し、
+// 作成・追加が失敗することを検証する。
 func TestNotAssignedErrorWhenAddNewEvent(t *testing.T) {
 	a := assert.New(t)
 
-	gen := &testGenerator{
+	gen := &generatorMock{
 		id:            DefaultID,
 		assignmentIDs: []AssignmentID{DefaultAssignmentID1},
 		eventIDs:      []EventID{DefaultEventID1},
@@ -281,15 +189,17 @@ func TestNotAssignedErrorWhenAddNewEvent(t *testing.T) {
 
 	a.Len(fleet.eventPlannings, 0)
 	a.Empty(eventID)
-	a.Equal(ret, errors.New("this id not assigned"))
+	a.Equal(ret, ErrAssignmentNotFound)
 	a.Equal(fleet.GetVersion(), DefaultVersion1)
 	a.Equal(fleet.GetNewVersion(), DefaultVersion1)
 }
 
+// FleetのAssignementのEventを削除する。
+// Event削除後の内部状態と、バージョンが更新されることを検証する。
 func TestRemoveEvent(t *testing.T) {
 	a := assert.New(t)
 
-	gen := &testGenerator{
+	gen := &generatorMock{
 		id:            DefaultID,
 		assignmentIDs: []AssignmentID{DefaultAssignmentID1},
 		versions:      []Version{DefaultVersion1, DefaultVersion2},
@@ -312,10 +222,13 @@ func TestRemoveEvent(t *testing.T) {
 	a.Equal(fleet.GetNewVersion(), DefaultVersion2)
 }
 
+// FleetのAssignementのEventを削除する。
+// 指定されたAssignmentが存在しない場合、エラーが発生し、
+// 削除が失敗することを検証する。
 func TestNotFoundWhenRemoveEvent(t *testing.T) {
 	a := assert.New(t)
 
-	gen := &testGenerator{
+	gen := &generatorMock{
 		id:            DefaultID,
 		assignmentIDs: []AssignmentID{DefaultAssignmentID1},
 		versions:      []Version{DefaultVersion1, DefaultVersion2},
@@ -333,15 +246,17 @@ func TestNotFoundWhenRemoveEvent(t *testing.T) {
 	ret := fleet.RemoveEvent(DefaultEventID2)
 
 	a.Len(fleet.eventPlannings, 1)
-	a.Equal(ret, errors.New("event not found"))
+	a.Equal(ret, ErrEventNotFound)
 	a.Equal(fleet.GetVersion(), DefaultVersion1)
 	a.Equal(fleet.GetNewVersion(), DefaultVersion1)
 }
 
+// FleetのEventにMissionを割り当てる。
+// 割り当てられた後の内部状態と、バージョンが更新されることを検証する。
 func TestAssignMission(t *testing.T) {
 	a := assert.New(t)
 
-	gen := &testGenerator{
+	gen := &generatorMock{
 		id:            DefaultID,
 		assignmentIDs: []AssignmentID{DefaultAssignmentID1},
 		versions:      []Version{DefaultVersion1, DefaultVersion2},
@@ -356,12 +271,12 @@ func TestAssignMission(t *testing.T) {
 		},
 	)
 
-	ret := fleet.AssignMission(DefaultEventID1, DefaultMissionID)
+	ret := fleet.AssignMission(DefaultEventID1, DefaultMissionID1)
 
 	expectEvent := &EventPlanning{
 		eventID:      DefaultEventID1,
 		assignmentID: DefaultAssignmentID1,
-		missionID:    DefaultMissionID,
+		missionID:    DefaultMissionID1,
 	}
 
 	a.Len(fleet.eventPlannings, 1)
@@ -371,10 +286,13 @@ func TestAssignMission(t *testing.T) {
 	a.Equal(fleet.GetNewVersion(), DefaultVersion2)
 }
 
+// FleetのEventにMissionを割り当てる。
+// 割り当ての際、同Missionが別のEventに割り当てられている場合、
+// エラーとなり、割り当てが失敗となることを検証する。
 func TestMissionHasAlreadyAssignedWhenAssignMission(t *testing.T) {
 	a := assert.New(t)
 
-	gen := &testGenerator{
+	gen := &generatorMock{
 		id:            DefaultID,
 		assignmentIDs: []AssignmentID{DefaultAssignmentID1, DefaultAssignmentID2, DefaultAssignmentID3},
 		versions:      []Version{DefaultVersion1, DefaultVersion2},
@@ -401,11 +319,11 @@ func TestMissionHasAlreadyAssignedWhenAssignMission(t *testing.T) {
 		&EventPlanning{
 			eventID:      DefaultEventID3,
 			assignmentID: DefaultAssignmentID3,
-			missionID:    DefaultMissionID,
+			missionID:    DefaultMissionID1,
 		},
 	)
 
-	ret := fleet.AssignMission(DefaultEventID1, DefaultMissionID)
+	ret := fleet.AssignMission(DefaultEventID1, DefaultMissionID1)
 
 	expectEvent := &EventPlanning{
 		eventID:      DefaultEventID1,
@@ -415,15 +333,18 @@ func TestMissionHasAlreadyAssignedWhenAssignMission(t *testing.T) {
 
 	a.Len(fleet.eventPlannings, 3)
 	a.Equal(fleet.eventPlannings[0], expectEvent)
-	a.Equal(ret, errors.New("this mission has already assigned"))
+	a.Equal(ret, ErrMissionHasAlreadyAssigned)
 	a.Equal(fleet.GetVersion(), DefaultVersion1)
 	a.Equal(fleet.GetNewVersion(), DefaultVersion1)
 }
 
+// FleetのEventにMissionを割り当てる。
+// 割り当ての際、指定されたEventが存在しない場合
+// エラーとなり、割り当てが失敗となることを検証する。
 func TestNotFoundErrorWhenAssignMission(t *testing.T) {
 	a := assert.New(t)
 
-	gen := &testGenerator{
+	gen := &generatorMock{
 		id:            DefaultID,
 		assignmentIDs: []AssignmentID{DefaultAssignmentID1},
 		versions:      []Version{DefaultVersion1, DefaultVersion2},
@@ -438,7 +359,7 @@ func TestNotFoundErrorWhenAssignMission(t *testing.T) {
 		},
 	)
 
-	ret := fleet.AssignMission(DefaultEventID2, DefaultMissionID)
+	ret := fleet.AssignMission(DefaultEventID2, DefaultMissionID1)
 
 	expectEvent := &EventPlanning{
 		eventID:      DefaultEventID1,
@@ -448,15 +369,17 @@ func TestNotFoundErrorWhenAssignMission(t *testing.T) {
 
 	a.Len(fleet.eventPlannings, 1)
 	a.Equal(fleet.eventPlannings[0], expectEvent)
-	a.Equal(ret, errors.New("event not found"))
+	a.Equal(ret, ErrEventNotFound)
 	a.Equal(fleet.GetVersion(), DefaultVersion1)
 	a.Equal(fleet.GetNewVersion(), DefaultVersion1)
 }
 
+// FleetのEventにMission割り当てをキャンセルする。
+// キャンセル後の内部状態と、バージョンが更新されることを検証する。
 func TestCancelMission(t *testing.T) {
 	a := assert.New(t)
 
-	gen := &testGenerator{
+	gen := &generatorMock{
 		id:            DefaultID,
 		assignmentIDs: []AssignmentID{DefaultAssignmentID1},
 		versions:      []Version{DefaultVersion1, DefaultVersion2},
@@ -467,7 +390,7 @@ func TestCancelMission(t *testing.T) {
 		&EventPlanning{
 			eventID:      DefaultEventID1,
 			assignmentID: DefaultAssignmentID1,
-			missionID:    DefaultMissionID,
+			missionID:    DefaultMissionID1,
 		},
 	)
 
@@ -486,10 +409,13 @@ func TestCancelMission(t *testing.T) {
 	a.Equal(fleet.GetNewVersion(), DefaultVersion2)
 }
 
+// FleetのEventにMission割り当てをキャンセルする。
+// キャンセルの際、指定されたEventが存在しない場合
+// エラーとなり、割り当てのキャンセルが失敗となることを検証する。
 func TestNotFoundErrorWhenCancelMission(t *testing.T) {
 	a := assert.New(t)
 
-	gen := &testGenerator{
+	gen := &generatorMock{
 		id:            DefaultID,
 		assignmentIDs: []AssignmentID{DefaultAssignmentID1},
 		versions:      []Version{DefaultVersion1, DefaultVersion2},
@@ -500,7 +426,7 @@ func TestNotFoundErrorWhenCancelMission(t *testing.T) {
 		&EventPlanning{
 			eventID:      DefaultEventID1,
 			assignmentID: DefaultAssignmentID1,
-			missionID:    DefaultMissionID,
+			missionID:    DefaultMissionID1,
 		},
 	)
 
@@ -509,12 +435,111 @@ func TestNotFoundErrorWhenCancelMission(t *testing.T) {
 	expectEvent := &EventPlanning{
 		eventID:      DefaultEventID1,
 		assignmentID: DefaultAssignmentID1,
-		missionID:    DefaultMissionID,
+		missionID:    DefaultMissionID1,
 	}
 
 	a.Len(fleet.eventPlannings, 1)
 	a.Equal(fleet.eventPlannings[0], expectEvent)
-	a.Equal(ret, errors.New("event not found"))
+	a.Equal(ret, ErrEventNotFound)
 	a.Equal(fleet.GetVersion(), DefaultVersion1)
 	a.Equal(fleet.GetNewVersion(), DefaultVersion1)
+}
+
+// FlightplanのAssignの内部状態をキャプチャする。
+// ダブルディスパッチで公開された内部状態を検証する。
+func TestProvideAssignmentsInterest(t *testing.T) {
+	a := assert.New(t)
+
+	gen := &generatorMock{
+		id:            DefaultID,
+		assignmentIDs: []AssignmentID{DefaultAssignmentID1, DefaultAssignmentID2, DefaultAssignmentID3},
+		versions:      []Version{DefaultVersion1, DefaultVersion2},
+	}
+	fleet := NewInstance(gen, DefaultFlightplanID, 3)
+	fleet.vehicleAssignments[0].vehicleID = DefaultVehicleID1
+	fleet.vehicleAssignments[1].vehicleID = DefaultVehicleID2
+	fleet.vehicleAssignments[2].vehicleID = DefaultVehicleID3
+	fleet.eventPlannings = append(
+		fleet.eventPlannings,
+		&EventPlanning{
+			eventID:      DefaultEventID1,
+			assignmentID: DefaultAssignmentID1,
+			missionID:    DefaultMissionID1,
+		},
+	)
+	fleet.eventPlannings = append(
+		fleet.eventPlannings,
+		&EventPlanning{
+			eventID:      DefaultEventID2,
+			assignmentID: DefaultAssignmentID2,
+			missionID:    DefaultMissionID2,
+		},
+	)
+	fleet.eventPlannings = append(
+		fleet.eventPlannings,
+		&EventPlanning{
+			eventID:      DefaultEventID3,
+			assignmentID: DefaultAssignmentID3,
+			missionID:    DefaultMissionID3,
+		},
+	)
+
+	var assignments []assignmentComponentMock
+	var events []eventComponentMock
+	fleet.ProvideAssignmentsInterest(
+		func(assignmentID, vehicleID string) {
+			assignments = append(
+				assignments,
+				assignmentComponentMock{
+					id:        assignmentID,
+					vehicleID: vehicleID,
+				},
+			)
+		},
+		func(eventID, assignmentID, missionID string) {
+			events = append(
+				events,
+				eventComponentMock{
+					id:           eventID,
+					assignmentID: assignmentID,
+					missionID:    missionID,
+				},
+			)
+		},
+	)
+
+	expectAssignments := []assignmentComponentMock{
+		{
+			id:        string(DefaultAssignmentID1),
+			vehicleID: string(DefaultVehicleID1),
+		},
+		{
+			id:        string(DefaultAssignmentID2),
+			vehicleID: string(DefaultVehicleID2),
+		},
+		{
+			id:        string(DefaultAssignmentID3),
+			vehicleID: string(DefaultVehicleID3),
+		},
+	}
+	expectEvents := []eventComponentMock{
+		{
+			id:           string(DefaultEventID1),
+			assignmentID: string(DefaultAssignmentID1),
+			missionID:    string(DefaultMissionID1),
+		},
+		{
+			id:           string(DefaultEventID2),
+			assignmentID: string(DefaultAssignmentID2),
+			missionID:    string(DefaultMissionID2),
+		},
+		{
+			id:           string(DefaultEventID3),
+			assignmentID: string(DefaultAssignmentID3),
+			missionID:    string(DefaultMissionID3),
+		},
+	}
+
+	a.Equal(assignments, expectAssignments)
+	a.Equal(events, expectEvents)
 }
