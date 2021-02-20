@@ -1,7 +1,6 @@
 package flightplan
 
 import (
-	"errors"
 	"flightplan/pkg/flightplan/domain/event"
 	"flightplan/pkg/flightplan/domain/txmanager"
 )
@@ -18,7 +17,7 @@ func DeleteFlightplan(
 		return err
 	}
 	if flightplan == nil {
-		return errors.New("flightplan not found")
+		return ErrNotFound
 	}
 
 	if err := repo.Delete(tx, id); err != nil {

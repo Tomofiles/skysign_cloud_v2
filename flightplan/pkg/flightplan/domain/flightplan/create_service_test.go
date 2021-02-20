@@ -2,7 +2,6 @@ package flightplan
 
 import (
 	"context"
-	"errors"
 	"flightplan/pkg/flightplan/domain/txmanager"
 	"testing"
 
@@ -10,12 +9,16 @@ import (
 	"github.com/stretchr/testify/mock"
 )
 
+// Flightplanを作成するドメインサービスをテストする。
+// 名前と説明をあらかじめ与えられたFlightplanを作成し、保存する。
+// 保存が成功すると、Flightplanが作成されたことを表す
+// ドメインイベントを発行する。
 func TestCreateNewFlightplanService(t *testing.T) {
 	a := assert.New(t)
 
 	ctx := context.Background()
 
-	gen := &testGenerator{
+	gen := &generatorMock{
 		id:       DefaultID,
 		versions: []Version{DefaultVersion1, DefaultVersion2, DefaultVersion3},
 	}
@@ -44,17 +47,21 @@ func TestCreateNewFlightplanService(t *testing.T) {
 	a.Nil(ret)
 }
 
+// Flightplanを作成するドメインサービスをテストする。
+// 保存時にリポジトリがエラーとなった場合、
+// 作成が失敗し、エラーが返却されることを検証する。
+// また、ドメインイベントは発行されないことを検証する。
 func TestSaveErrorWhenCreateNewFlightplanService(t *testing.T) {
 	a := assert.New(t)
 
 	ctx := context.Background()
 
-	gen := &testGenerator{
+	gen := &generatorMock{
 		id:       DefaultID,
 		versions: []Version{DefaultVersion1, DefaultVersion2, DefaultVersion3},
 	}
 	repo := &repositoryMockCreateService{}
-	repo.On("Save", mock.Anything).Return(errors.New("save error"))
+	repo.On("Save", mock.Anything).Return(ErrSave)
 	pub := &publisherMock{}
 
 	id, ret := CreateNewFlightplan(ctx, gen, repo, pub, DefaultName, DefaultDescription)
@@ -62,9 +69,10 @@ func TestSaveErrorWhenCreateNewFlightplanService(t *testing.T) {
 	a.Empty(id)
 	a.Len(repo.saveFlightplans, 0)
 	a.Len(pub.events, 0)
-	a.Equal(ret, errors.New("save error"))
+	a.Equal(ret, ErrSave)
 }
 
+// Flightplan作成サービス用リポジトリモック
 type repositoryMockCreateService struct {
 	mock.Mock
 

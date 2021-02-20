@@ -1,7 +1,19 @@
 package flightplan
 
 import (
+	"errors"
 	"flightplan/pkg/flightplan/domain/txmanager"
+)
+
+var (
+	// ErrSave .
+	ErrSave = errors.New("flightplan save error")
+	// ErrNotFound .
+	ErrNotFound = errors.New("flightplan not found")
+	// ErrGet .
+	ErrGet = errors.New("flightplan get error")
+	// ErrDelete .
+	ErrDelete = errors.New("flightplan delete error")
 )
 
 // Repository .

@@ -2,7 +2,6 @@ package flightplan
 
 import (
 	"context"
-	"errors"
 	"flightplan/pkg/flightplan/domain/txmanager"
 	"testing"
 
@@ -10,6 +9,10 @@ import (
 	"github.com/stretchr/testify/mock"
 )
 
+// Flightplanを削除するドメインサービスをテストする。
+// 指定されたIDのFlightplanを削除する。
+// 削除が成功すると、Flightplanが削除されたことを表す
+// ドメインイベントを発行する。
 func TestDeleteFlightplanService(t *testing.T) {
 	a := assert.New(t)
 
@@ -41,6 +44,10 @@ func TestDeleteFlightplanService(t *testing.T) {
 	a.Nil(ret)
 }
 
+// Flightplanを削除するドメインサービスをテストする。
+// 指定されたIDのFlightplanが存在しない場合、
+// 削除が失敗し、エラーが返却されることを検証する。
+// また、ドメインイベントは発行されないことを検証する。
 func TestNotFoundFlightplanWhenDeleteFlightplanService(t *testing.T) {
 	a := assert.New(t)
 
@@ -57,16 +64,20 @@ func TestNotFoundFlightplanWhenDeleteFlightplanService(t *testing.T) {
 	a.Len(repo.deleteIDs, 0)
 	a.Len(pub.events, 0)
 
-	a.Equal(ret, errors.New("flightplan not found"))
+	a.Equal(ret, ErrNotFound)
 }
 
+// Flightplanを削除するドメインサービスをテストする。
+// 指定されたIDのFlightplanの取得がエラーとなった場合、
+// 削除が失敗し、エラーが返却されることを検証する。
+// また、ドメインイベントは発行されないことを検証する。
 func TestGetErrorWhenDeleteFlightplanService(t *testing.T) {
 	a := assert.New(t)
 
 	ctx := context.Background()
 
 	repo := &repositoryMockDeleteService{}
-	repo.On("GetByID", DefaultID).Return(nil, errors.New("get error"))
+	repo.On("GetByID", DefaultID).Return(nil, ErrGet)
 	repo.On("Delete", mock.Anything).Return(nil)
 
 	pub := &publisherMock{}
@@ -76,9 +87,13 @@ func TestGetErrorWhenDeleteFlightplanService(t *testing.T) {
 	a.Len(repo.deleteIDs, 0)
 	a.Len(pub.events, 0)
 
-	a.Equal(ret, errors.New("get error"))
+	a.Equal(ret, ErrGet)
 }
 
+// Flightplanを削除するドメインサービスをテストする。
+// 削除時にリポジトリがエラーとなった場合、、
+// 削除が失敗し、エラーが返却されることを検証する。
+// また、ドメインイベントは発行されないことを検証する。
 func TestDeleteErrorWhenDeleteFlightplanService(t *testing.T) {
 	a := assert.New(t)
 
@@ -94,7 +109,7 @@ func TestDeleteErrorWhenDeleteFlightplanService(t *testing.T) {
 	}
 	repo := &repositoryMockDeleteService{}
 	repo.On("GetByID", DefaultID).Return(&testFlightplan, nil)
-	repo.On("Delete", mock.Anything).Return(errors.New("delete error"))
+	repo.On("Delete", mock.Anything).Return(ErrDelete)
 
 	pub := &publisherMock{}
 
@@ -103,9 +118,10 @@ func TestDeleteErrorWhenDeleteFlightplanService(t *testing.T) {
 	a.Len(repo.deleteIDs, 0)
 	a.Len(pub.events, 0)
 
-	a.Equal(ret, errors.New("delete error"))
+	a.Equal(ret, ErrDelete)
 }
 
+// Flightplan削除サービス用リポジトリモック
 type repositoryMockDeleteService struct {
 	mock.Mock
 
