@@ -2,18 +2,16 @@ package rabbitmq
 
 import (
 	"flightplan/pkg/flightplan/domain/flightplan"
-
-	"github.com/streadway/amqp"
 )
 
 // Publisher .
 type Publisher struct {
 	events []interface{}
-	ch     *amqp.Channel
+	ch     Channel
 }
 
 // NewPublisher .
-func NewPublisher(ch *amqp.Channel) *Publisher {
+func NewPublisher(ch Channel) *Publisher {
 	return &Publisher{
 		ch: ch,
 	}

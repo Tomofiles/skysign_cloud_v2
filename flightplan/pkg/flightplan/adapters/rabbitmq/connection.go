@@ -1,6 +1,7 @@
 package rabbitmq
 
 import (
+	"context"
 	"fmt"
 	"os"
 
@@ -20,7 +21,7 @@ var (
 )
 
 // NewRabbitMQConnection .
-func NewRabbitMQConnection() (*amqp.Connection, error) {
+func NewRabbitMQConnection() (Connection, error) {
 	if envHost := os.Getenv("MQ_HOST"); envHost != "" {
 		host = envHost
 	}
@@ -49,5 +50,25 @@ func NewRabbitMQConnection() (*amqp.Connection, error) {
 		return nil, errors.Wrap(err, "cannot connect to RabbitMQ")
 	}
 
-	return conn, nil
+	connection := NewConnection(conn)
+
+	return connection, nil
 }
+
+// Connection .
+type Connection interface {
+	GetChannel() (Channel, error)
+	Close() error
+}
+
+// Channel .
+type Channel interface {
+	FanoutExchangeDeclare(exchange string) error
+	QueueDeclareAndBind(exchange, queue string) error
+	Publish(queue string, message Message) error
+	Consume(ctx context.Context, queue string) (<-chan Message, error)
+	Close() error
+}
+
+// Message .
+type Message = []byte

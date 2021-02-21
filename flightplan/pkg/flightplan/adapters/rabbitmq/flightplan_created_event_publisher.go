@@ -5,7 +5,6 @@ import (
 	"flightplan/pkg/skysign_proto"
 
 	"github.com/golang/glog"
-	"github.com/streadway/amqp"
 	"google.golang.org/protobuf/proto"
 )
 
@@ -13,17 +12,11 @@ const flightplanCreatedEventExchangeName = "flightplan.flightplan_created_event"
 
 // PublishFlightplanCreatedEvent .
 func PublishFlightplanCreatedEvent(
-	ch *amqp.Channel,
+	ch Channel,
 	event flightplan.CreatedEvent,
 ) error {
-	if err := ch.ExchangeDeclare(
+	if err := ch.FanoutExchangeDeclare(
 		flightplanCreatedEventExchangeName,
-		"fanout",
-		false,
-		true,
-		false,
-		false,
-		nil,
 	); err != nil {
 		return err
 	}
@@ -38,12 +31,7 @@ func PublishFlightplanCreatedEvent(
 
 	if err := ch.Publish(
 		flightplanCreatedEventExchangeName,
-		"",
-		false,
-		false,
-		amqp.Publishing{
-			Body: eventBin,
-		},
+		eventBin,
 	); err != nil {
 		return err
 	}

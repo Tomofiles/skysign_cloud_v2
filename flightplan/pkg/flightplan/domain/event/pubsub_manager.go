@@ -4,12 +4,12 @@ import "context"
 
 // PubSubManager .
 type PubSubManager interface {
-	GetPublisher() (Publisher, ConnectionClose, error)
+	GetPublisher() (Publisher, ChannelClose, error)
 	SetConsumer(ctx context.Context, exchangeName string, handler Handler) error
 }
 
-// ConnectionClose .
-type ConnectionClose = func()
+// ChannelClose .
+type ChannelClose = func() error
 
 // Handler .
 type Handler = func([]byte)
