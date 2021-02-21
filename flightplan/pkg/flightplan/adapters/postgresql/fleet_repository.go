@@ -165,7 +165,7 @@ func (r *FleetRepository) DeleteByFlightplanID(
 		return err
 	}
 	if fleetRecord.ID == "" {
-		return nil
+		return fl.ErrNotFound
 	}
 	if err := txGorm.Delete(&fleetRecord).Error; err != nil {
 		return err
