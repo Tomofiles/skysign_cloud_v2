@@ -257,49 +257,6 @@ func TestFlightplanRepositoryCreateSave(t *testing.T) {
 	a.Nil(err)
 }
 
-func TestFlightplanRepositoryCreateErrorWhenSave(t *testing.T) {
-	a := assert.New(t)
-
-	db, mock, err := GetNewDbMock()
-	if err != nil {
-		t.Errorf("failed to initialize mock DB: %v", err)
-		return
-	}
-
-	mock.
-		ExpectQuery(
-			regexp.QuoteMeta(`SELECT * FROM "flightplans" WHERE id = $1`)).
-		WithArgs(DefaultFlightplanID).
-		WillReturnRows(
-			sqlmock.NewRows([]string{"id", "name", "description", "version"}),
-		)
-
-	mock.
-		ExpectExec(
-			regexp.QuoteMeta(`INSERT INTO "flightplans" ("id","name","description","version") VALUES ($1,$2,$3,$4)`)).
-		WithArgs(DefaultFlightplanID, DefaultFlightplanName, DefaultFlightplanDescription, DefaultFlightplanVersion).
-		WillReturnError(
-			fpl.ErrSave,
-		)
-
-	gen := uuid.NewFlightplanUUID()
-	repository := NewFlightplanRepository(gen)
-
-	flightplan := fpl.AssembleFrom(
-		gen,
-		&flightplanComponentMock{
-			id:          string(DefaultFlightplanID),
-			name:        DefaultFlightplanName,
-			description: DefaultFlightplanDescription,
-			version:     string(DefaultFlightplanVersion),
-		},
-	)
-
-	err = repository.Save(db, flightplan)
-
-	a.Equal(err, fpl.ErrSave)
-}
-
 func TestFlightplanRepositoryUpdateSave(t *testing.T) {
 	a := assert.New(t)
 
@@ -348,56 +305,6 @@ func TestFlightplanRepositoryUpdateSave(t *testing.T) {
 	err = repository.Save(db, flightplan)
 
 	a.Nil(err)
-}
-
-func TestFlightplanRepositoryUpdateErrorWhenSave(t *testing.T) {
-	a := assert.New(t)
-
-	db, mock, err := GetNewDbMock()
-	if err != nil {
-		t.Errorf("failed to initialize mock DB: %v", err)
-		return
-	}
-
-	const (
-		AfterName        = DefaultFlightplanName + "-after"
-		AfterDescription = DefaultFlightplanDescription + "-after"
-		AfterVersion     = DefaultFlightplanVersion + "-after"
-	)
-
-	mock.
-		ExpectQuery(
-			regexp.QuoteMeta(`SELECT * FROM "flightplans" WHERE id = $1`)).
-		WithArgs(DefaultFlightplanID).
-		WillReturnRows(
-			sqlmock.NewRows([]string{"id", "name", "description", "version"}).
-				AddRow(DefaultFlightplanID, DefaultFlightplanName, DefaultFlightplanDescription, DefaultFlightplanVersion),
-		)
-
-	mock.
-		ExpectExec(
-			regexp.QuoteMeta(`UPDATE "flightplans" SET "name"=$1,"description"=$2,"version"=$3 WHERE "id" = $4`)).
-		WithArgs(AfterName, AfterDescription, AfterVersion, DefaultFlightplanID).
-		WillReturnError(
-			fpl.ErrSave,
-		)
-
-	gen := uuid.NewFlightplanUUID()
-	repository := NewFlightplanRepository(gen)
-
-	flightplan := fpl.AssembleFrom(
-		gen,
-		&flightplanComponentMock{
-			id:          string(DefaultFlightplanID),
-			name:        AfterName,
-			description: AfterDescription,
-			version:     string(AfterVersion),
-		},
-	)
-
-	err = repository.Save(db, flightplan)
-
-	a.Equal(err, fpl.ErrSave)
 }
 
 func TestFlightplanRepositoryDelete(t *testing.T) {
@@ -457,38 +364,4 @@ func TestFlightplanRepositoryNotFoundWhenDelete(t *testing.T) {
 	err = repository.Delete(db, DefaultFlightplanID)
 
 	a.Nil(err)
-}
-
-func TestFlightplanRepositoryDeleteErrorWhenDelete(t *testing.T) {
-	a := assert.New(t)
-
-	db, mock, err := GetNewDbMock()
-	if err != nil {
-		t.Errorf("failed to initialize mock DB: %v", err)
-		return
-	}
-
-	mock.
-		ExpectQuery(
-			regexp.QuoteMeta(`SELECT * FROM "flightplans" WHERE id = $1`)).
-		WithArgs(DefaultFlightplanID).
-		WillReturnRows(
-			sqlmock.NewRows([]string{"id", "name", "description", "version"}).
-				AddRow(DefaultFlightplanID, DefaultFlightplanName, DefaultFlightplanDescription, DefaultFlightplanVersion),
-		)
-
-	mock.
-		ExpectExec(
-			regexp.QuoteMeta(`DELETE FROM "flightplans" WHERE "flightplans"."id" = $1`)).
-		WithArgs(DefaultFlightplanID).
-		WillReturnError(
-			fpl.ErrDelete,
-		)
-
-	gen := uuid.NewFlightplanUUID()
-	repository := NewFlightplanRepository(gen)
-
-	err = repository.Delete(db, DefaultFlightplanID)
-
-	a.Equal(err, fpl.ErrDelete)
 }
