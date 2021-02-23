@@ -12,18 +12,18 @@ import (
 
 // LogBodyInterceptor .
 func LogBodyInterceptor() grpc.UnaryServerInterceptor {
-	return func(ctx context.Context, req interface{}, info *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (interface{}, error) {
+	return func(ctx context.Context, req interface{}, info *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (resp interface{}, err error) {
 		glog.Infof("REQUEST , API: %s, Message: %+v", info.FullMethod, req)
+		defer func() {
+			if err != nil {
+				glog.Errorf("RESPONSE, API: %s, Error: %+v", info.FullMethod, err)
+			} else {
+				glog.Infof("RESPONSE, API: %s, Message: %+v", info.FullMethod, resp)
+			}
+		}()
 
-		resp, err := handler(ctx, req)
-		if err != nil {
-			glog.Errorf("RESPONSE, API: %s, Error: %+v", info.FullMethod, err)
-			return nil, err
-		}
-
-		glog.Infof("RESPONSE, API: %s, Message: %+v", info.FullMethod, resp)
-
-		return resp, nil
+		resp, err = handler(ctx, req)
+		return
 	}
 }
 
@@ -43,7 +43,7 @@ func (s *GrpcServer) ListFlightplans(
 	request *proto.Empty,
 ) (*proto.ListFlightplansResponses, error) {
 	response := &proto.ListFlightplansResponses{}
-	ret := s.app.Services.ManageFlightplan.ListFlightplans(
+	if ret := s.app.Services.ManageFlightplan.ListFlightplans(
 		func(id, name, description string) {
 			response.Flightplans = append(
 				response.Flightplans,
@@ -54,8 +54,7 @@ func (s *GrpcServer) ListFlightplans(
 				},
 			)
 		},
-	)
-	if ret != nil {
+	); ret != nil {
 		return nil, ret
 	}
 	return response, nil
@@ -67,15 +66,17 @@ func (s *GrpcServer) GetFlightplan(
 	request *proto.GetFlightplanRequest,
 ) (*proto.Flightplan, error) {
 	response := &proto.Flightplan{}
-	ret := s.app.Services.ManageFlightplan.GetFlightplan(
-		request,
+	requestDpo := &flightplanIDRequestDpo{
+		id: request.Id,
+	}
+	if ret := s.app.Services.ManageFlightplan.GetFlightplan(
+		requestDpo,
 		func(id, name, description string) {
 			response.Id = id
 			response.Name = name
 			response.Description = description
 		},
-	)
-	if ret != nil {
+	); ret != nil {
 		return nil, ret
 	}
 	return response, nil
@@ -87,15 +88,18 @@ func (s *GrpcServer) CreateFlightplan(
 	request *proto.Flightplan,
 ) (*proto.Flightplan, error) {
 	response := &proto.Flightplan{}
-	ret := s.app.Services.ManageFlightplan.CreateFlightplan(
-		request,
+	requestDpo := &flightplanRequestDpo{
+		name:        request.Name,
+		description: request.Description,
+	}
+	if ret := s.app.Services.ManageFlightplan.CreateFlightplan(
+		requestDpo,
 		func(id, name, description string) {
 			response.Id = id
 			response.Name = name
 			response.Description = description
 		},
-	)
-	if ret != nil {
+	); ret != nil {
 		return nil, ret
 	}
 	return response, nil
@@ -107,15 +111,19 @@ func (s *GrpcServer) UpdateFlightplan(
 	request *proto.Flightplan,
 ) (*proto.Flightplan, error) {
 	response := &proto.Flightplan{}
-	ret := s.app.Services.ManageFlightplan.UpdateFlightplan(
-		request,
+	requestDpo := &flightplanRequestDpo{
+		id:          request.Id,
+		name:        request.Name,
+		description: request.Description,
+	}
+	if ret := s.app.Services.ManageFlightplan.UpdateFlightplan(
+		requestDpo,
 		func(id, name, description string) {
 			response.Id = id
 			response.Name = name
 			response.Description = description
 		},
-	)
-	if ret != nil {
+	); ret != nil {
 		return nil, ret
 	}
 	return response, nil
@@ -127,10 +135,12 @@ func (s *GrpcServer) DeleteFlightplan(
 	request *proto.DeleteFlightplanRequest,
 ) (*proto.Empty, error) {
 	response := &proto.Empty{}
-	ret := s.app.Services.ManageFlightplan.DeleteFlightplan(
-		request,
-	)
-	if ret != nil {
+	requestDpo := &flightplanIDRequestDpo{
+		id: request.Id,
+	}
+	if ret := s.app.Services.ManageFlightplan.DeleteFlightplan(
+		requestDpo,
+	); ret != nil {
 		return nil, ret
 	}
 	return response, nil
@@ -142,14 +152,17 @@ func (s *GrpcServer) ChangeNumberOfVehicles(
 	request *proto.ChangeNumberOfVehiclesRequest,
 ) (*proto.ChangeNumberOfVehiclesResponse, error) {
 	response := &proto.ChangeNumberOfVehiclesResponse{}
-	ret := s.app.Services.AssignFleet.ChangeNumberOfVehicles(
-		request,
+	requestDpo := &changeNumberOfVehiclesRequestDpo{
+		flightplanID:     request.Id,
+		numberOfVehicles: request.NumberOfVehicles,
+	}
+	if ret := s.app.Services.AssignFleet.ChangeNumberOfVehicles(
+		requestDpo,
 		func(id string, numberOfVehicles int32) {
 			response.Id = id
 			response.NumberOfVehicles = numberOfVehicles
 		},
-	)
-	if ret != nil {
+	); ret != nil {
 		return nil, ret
 	}
 	return response, nil
@@ -160,9 +173,14 @@ func (s *GrpcServer) GetAssignments(
 	ctx context.Context,
 	request *proto.GetAssignmentsRequest,
 ) (*proto.GetAssignmentsResponse, error) {
-	response := &proto.GetAssignmentsResponse{}
-	ret := s.app.Services.AssignFleet.GetAssignments(
-		request,
+	response := &proto.GetAssignmentsResponse{
+		Id: request.Id,
+	}
+	requestDpo := &fleetIDRequestDpo{
+		flightplanID: request.Id,
+	}
+	if ret := s.app.Services.AssignFleet.GetAssignments(
+		requestDpo,
 		func(id, assignmentId, vehicleId, missionId string) {
 			response.Assignments = append(
 				response.Assignments,
@@ -174,11 +192,9 @@ func (s *GrpcServer) GetAssignments(
 				},
 			)
 		},
-	)
-	if ret != nil {
+	); ret != nil {
 		return nil, ret
 	}
-	response.Id = request.Id
 	return response, nil
 }
 
@@ -187,13 +203,15 @@ func (s *GrpcServer) UpdateAssignments(
 	ctx context.Context,
 	request *proto.UpdateAssignmentsRequest,
 ) (*proto.UpdateAssignmentsResponse, error) {
-	response := &proto.UpdateAssignmentsResponse{}
+	response := &proto.UpdateAssignmentsResponse{
+		Id: request.Id,
+	}
 	for _, assignment := range request.Assignments {
 		requestDpo := &updateAssignmentsRequestDpo{
-			flightplanId: request.Id,
+			flightplanID: request.Id,
 			assignment:   assignment,
 		}
-		ret := s.app.Services.AssignFleet.UpdateAssignment(
+		if ret := s.app.Services.AssignFleet.UpdateAssignment(
 			requestDpo,
 			func(id, assignmentId, vehicleId, missionId string) {
 				response.Assignments = append(
@@ -206,32 +224,77 @@ func (s *GrpcServer) UpdateAssignments(
 					},
 				)
 			},
-		)
-		if ret != nil {
+		); ret != nil {
 			return nil, ret
 		}
 	}
-	response.Id = request.Id
 	return response, nil
 }
 
+type flightplanRequestDpo struct {
+	id          string
+	name        string
+	description string
+}
+
+func (f *flightplanRequestDpo) GetID() string {
+	return f.id
+}
+
+func (f *flightplanRequestDpo) GetName() string {
+	return f.name
+}
+
+func (f *flightplanRequestDpo) GetDescription() string {
+	return f.description
+}
+
+type flightplanIDRequestDpo struct {
+	id string
+}
+
+func (f *flightplanIDRequestDpo) GetID() string {
+	return f.id
+}
+
+type fleetIDRequestDpo struct {
+	flightplanID string
+}
+
+func (f *fleetIDRequestDpo) GetFlightplanID() string {
+	return f.flightplanID
+}
+
+type changeNumberOfVehiclesRequestDpo struct {
+	flightplanID     string
+	numberOfVehicles int32
+}
+
+func (c *changeNumberOfVehiclesRequestDpo) GetFlightplanID() string {
+	return c.flightplanID
+}
+
+func (c *changeNumberOfVehiclesRequestDpo) GetNumberOfVehicles() int32 {
+	return c.numberOfVehicles
+}
+
 type updateAssignmentsRequestDpo struct {
-	flightplanId string
+	flightplanID string
 	assignment   *proto.Assignment
 }
 
-func (r *updateAssignmentsRequestDpo) GetFlightplanId() string {
-	return r.flightplanId
+func (r *updateAssignmentsRequestDpo) GetFlightplanID() string {
+	return r.flightplanID
 }
-func (r *updateAssignmentsRequestDpo) GetId() string {
+func (r *updateAssignmentsRequestDpo) GetEventID() string {
 	return r.assignment.Id
 }
-func (r *updateAssignmentsRequestDpo) GetAssignmentId() string {
+func (r *updateAssignmentsRequestDpo) GetAssignmentID() string {
 	return r.assignment.AssignmentId
 }
-func (r *updateAssignmentsRequestDpo) GetVehicleId() string {
+func (r *updateAssignmentsRequestDpo) GetVehicleID() string {
 	return r.assignment.VehicleId
 }
-func (r *updateAssignmentsRequestDpo) GetMissionId() string {
+func (r *updateAssignmentsRequestDpo) GetMissionID() string {
 	return r.assignment.MissionId
 }

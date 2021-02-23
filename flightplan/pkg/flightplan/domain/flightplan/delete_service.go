@@ -24,6 +24,6 @@ func DeleteFlightplan(
 		return err
 	}
 
-	pub.Publish(DeletedEvent{id: flightplan.GetID()})
+	pub.Publish(DeletedEvent{ID: flightplan.GetID()})
 	return nil
 }

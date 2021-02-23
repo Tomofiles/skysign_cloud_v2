@@ -2,20 +2,20 @@ package flightplan
 
 // CreatedEvent .
 type CreatedEvent struct {
-	id ID
+	ID ID
 }
 
 // GetFlightplanID .
 func (e *CreatedEvent) GetFlightplanID() string {
-	return string(e.id)
+	return string(e.ID)
 }
 
 // DeletedEvent .
 type DeletedEvent struct {
-	id ID
+	ID ID
 }
 
 // GetFlightplanID .
 func (e *DeletedEvent) GetFlightplanID() string {
-	return string(e.id)
+	return string(e.ID)
 }

@@ -36,7 +36,7 @@ func TestCreateNewFlightplanService(t *testing.T) {
 		newVersion:  DefaultVersion3,
 		gen:         gen,
 	}
-	expectEvent := CreatedEvent{id: DefaultID}
+	expectEvent := CreatedEvent{ID: DefaultID}
 
 	a.Equal(id, string(DefaultID))
 	a.Len(repo.saveFlightplans, 1)

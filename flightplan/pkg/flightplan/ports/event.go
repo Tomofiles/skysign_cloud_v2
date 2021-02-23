@@ -6,7 +6,6 @@ import (
 	"flightplan/pkg/skysign_proto"
 
 	"github.com/golang/glog"
-	"github.com/pkg/errors"
 	"google.golang.org/protobuf/proto"
 )
 
@@ -40,9 +39,8 @@ func (h *EventHandler) HandleCreatedEvent(
 	glog.Infof("RECEIVE , Event: %s, Message: %s", FlightplanCreatedEventExchangeName, eventPb.String())
 
 	requestDpo := requestDpoHolder{id: eventPb.GetFlightplanId()}
-	ret := h.app.Services.ManageFleet.CreateFleet(&requestDpo)
-	if ret != nil {
-		return errors.Wrap(ret, "handle created event error")
+	if ret := h.app.Services.ManageFleet.CreateFleet(&requestDpo); ret != nil {
+		return ret
 	}
 	return nil
 }
@@ -60,9 +58,8 @@ func (h *EventHandler) HandleDeletedEvent(
 	glog.Infof("RECEIVE , Event: %s, Message: %s", FlightplanDeletedEventExchangeName, eventPb.String())
 
 	requestDpo := requestDpoHolder{id: eventPb.GetFlightplanId()}
-	ret := h.app.Services.ManageFleet.DeleteFleet(&requestDpo)
-	if ret != nil {
-		return errors.Wrap(ret, "handle deleted event error")
+	if ret := h.app.Services.ManageFleet.DeleteFleet(&requestDpo); ret != nil {
+		return ret
 	}
 	return nil
 }

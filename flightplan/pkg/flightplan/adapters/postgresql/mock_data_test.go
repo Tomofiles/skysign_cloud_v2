@@ -23,7 +23,7 @@ const DefaultFleetVersion = fleet.Version("version")
 func GetNewDbMock() (*gorm.DB, sqlmock.Sqlmock, error) {
 	db, mock, err := sqlmock.New()
 	if err != nil {
-		return nil, mock, err
+		return nil, nil, err
 	}
 
 	gormDB, err := gorm.Open(
@@ -33,10 +33,10 @@ func GetNewDbMock() (*gorm.DB, sqlmock.Sqlmock, error) {
 			}), &gorm.Config{})
 
 	if err != nil {
-		return gormDB, mock, err
+		return nil, nil, err
 	}
 
-	return gormDB, mock, err
+	return gormDB, mock, nil
 }
 
 // Flightplan構成オブジェクトモック

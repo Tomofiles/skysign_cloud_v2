@@ -31,17 +31,26 @@ func (s *ManageFleetService) CreateFleet(
 	requestDpo CreateFleetRequestDpo,
 ) error {
 	return s.txm.Do(func(tx txmanager.Tx) error {
-		fleet := fleet.NewInstance(
-			s.gen,
-			flightplan.ID(requestDpo.GetFlightplanID()),
-			0)
-		ret := s.repo.Save(tx, fleet)
-		if ret != nil {
-			return ret
-		}
-
-		return nil
+		return s.createFleetOperation(
+			tx,
+			requestDpo,
+		)
 	})
+}
+
+func (s *ManageFleetService) createFleetOperation(
+	tx txmanager.Tx,
+	requestDpo CreateFleetRequestDpo,
+) error {
+	fleet := fleet.NewInstance(
+		s.gen,
+		flightplan.ID(requestDpo.GetFlightplanID()),
+		0)
+	if ret := s.repo.Save(tx, fleet); ret != nil {
+		return ret
+	}
+
+	return nil
 }
 
 // DeleteFleet .
@@ -49,13 +58,25 @@ func (s *ManageFleetService) DeleteFleet(
 	requestDpo DeleteFleetRequestDpo,
 ) error {
 	return s.txm.Do(func(tx txmanager.Tx) error {
-		ret := s.repo.DeleteByFlightplanID(tx, flightplan.ID(requestDpo.GetFlightplanID()))
-		if ret != nil {
-			return ret
-		}
-
-		return nil
+		return s.deleteFleetOperation(
+			tx,
+			requestDpo,
+		)
 	})
+}
+
+func (s *ManageFleetService) deleteFleetOperation(
+	tx txmanager.Tx,
+	requestDpo DeleteFleetRequestDpo,
+) error {
+	if ret := s.repo.DeleteByFlightplanID(
+		tx,
+		flightplan.ID(requestDpo.GetFlightplanID()),
+	); ret != nil {
+		return ret
+	}
+
+	return nil
 }
 
 // CreateFleetRequestDpo .
