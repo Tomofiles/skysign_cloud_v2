@@ -67,7 +67,7 @@ const AssignAssetsEdit = (props) => {
       let newRows = rows.slice(0, rows.length);
       newRows
         .filter(row => row.id === id)
-        .forEach(row => row.vehicleId = e.target.value);
+        .forEach(row => row.vehicle_id = e.target.value);
       return newRows;
     })
   }
@@ -77,7 +77,7 @@ const AssignAssetsEdit = (props) => {
       let newRows = rows.slice(0, rows.length);
       newRows
         .filter(row => row.id === id)
-        .forEach(row => row.missionId = e.target.value);
+        .forEach(row => row.mission_id = e.target.value);
       return newRows;
     })
   }
@@ -113,15 +113,15 @@ const AssignAssetsEdit = (props) => {
                       </TableHead>
                       <TableBody>
                         {rows.map((row) => (
-                          <TableRow key={row.assignmentId}>
+                          <TableRow key={row.assignment_id}>
                             <TableCell component="th" scope="row">
-                              {row.assignmentId}
+                              {row.assignment_id}
                             </TableCell>
                             <TableCell>
                               <FormControl>
                                 <Select
                                   labelId="Vehicle"
-                                  value={row.vehicleId}
+                                  value={row.vehicle_id}
                                   onChange={e => hancleVehicleChange(row.id, e)}
                                   fullWidth
                                 >
@@ -144,7 +144,7 @@ const AssignAssetsEdit = (props) => {
                               <FormControl>
                                 <Select
                                   labelId="Mission"
-                                  value={row.missionId}
+                                  value={row.mission_id}
                                   onChange={e => hancleMissionChange(row.id, e)}
                                   fullWidth
                                 >

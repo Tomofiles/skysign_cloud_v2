@@ -34,8 +34,8 @@ const AssignAssetsDetail = (props) => {
           .then(data => {
             let rows = data.assignments.slice(0, data.assignments.length);
             rows.forEach(row => {
-              let vehicle = vm[0].vehicles.find(v => v.id === row.vehicleId);
-              let mission = vm[1].missions.find(m => m.id === row.missionId);
+              let vehicle = vm[0].vehicles.find(v => v.id === row.vehicle_id);
+              let mission = vm[1].missions.find(m => m.id === row.mission_id);
               row.vehicleName = vehicle === undefined ? "-" : vehicle.name;
               row.missionName = mission === undefined ? "-" : mission.name;
             });
@@ -84,9 +84,9 @@ const AssignAssetsDetail = (props) => {
                       </TableHead>
                       <TableBody>
                         {rows.map((row) => (
-                          <TableRow key={row.assignmentId}>
+                          <TableRow key={row.assignment_id}>
                             <TableCell component="th" scope="row">
-                              {row.assignmentId}
+                              {row.assignment_id}
                             </TableCell>
                             <TableCell>{row.vehicleName}</TableCell>
                             <TableCell>{row.missionName}</TableCell>

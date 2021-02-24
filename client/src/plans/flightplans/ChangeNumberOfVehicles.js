@@ -22,7 +22,7 @@ const ChangeNumberOfVehicles = (props) => {
     if (props.open) {
       getAssignments(props.id)
         .then(data => {
-          setValue("numberOfVehicles", data.assignments.length);
+          setValue("number_of_vehicles", data.assignments.length);
         })
     }
   }, [ props.open, props.id, setValue ])
@@ -67,7 +67,7 @@ const ChangeNumberOfVehicles = (props) => {
                     <Controller
                       as={TextField}
                       label="Number of vehicles"
-                      name="numberOfVehicles"
+                      name="number_of_vehicles"
                       control={control}
                       defaultValue=""
                       fullWidth />
