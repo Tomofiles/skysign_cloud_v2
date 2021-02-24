@@ -54,10 +54,11 @@ gRPCにて提供されるビジネスロジックと中継するサーバーコ�
 [React](https://ja.reactjs.org/)をベース、[Material-UI](https://material-ui.com/)をビュー、
 [Cesium](https://cesium.com/cesiumjs/)を地図エンジンに利用し、直感的なUIを構築して提供します。
 
-### Mission/Communication backend
+### Mission/Communication/Flightplan backend
 Skysignが提供するビジネスロジックおよびエンティティを提供するコンポーネント。
 [Spring Boot](https://spring.io/projects/spring-boot)をベースに、
-DDD(ドメイン駆動設計)を採用したマイクロサービス・アーキテクチャを目指しています。
+DDD(ドメイン駆動設計)を採用したマイクロサービス・アーキテクチャを目指しています。  
+現在、段階的にJavaからGolangに移行中（現在、Flightplanのみ）。
 
 ### PostgreSQL (DB)
 ビジネスロジックを支えるエンティティを格納するデータベース。
