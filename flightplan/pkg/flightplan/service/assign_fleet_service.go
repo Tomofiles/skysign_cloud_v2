@@ -89,17 +89,6 @@ func (s *assignFleetService) changeNumberOfVehiclesOperation(
 	requestDpo ChangeNumberOfVehiclesRequestDpo,
 	responseDpo ChangeNumberOfVehiclesResponseDpo,
 ) error {
-	oldFleet, err := s.repo.GetByFlightplanID(
-		tx,
-		flightplan.ID(requestDpo.GetFlightplanID()),
-	)
-	if err != nil {
-		return err
-	}
-	if oldFleet == nil {
-		return fleet.ErrNotFound
-	}
-
 	if ret := s.repo.DeleteByFlightplanID(
 		tx,
 		flightplan.ID(requestDpo.GetFlightplanID()),
@@ -146,9 +135,6 @@ func (s *assignFleetService) getAssignmentsOperation(
 	)
 	if err != nil {
 		return err
-	}
-	if aFleet == nil {
-		return fleet.ErrNotFound
 	}
 
 	var assignments []assignmentVehicle
@@ -216,9 +202,6 @@ func (s *assignFleetService) updateAssignmentOperation(
 	)
 	if err != nil {
 		return err
-	}
-	if aFleet == nil {
-		return fleet.ErrNotFound
 	}
 
 	if requestDpo.GetVehicleID() != "" {

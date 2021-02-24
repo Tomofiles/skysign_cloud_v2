@@ -102,7 +102,7 @@ func TestFleetRepositoryNotFoundWhenGetByFlightplanID(t *testing.T) {
 
 	fleet, err := repository.GetByFlightplanID(db, DefaultFlightplanID)
 
-	a.Nil(err)
+	a.Equal(err, fl.ErrNotFound)
 	a.Nil(fleet)
 }
 

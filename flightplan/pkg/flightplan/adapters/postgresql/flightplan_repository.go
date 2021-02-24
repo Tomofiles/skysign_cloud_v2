@@ -60,7 +60,7 @@ func (r *FlightplanRepository) GetByID(
 	}
 
 	if record.ID == "" {
-		return nil, nil
+		return nil, fpl.ErrNotFound
 	}
 
 	flightplan := fpl.AssembleFrom(r.gen, &record)
@@ -128,7 +128,7 @@ func (r *FlightplanRepository) Delete(
 	}
 
 	if record.ID == "" {
-		return nil
+		return fpl.ErrNotFound
 	}
 
 	if err := txGorm.Delete(&record).Error; err != nil {

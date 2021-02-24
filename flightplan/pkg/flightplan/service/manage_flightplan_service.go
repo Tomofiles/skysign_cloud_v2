@@ -94,9 +94,6 @@ func (s *manageFlightplanService) getFlightplanOperation(
 	if err != nil {
 		return err
 	}
-	if flightplan == nil {
-		return fpl.ErrNotFound
-	}
 
 	responseDpo(
 		string(flightplan.GetID()),
@@ -216,9 +213,6 @@ func (s *manageFlightplanService) updateFlightplanOperation(
 	flightplan, err := s.repo.GetByID(tx, fpl.ID(requestDpo.GetID()))
 	if err != nil {
 		return err
-	}
-	if flightplan == nil {
-		return fpl.ErrNotFound
 	}
 
 	flightplan.NameFlightplan(requestDpo.GetName())

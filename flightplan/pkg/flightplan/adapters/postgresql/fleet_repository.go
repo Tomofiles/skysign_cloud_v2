@@ -38,7 +38,7 @@ func (r *FleetRepository) GetByFlightplanID(
 		return nil, err
 	}
 	if fleetRecord.ID == "" {
-		return nil, nil
+		return nil, fl.ErrNotFound
 	}
 	if err := txGorm.Where("fleet_id = ?", fleetRecord.ID).Find(&assignmentRecords).Error; err != nil {
 		return nil, err

@@ -211,7 +211,7 @@ func TestFlightplanRepositoryNotFoundWhenGetByID(t *testing.T) {
 	flightplan, err := repository.GetByID(db, DefaultFlightplanID)
 
 	a.Nil(flightplan)
-	a.Nil(err)
+	a.Equal(err, fpl.ErrNotFound)
 }
 
 func TestFlightplanRepositoryCreateSave(t *testing.T) {
@@ -363,5 +363,5 @@ func TestFlightplanRepositoryNotFoundWhenDelete(t *testing.T) {
 
 	err = repository.Delete(db, DefaultFlightplanID)
 
-	a.Nil(err)
+	a.Equal(err, fpl.ErrNotFound)
 }

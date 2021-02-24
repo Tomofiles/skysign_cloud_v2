@@ -16,9 +16,6 @@ func DeleteFlightplan(
 	if err != nil {
 		return err
 	}
-	if flightplan == nil {
-		return ErrNotFound
-	}
 
 	if err := repo.Delete(tx, id); err != nil {
 		return err

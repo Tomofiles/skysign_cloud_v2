@@ -45,29 +45,6 @@ func TestDeleteFlightplanService(t *testing.T) {
 }
 
 // Flightplanを削除するドメインサービスをテストする。
-// 指定されたIDのFlightplanが存在しない場合、
-// 削除が失敗し、エラーが返却されることを検証する。
-// また、ドメインイベントは発行されないことを検証する。
-func TestNotFoundFlightplanWhenDeleteFlightplanService(t *testing.T) {
-	a := assert.New(t)
-
-	ctx := context.Background()
-
-	repo := &repositoryMockDeleteService{}
-	repo.On("GetByID", DefaultID).Return(nil, nil)
-	repo.On("Delete", mock.Anything).Return(nil)
-
-	pub := &publisherMock{}
-
-	ret := DeleteFlightplan(ctx, repo, pub, DefaultID)
-
-	a.Len(repo.deleteIDs, 0)
-	a.Len(pub.events, 0)
-
-	a.Equal(ret, ErrNotFound)
-}
-
-// Flightplanを削除するドメインサービスをテストする。
 // 指定されたIDのFlightplanの取得がエラーとなった場合、
 // 削除が失敗し、エラーが返却されることを検証する。
 // また、ドメインイベントは発行されないことを検証する。

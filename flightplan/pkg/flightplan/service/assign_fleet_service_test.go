@@ -93,17 +93,7 @@ func TestChangeNumberOfVehiclesOperation(t *testing.T) {
 		versions:      []fl.Version{DefaultFleetVersion1, DefaultFleetVersion2, DefaultFleetVersion3, DefaultFleetVersion4},
 	}
 
-	fleet := fl.AssembleFrom(
-		gen,
-		&fleetComponentMock{
-			ID:           string(DefaultFleetID),
-			FlightplanID: string(DefaultFlightplanID),
-			Version:      string(DefaultFleetVersion),
-		},
-	)
-
 	repo := &fleetRepositoryMock{}
-	repo.On("GetByFlightplanID", DefaultFlightplanID).Return(fleet, nil)
 	repo.On("DeleteByFlightplanID", DefaultFlightplanID).Return(nil)
 	repo.On("Save", mock.Anything).Return(nil)
 

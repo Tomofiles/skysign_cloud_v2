@@ -1,9 +1,17 @@
 package flightplan
 
+import "errors"
+
 const DefaultID = ID("flightplan-id")
 const DefaultVersion = Version("version")
 const DefaultName = "flightplan-name"
 const DefaultDescription = "flightplan-description"
+
+var (
+	ErrSave   = errors.New("save error")
+	ErrGet    = errors.New("get error")
+	ErrDelete = errors.New("delete error")
+)
 
 // Flightplan用汎用ジェネレータモック
 type generatorMock struct {
