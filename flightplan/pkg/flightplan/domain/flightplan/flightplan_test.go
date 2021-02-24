@@ -11,6 +11,11 @@ import (
 func TestChangeFlightplansName(t *testing.T) {
 	a := assert.New(t)
 
+	var (
+		DefaultVersion1 = DefaultVersion + "-1"
+		DefaultVersion2 = DefaultVersion + "-2"
+	)
+
 	gen := &generatorMock{
 		id:       DefaultID,
 		versions: []Version{DefaultVersion1, DefaultVersion2},
@@ -28,6 +33,11 @@ func TestChangeFlightplansName(t *testing.T) {
 // バージョンが更新されていることを検証する。
 func TestChangeFlightplansDescription(t *testing.T) {
 	a := assert.New(t)
+
+	var (
+		DefaultVersion1 = DefaultVersion + "-1"
+		DefaultVersion2 = DefaultVersion + "-2"
+	)
 
 	gen := &generatorMock{
 		id:       DefaultID,

@@ -1,9 +1,7 @@
 package flightplan
 
 const DefaultID = ID("flightplan-id")
-const DefaultVersion1 = Version("version-1")
-const DefaultVersion2 = Version("version-2")
-const DefaultVersion3 = Version("version-3")
+const DefaultVersion = Version("version")
 const DefaultName = "flightplan-name"
 const DefaultDescription = "flightplan-description"
 

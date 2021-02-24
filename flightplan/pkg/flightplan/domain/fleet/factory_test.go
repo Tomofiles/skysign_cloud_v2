@@ -14,23 +14,23 @@ func TestCreateSingleFleetNewFleet(t *testing.T) {
 
 	gen := &generatorMock{
 		id:            DefaultID,
-		assignmentIDs: []AssignmentID{DefaultAssignmentID1},
-		eventIDs:      []EventID{DefaultEventID1},
-		versions:      []Version{DefaultVersion1},
+		assignmentIDs: []AssignmentID{DefaultAssignmentID},
+		eventIDs:      []EventID{DefaultEventID},
+		versions:      []Version{DefaultVersion},
 	}
 	fleet := NewInstance(gen, DefaultFlightplanID, 1)
 
 	expectAssignment := &VehicleAssignment{
-		assignmentID: DefaultAssignmentID1,
+		assignmentID: DefaultAssignmentID,
 		vehicleID:    "",
 	}
 
 	a.Equal(fleet.GetID(), DefaultID)
 	a.Equal(fleet.GetFlightplanID(), DefaultFlightplanID)
 	a.Equal(fleet.GetNumberOfVehicles(), 1)
-	a.Equal(fleet.GetAllAssignmentID(), []AssignmentID{DefaultAssignmentID1})
-	a.Equal(fleet.GetVersion(), DefaultVersion1)
-	a.Equal(fleet.GetNewVersion(), DefaultVersion1)
+	a.Equal(fleet.GetAllAssignmentID(), []AssignmentID{DefaultAssignmentID})
+	a.Equal(fleet.GetVersion(), DefaultVersion)
+	a.Equal(fleet.GetNewVersion(), DefaultVersion)
 	a.Len(fleet.vehicleAssignments, 1)
 	a.Equal(fleet.vehicleAssignments[0], expectAssignment)
 	a.Len(fleet.eventPlannings, 0)
@@ -42,11 +42,20 @@ func TestCreateSingleFleetNewFleet(t *testing.T) {
 func TestCreateMultipleFleetNewFleet(t *testing.T) {
 	a := assert.New(t)
 
+	var (
+		DefaultAssignmentID1 = DefaultAssignmentID + "-1"
+		DefaultAssignmentID2 = DefaultAssignmentID + "-2"
+		DefaultAssignmentID3 = DefaultAssignmentID + "-3"
+		DefaultEventID1      = DefaultEventID + "-1"
+		DefaultEventID2      = DefaultEventID + "-2"
+		DefaultEventID3      = DefaultEventID + "-3"
+	)
+
 	gen := &generatorMock{
 		id:            DefaultID,
 		assignmentIDs: []AssignmentID{DefaultAssignmentID1, DefaultAssignmentID2, DefaultAssignmentID3},
 		eventIDs:      []EventID{DefaultEventID1, DefaultEventID2, DefaultEventID3},
-		versions:      []Version{DefaultVersion1},
+		versions:      []Version{DefaultVersion},
 	}
 	fleet := NewInstance(gen, DefaultFlightplanID, 3)
 
@@ -67,8 +76,8 @@ func TestCreateMultipleFleetNewFleet(t *testing.T) {
 	a.Equal(fleet.GetFlightplanID(), DefaultFlightplanID)
 	a.Equal(fleet.GetNumberOfVehicles(), 3)
 	a.Equal(fleet.GetAllAssignmentID(), []AssignmentID{DefaultAssignmentID1, DefaultAssignmentID2, DefaultAssignmentID3})
-	a.Equal(fleet.GetVersion(), DefaultVersion1)
-	a.Equal(fleet.GetNewVersion(), DefaultVersion1)
+	a.Equal(fleet.GetVersion(), DefaultVersion)
+	a.Equal(fleet.GetNewVersion(), DefaultVersion)
 	a.Len(fleet.vehicleAssignments, 3)
 	a.Equal(fleet.vehicleAssignments[0], expectAssignment1)
 	a.Equal(fleet.vehicleAssignments[1], expectAssignment2)
@@ -84,7 +93,7 @@ func TestCreateNonFleetNewFleet(t *testing.T) {
 
 	gen := &generatorMock{
 		id:       DefaultID,
-		versions: []Version{DefaultVersion1},
+		versions: []Version{DefaultVersion},
 	}
 	fleet := NewInstance(gen, DefaultFlightplanID, 0)
 
@@ -92,8 +101,8 @@ func TestCreateNonFleetNewFleet(t *testing.T) {
 	a.Equal(fleet.GetFlightplanID(), DefaultFlightplanID)
 	a.Equal(fleet.GetNumberOfVehicles(), 0)
 	a.Equal(fleet.GetAllAssignmentID(), *new([]AssignmentID))
-	a.Equal(fleet.GetVersion(), DefaultVersion1)
-	a.Equal(fleet.GetNewVersion(), DefaultVersion1)
+	a.Equal(fleet.GetVersion(), DefaultVersion)
+	a.Equal(fleet.GetNewVersion(), DefaultVersion)
 	a.Len(fleet.vehicleAssignments, 0)
 	a.Len(fleet.eventPlannings, 0)
 }
@@ -102,6 +111,21 @@ func TestCreateNonFleetNewFleet(t *testing.T) {
 // 内部状態を検証する。
 func TestFleetAssembleFromComponent(t *testing.T) {
 	a := assert.New(t)
+
+	var (
+		DefaultAssignmentID1 = DefaultAssignmentID + "-1"
+		DefaultAssignmentID2 = DefaultAssignmentID + "-2"
+		DefaultAssignmentID3 = DefaultAssignmentID + "-3"
+		DefaultEventID1      = DefaultEventID + "-1"
+		DefaultEventID2      = DefaultEventID + "-2"
+		DefaultEventID3      = DefaultEventID + "-3"
+		DefaultVehicleID1    = DefaultVehicleID + "-1"
+		DefaultVehicleID2    = DefaultVehicleID + "-2"
+		DefaultVehicleID3    = DefaultVehicleID + "-3"
+		DefaultMissionID1    = DefaultMissionID + "-1"
+		DefaultMissionID2    = DefaultMissionID + "-2"
+		DefaultMissionID3    = DefaultMissionID + "-3"
+	)
 
 	gen := &generatorMock{
 		id: DefaultID,
@@ -149,7 +173,7 @@ func TestFleetAssembleFromComponent(t *testing.T) {
 		flightplanID: string(DefaultFlightplanID),
 		assignments:  assignmentComps,
 		events:       eventComps,
-		version:      string(DefaultVersion1),
+		version:      string(DefaultVersion),
 	}
 	fleet := AssembleFrom(gen, &fleetComp)
 
@@ -186,8 +210,8 @@ func TestFleetAssembleFromComponent(t *testing.T) {
 	a.Equal(fleet.GetFlightplanID(), DefaultFlightplanID)
 	a.Equal(fleet.GetNumberOfVehicles(), 3)
 	a.Equal(fleet.GetAllAssignmentID(), []AssignmentID{DefaultAssignmentID1, DefaultAssignmentID2, DefaultAssignmentID3})
-	a.Equal(fleet.GetVersion(), DefaultVersion1)
-	a.Equal(fleet.GetNewVersion(), DefaultVersion1)
+	a.Equal(fleet.GetVersion(), DefaultVersion)
+	a.Equal(fleet.GetNewVersion(), DefaultVersion)
 	a.Len(fleet.vehicleAssignments, 3)
 	a.Equal(fleet.vehicleAssignments[0], expectAssignment1)
 	a.Equal(fleet.vehicleAssignments[1], expectAssignment2)
@@ -202,6 +226,23 @@ func TestFleetAssembleFromComponent(t *testing.T) {
 // 内部状態を検証する。
 func TestTakeApartFleet(t *testing.T) {
 	a := assert.New(t)
+
+	var (
+		DefaultAssignmentID1 = DefaultAssignmentID + "-1"
+		DefaultAssignmentID2 = DefaultAssignmentID + "-2"
+		DefaultAssignmentID3 = DefaultAssignmentID + "-3"
+		DefaultEventID1      = DefaultEventID + "-1"
+		DefaultEventID2      = DefaultEventID + "-2"
+		DefaultEventID3      = DefaultEventID + "-3"
+		DefaultVehicleID1    = DefaultVehicleID + "-1"
+		DefaultVehicleID2    = DefaultVehicleID + "-2"
+		DefaultVehicleID3    = DefaultVehicleID + "-3"
+		DefaultMissionID1    = DefaultMissionID + "-1"
+		DefaultMissionID2    = DefaultMissionID + "-2"
+		DefaultMissionID3    = DefaultMissionID + "-3"
+		DefaultVersion1      = DefaultVersion + "-1"
+		DefaultVersion2      = DefaultVersion + "-2"
+	)
 
 	gen := &generatorMock{
 		id:            DefaultID,

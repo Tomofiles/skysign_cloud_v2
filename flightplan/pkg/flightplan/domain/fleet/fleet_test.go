@@ -11,18 +11,23 @@ import (
 func TestAssignVehicle(t *testing.T) {
 	a := assert.New(t)
 
+	var (
+		DefaultVersion1 = DefaultVersion + "-1"
+		DefaultVersion2 = DefaultVersion + "-2"
+	)
+
 	gen := &generatorMock{
 		id:            DefaultID,
-		assignmentIDs: []AssignmentID{DefaultAssignmentID1},
+		assignmentIDs: []AssignmentID{DefaultAssignmentID},
 		versions:      []Version{DefaultVersion1, DefaultVersion2},
 	}
 	fleet := NewInstance(gen, DefaultFlightplanID, 1)
 
-	ret := fleet.AssignVehicle(DefaultAssignmentID1, DefaultVehicleID1)
+	ret := fleet.AssignVehicle(DefaultAssignmentID, DefaultVehicleID)
 
 	expectAssignment := &VehicleAssignment{
-		assignmentID: DefaultAssignmentID1,
-		vehicleID:    DefaultVehicleID1,
+		assignmentID: DefaultAssignmentID,
+		vehicleID:    DefaultVehicleID,
 	}
 
 	a.Len(fleet.vehicleAssignments, 1)
@@ -38,15 +43,23 @@ func TestAssignVehicle(t *testing.T) {
 func TestVehicleHasAlreadyAssignedWhenAssignVehicle(t *testing.T) {
 	a := assert.New(t)
 
+	var (
+		DefaultAssignmentID1 = DefaultAssignmentID + "-1"
+		DefaultAssignmentID2 = DefaultAssignmentID + "-2"
+		DefaultAssignmentID3 = DefaultAssignmentID + "-3"
+		DefaultVersion1      = DefaultVersion + "-1"
+		DefaultVersion2      = DefaultVersion + "-2"
+	)
+
 	gen := &generatorMock{
 		id:            DefaultID,
 		assignmentIDs: []AssignmentID{DefaultAssignmentID1, DefaultAssignmentID2, DefaultAssignmentID3},
 		versions:      []Version{DefaultVersion1, DefaultVersion2},
 	}
 	fleet := NewInstance(gen, DefaultFlightplanID, 3)
-	fleet.vehicleAssignments[2].vehicleID = DefaultVehicleID1
+	fleet.vehicleAssignments[2].vehicleID = DefaultVehicleID
 
-	ret := fleet.AssignVehicle(DefaultAssignmentID1, DefaultVehicleID1)
+	ret := fleet.AssignVehicle(DefaultAssignmentID1, DefaultVehicleID)
 
 	expectAssignment := &VehicleAssignment{
 		assignmentID: DefaultAssignmentID1,
@@ -66,6 +79,13 @@ func TestVehicleHasAlreadyAssignedWhenAssignVehicle(t *testing.T) {
 func TestNotFoundErrorWhenAssignVehicle(t *testing.T) {
 	a := assert.New(t)
 
+	var (
+		DefaultAssignmentID1 = DefaultAssignmentID + "-1"
+		DefaultAssignmentID2 = DefaultAssignmentID + "-2"
+		DefaultVersion1      = DefaultVersion + "-1"
+		DefaultVersion2      = DefaultVersion + "-2"
+	)
+
 	gen := &generatorMock{
 		id:            DefaultID,
 		assignmentIDs: []AssignmentID{DefaultAssignmentID1},
@@ -73,7 +93,7 @@ func TestNotFoundErrorWhenAssignVehicle(t *testing.T) {
 	}
 	fleet := NewInstance(gen, DefaultFlightplanID, 1)
 
-	ret := fleet.AssignVehicle(DefaultAssignmentID2, DefaultVehicleID1)
+	ret := fleet.AssignVehicle(DefaultAssignmentID2, DefaultVehicleID)
 
 	expectAssignment := &VehicleAssignment{
 		assignmentID: DefaultAssignmentID1,
@@ -92,18 +112,23 @@ func TestNotFoundErrorWhenAssignVehicle(t *testing.T) {
 func TestCancelVehiclesAssignment(t *testing.T) {
 	a := assert.New(t)
 
+	var (
+		DefaultVersion1 = DefaultVersion + "-1"
+		DefaultVersion2 = DefaultVersion + "-2"
+	)
+
 	gen := &generatorMock{
 		id:            DefaultID,
-		assignmentIDs: []AssignmentID{DefaultAssignmentID1},
+		assignmentIDs: []AssignmentID{DefaultAssignmentID},
 		versions:      []Version{DefaultVersion1, DefaultVersion2},
 	}
 	fleet := NewInstance(gen, DefaultFlightplanID, 1)
-	fleet.vehicleAssignments[0].vehicleID = DefaultVehicleID1
+	fleet.vehicleAssignments[0].vehicleID = DefaultVehicleID
 
-	ret := fleet.CancelVehiclesAssignment(DefaultAssignmentID1)
+	ret := fleet.CancelVehiclesAssignment(DefaultAssignmentID)
 
 	expectAssignment := &VehicleAssignment{
-		assignmentID: DefaultAssignmentID1,
+		assignmentID: DefaultAssignmentID,
 		vehicleID:    "",
 	}
 
@@ -120,19 +145,26 @@ func TestCancelVehiclesAssignment(t *testing.T) {
 func TestNotFoundErrorWhenCancelVehiclesAssignment(t *testing.T) {
 	a := assert.New(t)
 
+	var (
+		DefaultAssignmentID1 = DefaultAssignmentID + "-1"
+		DefaultAssignmentID2 = DefaultAssignmentID + "-2"
+		DefaultVersion1      = DefaultVersion + "-1"
+		DefaultVersion2      = DefaultVersion + "-2"
+	)
+
 	gen := &generatorMock{
 		id:            DefaultID,
 		assignmentIDs: []AssignmentID{DefaultAssignmentID1},
 		versions:      []Version{DefaultVersion1, DefaultVersion2},
 	}
 	fleet := NewInstance(gen, DefaultFlightplanID, 1)
-	fleet.vehicleAssignments[0].vehicleID = DefaultVehicleID1
+	fleet.vehicleAssignments[0].vehicleID = DefaultVehicleID
 
 	ret := fleet.CancelVehiclesAssignment(DefaultAssignmentID2)
 
 	expectAssignment := &VehicleAssignment{
 		assignmentID: DefaultAssignmentID1,
-		vehicleID:    DefaultVehicleID1,
+		vehicleID:    DefaultVehicleID,
 	}
 
 	a.Len(fleet.vehicleAssignments, 1)
@@ -147,25 +179,30 @@ func TestNotFoundErrorWhenCancelVehiclesAssignment(t *testing.T) {
 func TestAddNewEvent(t *testing.T) {
 	a := assert.New(t)
 
+	var (
+		DefaultVersion1 = DefaultVersion + "-1"
+		DefaultVersion2 = DefaultVersion + "-2"
+	)
+
 	gen := &generatorMock{
 		id:            DefaultID,
-		assignmentIDs: []AssignmentID{DefaultAssignmentID1},
-		eventIDs:      []EventID{DefaultEventID1},
+		assignmentIDs: []AssignmentID{DefaultAssignmentID},
+		eventIDs:      []EventID{DefaultEventID},
 		versions:      []Version{DefaultVersion1, DefaultVersion2},
 	}
 	fleet := NewInstance(gen, DefaultFlightplanID, 1)
 
-	eventID, ret := fleet.AddNewEvent(DefaultAssignmentID1)
+	eventID, ret := fleet.AddNewEvent(DefaultAssignmentID)
 
 	expectEvent := &EventPlanning{
-		eventID:      DefaultEventID1,
-		assignmentID: DefaultAssignmentID1,
+		eventID:      DefaultEventID,
+		assignmentID: DefaultAssignmentID,
 		missionID:    "",
 	}
 
 	a.Len(fleet.eventPlannings, 1)
 	a.Equal(fleet.eventPlannings[0], expectEvent)
-	a.Equal(eventID, DefaultEventID1)
+	a.Equal(eventID, DefaultEventID)
 	a.Nil(ret)
 	a.Equal(fleet.GetVersion(), DefaultVersion1)
 	a.Equal(fleet.GetNewVersion(), DefaultVersion2)
@@ -177,10 +214,17 @@ func TestAddNewEvent(t *testing.T) {
 func TestNotAssignedErrorWhenAddNewEvent(t *testing.T) {
 	a := assert.New(t)
 
+	var (
+		DefaultAssignmentID1 = DefaultAssignmentID + "-1"
+		DefaultAssignmentID2 = DefaultAssignmentID + "-2"
+		DefaultVersion1      = DefaultVersion + "-1"
+		DefaultVersion2      = DefaultVersion + "-2"
+	)
+
 	gen := &generatorMock{
 		id:            DefaultID,
 		assignmentIDs: []AssignmentID{DefaultAssignmentID1},
-		eventIDs:      []EventID{DefaultEventID1},
+		eventIDs:      []EventID{DefaultEventID},
 		versions:      []Version{DefaultVersion1, DefaultVersion2},
 	}
 	fleet := NewInstance(gen, DefaultFlightplanID, 1)
@@ -199,22 +243,27 @@ func TestNotAssignedErrorWhenAddNewEvent(t *testing.T) {
 func TestRemoveEvent(t *testing.T) {
 	a := assert.New(t)
 
+	var (
+		DefaultVersion1 = DefaultVersion + "-1"
+		DefaultVersion2 = DefaultVersion + "-2"
+	)
+
 	gen := &generatorMock{
 		id:            DefaultID,
-		assignmentIDs: []AssignmentID{DefaultAssignmentID1},
+		assignmentIDs: []AssignmentID{DefaultAssignmentID},
 		versions:      []Version{DefaultVersion1, DefaultVersion2},
 	}
 	fleet := NewInstance(gen, DefaultFlightplanID, 1)
 	fleet.eventPlannings = append(
 		fleet.eventPlannings,
 		&EventPlanning{
-			eventID:      DefaultEventID1,
-			assignmentID: DefaultAssignmentID1,
+			eventID:      DefaultEventID,
+			assignmentID: DefaultAssignmentID,
 			missionID:    "",
 		},
 	)
 
-	ret := fleet.RemoveEvent(DefaultEventID1)
+	ret := fleet.RemoveEvent(DefaultEventID)
 
 	a.Len(fleet.eventPlannings, 0)
 	a.Nil(ret)
@@ -228,9 +277,16 @@ func TestRemoveEvent(t *testing.T) {
 func TestNotFoundWhenRemoveEvent(t *testing.T) {
 	a := assert.New(t)
 
+	var (
+		DefaultEventID1 = DefaultEventID + "-1"
+		DefaultEventID2 = DefaultEventID + "-2"
+		DefaultVersion1 = DefaultVersion + "-1"
+		DefaultVersion2 = DefaultVersion + "-2"
+	)
+
 	gen := &generatorMock{
 		id:            DefaultID,
-		assignmentIDs: []AssignmentID{DefaultAssignmentID1},
+		assignmentIDs: []AssignmentID{DefaultAssignmentID},
 		versions:      []Version{DefaultVersion1, DefaultVersion2},
 	}
 	fleet := NewInstance(gen, DefaultFlightplanID, 1)
@@ -238,7 +294,7 @@ func TestNotFoundWhenRemoveEvent(t *testing.T) {
 		fleet.eventPlannings,
 		&EventPlanning{
 			eventID:      DefaultEventID1,
-			assignmentID: DefaultAssignmentID1,
+			assignmentID: DefaultAssignmentID,
 			missionID:    "",
 		},
 	)
@@ -256,27 +312,32 @@ func TestNotFoundWhenRemoveEvent(t *testing.T) {
 func TestAssignMission(t *testing.T) {
 	a := assert.New(t)
 
+	var (
+		DefaultVersion1 = DefaultVersion + "-1"
+		DefaultVersion2 = DefaultVersion + "-2"
+	)
+
 	gen := &generatorMock{
 		id:            DefaultID,
-		assignmentIDs: []AssignmentID{DefaultAssignmentID1},
+		assignmentIDs: []AssignmentID{DefaultAssignmentID},
 		versions:      []Version{DefaultVersion1, DefaultVersion2},
 	}
 	fleet := NewInstance(gen, DefaultFlightplanID, 1)
 	fleet.eventPlannings = append(
 		fleet.eventPlannings,
 		&EventPlanning{
-			eventID:      DefaultEventID1,
-			assignmentID: DefaultAssignmentID1,
+			eventID:      DefaultEventID,
+			assignmentID: DefaultAssignmentID,
 			missionID:    "",
 		},
 	)
 
-	ret := fleet.AssignMission(DefaultEventID1, DefaultMissionID1)
+	ret := fleet.AssignMission(DefaultEventID, DefaultMissionID)
 
 	expectEvent := &EventPlanning{
-		eventID:      DefaultEventID1,
-		assignmentID: DefaultAssignmentID1,
-		missionID:    DefaultMissionID1,
+		eventID:      DefaultEventID,
+		assignmentID: DefaultAssignmentID,
+		missionID:    DefaultMissionID,
 	}
 
 	a.Len(fleet.eventPlannings, 1)
@@ -292,12 +353,24 @@ func TestAssignMission(t *testing.T) {
 func TestMissionHasAlreadyAssignedWhenAssignMission(t *testing.T) {
 	a := assert.New(t)
 
+	var (
+		DefaultAssignmentID1 = DefaultAssignmentID + "-1"
+		DefaultAssignmentID2 = DefaultAssignmentID + "-2"
+		DefaultAssignmentID3 = DefaultAssignmentID + "-3"
+		DefaultEventID1      = DefaultEventID + "-1"
+		DefaultEventID2      = DefaultEventID + "-2"
+		DefaultEventID3      = DefaultEventID + "-3"
+		DefaultVersion1      = DefaultVersion + "-1"
+		DefaultVersion2      = DefaultVersion + "-2"
+		DefaultVersion3      = DefaultVersion + "-3"
+	)
+
 	gen := &generatorMock{
 		id:            DefaultID,
 		assignmentIDs: []AssignmentID{DefaultAssignmentID1, DefaultAssignmentID2, DefaultAssignmentID3},
-		versions:      []Version{DefaultVersion1, DefaultVersion2},
+		versions:      []Version{DefaultVersion1, DefaultVersion2, DefaultVersion3},
 	}
-	fleet := NewInstance(gen, DefaultFlightplanID, 2)
+	fleet := NewInstance(gen, DefaultFlightplanID, 3)
 	fleet.eventPlannings = append(
 		fleet.eventPlannings,
 		&EventPlanning{
@@ -319,11 +392,11 @@ func TestMissionHasAlreadyAssignedWhenAssignMission(t *testing.T) {
 		&EventPlanning{
 			eventID:      DefaultEventID3,
 			assignmentID: DefaultAssignmentID3,
-			missionID:    DefaultMissionID1,
+			missionID:    DefaultMissionID,
 		},
 	)
 
-	ret := fleet.AssignMission(DefaultEventID1, DefaultMissionID1)
+	ret := fleet.AssignMission(DefaultEventID1, DefaultMissionID)
 
 	expectEvent := &EventPlanning{
 		eventID:      DefaultEventID1,
@@ -344,9 +417,16 @@ func TestMissionHasAlreadyAssignedWhenAssignMission(t *testing.T) {
 func TestNotFoundErrorWhenAssignMission(t *testing.T) {
 	a := assert.New(t)
 
+	var (
+		DefaultEventID1 = DefaultEventID + "-1"
+		DefaultEventID2 = DefaultEventID + "-2"
+		DefaultVersion1 = DefaultVersion + "-1"
+		DefaultVersion2 = DefaultVersion + "-2"
+	)
+
 	gen := &generatorMock{
 		id:            DefaultID,
-		assignmentIDs: []AssignmentID{DefaultAssignmentID1},
+		assignmentIDs: []AssignmentID{DefaultAssignmentID},
 		versions:      []Version{DefaultVersion1, DefaultVersion2},
 	}
 	fleet := NewInstance(gen, DefaultFlightplanID, 1)
@@ -354,16 +434,16 @@ func TestNotFoundErrorWhenAssignMission(t *testing.T) {
 		fleet.eventPlannings,
 		&EventPlanning{
 			eventID:      DefaultEventID1,
-			assignmentID: DefaultAssignmentID1,
+			assignmentID: DefaultAssignmentID,
 			missionID:    "",
 		},
 	)
 
-	ret := fleet.AssignMission(DefaultEventID2, DefaultMissionID1)
+	ret := fleet.AssignMission(DefaultEventID2, DefaultMissionID)
 
 	expectEvent := &EventPlanning{
 		eventID:      DefaultEventID1,
-		assignmentID: DefaultAssignmentID1,
+		assignmentID: DefaultAssignmentID,
 		missionID:    "",
 	}
 
@@ -379,26 +459,31 @@ func TestNotFoundErrorWhenAssignMission(t *testing.T) {
 func TestCancelMission(t *testing.T) {
 	a := assert.New(t)
 
+	var (
+		DefaultVersion1 = DefaultVersion + "-1"
+		DefaultVersion2 = DefaultVersion + "-2"
+	)
+
 	gen := &generatorMock{
 		id:            DefaultID,
-		assignmentIDs: []AssignmentID{DefaultAssignmentID1},
+		assignmentIDs: []AssignmentID{DefaultAssignmentID},
 		versions:      []Version{DefaultVersion1, DefaultVersion2},
 	}
 	fleet := NewInstance(gen, DefaultFlightplanID, 1)
 	fleet.eventPlannings = append(
 		fleet.eventPlannings,
 		&EventPlanning{
-			eventID:      DefaultEventID1,
-			assignmentID: DefaultAssignmentID1,
-			missionID:    DefaultMissionID1,
+			eventID:      DefaultEventID,
+			assignmentID: DefaultAssignmentID,
+			missionID:    DefaultMissionID,
 		},
 	)
 
-	ret := fleet.CancelMission(DefaultEventID1)
+	ret := fleet.CancelMission(DefaultEventID)
 
 	expectEvent := &EventPlanning{
-		eventID:      DefaultEventID1,
-		assignmentID: DefaultAssignmentID1,
+		eventID:      DefaultEventID,
+		assignmentID: DefaultAssignmentID,
 		missionID:    "",
 	}
 
@@ -415,9 +500,16 @@ func TestCancelMission(t *testing.T) {
 func TestNotFoundErrorWhenCancelMission(t *testing.T) {
 	a := assert.New(t)
 
+	var (
+		DefaultEventID1 = DefaultEventID + "-1"
+		DefaultEventID2 = DefaultEventID + "-2"
+		DefaultVersion1 = DefaultVersion + "-1"
+		DefaultVersion2 = DefaultVersion + "-2"
+	)
+
 	gen := &generatorMock{
 		id:            DefaultID,
-		assignmentIDs: []AssignmentID{DefaultAssignmentID1},
+		assignmentIDs: []AssignmentID{DefaultAssignmentID},
 		versions:      []Version{DefaultVersion1, DefaultVersion2},
 	}
 	fleet := NewInstance(gen, DefaultFlightplanID, 1)
@@ -425,8 +517,8 @@ func TestNotFoundErrorWhenCancelMission(t *testing.T) {
 		fleet.eventPlannings,
 		&EventPlanning{
 			eventID:      DefaultEventID1,
-			assignmentID: DefaultAssignmentID1,
-			missionID:    DefaultMissionID1,
+			assignmentID: DefaultAssignmentID,
+			missionID:    DefaultMissionID,
 		},
 	)
 
@@ -434,8 +526,8 @@ func TestNotFoundErrorWhenCancelMission(t *testing.T) {
 
 	expectEvent := &EventPlanning{
 		eventID:      DefaultEventID1,
-		assignmentID: DefaultAssignmentID1,
-		missionID:    DefaultMissionID1,
+		assignmentID: DefaultAssignmentID,
+		missionID:    DefaultMissionID,
 	}
 
 	a.Len(fleet.eventPlannings, 1)
@@ -449,6 +541,23 @@ func TestNotFoundErrorWhenCancelMission(t *testing.T) {
 // ダブルディスパッチで公開された内部状態を検証する。
 func TestProvideAssignmentsInterest(t *testing.T) {
 	a := assert.New(t)
+
+	var (
+		DefaultAssignmentID1 = DefaultAssignmentID + "-1"
+		DefaultAssignmentID2 = DefaultAssignmentID + "-2"
+		DefaultAssignmentID3 = DefaultAssignmentID + "-3"
+		DefaultEventID1      = DefaultEventID + "-1"
+		DefaultEventID2      = DefaultEventID + "-2"
+		DefaultEventID3      = DefaultEventID + "-3"
+		DefaultVehicleID1    = DefaultVehicleID + "-1"
+		DefaultVehicleID2    = DefaultVehicleID + "-2"
+		DefaultVehicleID3    = DefaultVehicleID + "-3"
+		DefaultMissionID1    = DefaultMissionID + "-1"
+		DefaultMissionID2    = DefaultMissionID + "-2"
+		DefaultMissionID3    = DefaultMissionID + "-3"
+		DefaultVersion1      = DefaultVersion + "-1"
+		DefaultVersion2      = DefaultVersion + "-2"
+	)
 
 	gen := &generatorMock{
 		id:            DefaultID,

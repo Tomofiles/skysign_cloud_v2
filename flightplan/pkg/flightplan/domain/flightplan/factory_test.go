@@ -12,15 +12,15 @@ func TestCreateNewFlightplan(t *testing.T) {
 
 	gen := &generatorMock{
 		id:       DefaultID,
-		versions: []Version{DefaultVersion1},
+		versions: []Version{DefaultVersion},
 	}
 	flightplan := NewInstance(gen)
 
 	a.Equal(flightplan.GetID(), DefaultID)
 	a.Equal(flightplan.GetName(), "")
 	a.Equal(flightplan.GetDescription(), "")
-	a.Equal(flightplan.GetVersion(), DefaultVersion1)
-	a.Equal(flightplan.GetNewVersion(), DefaultVersion1)
+	a.Equal(flightplan.GetVersion(), DefaultVersion)
+	a.Equal(flightplan.GetNewVersion(), DefaultVersion)
 	a.Equal(flightplan.gen, gen)
 }
 
@@ -33,19 +33,19 @@ func TestFlightplanAssembleFromComponent(t *testing.T) {
 		id:          string(DefaultID),
 		name:        DefaultName,
 		description: DefaultDescription,
-		version:     string(DefaultVersion1),
+		version:     string(DefaultVersion),
 	}
 	gen := &generatorMock{
 		id:       DefaultID,
-		versions: []Version{DefaultVersion1},
+		versions: []Version{DefaultVersion},
 	}
 	flightplan := AssembleFrom(gen, comp)
 
 	a.Equal(flightplan.GetID(), DefaultID)
 	a.Equal(flightplan.GetName(), DefaultName)
 	a.Equal(flightplan.GetDescription(), DefaultDescription)
-	a.Equal(flightplan.GetVersion(), DefaultVersion1)
-	a.Equal(flightplan.GetNewVersion(), DefaultVersion1)
+	a.Equal(flightplan.GetVersion(), DefaultVersion)
+	a.Equal(flightplan.GetNewVersion(), DefaultVersion)
 	a.Equal(flightplan.gen, gen)
 }
 
@@ -58,8 +58,8 @@ func TestTakeApartFlightplan(t *testing.T) {
 		id:          DefaultID,
 		name:        DefaultName,
 		description: DefaultDescription,
-		version:     DefaultVersion1,
-		newVersion:  DefaultVersion1,
+		version:     DefaultVersion,
+		newVersion:  DefaultVersion,
 	}
 	comp := &flightplanComponentMock{}
 	TakeApart(
@@ -76,7 +76,7 @@ func TestTakeApartFlightplan(t *testing.T) {
 		id:          string(DefaultID),
 		name:        DefaultName,
 		description: DefaultDescription,
-		version:     string(DefaultVersion1),
+		version:     string(DefaultVersion),
 	}
 	a.Equal(comp, expectComp)
 }

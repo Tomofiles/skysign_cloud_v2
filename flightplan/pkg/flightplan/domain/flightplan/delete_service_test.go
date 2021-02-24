@@ -22,8 +22,8 @@ func TestDeleteFlightplanService(t *testing.T) {
 		id:          DefaultID,
 		name:        DefaultName,
 		description: DefaultDescription,
-		version:     DefaultVersion1,
-		newVersion:  DefaultVersion1,
+		version:     DefaultVersion,
+		newVersion:  DefaultVersion,
 		gen:         nil,
 	}
 	repo := &repositoryMockDeleteService{}
@@ -103,8 +103,8 @@ func TestDeleteErrorWhenDeleteFlightplanService(t *testing.T) {
 		id:          DefaultID,
 		name:        DefaultName,
 		description: DefaultDescription,
-		version:     DefaultVersion1,
-		newVersion:  DefaultVersion1,
+		version:     DefaultVersion,
+		newVersion:  DefaultVersion,
 		gen:         nil,
 	}
 	repo := &repositoryMockDeleteService{}

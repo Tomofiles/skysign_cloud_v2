@@ -4,21 +4,11 @@ import "flightplan/pkg/flightplan/domain/flightplan"
 
 const DefaultID = ID("fleet-id")
 const DefaultFlightplanID = flightplan.ID("flightplan-id")
-const DefaultAssignmentID1 = AssignmentID("assignment-id-1")
-const DefaultAssignmentID2 = AssignmentID("assignment-id-2")
-const DefaultAssignmentID3 = AssignmentID("assignment-id-3")
-const DefaultEventID1 = EventID("event-id-1")
-const DefaultEventID2 = EventID("event-id-2")
-const DefaultEventID3 = EventID("event-id-3")
-const DefaultVehicleID1 = VehicleID("vehicle-id-1")
-const DefaultVehicleID2 = VehicleID("vehicle-id-2")
-const DefaultVehicleID3 = VehicleID("vehicle-id-3")
-const DefaultMissionID1 = MissionID("mission-id-1")
-const DefaultMissionID2 = MissionID("mission-id-2")
-const DefaultMissionID3 = MissionID("mission-id-3")
-const DefaultVersion1 = Version("version-1")
-const DefaultVersion2 = Version("version-2")
-const DefaultVersion3 = Version("version-3")
+const DefaultAssignmentID = AssignmentID("assignment-id")
+const DefaultEventID = EventID("event-id")
+const DefaultVehicleID = VehicleID("vehicle-id")
+const DefaultMissionID = MissionID("mission-id")
+const DefaultVersion = Version("version")
 
 // Fleet用汎用ジェネレータモック
 type generatorMock struct {

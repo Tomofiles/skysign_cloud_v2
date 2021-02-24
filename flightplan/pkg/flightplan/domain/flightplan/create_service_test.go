@@ -18,6 +18,12 @@ func TestCreateNewFlightplanService(t *testing.T) {
 
 	ctx := context.Background()
 
+	var (
+		DefaultVersion1 = DefaultVersion + "-1"
+		DefaultVersion2 = DefaultVersion + "-2"
+		DefaultVersion3 = DefaultVersion + "-3"
+	)
+
 	gen := &generatorMock{
 		id:       DefaultID,
 		versions: []Version{DefaultVersion1, DefaultVersion2, DefaultVersion3},
@@ -55,6 +61,12 @@ func TestSaveErrorWhenCreateNewFlightplanService(t *testing.T) {
 	a := assert.New(t)
 
 	ctx := context.Background()
+
+	var (
+		DefaultVersion1 = DefaultVersion + "-1"
+		DefaultVersion2 = DefaultVersion + "-2"
+		DefaultVersion3 = DefaultVersion + "-3"
+	)
 
 	gen := &generatorMock{
 		id:       DefaultID,
