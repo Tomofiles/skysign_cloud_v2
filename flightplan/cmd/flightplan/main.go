@@ -72,6 +72,7 @@ func run() error {
 	proto.RegisterManageFlightplanServiceServer(s, &svc)
 	proto.RegisterAssignAssetsToFlightplanServiceServer(s, &svc)
 
+	glog.Info("start flightplan server")
 	return s.Serve(listen)
 }
 
@@ -84,8 +85,6 @@ func main() {
 		if err := run(); err != nil {
 			glog.Error(err)
 			time.Sleep(10 * time.Second)
-		} else {
-			glog.Info("restarted")
 		}
 	}
 }
