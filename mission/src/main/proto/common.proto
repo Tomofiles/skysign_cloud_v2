@@ -61,3 +61,16 @@ message Communication {
     string missionId = 3;
     bool isControlled = 4;
 }
+
+message Flightplan {
+    string id = 1;
+    string name = 2;
+    string description = 3;
+}
+
+message Assignment {
+    string id = 1;
+    string assignment_id = 2;
+    string vehicle_id = 3;
+    string mission_id = 4;
+}
