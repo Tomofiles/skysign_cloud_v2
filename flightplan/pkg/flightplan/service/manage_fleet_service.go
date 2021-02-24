@@ -7,10 +7,19 @@ import (
 )
 
 // ManageFleetService .
-type ManageFleetService struct {
-	gen  fleet.Generator
-	repo fleet.Repository
-	txm  txmanager.TransactionManager
+type ManageFleetService interface {
+	CreateFleet(requestDpo CreateFleetRequestDpo) error
+	DeleteFleet(requestDpo DeleteFleetRequestDpo) error
+}
+
+// CreateFleetRequestDpo .
+type CreateFleetRequestDpo interface {
+	GetFlightplanID() string
+}
+
+// DeleteFleetRequestDpo .
+type DeleteFleetRequestDpo interface {
+	GetFlightplanID() string
 }
 
 // NewManageFleetService .
@@ -19,15 +28,20 @@ func NewManageFleetService(
 	repo fleet.Repository,
 	txm txmanager.TransactionManager,
 ) ManageFleetService {
-	return ManageFleetService{
+	return &manageFleetService{
 		gen:  gen,
 		repo: repo,
 		txm:  txm,
 	}
 }
 
-// CreateFleet .
-func (s *ManageFleetService) CreateFleet(
+type manageFleetService struct {
+	gen  fleet.Generator
+	repo fleet.Repository
+	txm  txmanager.TransactionManager
+}
+
+func (s *manageFleetService) CreateFleet(
 	requestDpo CreateFleetRequestDpo,
 ) error {
 	return s.txm.Do(func(tx txmanager.Tx) error {
@@ -38,7 +52,7 @@ func (s *ManageFleetService) CreateFleet(
 	})
 }
 
-func (s *ManageFleetService) createFleetOperation(
+func (s *manageFleetService) createFleetOperation(
 	tx txmanager.Tx,
 	requestDpo CreateFleetRequestDpo,
 ) error {
@@ -53,8 +67,7 @@ func (s *ManageFleetService) createFleetOperation(
 	return nil
 }
 
-// DeleteFleet .
-func (s *ManageFleetService) DeleteFleet(
+func (s *manageFleetService) DeleteFleet(
 	requestDpo DeleteFleetRequestDpo,
 ) error {
 	return s.txm.Do(func(tx txmanager.Tx) error {
@@ -65,7 +78,7 @@ func (s *ManageFleetService) DeleteFleet(
 	})
 }
 
-func (s *ManageFleetService) deleteFleetOperation(
+func (s *manageFleetService) deleteFleetOperation(
 	tx txmanager.Tx,
 	requestDpo DeleteFleetRequestDpo,
 ) error {
@@ -77,14 +90,4 @@ func (s *ManageFleetService) deleteFleetOperation(
 	}
 
 	return nil
-}
-
-// CreateFleetRequestDpo .
-type CreateFleetRequestDpo interface {
-	GetFlightplanID() string
-}
-
-// DeleteFleetRequestDpo .
-type DeleteFleetRequestDpo interface {
-	GetFlightplanID() string
 }

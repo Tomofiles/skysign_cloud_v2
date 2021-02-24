@@ -181,14 +181,14 @@ func (s *GrpcServer) GetAssignments(
 	}
 	if ret := s.app.Services.AssignFleet.GetAssignments(
 		requestDpo,
-		func(id, assignmentId, vehicleId, missionId string) {
+		func(id, assignmentID, vehicleID, missionID string) {
 			response.Assignments = append(
 				response.Assignments,
 				&proto.Assignment{
 					Id:           id,
-					AssignmentId: assignmentId,
-					VehicleId:    vehicleId,
-					MissionId:    missionId,
+					AssignmentId: assignmentID,
+					VehicleId:    vehicleID,
+					MissionId:    missionID,
 				},
 			)
 		},
@@ -213,14 +213,14 @@ func (s *GrpcServer) UpdateAssignments(
 		}
 		if ret := s.app.Services.AssignFleet.UpdateAssignment(
 			requestDpo,
-			func(id, assignmentId, vehicleId, missionId string) {
+			func(id, assignmentID, vehicleID, missionID string) {
 				response.Assignments = append(
 					response.Assignments,
 					&proto.Assignment{
 						Id:           id,
-						AssignmentId: assignmentId,
-						VehicleId:    vehicleId,
-						MissionId:    missionId,
+						AssignmentId: assignmentID,
+						VehicleId:    vehicleID,
+						MissionId:    missionID,
 					},
 				)
 			},

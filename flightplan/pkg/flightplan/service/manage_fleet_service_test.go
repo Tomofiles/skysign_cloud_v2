@@ -27,7 +27,11 @@ func TestCreateFleetTransaction(t *testing.T) {
 
 	repo.On("Save", mock.Anything).Return(nil)
 
-	service := NewManageFleetService(gen, repo, txm)
+	service := &manageFleetService{
+		gen:  gen,
+		repo: repo,
+		txm:  txm,
+	}
 
 	req := &fleetIDRequestMock{
 		FlightplanID: string(DefaultFlightplanID),
@@ -55,7 +59,11 @@ func TestCreateFleetOperation(t *testing.T) {
 	repo := &fleetRepositoryMock{}
 	repo.On("Save", mock.Anything).Return(nil)
 
-	service := NewManageFleetService(gen, repo, nil)
+	service := &manageFleetService{
+		gen:  gen,
+		repo: repo,
+		txm:  nil,
+	}
 
 	req := &fleetIDRequestMock{
 		FlightplanID: string(DefaultFlightplanID),
@@ -75,7 +83,11 @@ func TestDeleteFleetTransaction(t *testing.T) {
 
 	repo.On("DeleteByFlightplanID", DefaultFlightplanID).Return(nil)
 
-	service := NewManageFleetService(nil, repo, txm)
+	service := &manageFleetService{
+		gen:  nil,
+		repo: repo,
+		txm:  txm,
+	}
 
 	req := &fleetIDRequestMock{
 		FlightplanID: string(DefaultFlightplanID),
@@ -92,7 +104,11 @@ func TestDeleteFleetOperation(t *testing.T) {
 	repo := &fleetRepositoryMock{}
 	repo.On("DeleteByFlightplanID", DefaultFlightplanID).Return(nil)
 
-	service := NewManageFleetService(nil, repo, nil)
+	service := &manageFleetService{
+		gen:  nil,
+		repo: repo,
+		txm:  nil,
+	}
 
 	req := &fleetIDRequestMock{
 		FlightplanID: string(DefaultFlightplanID),

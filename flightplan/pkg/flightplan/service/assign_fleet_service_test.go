@@ -47,7 +47,11 @@ func TestChangeNumberOfVehiclesTransaction(t *testing.T) {
 	repo.On("DeleteByFlightplanID", DefaultFlightplanID).Return(nil)
 	repo.On("Save", mock.Anything).Return(nil)
 
-	service := NewAssignFleetService(gen, repo, txm)
+	service := &assignFleetService{
+		gen:  gen,
+		repo: repo,
+		txm:  txm,
+	}
 
 	req := &changeNumberOfVehiclesRequestMock{
 		FlightplanID:     string(DefaultFlightplanID),
@@ -103,7 +107,11 @@ func TestChangeNumberOfVehiclesOperation(t *testing.T) {
 	repo.On("DeleteByFlightplanID", DefaultFlightplanID).Return(nil)
 	repo.On("Save", mock.Anything).Return(nil)
 
-	service := NewAssignFleetService(gen, repo, nil)
+	service := &assignFleetService{
+		gen:  gen,
+		repo: repo,
+		txm:  nil,
+	}
 
 	req := &changeNumberOfVehiclesRequestMock{
 		FlightplanID:     string(DefaultFlightplanID),
@@ -209,7 +217,11 @@ func TestGetAssignmentsTransaction(t *testing.T) {
 
 	repo.On("GetByFlightplanID", DefaultFlightplanID).Return(fleet, nil)
 
-	service := NewAssignFleetService(gen, repo, txm)
+	service := &assignFleetService{
+		gen:  gen,
+		repo: repo,
+		txm:  txm,
+	}
 
 	req := &fleetIDRequestMock{
 		FlightplanID: string(DefaultFlightplanID),
@@ -217,7 +229,7 @@ func TestGetAssignmentsTransaction(t *testing.T) {
 	var resCall bool
 	ret := service.GetAssignments(
 		req,
-		func(id, assignmentId, vehicleId, missionId string) {
+		func(id, assignmentID, vehicleID, missionID string) {
 			resCall = true
 		},
 	)
@@ -290,7 +302,11 @@ func TestGetAssignmentsOperation(t *testing.T) {
 	repo := &fleetRepositoryMock{}
 	repo.On("GetByFlightplanID", DefaultFlightplanID).Return(fleet, nil)
 
-	service := NewAssignFleetService(gen, repo, nil)
+	service := &assignFleetService{
+		gen:  gen,
+		repo: repo,
+		txm:  nil,
+	}
 
 	req := &fleetIDRequestMock{
 		FlightplanID: string(DefaultFlightplanID),
@@ -302,11 +318,11 @@ func TestGetAssignmentsOperation(t *testing.T) {
 	ret := service.getAssignmentsOperation(
 		nil,
 		req,
-		func(id, assignmentId, vehicleId, missionId string) {
+		func(id, assignmentID, vehicleID, missionID string) {
 			resIDs = append(resIDs, id)
-			resAssignmentIDs = append(resAssignmentIDs, assignmentId)
-			resVehicleIDs = append(resVehicleIDs, vehicleId)
-			resMissionIDs = append(resMissionIDs, missionId)
+			resAssignmentIDs = append(resAssignmentIDs, assignmentID)
+			resVehicleIDs = append(resVehicleIDs, vehicleID)
+			resMissionIDs = append(resMissionIDs, missionID)
 		},
 	)
 
@@ -368,7 +384,11 @@ func TestUpdateAssignmentTransaction(t *testing.T) {
 	repo.On("GetByFlightplanID", DefaultFlightplanID).Return(fleet, nil)
 	repo.On("Save", mock.Anything).Return(nil)
 
-	service := NewAssignFleetService(gen, repo, txm)
+	service := &assignFleetService{
+		gen:  gen,
+		repo: repo,
+		txm:  txm,
+	}
 
 	req := &updateAssignmentRequestMock{
 		FlightplanID: string(DefaultFlightplanID),
@@ -380,7 +400,7 @@ func TestUpdateAssignmentTransaction(t *testing.T) {
 	var resCall bool
 	ret := service.UpdateAssignment(
 		req,
-		func(id, assignmentId, vehicleId, missionId string) {
+		func(id, assignmentID, vehicleID, missionID string) {
 			resCall = true
 		},
 	)
@@ -432,7 +452,11 @@ func TestUpdateAssignmentOperationAssign(t *testing.T) {
 	repo.On("GetByFlightplanID", DefaultFlightplanID).Return(fleet, nil)
 	repo.On("Save", mock.Anything).Return(nil)
 
-	service := NewAssignFleetService(gen, repo, nil)
+	service := &assignFleetService{
+		gen:  gen,
+		repo: repo,
+		txm:  nil,
+	}
 
 	req := &updateAssignmentRequestMock{
 		FlightplanID: string(DefaultFlightplanID),
@@ -448,11 +472,11 @@ func TestUpdateAssignmentOperationAssign(t *testing.T) {
 	ret := service.updateAssignmentOperation(
 		nil,
 		req,
-		func(id, assignmentId, vehicleId, missionId string) {
+		func(id, assignmentID, vehicleID, missionID string) {
 			resID = id
-			resAssignmentID = assignmentId
-			resVehicleID = vehicleId
-			resMissionID = missionId
+			resAssignmentID = assignmentID
+			resVehicleID = vehicleID
+			resMissionID = missionID
 		},
 	)
 
@@ -542,7 +566,11 @@ func TestUpdateAssignmentOperationCancel(t *testing.T) {
 	repo.On("GetByFlightplanID", DefaultFlightplanID).Return(fleet, nil)
 	repo.On("Save", mock.Anything).Return(nil)
 
-	service := NewAssignFleetService(gen, repo, nil)
+	service := &assignFleetService{
+		gen:  gen,
+		repo: repo,
+		txm:  nil,
+	}
 
 	req := &updateAssignmentRequestMock{
 		FlightplanID: string(DefaultFlightplanID),
@@ -558,11 +586,11 @@ func TestUpdateAssignmentOperationCancel(t *testing.T) {
 	ret := service.updateAssignmentOperation(
 		nil,
 		req,
-		func(id, assignmentId, vehicleId, missionId string) {
+		func(id, assignmentID, vehicleID, missionID string) {
 			resID = id
-			resAssignmentID = assignmentId
-			resVehicleID = vehicleId
-			resMissionID = missionId
+			resAssignmentID = assignmentID
+			resVehicleID = vehicleID
+			resMissionID = missionID
 		},
 	)
 

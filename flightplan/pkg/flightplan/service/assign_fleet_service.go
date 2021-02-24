@@ -7,11 +7,50 @@ import (
 )
 
 // AssignFleetService .
-type AssignFleetService struct {
-	gen  fleet.Generator
-	repo fleet.Repository
-	txm  txmanager.TransactionManager
+type AssignFleetService interface {
+	ChangeNumberOfVehicles(requestDpo ChangeNumberOfVehiclesRequestDpo, responseDpo ChangeNumberOfVehiclesResponseDpo) error
+	GetAssignments(requestDpo GetAssignmentsRequestDpo, responseEachDpo GetAssignmentsResponseDpo) error
+	UpdateAssignment(requestDpo UpdateAssignmentRequestDpo, responseDpo UpdateAssignmentResponseDpo) error
 }
+
+// ChangeNumberOfVehiclesRequestDpo .
+type ChangeNumberOfVehiclesRequestDpo interface {
+	GetFlightplanID() string
+	GetNumberOfVehicles() int32
+}
+
+// ChangeNumberOfVehiclesResponseDpo .
+type ChangeNumberOfVehiclesResponseDpo = func(id string, numberOfVehicles int32)
+
+// GetAssignmentsRequestDpo .
+type GetAssignmentsRequestDpo interface {
+	GetFlightplanID() string
+}
+
+// GetAssignmentsResponseDpo .
+type GetAssignmentsResponseDpo = func(id, assignmentID, vehicleID, missionID string)
+
+type assignmentVehicle struct {
+	assignmentID string
+	vehicleID    string
+}
+type eventMission struct {
+	eventID      string
+	assignmentID string
+	missionID    string
+}
+
+// UpdateAssignmentRequestDpo .
+type UpdateAssignmentRequestDpo interface {
+	GetFlightplanID() string
+	GetEventID() string
+	GetAssignmentID() string
+	GetVehicleID() string
+	GetMissionID() string
+}
+
+// UpdateAssignmentResponseDpo .
+type UpdateAssignmentResponseDpo = func(id, assignmentID, vehicleID, missionID string)
 
 // NewAssignFleetService .
 func NewAssignFleetService(
@@ -19,15 +58,20 @@ func NewAssignFleetService(
 	repo fleet.Repository,
 	txm txmanager.TransactionManager,
 ) AssignFleetService {
-	return AssignFleetService{
+	return &assignFleetService{
 		gen:  gen,
 		repo: repo,
 		txm:  txm,
 	}
 }
 
-// ChangeNumberOfVehicles .
-func (s *AssignFleetService) ChangeNumberOfVehicles(
+type assignFleetService struct {
+	gen  fleet.Generator
+	repo fleet.Repository
+	txm  txmanager.TransactionManager
+}
+
+func (s *assignFleetService) ChangeNumberOfVehicles(
 	requestDpo ChangeNumberOfVehiclesRequestDpo,
 	responseDpo ChangeNumberOfVehiclesResponseDpo,
 ) error {
@@ -40,7 +84,7 @@ func (s *AssignFleetService) ChangeNumberOfVehicles(
 	})
 }
 
-func (s *AssignFleetService) changeNumberOfVehiclesOperation(
+func (s *assignFleetService) changeNumberOfVehiclesOperation(
 	tx txmanager.Tx,
 	requestDpo ChangeNumberOfVehiclesRequestDpo,
 	responseDpo ChangeNumberOfVehiclesResponseDpo,
@@ -78,8 +122,7 @@ func (s *AssignFleetService) changeNumberOfVehiclesOperation(
 	return nil
 }
 
-// GetAssignments .
-func (s *AssignFleetService) GetAssignments(
+func (s *assignFleetService) GetAssignments(
 	requestDpo GetAssignmentsRequestDpo,
 	responseEachDpo GetAssignmentsResponseDpo,
 ) error {
@@ -92,7 +135,7 @@ func (s *AssignFleetService) GetAssignments(
 	})
 }
 
-func (s *AssignFleetService) getAssignmentsOperation(
+func (s *assignFleetService) getAssignmentsOperation(
 	tx txmanager.Tx,
 	requestDpo GetAssignmentsRequestDpo,
 	responseEachDpo GetAssignmentsResponseDpo,
@@ -149,8 +192,7 @@ func (s *AssignFleetService) getAssignmentsOperation(
 	return nil
 }
 
-// UpdateAssignment .
-func (s *AssignFleetService) UpdateAssignment(
+func (s *assignFleetService) UpdateAssignment(
 	requestDpo UpdateAssignmentRequestDpo,
 	responseDpo UpdateAssignmentResponseDpo,
 ) error {
@@ -163,7 +205,7 @@ func (s *AssignFleetService) UpdateAssignment(
 	})
 }
 
-func (s *AssignFleetService) updateAssignmentOperation(
+func (s *assignFleetService) updateAssignmentOperation(
 	tx txmanager.Tx,
 	requestDpo UpdateAssignmentRequestDpo,
 	responseDpo UpdateAssignmentResponseDpo,
@@ -219,42 +261,3 @@ func (s *AssignFleetService) updateAssignmentOperation(
 	)
 	return nil
 }
-
-// ChangeNumberOfVehiclesRequestDpo .
-type ChangeNumberOfVehiclesRequestDpo interface {
-	GetFlightplanID() string
-	GetNumberOfVehicles() int32
-}
-
-// ChangeNumberOfVehiclesResponseDpo .
-type ChangeNumberOfVehiclesResponseDpo = func(id string, numberOfVehicles int32)
-
-// GetAssignmentsRequestDpo .
-type GetAssignmentsRequestDpo interface {
-	GetFlightplanID() string
-}
-
-// GetAssignmentsResponseDpo .
-type GetAssignmentsResponseDpo = func(id, assignmentId, vehicleId, missionId string)
-
-type assignmentVehicle struct {
-	assignmentID string
-	vehicleID    string
-}
-type eventMission struct {
-	eventID      string
-	assignmentID string
-	missionID    string
-}
-
-// UpdateAssignmentRequestDpo .
-type UpdateAssignmentRequestDpo interface {
-	GetFlightplanID() string
-	GetEventID() string
-	GetAssignmentID() string
-	GetVehicleID() string
-	GetMissionID() string
-}
-
-// UpdateAssignmentResponseDpo .
-type UpdateAssignmentResponseDpo = func(id, assignmentId, vehicleId, missionId string)

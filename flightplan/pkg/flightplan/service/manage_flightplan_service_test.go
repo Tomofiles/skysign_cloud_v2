@@ -26,7 +26,12 @@ func TestGetFlightplanTransaction(t *testing.T) {
 
 	repo.On("GetByID", DefaultFlightplanID).Return(flightplan, nil)
 
-	service := NewManageFlightplanService(nil, repo, txm, nil)
+	service := &manageFlightplanService{
+		gen:  nil,
+		repo: repo,
+		txm:  txm,
+		psm:  nil,
+	}
 
 	req := &flightplanIDRequestMock{
 		ID: string(DefaultFlightplanID),
@@ -60,7 +65,12 @@ func TestGetFlightplanOperation(t *testing.T) {
 	repo := &flightplanRepositoryMock{}
 	repo.On("GetByID", DefaultFlightplanID).Return(flightplan, nil)
 
-	service := NewManageFlightplanService(nil, repo, nil, nil)
+	service := &manageFlightplanService{
+		gen:  nil,
+		repo: repo,
+		txm:  nil,
+		psm:  nil,
+	}
 
 	req := &flightplanIDRequestMock{
 		ID: string(DefaultFlightplanID),
@@ -102,7 +112,12 @@ func TestListFlightplansTransaction(t *testing.T) {
 
 	repo.On("GetAll").Return(flightplans, nil)
 
-	service := NewManageFlightplanService(nil, repo, txm, nil)
+	service := &manageFlightplanService{
+		gen:  nil,
+		repo: repo,
+		txm:  txm,
+		psm:  nil,
+	}
 
 	var resCall bool
 	ret := service.ListFlightplans(
@@ -167,7 +182,12 @@ func TestListFlightplansOperation(t *testing.T) {
 	repo := &flightplanRepositoryMock{}
 	repo.On("GetAll").Return(flightplans, nil)
 
-	service := NewManageFlightplanService(nil, repo, nil, nil)
+	service := &manageFlightplanService{
+		gen:  nil,
+		repo: repo,
+		txm:  nil,
+		psm:  nil,
+	}
 
 	var resID, resName, resDescription []string
 	ret := service.listFlightplansOperation(
@@ -218,7 +238,12 @@ func TestCreateFlightplanTransaction(t *testing.T) {
 	psm.On("GetPublisher").Return(pub, close, nil)
 	repo.On("Save", mock.Anything).Return(nil)
 
-	service := NewManageFlightplanService(gen, repo, txm, psm)
+	service := &manageFlightplanService{
+		gen:  gen,
+		repo: repo,
+		txm:  txm,
+		psm:  psm,
+	}
 
 	req := &flightplanRequestMock{
 		Name:        DefaultFlightplanName,
@@ -258,7 +283,12 @@ func TestCreateFlightplanOperation(t *testing.T) {
 	repo.On("Save", mock.Anything).Return(nil)
 	pub := &publisherMock{}
 
-	service := NewManageFlightplanService(gen, repo, nil, nil)
+	service := &manageFlightplanService{
+		gen:  gen,
+		repo: repo,
+		txm:  nil,
+		psm:  nil,
+	}
 
 	req := &flightplanRequestMock{
 		Name:        DefaultFlightplanName,
@@ -326,7 +356,12 @@ func TestUpdateFlightplanTransaction(t *testing.T) {
 	repo.On("GetByID", DefaultFlightplanID).Return(flightplan, nil)
 	repo.On("Save", mock.Anything).Return(nil)
 
-	service := NewManageFlightplanService(gen, repo, txm, psm)
+	service := &manageFlightplanService{
+		gen:  gen,
+		repo: repo,
+		txm:  txm,
+		psm:  psm,
+	}
 
 	req := &flightplanRequestMock{
 		ID:          string(DefaultFlightplanID),
@@ -380,7 +415,12 @@ func TestUpdateFlightplanOperation(t *testing.T) {
 	repo.On("Save", mock.Anything).Return(nil)
 	pub := &publisherMock{}
 
-	service := NewManageFlightplanService(nil, repo, nil, nil)
+	service := &manageFlightplanService{
+		gen:  nil,
+		repo: repo,
+		txm:  nil,
+		psm:  nil,
+	}
 
 	req := &flightplanRequestMock{
 		ID:          string(DefaultFlightplanID),
@@ -445,7 +485,12 @@ func TestDeleteFlightplanTransaction(t *testing.T) {
 	repo.On("GetByID", DefaultFlightplanID).Return(flightplan, nil)
 	repo.On("Delete", mock.Anything).Return(nil)
 
-	service := NewManageFlightplanService(gen, repo, txm, psm)
+	service := &manageFlightplanService{
+		gen:  gen,
+		repo: repo,
+		txm:  txm,
+		psm:  psm,
+	}
 
 	req := &flightplanIDRequestMock{
 		ID: string(DefaultFlightplanID),
@@ -480,7 +525,12 @@ func TestDeleteFlightplanOperation(t *testing.T) {
 	repo.On("Delete", mock.Anything).Return(nil)
 	pub := &publisherMock{}
 
-	service := NewManageFlightplanService(gen, repo, nil, nil)
+	service := &manageFlightplanService{
+		gen:  gen,
+		repo: repo,
+		txm:  nil,
+		psm:  nil,
+	}
 
 	req := &flightplanIDRequestMock{
 		ID: string(DefaultFlightplanID),
