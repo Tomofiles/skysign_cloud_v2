@@ -83,7 +83,7 @@ const AssignAssetsEdit = (props) => {
   }
 
   return (
-    <div className={props.classes.funcPanel}>
+    <div className={props.classes.funcPanel2}>
       <Box>
         <Button onClick={onClickReturn}>
           <ChevronLeftIcon style={{ color: grey[50] }} />
