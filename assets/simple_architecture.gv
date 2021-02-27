@@ -5,10 +5,11 @@ digraph G {
   HTTPFrontend1 [label="<Communicaton>\ngRPC gateway\n[Golang]"];
   HTTPFrontend2 [label="<Mission>\ngRPC gateway\n[Golang]"];
   HTTPFrontend3 [label="<Vehicle>\ngRPC gateway\n[Golang]"];
+  HTTPFrontend4 [label="<Flightplan>\ngRPC gateway\n[Golang]"];
   MissionsBackend [label="<Mission>\nbackend\n[Java]"];
   CommunicationBackend [label="<Communication>\nbackend\n[Java]"];
-  PostgreSQL1 [label="PostgreSQL", shape=cylinder];
-  PostgreSQL2 [label="PostgreSQL", shape=cylinder];
+  FlightplanBackend [label="<Flightplan>\nbackend\n[Golang]"];
+  PostgreSQL [label="PostgreSQL", shape=cylinder];
   RabbitMQ [label="RabbitMQ", shape=box3d];
   ReverseProxy [label="Reverse Proxy"];
   StaticContents [label="Static contents\n[React/Cesium]"];
@@ -19,10 +20,12 @@ digraph G {
   Client -> ReverseProxy [label="HTTP"];
   Edge_ -> ReverseProxy [label="HTTP"];
   
-  CommunicationBackend -> PostgreSQL1;
-  MissionsBackend -> PostgreSQL2;
+  CommunicationBackend -> PostgreSQL;
+  MissionsBackend -> PostgreSQL;
+  FlightplanBackend -> PostgreSQL;
   
   CommunicationBackend -> RabbitMQ;
+  FlightplanBackend -> RabbitMQ;
     
   subgraph cluster_0 {
     label="Container\nplatform";
@@ -30,10 +33,12 @@ digraph G {
     ReverseProxy -> HTTPFrontend2 [label="HTTP"];
     ReverseProxy -> StaticContents [label="HTTP"];
     ReverseProxy -> HTTPFrontend3 [label="HTTP"];
+    ReverseProxy -> HTTPFrontend4 [label="HTTP"];
   
     HTTPFrontend1 -> CommunicationBackend [label="gRPC"];
     HTTPFrontend2 -> MissionsBackend [label="gRPC"];
     HTTPFrontend3 -> CommunicationBackend [label="gRPC"];
+    HTTPFrontend4 -> FlightplanBackend [label="gRPC"];
   }
   
   subgraph cluster_1 {

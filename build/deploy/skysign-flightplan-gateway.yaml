@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: skysign-flightplan-gateway
+  labels:
+    run: skysign-flightplan-gateway
+spec:
+  type: NodePort
+  ports:
+  - port: 6000
+    nodePort: 30035
+    protocol: TCP
+  selector:
+    run: skysign-flightplan-gateway-backend

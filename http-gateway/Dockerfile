@@ -22,3 +22,4 @@ COPY --from=build /go/bin/vehicle-gateway .
 COPY --from=build /go/bin/mission-gateway .
 COPY --from=build /go/bin/helper-gateway .
 COPY --from=build /go/bin/comm-gateway .
+COPY --from=build /go/bin/flightplan-gateway .

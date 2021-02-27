@@ -2,12 +2,12 @@ import React from 'react';
 
 import {
   Typography,
-  ExpansionPanelDetails,
-  ExpansionPanelActions,
   Button,
   TextField,
   Grid,
-  Box
+  Box,
+  Paper,
+  Divider
 } from '@material-ui/core';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import { grey } from '@material-ui/core/colors';
@@ -25,58 +25,82 @@ const VehiclesNew = (props) => {
       });
   }
 
+  const onClickCancel = () => {
+    props.openList();  
+  }
+
   const onClickReturn = () => {
     props.openList();  
   }
 
   return (
-    <div>
+    <div className={props.classes.funcPanel}>
       <form onSubmit={handleSubmit(onClickSave)}>
-        <ExpansionPanelDetails>
-          <Grid container className={props.classes.textLabel}>
-            <Grid item xs={12}>
-              <Button onClick={onClickReturn}>
-                <ChevronLeftIcon style={{ color: grey[50] }} />
-              </Button>
-            </Grid>
-            <Grid item xs={12}>
-              <Typography>New Vehicle</Typography>
-            </Grid>
-            <Grid item xs={12}>
-              <Box className={props.classes.textInput}
-                  p={1} m={1} borderRadius={7} >
-                <TextField
-                  label="Name"
-                  type="text"
-                  name="name"
-                  fullWidth
-                  inputRef={register({ required: true, maxLength: 50 })}
-                  error={Boolean(errors.name)}
-                  helperText={errors.name} />
-              </Box>
-            </Grid>
-            <Grid item xs={12}>
-              <Box className={props.classes.textInput}
-                  p={1} m={1} borderRadius={7} >
-                <TextField
-                  label="Communication ID"
-                  type="text"
-                  name="commId"
-                  fullWidth
-                  inputRef={register({ required: true, maxLength: 50 })}
-                  error={Boolean(errors.commId)}
-                  helperText={errors.commId} />
-              </Box>
-            </Grid>
-          </Grid>
-        </ExpansionPanelDetails>
-        <ExpansionPanelActions >
-          <Button
-              className={props.classes.funcButton}
-              type="submit" >
-            Save
+        <Box>
+          <Button onClick={onClickReturn}>
+            <ChevronLeftIcon style={{ color: grey[50] }} />
           </Button>
-        </ExpansionPanelActions>
+          <Box p={2} style={{display: 'flex'}}>
+            <Typography>Create Vehicle</Typography>
+          </Box>
+        </Box>
+        <Box pb={2}>
+          <Paper className={props.classes.funcPanelEdit}>
+            <Box p={3}>
+              <Grid container className={props.classes.textLabel}>
+                <Grid item xs={12}>
+                  <Typography>Vehicle settings</Typography>
+                  <Divider/>
+                </Grid>
+                <Grid item xs={12}>
+                  <Box className={props.classes.textInput}
+                      p={1} m={1} borderRadius={7} >
+                    <TextField
+                      label="Name"
+                      type="text"
+                      name="name"
+                      fullWidth
+                      inputRef={register({ required: true, maxLength: 50 })}
+                      error={Boolean(errors.name)}
+                      helperText={errors.name} />
+                  </Box>
+                </Grid>
+                <Grid item xs={12}>
+                  <Box className={props.classes.textInput}
+                      p={1} m={1} borderRadius={7} >
+                    <TextField
+                      label="Communication ID"
+                      type="text"
+                      name="commId"
+                      fullWidth
+                      inputRef={register({ required: true, maxLength: 50 })}
+                      error={Boolean(errors.commId)}
+                      helperText={errors.commId} />
+                  </Box>
+                </Grid>
+              </Grid>
+              <Divider/>
+            </Box>
+          </Paper>
+        </Box>
+        <Box>
+          <Box style={{display: 'flex', justifyContent: 'flex-end'}}>
+            <Box px={1}>
+              <Button
+                  className={props.classes.funcButton}
+                  onClick={onClickCancel}>
+                Cancel
+              </Button>
+            </Box>
+            <Box px={1}>
+              <Button
+                  className={props.classes.funcButton}
+                  type="submit" >
+                Save
+              </Button>
+            </Box>
+          </Box>
+        </Box>
       </form>
     </div>
   );

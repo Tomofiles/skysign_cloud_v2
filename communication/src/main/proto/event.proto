@@ -16,3 +16,11 @@ message CommunicationIdRemovedEvent {
     string communicationId = 1;
     string version = 2;
 }
+
+message FlightplanCreatedEvent {
+    string flightplan_id = 1;
+}
+
+message FlightplanDeletedEvent {
+    string flightplan_id = 1;
+}

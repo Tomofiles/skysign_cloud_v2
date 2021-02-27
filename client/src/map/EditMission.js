@@ -3,7 +3,7 @@ import React, { useContext } from 'react';
 import Waypoint from './Waypoint';
 import Path from './Path';
 import { AppContext } from '../context/Context';
-import { getPathsForDisplayToMap, getWaypointsForDisplayToMap } from '../plans/missions/MissionHelper';
+import { getPathsForDisplayToMap, getWaypointsForDisplayToMap } from '../missions/missions/MissionHelper';
 
 const EditMission = () => {
   const { editMission } = useContext(AppContext);

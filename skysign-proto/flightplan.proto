@@ -1,0 +1,56 @@
+syntax = "proto3";
+
+package skysign_proto;
+
+import "google/api/annotations.proto";
+import "common.proto";
+
+option java_package = "proto.skysign";
+option java_multiple_files = true;
+option go_package = ".;skysign_proto";
+
+service ManageFlightplanService {
+    rpc ListFlightplans (Empty) returns (ListFlightplansResponses) {
+        option (google.api.http) = {
+            get: "/api/v1/flightplans"
+        };
+    };
+
+    rpc GetFlightplan (GetFlightplanRequest) returns (Flightplan) {
+        option (google.api.http) = {
+            get: "/api/v1/flightplans/{id}"
+        };
+    };
+
+    rpc CreateFlightplan (Flightplan) returns (Flightplan) {
+        option (google.api.http) = {
+            post: "/api/v1/flightplans"
+            body: "*"
+        };
+    };
+
+    rpc UpdateFlightplan (Flightplan) returns (Flightplan) {
+        option (google.api.http) = {
+            put: "/api/v1/flightplans/{id}"
+            body: "*"
+        };
+    };
+
+    rpc DeleteFlightplan (DeleteFlightplanRequest) returns (Empty) {
+        option (google.api.http) = {
+            delete: "/api/v1/flightplans/{id}"
+        };
+    };
+}
+
+message GetFlightplanRequest {
+    string id = 1;
+}
+
+message DeleteFlightplanRequest {
+    string id = 1;
+}
+
+message ListFlightplansResponses {
+    repeated Flightplan flightplans = 1;
+}

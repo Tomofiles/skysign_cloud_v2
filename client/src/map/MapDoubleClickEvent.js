@@ -3,7 +3,7 @@ import { ScreenSpaceEvent, useCesium } from 'resium';
 import { ScreenSpaceEventType, defined, Cartographic, Math, SceneMode } from 'cesium';
 import { AppContext } from '../context/Context';
 import { EDIT_MODE } from '../context/EditMode';
-import { getTakeoffHeight } from '../plans/missions/MissionUtils';
+import { getTakeoffHeight } from '../missions/missions/MissionUtils';
 
 const MapDoubleClickEvent = () => {
   const context = useCesium();

@@ -2,7 +2,8 @@ import { makeStyles, createMuiTheme } from "@material-ui/core/styles";
 
 const menuWidth = 70;
 const menuWidthItem = 38;
-const funcWidth = 320;
+const funcWidth = 450;
+const funcWidth2 = 750;
 
 export const useStyles = makeStyles(theme => ({
   root: {
@@ -33,21 +34,43 @@ export const useStyles = makeStyles(theme => ({
   mapArea: {
     position: "absolute",
     top: 0,
-    left: menuWidth,
+    left: 0,
     right: 0,
-    bottom: 0
+    bottom: 0,
+    'z-index': -1
   },
   func: {
-    width: funcWidth,
+    position: "absolute",
+    top: 0,
+    left: menuWidth,
+    right: 0,
+    bottom: 0,
     flexShrink: 0,
+    background: 'rgba(0, 0, 0, 0.5)',
+    color: '#fafafa',
+  },
+  funcEditable: {
+    right: 'auto',
   },
   funcPaper: {
-    background: 'rgba(0, 0, 0, 0.7)',
-    color: '#fafafa',
-    width: funcWidth,
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
   },
   funcPanel: {
-    background: 'transparent',
+    maxWidth: funcWidth
+  },
+  funcPanel2: {
+    maxWidth: funcWidth2
+  },
+  funcPanelEdit: {
+    background: '#333333',
+    color: '#fafafa',
+  },
+  funcPanelList: {
+    background: '#333333',
+    color: '#fafafa',
   },
   funcPanelSummary: {
     background: '#303437',
@@ -73,17 +96,17 @@ export const useStyles = makeStyles(theme => ({
     color: '#fafafa',
   },
   missionListItem: {
-    background: '#303437',
-    color: '#fafafa',
+    background: '#fafafa',
     "&:hover": {
-      background: 'rgba(0, 173, 181, 1.0)'
+      background: 'rgba(0, 173, 181, 1.0)',
+      color: '#fafafa',
     }
   },
   funcButton: {
-    background: '#303437',
+    background: 'rgba(0, 173, 181, 1.0)',
     color: '#fafafa',
     "&:hover": {
-      background: 'rgba(0, 173, 181, 1.0)'
+      background: '#00939a'
     }
   },
   textLabel: {
@@ -109,6 +132,20 @@ export const theme = createMuiTheme({
     MuiListItemIcon: {
       "root": {
         minWidth: 38,
+      }
+    },
+    MuiTableRow: {
+      "root": {
+        '&:hover': {
+          backgroundColor: 'rgba(0, 173, 181, 1.0)',
+        }
+      },
+    },
+    MuiTableBody: {
+      "root": {
+        '&:hover': {
+          cursor: 'pointer',
+        }
       }
     }
   }
