@@ -12,12 +12,10 @@ import org.springframework.stereotype.Component;
 
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
-import net.tomofiles.skysign.communication.api.dpo.CreateCommunicationRequestDpoEvent;
-import net.tomofiles.skysign.communication.api.dpo.DeleteCommunicationRequestDpoEvent;
+import net.tomofiles.skysign.communication.api.event.CreateCommunicationRequestDpoEvent;
+import net.tomofiles.skysign.communication.api.event.DeleteCommunicationRequestDpoEvent;
 import net.tomofiles.skysign.communication.api.proto.CommunicationIdGaveEventPb;
 import net.tomofiles.skysign.communication.api.proto.CommunicationIdRemovedEventPb;
-import net.tomofiles.skysign.communication.domain.vehicle.CommunicationIdGaveEvent;
-import net.tomofiles.skysign.communication.domain.vehicle.CommunicationIdRemovedEvent;
 import net.tomofiles.skysign.communication.service.ManageCommunicationService;
 
 @Component
@@ -44,8 +42,7 @@ public class CommunicationEventHandler {
     public void processCommunicationIdGaveEvent(byte[] message) throws Exception {
         CommunicationIdGaveEventPb eventPb = new CommunicationIdGaveEventPb(message);
         logger.info("RECEIVE , Event: {}, Message: {}", EXCHANGE_NAME_GAVE_EVENT, eventPb);
-        CommunicationIdGaveEvent event = eventPb.getEvent();
-        CreateCommunicationRequestDpoEvent requestDpo = new CreateCommunicationRequestDpoEvent(event);
+        CreateCommunicationRequestDpoEvent requestDpo = new CreateCommunicationRequestDpoEvent(eventPb.getEvent());
         this.manageCommunicationService.createCommunication(requestDpo, communication -> {/** 何もしない */});
     }
 
@@ -58,8 +55,7 @@ public class CommunicationEventHandler {
     public void processCommunicationIdRemovedEvent(byte[] message) throws Exception {
         CommunicationIdRemovedEventPb eventPb = new CommunicationIdRemovedEventPb(message);
         logger.info("RECEIVE , Event: {}, Message: {}", EXCHANGE_NAME_REMOVED_EVENT, eventPb);
-        CommunicationIdRemovedEvent event = eventPb.getEvent();
-        DeleteCommunicationRequestDpoEvent requestDpo = new DeleteCommunicationRequestDpoEvent(event);
+        DeleteCommunicationRequestDpoEvent requestDpo = new DeleteCommunicationRequestDpoEvent(eventPb.getEvent());
         this.manageCommunicationService.deleteCommunication(requestDpo, communication -> {/** 何もしない */});
     }
 }

@@ -27,7 +27,7 @@ public class GrpcLogInterceptor implements ServerInterceptor {
         return new GrpcForwardingServerCallListener<M>(call.getMethodDescriptor(), listener) {
             @Override
             public void onMessage(M message) {
-                logger.info("REQUEST , API: {}, Message: {}", methodName, message.toString().replaceAll("\\r\\n|\\r|\\n", ""));
+                logger.info("REQUEST , API: {}, Message: {}", methodName, message.toString().replaceAll("\\r\\n|\\r|\\n", " "));
                 super.onMessage(message);
             }
         };
@@ -53,7 +53,7 @@ public class GrpcLogInterceptor implements ServerInterceptor {
 
         @Override
         public void sendMessage(R message) {
-            logger.info("RESPONSE, API: {}, Message: {}", serverCall.getMethodDescriptor().getFullMethodName(), message.toString().replaceAll("\\r\\n|\\r|\\n", ""));
+            logger.info("RESPONSE, API: {}, Message: {}", serverCall.getMethodDescriptor().getFullMethodName(), message.toString().replaceAll("\\r\\n|\\r|\\n", " "));
             serverCall.sendMessage(message);
         }
 

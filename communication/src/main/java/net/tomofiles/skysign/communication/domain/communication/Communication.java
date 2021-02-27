@@ -11,7 +11,6 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import net.tomofiles.skysign.communication.domain.vehicle.VehicleId;
 
 @EqualsAndHashCode(of = {"id"})
 @ToString
@@ -22,15 +21,8 @@ public class Communication {
     private final Generator generator;
 
     @Getter
-    private final VehicleId vehicleId;
-
-    @Getter
     @Setter(value = AccessLevel.PACKAGE)
     private boolean controlled = false;
-
-    @Getter
-    @Setter(value = AccessLevel.PACKAGE)
-    private MissionId missionId = null;
 
     @Getter(value = AccessLevel.PACKAGE)
     @Setter(value = AccessLevel.PACKAGE)
@@ -39,10 +31,13 @@ public class Communication {
     @Getter(value = AccessLevel.PACKAGE)
     private final List<Command> commands;
 
-    Communication(CommunicationId id, VehicleId vehicleId, Generator generator) {
+    @Getter(value = AccessLevel.PACKAGE)
+    private final List<UploadMission> uploadMissions;
+
+    Communication(CommunicationId id, Generator generator) {
         this.id = id;
-        this.vehicleId = vehicleId;
         this.commands = new ArrayList<>();
+        this.uploadMissions = new ArrayList<>();
 
         this.generator = generator;
     }
@@ -87,14 +82,6 @@ public class Communication {
                 .collect(Collectors.toList());
     }
 
-    public void staging(MissionId missionId) {
-        this.missionId = missionId;
-    }
-
-    public void cancel() {
-        this.missionId = null;
-    }
-
     public void control() {
         this.controlled = true;
     }
@@ -110,6 +97,12 @@ public class Communication {
         return id;
     }
 
+    public CommandId pushUploadMission(MissionId missionId) {
+        CommandId id = this.pushCommand(CommandType.UPLOAD);
+        this.uploadMissions.add(new UploadMission(id, missionId));
+        return id;
+    }
+
     public CommandType pullCommandById(CommandId id) {
         Command command = this.commands.stream()
                 .filter(Command.empty(id)::equals)
@@ -120,5 +113,17 @@ public class Communication {
         }
         this.commands.remove(command);
         return command.getType();
+    }
+
+    public MissionId pullUploadMissionById(CommandId id) {
+        UploadMission uploadMission = this.uploadMissions.stream()
+                .filter(UploadMission.empty(id)::equals)
+                .findAny()
+                .orElse(null);
+        if (uploadMission == null) {
+            return null;
+        }
+        this.uploadMissions.remove(uploadMission);
+        return uploadMission.getMissionId();
     }
 }

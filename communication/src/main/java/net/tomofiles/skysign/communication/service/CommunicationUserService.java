@@ -6,11 +6,10 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import lombok.AllArgsConstructor;
+import net.tomofiles.skysign.communication.domain.communication.CommandId;
 import net.tomofiles.skysign.communication.domain.communication.Communication;
 import net.tomofiles.skysign.communication.domain.communication.CommunicationRepository;
 import net.tomofiles.skysign.communication.domain.communication.TelemetrySnapshot;
-import net.tomofiles.skysign.communication.service.dpo.CancelRequestDpo;
-import net.tomofiles.skysign.communication.service.dpo.CancelResponseDpo;
 import net.tomofiles.skysign.communication.service.dpo.ControlRequestDpo;
 import net.tomofiles.skysign.communication.service.dpo.ControlResponseDpo;
 import net.tomofiles.skysign.communication.service.dpo.ListCommunicationsResponsesDpo;
@@ -18,8 +17,8 @@ import net.tomofiles.skysign.communication.service.dpo.PullTelemetryRequestDpo;
 import net.tomofiles.skysign.communication.service.dpo.PullTelemetryResponseDpo;
 import net.tomofiles.skysign.communication.service.dpo.PushCommandRequestDpo;
 import net.tomofiles.skysign.communication.service.dpo.PushCommandResponseDpo;
-import net.tomofiles.skysign.communication.service.dpo.StagingRequestDpo;
-import net.tomofiles.skysign.communication.service.dpo.StagingResponseDpo;
+import net.tomofiles.skysign.communication.service.dpo.PushUploadMissionRequestDpo;
+import net.tomofiles.skysign.communication.service.dpo.PushUploadMissionResponseDpo;
 import net.tomofiles.skysign.communication.service.dpo.UncontrolRequestDpo;
 import net.tomofiles.skysign.communication.service.dpo.UncontrolResponseDpo;
 
@@ -34,36 +33,6 @@ public class CommunicationUserService {
         List<Communication> communications = this.communicationRepository.getAll();
 
         responsesDpo.setCommunications(communications);
-    }
-
-    @Transactional
-    public void staging(StagingRequestDpo requestDpo, StagingResponseDpo responseDpo) {
-        Communication communication = this.communicationRepository.getById(requestDpo.getCommId());
-
-        if (communication == null) {
-            return;
-        }
-
-        communication.staging(requestDpo.getMissionId());
-
-        this.communicationRepository.save(communication);
-
-        responseDpo.setCommunication(communication);
-    }
-
-    @Transactional
-    public void cancel(CancelRequestDpo requestDpo, CancelResponseDpo responseDpo) {
-        Communication communication = this.communicationRepository.getById(requestDpo.getCommId());
-
-        if (communication == null) {
-            return;
-        }
-
-        communication.cancel();
-
-        this.communicationRepository.save(communication);
-
-        responseDpo.setCommunication(communication);
     }
 
     @Transactional
@@ -104,11 +73,28 @@ public class CommunicationUserService {
             return;
         }
 
-        communication.pushCommand(requestDpo.getCommandType());
+        CommandId commandId = communication.pushCommand(requestDpo.getCommandType());
 
         this.communicationRepository.save(communication);
 
         responseDpo.setCommunication(communication);
+        responseDpo.setCommandId(commandId);
+    }
+
+    @Transactional
+    public void pushUploadMission(PushUploadMissionRequestDpo requestDpo, PushUploadMissionResponseDpo responseDpo) {
+        Communication communication = this.communicationRepository.getById(requestDpo.getCommId());
+
+        if (communication == null) {
+            return;
+        }
+
+        CommandId commandId = communication.pushUploadMission(requestDpo.getMissionId());
+
+        this.communicationRepository.save(communication);
+
+        responseDpo.setCommunication(communication);
+        responseDpo.setCommandId(commandId);
     }
 
     @Transactional

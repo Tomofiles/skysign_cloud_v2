@@ -17,22 +17,17 @@ import java.util.UUID;
 import net.tomofiles.skysign.communication.domain.communication.Communication;
 import net.tomofiles.skysign.communication.domain.communication.CommunicationId;
 import net.tomofiles.skysign.communication.domain.communication.CommunicationRepository;
-import net.tomofiles.skysign.communication.domain.vehicle.CommunicationIdGaveEvent;
-import net.tomofiles.skysign.communication.domain.vehicle.CommunicationIdRemovedEvent;
-import net.tomofiles.skysign.communication.domain.vehicle.VehicleId;
-import net.tomofiles.skysign.communication.domain.vehicle.Version;
-import net.tomofiles.skysign.communication.infra.event.listener.proto.CommunicationIdGaveEventPb;
-import net.tomofiles.skysign.communication.infra.event.listener.proto.CommunicationIdRemovedEventPb;
 import net.tomofiles.skysign.communication.service.ManageCommunicationService;
 
 import static net.tomofiles.skysign.communication.domain.communication.CommunicationObjectMother.newNormalCommunication;
+import static net.tomofiles.skysign.communication.api.EventObjectMother.newNormalCommunicationIdGaveEvent;
+import static net.tomofiles.skysign.communication.api.EventObjectMother.newNormalCommunicationIdRemovedEvent;
 
 public class CommunicationEventHandlerTests {
     
     private static final CommunicationId DEFAULT_COMMUNICATION_ID = new CommunicationId(UUID.randomUUID().toString());
-    private static final VehicleId DEFAULT_VEHICLE_ID = new VehicleId(UUID.randomUUID().toString());
     private static final boolean DEFAULT_CONTROLLED = true;
-    private static final Version DEFAULT_VERSION = new Version(UUID.randomUUID().toString());
+    private static final String DEFAULT_VERSION = UUID.randomUUID().toString();
     private static final String EXCHANGE_NAME_GAVE_EVENT = "exchange_name_gave_event";
     private static final String EXCHANGE_NAME_REMOVED_EVENT = "exchange_name_removed_event";
 
@@ -60,20 +55,16 @@ public class CommunicationEventHandlerTests {
      */
     @Test
     public void fireCommunicationIdGaveEvent() throws Exception {
-        CommunicationIdGaveEvent event = new CommunicationIdGaveEvent(
+        this.eventHandler.processCommunicationIdGaveEvent(
+            newNormalCommunicationIdGaveEvent(
                 DEFAULT_COMMUNICATION_ID,
-                DEFAULT_VEHICLE_ID,
                 DEFAULT_VERSION
-        );
-        CommunicationIdGaveEventPb eventPb = new CommunicationIdGaveEventPb(event);
-
-        this.eventHandler.processCommunicationIdGaveEvent(eventPb.getMessage().getBody());
+            ));
 
         ArgumentCaptor<Communication> commCaptor = ArgumentCaptor.forClass(Communication.class);
         verify(this.repository, times(1)).save(commCaptor.capture());
 
         assertThat(commCaptor.getValue().getId()).isEqualTo(DEFAULT_COMMUNICATION_ID);
-        assertThat(commCaptor.getValue().getVehicleId()).isEqualTo(DEFAULT_VEHICLE_ID);
     }
 
     /**
@@ -86,18 +77,14 @@ public class CommunicationEventHandlerTests {
         when(this.repository.getById(DEFAULT_COMMUNICATION_ID))
                 .thenReturn(newNormalCommunication(
                         DEFAULT_COMMUNICATION_ID,
-                        DEFAULT_VEHICLE_ID,
                         DEFAULT_CONTROLLED,
-                        null, // テストに使用しないためNull
                         null)); // テストに使用しないためNull
 
-        CommunicationIdRemovedEvent event = new CommunicationIdRemovedEvent(
+        this.eventHandler.processCommunicationIdRemovedEvent(
+            newNormalCommunicationIdRemovedEvent(
                 DEFAULT_COMMUNICATION_ID,
                 DEFAULT_VERSION
-        );
-        CommunicationIdRemovedEventPb eventPb = new CommunicationIdRemovedEventPb(event);
-
-        this.eventHandler.processCommunicationIdRemovedEvent(eventPb.getMessage().getBody());
+            ));
 
         verify(this.repository, times(1)).remove(DEFAULT_COMMUNICATION_ID);
     }

@@ -31,7 +31,7 @@ func Cloudlink(ctx context.Context, cloud string, telemetry telemetry.Telemetry)
 						command, err := cloudlink.PullCommand(cloud, id, commID)
 						if err == nil {
 							if command.Type == "UPLOAD" {
-								mission, err := cloudlink.PullMission(cloud, id)
+								mission, err := cloudlink.PullMission(cloud, id, commID)
 								if err == nil {
 									missionStream <- mission
 								}

@@ -1,52 +1,20 @@
 package net.tomofiles.skysign.communication.api;
 
 import net.tomofiles.skysign.communication.domain.communication.CommunicationId;
-import net.tomofiles.skysign.communication.domain.communication.MissionId;
-import net.tomofiles.skysign.communication.domain.vehicle.VehicleId;
 import proto.skysign.common.Communication;
 import proto.skysign.PullTelemetryResponse;
 import proto.skysign.common.Telemetry;
-import proto.skysign.common.Vehicle;
 
 public class GrpcObjectMother {
 
     /**
-     * テスト用Vehicleオブジェクトを生成する。
-     */
-    public static Vehicle newNormalVehicleGrpc(VehicleId vehicleId) {
-        return Vehicle.newBuilder()
-                .setId(vehicleId.getId())
-                .setName("vehicle name")
-                .setCommId(new CommunicationId("comm id").getId())
-                .build();
-    }
-
-    /**
-     * Vehicle idが無いテスト用Vehicleオブジェクトを生成する。
-     */
-    public static Vehicle newNoIdVehicleGrpc() {
-        return Vehicle.newBuilder()
-                .setName("vehicle name")
-                .setCommId(new CommunicationId("comm id").getId())
-                .build();
-    }
-
-    /**
      * テスト用Communicationオブジェクトを生成する。
      */
-    public static Communication newNormalCommunicationGrpc(CommunicationId communicationId, VehicleId vehicleId, boolean controlled, MissionId missionId) {
-        Communication nonMissionIdComm =  Communication.newBuilder()
+    public static Communication newNormalCommunicationGrpc(CommunicationId communicationId, boolean controlled) {
+        return Communication.newBuilder()
                 .setId(communicationId.getId())
-                .setVehicleId(vehicleId.getId())
                 .setIsControlled(controlled)
                 .build();
-        if (missionId == null) {
-            return nonMissionIdComm;
-        } else {
-            return Communication.newBuilder(nonMissionIdComm)
-                    .setMissionId(missionId.getId())
-                    .build();
-        }
     }
 
     /**

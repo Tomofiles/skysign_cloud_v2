@@ -6,16 +6,14 @@ import java.util.List;
 import net.tomofiles.skysign.communication.domain.communication.CommandType;
 import net.tomofiles.skysign.communication.domain.communication.CommunicationId;
 import net.tomofiles.skysign.communication.domain.communication.Generator;
-import net.tomofiles.skysign.communication.domain.communication.MissionId;
-import net.tomofiles.skysign.communication.domain.vehicle.VehicleId;
 
 public class RecordObjectMother {
     
     /**
      * 通常のCommunicationレコードを生成する。
      */
-    public static CommunicationRecord newNormalCommunicationRecord(CommunicationId id, VehicleId vehicleId, boolean controlled, MissionId missionId) {
-        return new CommunicationRecord(id.getId(), vehicleId.getId(), controlled, missionId.getId());
+    public static CommunicationRecord newNormalCommunicationRecord(CommunicationId id, boolean controlled) {
+        return new CommunicationRecord(id.getId(), controlled);
     }
     
     /**
@@ -90,6 +88,36 @@ public class RecordObjectMother {
                         id.getId(),
                         CommandType.UPLOAD.name(),
                         generator.newTime()),
+        });
+    }
+
+    /**
+     * 1件のUploadMissionレコードを生成する。
+     */
+    public static UploadMissionRecord newSingleUploadMissionRecord(CommunicationId id, Generator generator) {
+        return new UploadMissionRecord(
+                generator.newCommandId().getId(),
+                id.getId(),
+                "MISSION_ID_SAMPLE_1");
+    }
+
+    /**
+     * 複数件のUploadMissionレコードを生成する。
+     */
+    public static List<UploadMissionRecord> newSeveralUploadMissionRecords(CommunicationId id, Generator generator) {
+        return Arrays.asList(new UploadMissionRecord[] {
+                new UploadMissionRecord(
+                        generator.newCommandId().getId(),
+                        id.getId(),
+                        "MISSION_ID_SAMPLE_1"),
+                new UploadMissionRecord(
+                        generator.newCommandId().getId(),
+                        id.getId(),
+                        "MISSION_ID_SAMPLE_2"),
+                new UploadMissionRecord(
+                        generator.newCommandId().getId(),
+                        id.getId(),
+                        "MISSION_ID_SAMPLE_3"),
         });
     }
 }

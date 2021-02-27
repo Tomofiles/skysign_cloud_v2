@@ -6,7 +6,7 @@ import java.util.List;
 import net.tomofiles.skysign.communication.domain.communication.component.CommandComponentDto;
 import net.tomofiles.skysign.communication.domain.communication.component.CommunicationComponentDto;
 import net.tomofiles.skysign.communication.domain.communication.component.TelemetryComponentDto;
-import net.tomofiles.skysign.communication.domain.vehicle.VehicleId;
+import net.tomofiles.skysign.communication.domain.communication.component.UploadMissionComponentDto;
 
 public class ComponentDtoObjectMother {
 
@@ -15,17 +15,15 @@ public class ComponentDtoObjectMother {
      */
     public static CommunicationComponentDto newNormalCommunicationComponentDto(
             CommunicationId communicationId,
-            VehicleId vehicleId,
             boolean controlled,
-            MissionId missionId,
-            Generator generator) {
+            Generator generatorCommand,
+            Generator generatorUploadMission) {
         return new CommunicationComponentDto(
                 communicationId.getId(),
-                vehicleId.getId(),
                 controlled,
-                missionId.getId(),
                 newNormalTelemetryComponentDto(),
-                newSeveralCommandsComponentDto(generator)
+                newSeveralCommandsComponentDto(generatorCommand),
+                newSeveralUploadMissionsComponentDto(generatorUploadMission)
         );
     }
 
@@ -60,13 +58,12 @@ public class ComponentDtoObjectMother {
     }
 
     /**
-     * 1
-     * 件のテスト用CommandオブジェクトのDTOコンポーネントを生成する。
+     * 1件のテスト用CommandオブジェクトのDTOコンポーネントを生成する。
      */
-    public static CommandComponentDto newSingleCommandComponentDto(Generator generator) {
+    public static CommandComponentDto newSingleCommandComponentDto(Generator generator, CommandType type) {
         return new CommandComponentDto(
                 generator.newCommandId().getId(),
-                CommandType.ARM.name(),
+                type.name(),
                 generator.newTime());
     }
 
@@ -87,6 +84,32 @@ public class ComponentDtoObjectMother {
                         generator.newCommandId().getId(),
                         CommandType.UPLOAD.name(),
                         generator.newTime()),
+        });
+    }
+
+    /**
+     * 1件のテスト用UploadMissionオブジェクトのDTOコンポーネントを生成する。
+     */
+    public static UploadMissionComponentDto newSingleUploadMissionComponentDto(Generator generator, MissionId missionId) {
+        return new UploadMissionComponentDto(
+                generator.newCommandId().getId(),
+                missionId.getId());
+    }
+
+    /**
+     * 複数件のテスト用UploadMissionオブジェクトのDTOコンポーネントのリストを生成する。
+     */
+    public static List<UploadMissionComponentDto> newSeveralUploadMissionsComponentDto(Generator generator) {
+        return Arrays.asList(new UploadMissionComponentDto[] {
+                new UploadMissionComponentDto(
+                        generator.newCommandId().getId(),
+                        "MISSION_ID_SAMPLE_1"),
+                new UploadMissionComponentDto(
+                        generator.newCommandId().getId(),
+                        "MISSION_ID_SAMPLE_2"),
+                new UploadMissionComponentDto(
+                        generator.newCommandId().getId(),
+                        "MISSION_ID_SAMPLE_3"),
         });
     }
 }
