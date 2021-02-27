@@ -1,4 +1,5 @@
 FROM golang:1.13-alpine AS base
+RUN apk add build-base
 
 FROM base AS build-base
 WORKDIR /go/src/app
