@@ -64,7 +64,6 @@ public class CommunicationIdGaveEventHandlerTests {
 
         byte[] expectMessage = proto.skysign.event.CommunicationIdGaveEvent.newBuilder()
             .setCommunicationId(DEFAULT_COMMUNICATION_ID.getId())
-            .setVehicleId(DEFAULT_VEHICLE_ID.getId())
             .setVersion(DEFAULT_VERSION.getVersion())
             .build()
             .toByteArray();

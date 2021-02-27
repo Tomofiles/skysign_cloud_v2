@@ -29,7 +29,6 @@ import net.tomofiles.skysign.communication.domain.communication.CommunicationRep
 import net.tomofiles.skysign.communication.domain.communication.Generator;
 import net.tomofiles.skysign.communication.domain.communication.MissionId;
 import net.tomofiles.skysign.communication.domain.communication.component.CommunicationComponentDto;
-import net.tomofiles.skysign.communication.domain.communication.VehicleId;
 import net.tomofiles.skysign.communication.service.CommunicationUserService;
 import proto.skysign.ControlRequest;
 import proto.skysign.ControlResponse;
@@ -56,7 +55,6 @@ public class CommunicationUserEndpointTests {
     private static final CommunicationId DEFAULT_COMMUNICATION_ID = new CommunicationId(UUID.randomUUID().toString());
     private static final CommandId DEFAULT_COMMAND_ID = new CommandId(UUID.randomUUID().toString());
     private static final String DEFAULT_COMMAND_TYPE = "ARM";
-    private static final VehicleId DEFAULT_VEHICLE_ID = new VehicleId(UUID.randomUUID().toString());
     private static final MissionId DEFAULT_MISSION_ID = new MissionId(UUID.randomUUID().toString());
     private static final boolean DEFAULT_CONTROLLED = true;
     private static final LocalDateTime DEFAULT_COMMAND_TIME = LocalDateTime.of(2020, 1, 1, 0, 0, 0);
@@ -97,17 +95,14 @@ public class CommunicationUserEndpointTests {
                 .thenReturn(Arrays.asList(new Communication[] {
                         newNormalCommunication(
                                 DEFAULT_COMMUNICATION_ID,
-                                DEFAULT_VEHICLE_ID,
                                 DEFAULT_CONTROLLED,
                                 DEFAULT_GENERATOR.get()),
                         newNormalCommunication(
                                 DEFAULT_COMMUNICATION_ID,
-                                DEFAULT_VEHICLE_ID,
                                 DEFAULT_CONTROLLED,
                                 DEFAULT_GENERATOR.get()),
                         newNormalCommunication(
                                 DEFAULT_COMMUNICATION_ID,
-                                DEFAULT_VEHICLE_ID,
                                 DEFAULT_CONTROLLED,
                                 DEFAULT_GENERATOR.get())
                 }));
@@ -123,15 +118,12 @@ public class CommunicationUserEndpointTests {
         assertThat(response).isEqualTo(ListCommunicationsResponses.newBuilder()
                 .addCommunications(newNormalCommunicationGrpc(
                         DEFAULT_COMMUNICATION_ID,
-                        DEFAULT_VEHICLE_ID,
                         DEFAULT_CONTROLLED))
                 .addCommunications(newNormalCommunicationGrpc(
                         DEFAULT_COMMUNICATION_ID,
-                        DEFAULT_VEHICLE_ID,
                         DEFAULT_CONTROLLED))
                 .addCommunications(newNormalCommunicationGrpc(
                         DEFAULT_COMMUNICATION_ID,
-                        DEFAULT_VEHICLE_ID,
                         DEFAULT_CONTROLLED))
                 .build());
     }
@@ -177,7 +169,6 @@ public class CommunicationUserEndpointTests {
         when(this.repository.getById(DEFAULT_COMMUNICATION_ID))
                 .thenReturn(newNormalCommunication(
                         DEFAULT_COMMUNICATION_ID,
-                        DEFAULT_VEHICLE_ID,
                         DEFAULT_CONTROLLED,
                         DEFAULT_GENERATOR.get()));
 
@@ -255,7 +246,6 @@ public class CommunicationUserEndpointTests {
         when(this.repository.getById(DEFAULT_COMMUNICATION_ID))
                 .thenReturn(newNormalCommunication(
                         DEFAULT_COMMUNICATION_ID,
-                        DEFAULT_VEHICLE_ID,
                         DEFAULT_CONTROLLED,
                         DEFAULT_GENERATOR.get()));
 
@@ -335,7 +325,6 @@ public class CommunicationUserEndpointTests {
         when(this.repository.getById(DEFAULT_COMMUNICATION_ID))
                 .thenReturn(newNormalCommunication(
                         DEFAULT_COMMUNICATION_ID,
-                        DEFAULT_VEHICLE_ID,
                         DEFAULT_CONTROLLED,
                         DEFAULT_GENERATOR.get()));
 
@@ -396,7 +385,6 @@ public class CommunicationUserEndpointTests {
         when(this.repository.getById(DEFAULT_COMMUNICATION_ID))
                 .thenReturn(newNormalCommunication(
                         DEFAULT_COMMUNICATION_ID,
-                        DEFAULT_VEHICLE_ID,
                         DEFAULT_CONTROLLED,
                         DEFAULT_GENERATOR.get()));
 
@@ -464,7 +452,6 @@ public class CommunicationUserEndpointTests {
         when(this.repository.getById(DEFAULT_COMMUNICATION_ID))
                 .thenReturn(newNormalCommunication(
                         DEFAULT_COMMUNICATION_ID,
-                        DEFAULT_VEHICLE_ID,
                         DEFAULT_CONTROLLED,
                         DEFAULT_GENERATOR.get()));
 

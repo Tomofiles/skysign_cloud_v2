@@ -9,8 +9,8 @@ import net.tomofiles.skysign.communication.domain.communication.component.Upload
 
 public class CommunicationFactory {
 
-    public static Communication newInstance(CommunicationId communicationId, VehicleId vehicleId, Generator generator) {
-        Communication communication = new Communication(communicationId, vehicleId, generator);
+    public static Communication newInstance(CommunicationId communicationId, Generator generator) {
+        Communication communication = new Communication(communicationId, generator);
         communication.setTelemetry(Telemetry.newInstance());
         return communication;
     }
@@ -18,7 +18,6 @@ public class CommunicationFactory {
     public static Communication assembleFrom(CommunicationComponentDto componentDto, Generator generator) {
         Communication communication = new Communication(
                 new CommunicationId(componentDto.getId()),
-                new VehicleId(componentDto.getVehicleId()),
                 generator
         );
         communication.setControlled(componentDto.isControlled());
@@ -62,7 +61,6 @@ public class CommunicationFactory {
     public static CommunicationComponentDto takeApart(Communication communication) {
         return  new CommunicationComponentDto(
                 communication.getId().getId(),
-                communication.getVehicleId().getId(),
                 communication.isControlled(),
                 new TelemetryComponentDto(
                         communication.getTelemetry().getPosition().getLatitude(),

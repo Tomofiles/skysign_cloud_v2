@@ -26,7 +26,6 @@ public class EdgeCommunicationTests {
     
     private static final CommunicationId DEFAULT_COMMUNICATION_ID = new CommunicationId(UUID.randomUUID().toString());
     private static final CommandId DEFAULT_COMMAND_ID = new CommandId(UUID.randomUUID().toString());
-    private static final VehicleId DEFAULT_VEHICLE_ID = new VehicleId(UUID.randomUUID().toString());
     private static final MissionId DEFAULT_MISSION_ID = new MissionId("MISSION_ID_SAMPLE_1");
     private static final boolean DEFAULT_CONTROLLED = true;
     private static final LocalDateTime DEFAULT_COMMAND_TIME = LocalDateTime.of(2020, 1, 1, 0, 0, 0);
@@ -88,7 +87,6 @@ public class EdgeCommunicationTests {
         when(this.repository.getById(DEFAULT_COMMUNICATION_ID))
                 .thenReturn(CommunicationFactory.newInstance(
                         DEFAULT_COMMUNICATION_ID,
-                        DEFAULT_VEHICLE_ID,
                         DEFAULT_GENERATOR.get()));
 
         Communication communication = this.repository.getById(DEFAULT_COMMUNICATION_ID);
@@ -108,7 +106,6 @@ public class EdgeCommunicationTests {
         when(this.repository.getById(DEFAULT_COMMUNICATION_ID))
                 .thenReturn(newSeveralCommandsCommunication(
                         DEFAULT_COMMUNICATION_ID,
-                        DEFAULT_VEHICLE_ID,
                         DEFAULT_CONTROLLED,
                         DEFAULT_GENERATOR_IN_RONDOM_ORDER.get(),
                         DEFAULT_GENERATOR_IN_RONDOM_ORDER.get(),
@@ -135,7 +132,6 @@ public class EdgeCommunicationTests {
         when(this.repository.getById(DEFAULT_COMMUNICATION_ID))
                 .thenReturn(newSingleCommandCommunication(
                         DEFAULT_COMMUNICATION_ID,
-                        DEFAULT_VEHICLE_ID,
                         DEFAULT_CONTROLLED,
                         DEFAULT_GENERATOR.get(),
                         DEFAULT_GENERATOR.get(),
@@ -160,7 +156,6 @@ public class EdgeCommunicationTests {
         when(this.repository.getById(DEFAULT_COMMUNICATION_ID))
                 .thenReturn(newNormalCommunication(
                         DEFAULT_COMMUNICATION_ID,
-                        DEFAULT_VEHICLE_ID,
                         DEFAULT_CONTROLLED,
                         DEFAULT_GENERATOR.get()));
 
@@ -185,7 +180,6 @@ public class EdgeCommunicationTests {
         when(this.repository.getById(DEFAULT_COMMUNICATION_ID))
                 .thenReturn(newSingleCommandCommunication(
                         DEFAULT_COMMUNICATION_ID,
-                        DEFAULT_VEHICLE_ID,
                         DEFAULT_CONTROLLED,
                         DEFAULT_GENERATOR.get(),
                         DEFAULT_GENERATOR.get(),

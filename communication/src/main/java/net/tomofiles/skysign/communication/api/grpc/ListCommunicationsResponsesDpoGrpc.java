@@ -26,7 +26,6 @@ public class ListCommunicationsResponsesDpoGrpc implements ListCommunicationsRes
                 .map(communication -> {
                     return proto.skysign.common.Communication.newBuilder()
                             .setId(communication.getId())
-                            .setVehicleId(communication.getVehicleId())
                             .setIsControlled(communication.isControlled())
                             .build();
                 })

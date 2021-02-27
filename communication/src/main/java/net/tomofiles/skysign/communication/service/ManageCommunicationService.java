@@ -23,7 +23,6 @@ public class ManageCommunicationService {
     public void createCommunication(CreateCommunicationRequestDpo requestDpo, ManageCommunicationResponseDpo responseDpo) {
         Communication communication = CommunicationFactory.newInstance(
                 requestDpo.getCommId(),
-                requestDpo.getVehicleId(),
                 this.generator);
 
         this.communicationRepository.save(communication);

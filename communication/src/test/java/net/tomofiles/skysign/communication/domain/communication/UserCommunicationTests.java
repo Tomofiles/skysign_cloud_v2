@@ -20,7 +20,6 @@ public class UserCommunicationTests {
     
     private static final CommunicationId DEFAULT_COMMUNICATION_ID = new CommunicationId(UUID.randomUUID().toString());
     private static final CommandId DEFAULT_COMMAND_ID = new CommandId(UUID.randomUUID().toString());
-    private static final VehicleId DEFAULT_VEHICLE_ID = new VehicleId(UUID.randomUUID().toString());
     private static final MissionId DEFAULT_MISSION_ID = new MissionId(UUID.randomUUID().toString());
     private static final boolean DEFAULT_CONTROLLED = true;
     private static final boolean DEFAULT_UNCONTROLLED = false;
@@ -54,12 +53,10 @@ public class UserCommunicationTests {
     public void createNewCommunicationTest() {
         Communication communication = CommunicationFactory.newInstance(
                 DEFAULT_COMMUNICATION_ID,
-                DEFAULT_VEHICLE_ID,
                 DEFAULT_GENERATOR.get());
 
         assertAll(
             () -> assertThat(communication.getId()).isEqualTo(DEFAULT_COMMUNICATION_ID),
-            () -> assertThat(communication.getVehicleId()).isEqualTo(DEFAULT_VEHICLE_ID),
             () -> assertThat(communication.isControlled()).isEqualTo(DEFAULT_UNCONTROLLED),
             () -> assertThat(communication.getCommands()).hasSize(0),
             () -> assertThat(communication.getTelemetry()).isEqualTo(Telemetry.newInstance())
@@ -75,7 +72,6 @@ public class UserCommunicationTests {
         when(this.repository.getById(DEFAULT_COMMUNICATION_ID))
                 .thenReturn(CommunicationFactory.newInstance(
                         DEFAULT_COMMUNICATION_ID,
-                        DEFAULT_VEHICLE_ID,
                         DEFAULT_GENERATOR.get()));
 
         Communication communication = this.repository.getById(DEFAULT_COMMUNICATION_ID);
@@ -102,7 +98,6 @@ public class UserCommunicationTests {
         when(this.repository.getById(DEFAULT_COMMUNICATION_ID))
                 .thenReturn(CommunicationFactory.newInstance(
                         DEFAULT_COMMUNICATION_ID,
-                        DEFAULT_VEHICLE_ID,
                         DEFAULT_GENERATOR.get()));
 
         Communication communication = this.repository.getById(DEFAULT_COMMUNICATION_ID);
@@ -130,7 +125,6 @@ public class UserCommunicationTests {
         when(this.repository.getById(DEFAULT_COMMUNICATION_ID))
                 .thenReturn(newNormalCommunication(
                         DEFAULT_COMMUNICATION_ID,
-                        DEFAULT_VEHICLE_ID,
                         DEFAULT_CONTROLLED,
                         DEFAULT_GENERATOR.get()));
 
@@ -150,7 +144,6 @@ public class UserCommunicationTests {
         when(this.repository.getById(DEFAULT_COMMUNICATION_ID))
                 .thenReturn(CommunicationFactory.newInstance(
                         DEFAULT_COMMUNICATION_ID,
-                        DEFAULT_VEHICLE_ID,
                         DEFAULT_GENERATOR.get()));
 
         Communication communication = this.repository.getById(DEFAULT_COMMUNICATION_ID);
@@ -169,7 +162,6 @@ public class UserCommunicationTests {
         when(this.repository.getById(DEFAULT_COMMUNICATION_ID))
                 .thenReturn(newNormalCommunication(
                         DEFAULT_COMMUNICATION_ID,
-                        DEFAULT_VEHICLE_ID,
                         DEFAULT_CONTROLLED,
                         DEFAULT_GENERATOR.get()));
 

@@ -21,7 +21,6 @@ public class CommunicationIdGaveEventPb {
     public CommunicationIdGaveEvent getEvent() {
         return new CommunicationIdGaveEvent(
             this.event.getCommunicationId(),
-            this.event.getVehicleId(),
             this.event.getVersion());
     }
 }

@@ -11,10 +11,9 @@ public class CommunicationObjectMother {
      */
     public static Communication newNormalCommunication(
             CommunicationId communicationId,
-            VehicleId vehicleId,
             boolean controlled,
             Generator generator) {
-        Communication communication = CommunicationFactory.newInstance(communicationId, vehicleId, generator);
+        Communication communication = CommunicationFactory.newInstance(communicationId, generator);
         communication.setControlled(controlled);
         communication.setTelemetry(newNormalTelemetry());
         return communication;
@@ -25,12 +24,11 @@ public class CommunicationObjectMother {
      */
     public static Communication newSingleCommandCommunication(
             CommunicationId communicationId,
-            VehicleId vehicleId,
             boolean controlled,
             Generator generator,
             Generator generatorCommand,
             Generator generatorUploadMission) {
-        Communication communication = CommunicationFactory.newInstance(communicationId, vehicleId, generator);
+        Communication communication = CommunicationFactory.newInstance(communicationId, generator);
         communication.setControlled(controlled);
         communication.getCommands().addAll(newSingleCommands(generatorCommand, CommandType.ARM));
         communication.getUploadMissions().addAll(newSingleUploadMissions(generatorUploadMission));
@@ -43,12 +41,11 @@ public class CommunicationObjectMother {
      */
     public static Communication newSeveralCommandsCommunication(
             CommunicationId communicationId,
-            VehicleId vehicleId,
             boolean controlled,
             Generator generator,
             Generator generatorCommand,
             Generator generatorUploadMission) {
-        Communication communication = CommunicationFactory.newInstance(communicationId, vehicleId, generator);
+        Communication communication = CommunicationFactory.newInstance(communicationId, generator);
         communication.setControlled(controlled);
         communication.getCommands().addAll(newSeveralCommands(generatorCommand));
         communication.getUploadMissions().addAll(newSeveralUploadMissions(generatorUploadMission));

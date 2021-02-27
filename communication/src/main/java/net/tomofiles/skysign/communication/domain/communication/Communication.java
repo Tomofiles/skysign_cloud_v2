@@ -21,9 +21,6 @@ public class Communication {
     private final Generator generator;
 
     @Getter
-    private final VehicleId vehicleId;
-
-    @Getter
     @Setter(value = AccessLevel.PACKAGE)
     private boolean controlled = false;
 
@@ -37,9 +34,8 @@ public class Communication {
     @Getter(value = AccessLevel.PACKAGE)
     private final List<UploadMission> uploadMissions;
 
-    Communication(CommunicationId id, VehicleId vehicleId, Generator generator) {
+    Communication(CommunicationId id, Generator generator) {
         this.id = id;
-        this.vehicleId = vehicleId;
         this.commands = new ArrayList<>();
         this.uploadMissions = new ArrayList<>();
 

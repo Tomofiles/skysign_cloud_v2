@@ -1,7 +1,6 @@
 package net.tomofiles.skysign.communication.api;
 
 import net.tomofiles.skysign.communication.domain.communication.CommunicationId;
-import net.tomofiles.skysign.communication.domain.communication.VehicleId;
 import proto.skysign.common.Communication;
 import proto.skysign.PullTelemetryResponse;
 import proto.skysign.common.Telemetry;
@@ -11,10 +10,9 @@ public class GrpcObjectMother {
     /**
      * テスト用Communicationオブジェクトを生成する。
      */
-    public static Communication newNormalCommunicationGrpc(CommunicationId communicationId, VehicleId vehicleId, boolean controlled) {
+    public static Communication newNormalCommunicationGrpc(CommunicationId communicationId, boolean controlled) {
         return Communication.newBuilder()
                 .setId(communicationId.getId())
-                .setVehicleId(vehicleId.getId())
                 .setIsControlled(controlled)
                 .build();
     }
