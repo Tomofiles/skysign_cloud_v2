@@ -25,6 +25,10 @@ spec:
         backend:
           serviceName: skysign-communication-gateway
           servicePort: 6000
+      - path: /api/v1/flightplans*
+        backend:
+          serviceName: skysign-flightplan-gateway
+          servicePort: 6000
       - path: /api/v1/helper*
         backend:
           serviceName: skysign-helper-gateway

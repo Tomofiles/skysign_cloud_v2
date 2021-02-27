@@ -1,21 +1,21 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: skysign-communication-backend
+  name: skysign-flightplan-backend
 spec:
   selector:
     matchLabels:
-      run: skysign-communication-backend
+      run: skysign-flightplan-backend
   replicas: 1
   template:
     metadata:
       labels:
-        run: skysign-communication-backend
+        run: skysign-flightplan-backend
     spec:
       volumes:
       - name: envoy
         configMap:
-          name: skysign-communication-backend-envoy
+          name: skysign-flightplan-backend-envoy
       containers:
       - name: envoy
         image: envoyproxy/envoy:v1.17-latest
@@ -29,24 +29,28 @@ spec:
         volumeMounts:
           - name: envoy
             mountPath: /etc/envoy
-      - name: skysign-communication-backend
-        image: ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com/skysign-cloud-v2:communication_${CIRCLE_SHA1}
-        command: ["java"]
-        args: ["-cp", "app:app/lib/*", "net.tomofiles.skysign.communication.CommunicationApplication"]
+      - name: skysign-flightplan-backend
+        image: ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com/skysign-cloud-v2:flightplan_${CIRCLE_SHA1}
+        command: ["/app/flightplan"]
+        args: ["-port", "6000"]
         env:
-        - name: db.host
+        - name: DB_HOST
           value: "skysign-db"
-        - name: db.username
+        - name: DB_USERNAME
           value: "${AWS_RDS_USER_NAME}"
-        - name: db.password
+        - name: DB_PASSWORD
           value: "${AWS_RDS_PASSWORD}"
-        - name: mq.host
+        - name: DB_SSL_ENABLED
+          value: "enable"
+        - name: MQ_HOST
           value: "${AWS_AMQ_MQ_HOST}"
-        - name: mq.port
+        - name: MQ_PORT
           value: "${AWS_AMQ_PORT}"
-        - name: mq.username
+        - name: MQ_USERNAME
           value: "${AWS_AMQ_USER_NAME}"
-        - name: mq.password
+        - name: MQ_PASSWORD
           value: "${AWS_AMQ_PASSWORD}"
+        - name: MQ_SSL_ENABLED
+          value: "enable"
         ports:
         - containerPort: 5001

@@ -7,8 +7,8 @@ COPY . .
 FROM build-base AS dependency
 RUN go mod download
 
-# FROM dependency AS test
-# RUN go test ./...
+FROM dependency AS test
+RUN go test ./...
 
 FROM dependency AS build
 RUN go install ./...
