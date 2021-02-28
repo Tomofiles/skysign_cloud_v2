@@ -20,6 +20,11 @@ message FlightplanCreatedEvent {
     string flightplan_id = 1;
 }
 
+message FlightplanCopiedEvent {
+    string original_flightplan_id = 1;
+    string new_flightplan_id = 2;
+}
+
 message FlightplanDeletedEvent {
     string flightplan_id = 1;
 }

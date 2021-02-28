@@ -17,6 +17,10 @@ func DeleteFlightplan(
 		return err
 	}
 
+	if flightplan.isCarbonCopy {
+		return ErrCannotChange
+	}
+
 	if err := repo.Delete(tx, id); err != nil {
 		return err
 	}

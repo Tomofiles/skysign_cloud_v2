@@ -9,14 +9,18 @@ import (
 	"github.com/stretchr/testify/mock"
 )
 
-// Flightplanを削除するドメインサービスをテストする。
-// 指定されたIDのFlightplanを削除する。
-// 削除が成功すると、Flightplanが削除されたことを表す
+// Flightplanをカーボンコピーするドメインサービスをテストする。
+// 指定されたIDのFlightplanを、指定されたIDでコピーする。
+// コピーが成功すると、Flightplanのコピーが作成されたことを表す
 // ドメインイベントを発行する。
-func TestDeleteFlightplanService(t *testing.T) {
+func TestCarbonCopyFlightplanService(t *testing.T) {
 	a := assert.New(t)
 
 	ctx := context.Background()
+
+	var (
+		NewID = DefaultID + "-new"
+	)
 
 	testFlightplan := Flightplan{
 		id:           DefaultID,
@@ -27,18 +31,31 @@ func TestDeleteFlightplanService(t *testing.T) {
 		newVersion:   DefaultVersion,
 		gen:          nil,
 	}
-	repo := &repositoryMockDeleteService{}
+	gen := &generatorMock{}
+	repo := &repositoryMockCopyService{}
 	repo.On("GetByID", DefaultID).Return(&testFlightplan, nil)
-	repo.On("Delete", mock.Anything).Return(nil)
+	repo.On("Save", mock.Anything).Return(nil)
 
 	pub := &publisherMock{}
 
-	ret := DeleteFlightplan(ctx, repo, pub, DefaultID)
+	ret := CarbonCopyFlightplan(ctx, gen, repo, pub, DefaultID, NewID)
 
-	expectEvent := DeletedEvent{ID: DefaultID}
+	expectFlightplan := Flightplan{
+		id:           NewID,
+		name:         DefaultName,
+		description:  DefaultDescription,
+		isCarbonCopy: CarbonCopy,
+		version:      DefaultVersion,
+		newVersion:   DefaultVersion,
+		gen:          gen,
+	}
+	expectEvent := CopiedEvent{
+		OriginalID: DefaultID,
+		NewID:      NewID,
+	}
 
-	a.Len(repo.deleteIDs, 1)
-	a.Equal(repo.deleteIDs[0], DefaultID)
+	a.Len(repo.saveFlightplans, 1)
+	a.Equal(repo.saveFlightplans[0], &expectFlightplan)
 	a.Len(pub.events, 1)
 	a.Equal(pub.events[0], expectEvent)
 
@@ -49,7 +66,7 @@ func TestDeleteFlightplanService(t *testing.T) {
 // 指定されたIDのFlightplanの取得がエラーとなった場合、
 // 削除が失敗し、エラーが返却されることを検証する。
 // また、ドメインイベントは発行されないことを検証する。
-func TestGetErrorWhenDeleteFlightplanService(t *testing.T) {
+func TestGetErrorWhenCarbonCopyFlightplanService(t *testing.T) {
 	a := assert.New(t)
 
 	ctx := context.Background()
@@ -72,7 +89,7 @@ func TestGetErrorWhenDeleteFlightplanService(t *testing.T) {
 // 削除時にリポジトリがエラーとなった場合、、
 // 削除が失敗し、エラーが返却されることを検証する。
 // また、ドメインイベントは発行されないことを検証する。
-func TestDeleteErrorWhenDeleteFlightplanService(t *testing.T) {
+func TestDeleteErrorWhenCarbonCopyFlightplanService(t *testing.T) {
 	a := assert.New(t)
 
 	ctx := context.Background()
@@ -104,7 +121,7 @@ func TestDeleteErrorWhenDeleteFlightplanService(t *testing.T) {
 // カーボンコピーされたFlightplanを削除しようとした場合、、
 // 削除が失敗し、エラーが返却されることを検証する。
 // また、ドメインイベントは発行されないことを検証する。
-func TestCannnotDeleteErrorWhenDeleteFlightplanService(t *testing.T) {
+func TestCannnotDeleteErrorWhenCarbonCopyFlightplanService(t *testing.T) {
 	a := assert.New(t)
 
 	ctx := context.Background()
@@ -133,20 +150,19 @@ func TestCannnotDeleteErrorWhenDeleteFlightplanService(t *testing.T) {
 }
 
 // Flightplan削除サービス用リポジトリモック
-type repositoryMockDeleteService struct {
+type repositoryMockCopyService struct {
 	mock.Mock
 
 	saveFlightplans []*Flightplan
-	deleteIDs       []ID
 }
 
-func (rm *repositoryMockDeleteService) GetAll(tx txmanager.Tx) ([]*Flightplan, error) {
+func (rm *repositoryMockCopyService) GetAll(tx txmanager.Tx) ([]*Flightplan, error) {
 	panic("implement me")
 }
-func (rm *repositoryMockDeleteService) GetAllOrigin(tx txmanager.Tx) ([]*Flightplan, error) {
+func (rm *repositoryMockCopyService) GetAllOrigin(tx txmanager.Tx) ([]*Flightplan, error) {
 	panic("implement me")
 }
-func (rm *repositoryMockDeleteService) GetByID(tx txmanager.Tx, id ID) (*Flightplan, error) {
+func (rm *repositoryMockCopyService) GetByID(tx txmanager.Tx, id ID) (*Flightplan, error) {
 	ret := rm.Called(id)
 	var f *Flightplan
 	if ret.Get(0) == nil {
@@ -156,13 +172,13 @@ func (rm *repositoryMockDeleteService) GetByID(tx txmanager.Tx, id ID) (*Flightp
 	}
 	return f, ret.Error(1)
 }
-func (rm *repositoryMockDeleteService) Save(tx txmanager.Tx, f *Flightplan) error {
-	panic("implement me")
-}
-func (rm *repositoryMockDeleteService) Delete(tx txmanager.Tx, id ID) error {
-	ret := rm.Called(id)
+func (rm *repositoryMockCopyService) Save(tx txmanager.Tx, f *Flightplan) error {
+	ret := rm.Called(f)
 	if ret.Error(0) == nil {
-		rm.deleteIDs = append(rm.deleteIDs, id)
+		rm.saveFlightplans = append(rm.saveFlightplans, f)
 	}
 	return ret.Error(0)
+}
+func (rm *repositoryMockCopyService) Delete(tx txmanager.Tx, id ID) error {
+	panic("implement me")
 }

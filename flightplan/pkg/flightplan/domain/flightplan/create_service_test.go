@@ -35,12 +35,13 @@ func TestCreateNewFlightplanService(t *testing.T) {
 	id, ret := CreateNewFlightplan(ctx, gen, repo, pub, DefaultName, DefaultDescription)
 
 	expectFlightplan := Flightplan{
-		id:          DefaultID,
-		name:        DefaultName,
-		description: DefaultDescription,
-		version:     DefaultVersion1,
-		newVersion:  DefaultVersion3,
-		gen:         gen,
+		id:           DefaultID,
+		name:         DefaultName,
+		description:  DefaultDescription,
+		isCarbonCopy: Original,
+		version:      DefaultVersion1,
+		newVersion:   DefaultVersion3,
+		gen:          gen,
 	}
 	expectEvent := CreatedEvent{ID: DefaultID}
 
@@ -92,6 +93,9 @@ type repositoryMockCreateService struct {
 }
 
 func (rm *repositoryMockCreateService) GetAll(tx txmanager.Tx) ([]*Flightplan, error) {
+	panic("implement me")
+}
+func (rm *repositoryMockCreateService) GetAllOrigin(tx txmanager.Tx) ([]*Flightplan, error) {
 	panic("implement me")
 }
 func (rm *repositoryMockCreateService) GetByID(tx txmanager.Tx, id ID) (*Flightplan, error) {

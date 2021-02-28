@@ -35,6 +35,11 @@ func (p *Publisher) Flush() error {
 				return err
 			}
 		}
+		if event, ok := e.(flightplan.CopiedEvent); ok {
+			if err := PublishFlightplanCopiedEvent(p.ch, event); err != nil {
+				return err
+			}
+		}
 	}
 	return nil
 }

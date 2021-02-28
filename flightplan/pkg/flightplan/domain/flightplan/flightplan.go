@@ -1,19 +1,34 @@
 package flightplan
 
+import "errors"
+
 // ID .
 type ID string
 
 // Version .
 type Version string
 
+const (
+	// Original .
+	Original = false
+	// CarbonCopy .
+	CarbonCopy = true
+)
+
+var (
+	// ErrCannotChange .
+	ErrCannotChange = errors.New("cannnot carbon copied flightplan")
+)
+
 // Flightplan .
 type Flightplan struct {
-	id          ID
-	name        string
-	description string
-	version     Version
-	newVersion  Version
-	gen         Generator
+	id           ID
+	name         string
+	description  string
+	isCarbonCopy bool
+	version      Version
+	newVersion   Version
+	gen          Generator
 }
 
 // GetID .
@@ -42,15 +57,23 @@ func (f *Flightplan) GetNewVersion() Version {
 }
 
 // NameFlightplan .
-func (f *Flightplan) NameFlightplan(name string) {
+func (f *Flightplan) NameFlightplan(name string) error {
+	if f.isCarbonCopy {
+		return ErrCannotChange
+	}
 	f.name = name
 	f.newVersion = f.gen.NewVersion()
+	return nil
 }
 
 // ChangeDescription .
-func (f *Flightplan) ChangeDescription(description string) {
+func (f *Flightplan) ChangeDescription(description string) error {
+	if f.isCarbonCopy {
+		return ErrCannotChange
+	}
 	f.description = description
 	f.newVersion = f.gen.NewVersion()
+	return nil
 }
 
 // Generator .
