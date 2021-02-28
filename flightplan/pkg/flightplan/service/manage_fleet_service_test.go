@@ -118,3 +118,88 @@ func TestDeleteFleetOperation(t *testing.T) {
 	a.Nil(ret)
 	a.Equal(repo.deleteID, DefaultFlightplanID)
 }
+
+func TestCarbonCopyFleetTransaction(t *testing.T) {
+	a := assert.New(t)
+
+	var (
+		DefaultFlightplanOriginalID = DefaultFlightplanID + "-new"
+		DefaultFlightplanNewID      = DefaultFlightplanID + "-new"
+	)
+
+	fleet := fl.AssembleFrom(
+		nil,
+		&fleetComponentMock{
+			ID:           string(DefaultFleetID),
+			FlightplanID: string(DefaultFlightplanOriginalID),
+			IsCarbonCopy: fl.Original,
+			Version:      string(DefaultFleetVersion),
+		},
+	)
+
+	gen := &generatorMockFleet{}
+
+	repo := &fleetRepositoryMock{}
+	repo.On("GetByFlightplanID", DefaultFlightplanOriginalID).Return(fleet, nil)
+	repo.On("Save", mock.Anything).Return(nil)
+	txm := &txManagerMock{}
+
+	service := &manageFleetService{
+		gen:  gen,
+		repo: repo,
+		txm:  txm,
+	}
+
+	req := &carbonCopyRequestMock{
+		OriginalID: string(DefaultFlightplanOriginalID),
+		NewID:      string(DefaultFlightplanNewID),
+	}
+	ret := service.CarbonCopyFleet(req)
+
+	a.Nil(ret)
+	a.Nil(ret)
+	a.Nil(txm.isOpe)
+	a.Nil(txm.isEH)
+}
+
+func TestCarbonCopyFleetOperation(t *testing.T) {
+	a := assert.New(t)
+
+	var (
+		DefaultFlightplanOriginalID = DefaultFlightplanID + "-new"
+		DefaultFlightplanNewID      = DefaultFlightplanID + "-new"
+	)
+
+	fleet := fl.AssembleFrom(
+		nil,
+		&fleetComponentMock{
+			ID:           string(DefaultFleetID),
+			FlightplanID: string(DefaultFlightplanOriginalID),
+			IsCarbonCopy: fl.Original,
+			Version:      string(DefaultFleetVersion),
+		},
+	)
+
+	gen := &generatorMockFleet{}
+
+	repo := &fleetRepositoryMock{}
+	repo.On("GetByFlightplanID", DefaultFlightplanOriginalID).Return(fleet, nil)
+	repo.On("Save", mock.Anything).Return(nil)
+
+	service := &manageFleetService{
+		gen:  gen,
+		repo: repo,
+		txm:  nil,
+	}
+
+	req := &carbonCopyRequestMock{
+		OriginalID: string(DefaultFlightplanOriginalID),
+		NewID:      string(DefaultFlightplanNewID),
+	}
+	ret := service.carbonCopyFleetOperation(
+		nil,
+		req,
+	)
+
+	a.Nil(ret)
+}

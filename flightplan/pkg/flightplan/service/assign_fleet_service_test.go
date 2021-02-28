@@ -24,21 +24,22 @@ func TestChangeNumberOfVehiclesTransaction(t *testing.T) {
 		DefaultFleetVersion4      = DefaultFleetVersion + "-4"
 	)
 
+	fleet := fl.AssembleFrom(
+		nil,
+		&fleetComponentMock{
+			ID:           string(DefaultFleetID),
+			FlightplanID: string(DefaultFlightplanID),
+			IsCarbonCopy: fl.Original,
+			Version:      string(DefaultFleetVersion),
+		},
+	)
+
 	gen := &generatorMockFleet{
 		id:            DefaultFleetID,
 		assignmentIDs: []fl.AssignmentID{DefaultFleetAssignmentID1, DefaultFleetAssignmentID2, DefaultFleetAssignmentID3},
 		eventIDs:      []fl.EventID{DefaultFleetEventID1, DefaultFleetEventID2, DefaultFleetEventID3},
 		versions:      []fl.Version{DefaultFleetVersion1, DefaultFleetVersion2, DefaultFleetVersion3, DefaultFleetVersion4},
 	}
-
-	fleet := fl.AssembleFrom(
-		gen,
-		&fleetComponentMock{
-			ID:           string(DefaultFleetID),
-			FlightplanID: string(DefaultFlightplanID),
-			Version:      string(DefaultFleetVersion),
-		},
-	)
 
 	repo := &fleetRepositoryMock{}
 	txm := &txManagerMock{}
@@ -86,6 +87,16 @@ func TestChangeNumberOfVehiclesOperation(t *testing.T) {
 		DefaultFleetVersion4      = DefaultFleetVersion + "-4"
 	)
 
+	fleet := fl.AssembleFrom(
+		nil,
+		&fleetComponentMock{
+			ID:           string(DefaultFleetID),
+			FlightplanID: string(DefaultFlightplanID),
+			IsCarbonCopy: fl.Original,
+			Version:      string(DefaultFleetVersion),
+		},
+	)
+
 	gen := &generatorMockFleet{
 		id:            DefaultFleetID,
 		assignmentIDs: []fl.AssignmentID{DefaultFleetAssignmentID1, DefaultFleetAssignmentID2, DefaultFleetAssignmentID3},
@@ -94,6 +105,7 @@ func TestChangeNumberOfVehiclesOperation(t *testing.T) {
 	}
 
 	repo := &fleetRepositoryMock{}
+	repo.On("GetByFlightplanID", DefaultFlightplanID).Return(fleet, nil)
 	repo.On("DeleteByFlightplanID", DefaultFlightplanID).Return(nil)
 	repo.On("Save", mock.Anything).Return(nil)
 

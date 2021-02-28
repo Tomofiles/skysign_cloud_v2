@@ -38,6 +38,37 @@ func TestAssignVehicle(t *testing.T) {
 }
 
 // FleetのAssignementにVehicleを割り当てる。
+// カーボンコピーされたFleetの変更がエラーとなることを検証する。
+func TestCannotChangeErrorWhenAssignVehicle(t *testing.T) {
+	a := assert.New(t)
+
+	var (
+		CopiedID        = DefaultFlightplanID + "-copied"
+		DefaultVersion1 = DefaultVersion + "-1"
+		DefaultVersion2 = DefaultVersion + "-2"
+	)
+
+	gen := &generatorMock{
+		id:       DefaultID,
+		versions: []Version{DefaultVersion2},
+	}
+	original := &Fleet{
+		id:           DefaultID,
+		flightplanID: DefaultFlightplanID,
+		isCarbonCopy: Original,
+		version:      DefaultVersion1,
+		newVersion:   DefaultVersion1,
+	}
+	fleet := Copy(gen, CopiedID, original)
+
+	ret := fleet.AssignVehicle(DefaultAssignmentID, DefaultVehicleID)
+
+	a.Equal(ret, ErrCannotChange)
+	a.Equal(fleet.GetVersion(), DefaultVersion1)
+	a.Equal(fleet.GetNewVersion(), DefaultVersion1)
+}
+
+// FleetのAssignementにVehicleを割り当てる。
 // 割り当ての際、同Vehicleが別のAssignmentに割り当てられている場合、
 // エラーとなり、割り当てが失敗となることを検証する。
 func TestVehicleHasAlreadyAssignedWhenAssignVehicle(t *testing.T) {
@@ -140,6 +171,37 @@ func TestCancelVehiclesAssignment(t *testing.T) {
 }
 
 // FleetのAssignementのVehicle割り当てをキャンセルする。
+// カーボンコピーされたFleetの変更がエラーとなることを検証する。
+func TestCannotChangeErrorWhenCancelVehiclesAssignment(t *testing.T) {
+	a := assert.New(t)
+
+	var (
+		CopiedID        = DefaultFlightplanID + "-copied"
+		DefaultVersion1 = DefaultVersion + "-1"
+		DefaultVersion2 = DefaultVersion + "-2"
+	)
+
+	gen := &generatorMock{
+		id:       DefaultID,
+		versions: []Version{DefaultVersion2},
+	}
+	original := &Fleet{
+		id:           DefaultID,
+		flightplanID: DefaultFlightplanID,
+		isCarbonCopy: Original,
+		version:      DefaultVersion1,
+		newVersion:   DefaultVersion1,
+	}
+	fleet := Copy(gen, CopiedID, original)
+
+	ret := fleet.CancelVehiclesAssignment(DefaultAssignmentID)
+
+	a.Equal(ret, ErrCannotChange)
+	a.Equal(fleet.GetVersion(), DefaultVersion1)
+	a.Equal(fleet.GetNewVersion(), DefaultVersion1)
+}
+
+// FleetのAssignementのVehicle割り当てをキャンセルする。
 // キャンセルの際、指定されたAssingmentが存在しない場合
 // エラーとなり、割り当てのキャンセルが失敗となることを検証する。
 func TestNotFoundErrorWhenCancelVehiclesAssignment(t *testing.T) {
@@ -209,6 +271,38 @@ func TestAddNewEvent(t *testing.T) {
 }
 
 // FleetのAssignementのEventを作成して追加する。
+// カーボンコピーされたFleetの変更がエラーとなることを検証する。
+func TestCannotChangeErrorWhenAddNewEvent(t *testing.T) {
+	a := assert.New(t)
+
+	var (
+		CopiedID        = DefaultFlightplanID + "-copied"
+		DefaultVersion1 = DefaultVersion + "-1"
+		DefaultVersion2 = DefaultVersion + "-2"
+	)
+
+	gen := &generatorMock{
+		id:       DefaultID,
+		versions: []Version{DefaultVersion2},
+	}
+	original := &Fleet{
+		id:           DefaultID,
+		flightplanID: DefaultFlightplanID,
+		isCarbonCopy: Original,
+		version:      DefaultVersion1,
+		newVersion:   DefaultVersion1,
+	}
+	fleet := Copy(gen, CopiedID, original)
+
+	eventID, ret := fleet.AddNewEvent(DefaultAssignmentID)
+
+	a.Empty(eventID)
+	a.Equal(ret, ErrCannotChange)
+	a.Equal(fleet.GetVersion(), DefaultVersion1)
+	a.Equal(fleet.GetNewVersion(), DefaultVersion1)
+}
+
+// FleetのAssignementのEventを作成して追加する。
 // 指定されたAssignmentが存在しない場合、エラーが発生し、
 // 作成・追加が失敗することを検証する。
 func TestNotAssignedErrorWhenAddNewEvent(t *testing.T) {
@@ -269,6 +363,37 @@ func TestRemoveEvent(t *testing.T) {
 	a.Nil(ret)
 	a.Equal(fleet.GetVersion(), DefaultVersion1)
 	a.Equal(fleet.GetNewVersion(), DefaultVersion2)
+}
+
+// FleetのAssignementのEventを削除する。
+// カーボンコピーされたFleetの変更がエラーとなることを検証する。
+func TestCannotChangeErrorWhenRemoveEvent(t *testing.T) {
+	a := assert.New(t)
+
+	var (
+		CopiedID        = DefaultFlightplanID + "-copied"
+		DefaultVersion1 = DefaultVersion + "-1"
+		DefaultVersion2 = DefaultVersion + "-2"
+	)
+
+	gen := &generatorMock{
+		id:       DefaultID,
+		versions: []Version{DefaultVersion2},
+	}
+	original := &Fleet{
+		id:           DefaultID,
+		flightplanID: DefaultFlightplanID,
+		isCarbonCopy: Original,
+		version:      DefaultVersion1,
+		newVersion:   DefaultVersion1,
+	}
+	fleet := Copy(gen, CopiedID, original)
+
+	ret := fleet.RemoveEvent(DefaultEventID)
+
+	a.Equal(ret, ErrCannotChange)
+	a.Equal(fleet.GetVersion(), DefaultVersion1)
+	a.Equal(fleet.GetNewVersion(), DefaultVersion1)
 }
 
 // FleetのAssignementのEventを削除する。
@@ -345,6 +470,37 @@ func TestAssignMission(t *testing.T) {
 	a.Nil(ret)
 	a.Equal(fleet.GetVersion(), DefaultVersion1)
 	a.Equal(fleet.GetNewVersion(), DefaultVersion2)
+}
+
+// FleetのEventにMissionを割り当てる。
+// カーボンコピーされたFleetの変更がエラーとなることを検証する。
+func TestCannotChangeErrorWhenAssignMission(t *testing.T) {
+	a := assert.New(t)
+
+	var (
+		CopiedID        = DefaultFlightplanID + "-copied"
+		DefaultVersion1 = DefaultVersion + "-1"
+		DefaultVersion2 = DefaultVersion + "-2"
+	)
+
+	gen := &generatorMock{
+		id:       DefaultID,
+		versions: []Version{DefaultVersion2},
+	}
+	original := &Fleet{
+		id:           DefaultID,
+		flightplanID: DefaultFlightplanID,
+		isCarbonCopy: Original,
+		version:      DefaultVersion1,
+		newVersion:   DefaultVersion1,
+	}
+	fleet := Copy(gen, CopiedID, original)
+
+	ret := fleet.AssignMission(DefaultEventID, DefaultMissionID)
+
+	a.Equal(ret, ErrCannotChange)
+	a.Equal(fleet.GetVersion(), DefaultVersion1)
+	a.Equal(fleet.GetNewVersion(), DefaultVersion1)
 }
 
 // FleetのEventにMissionを割り当てる。
@@ -492,6 +648,37 @@ func TestCancelMission(t *testing.T) {
 	a.Nil(ret)
 	a.Equal(fleet.GetVersion(), DefaultVersion1)
 	a.Equal(fleet.GetNewVersion(), DefaultVersion2)
+}
+
+// FleetのEventにMission割り当てをキャンセルする。
+// カーボンコピーされたFleetの変更がエラーとなることを検証する。
+func TestCannotChangeErrorWhenCancelMission(t *testing.T) {
+	a := assert.New(t)
+
+	var (
+		CopiedID        = DefaultFlightplanID + "-copied"
+		DefaultVersion1 = DefaultVersion + "-1"
+		DefaultVersion2 = DefaultVersion + "-2"
+	)
+
+	gen := &generatorMock{
+		id:       DefaultID,
+		versions: []Version{DefaultVersion2},
+	}
+	original := &Fleet{
+		id:           DefaultID,
+		flightplanID: DefaultFlightplanID,
+		isCarbonCopy: Original,
+		version:      DefaultVersion1,
+		newVersion:   DefaultVersion1,
+	}
+	fleet := Copy(gen, CopiedID, original)
+
+	ret := fleet.CancelMission(DefaultEventID)
+
+	a.Equal(ret, ErrCannotChange)
+	a.Equal(fleet.GetVersion(), DefaultVersion1)
+	a.Equal(fleet.GetNewVersion(), DefaultVersion1)
 }
 
 // FleetのEventにMission割り当てをキャンセルする。

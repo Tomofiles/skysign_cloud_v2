@@ -65,3 +65,38 @@ func TestHandleDeletedEvent(t *testing.T) {
 	a.Nil(err)
 	a.Equal(service.ID, DefaultFlightplanID)
 }
+
+func TestHandleCopiedEvent(t *testing.T) {
+	a := assert.New(t)
+
+	var (
+		DefaultFlightplanOriginalID = DefaultFlightplanID + "-new"
+		DefaultFlightplanNewID      = DefaultFlightplanID + "-new"
+	)
+
+	service := manageFleetServiceMock{}
+
+	service.On("CarbonCopyFleet", mock.Anything).Return(nil)
+
+	app := app.Application{
+		Services: app.Services{
+			ManageFleet: &service,
+		},
+	}
+
+	handler := NewEventHandler(app)
+
+	requestPb := &skysign_proto.FlightplanCopiedEvent{
+		OriginalFlightplanId: DefaultFlightplanOriginalID,
+		NewFlightplanId:      DefaultFlightplanNewID,
+	}
+	requestBin, _ := proto.Marshal(requestPb)
+	err := handler.HandleCopiedEvent(
+		nil,
+		requestBin,
+	)
+
+	a.Nil(err)
+	a.Equal(service.OriginalID, DefaultFlightplanOriginalID)
+	a.Equal(service.NewID, DefaultFlightplanNewID)
+}

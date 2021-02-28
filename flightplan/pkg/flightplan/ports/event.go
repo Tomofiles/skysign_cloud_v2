@@ -14,6 +14,8 @@ const (
 	FlightplanCreatedEventExchangeName = "flightplan.flightplan_created_event"
 	// FlightplanDeletedEventExchangeName .
 	FlightplanDeletedEventExchangeName = "flightplan.flightplan_deleted_event"
+	// FlightplanCopiedEventExchangeName .
+	FlightplanCopiedEventExchangeName = "flightplan.flightplan_copied_event"
 )
 
 // EventHandler .
@@ -38,7 +40,7 @@ func (h *EventHandler) HandleCreatedEvent(
 
 	glog.Infof("RECEIVE , Event: %s, Message: %s", FlightplanCreatedEventExchangeName, eventPb.String())
 
-	requestDpo := requestDpoHolder{id: eventPb.GetFlightplanId()}
+	requestDpo := flightplanIDRequestDpoHolder{id: eventPb.GetFlightplanId()}
 	if ret := h.app.Services.ManageFleet.CreateFleet(&requestDpo); ret != nil {
 		return ret
 	}
@@ -57,17 +59,51 @@ func (h *EventHandler) HandleDeletedEvent(
 
 	glog.Infof("RECEIVE , Event: %s, Message: %s", FlightplanDeletedEventExchangeName, eventPb.String())
 
-	requestDpo := requestDpoHolder{id: eventPb.GetFlightplanId()}
+	requestDpo := flightplanIDRequestDpoHolder{id: eventPb.GetFlightplanId()}
 	if ret := h.app.Services.ManageFleet.DeleteFleet(&requestDpo); ret != nil {
 		return ret
 	}
 	return nil
 }
 
-type requestDpoHolder struct {
+// HandleCopiedEvent .
+func (h *EventHandler) HandleCopiedEvent(
+	ctx context.Context,
+	event []byte,
+) error {
+	eventPb := skysign_proto.FlightplanCopiedEvent{}
+	if err := proto.Unmarshal(event, &eventPb); err != nil {
+		return err
+	}
+
+	glog.Infof("RECEIVE , Event: %s, Message: %s", FlightplanCopiedEventExchangeName, eventPb.String())
+
+	requestDpo := copyRequestDpoHolder{
+		originalID: eventPb.GetOriginalFlightplanId(),
+		newID:      eventPb.GetNewFlightplanId(),
+	}
+	if ret := h.app.Services.ManageFleet.CarbonCopyFleet(&requestDpo); ret != nil {
+		return ret
+	}
+	return nil
+}
+
+type flightplanIDRequestDpoHolder struct {
 	id string
 }
 
-func (h *requestDpoHolder) GetFlightplanID() string {
+func (h *flightplanIDRequestDpoHolder) GetFlightplanID() string {
 	return h.id
+}
+
+type copyRequestDpoHolder struct {
+	originalID string
+	newID      string
+}
+
+func (h *copyRequestDpoHolder) GetOriginalID() string {
+	return h.originalID
+}
+func (h *copyRequestDpoHolder) GetNewID() string {
+	return h.newID
 }

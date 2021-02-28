@@ -1,6 +1,9 @@
 package fleet
 
-import "flightplan/pkg/flightplan/domain/flightplan"
+import (
+	"errors"
+	"flightplan/pkg/flightplan/domain/flightplan"
+)
 
 const DefaultID = ID("fleet-id")
 const DefaultFlightplanID = flightplan.ID("flightplan-id")
@@ -9,6 +12,12 @@ const DefaultEventID = EventID("event-id")
 const DefaultVehicleID = VehicleID("vehicle-id")
 const DefaultMissionID = MissionID("mission-id")
 const DefaultVersion = Version("version")
+
+var (
+	ErrSave   = errors.New("save error")
+	ErrGet    = errors.New("get error")
+	ErrDelete = errors.New("delete error")
+)
 
 // Fleet用汎用ジェネレータモック
 type generatorMock struct {
@@ -47,6 +56,7 @@ type fleetComponentMock struct {
 	flightplanID string
 	assignments  []assignmentComponentMock
 	events       []eventComponentMock
+	isCarbonCopy bool
 	version      string
 }
 
@@ -56,6 +66,10 @@ func (f *fleetComponentMock) GetID() string {
 
 func (f *fleetComponentMock) GetFlightplanID() string {
 	return f.flightplanID
+}
+
+func (f *fleetComponentMock) GetIsCarbonCopy() bool {
+	return f.isCarbonCopy
 }
 
 func (f *fleetComponentMock) GetVersion() string {

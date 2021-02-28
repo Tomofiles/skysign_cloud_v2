@@ -89,21 +89,13 @@ func (s *assignFleetService) changeNumberOfVehiclesOperation(
 	requestDpo ChangeNumberOfVehiclesRequestDpo,
 	responseDpo ChangeNumberOfVehiclesResponseDpo,
 ) error {
-	if ret := s.repo.DeleteByFlightplanID(
+	if ret := fleet.ChangeNumberOfVehicles(
 		tx,
-		flightplan.ID(requestDpo.GetFlightplanID()),
-	); ret != nil {
-		return ret
-	}
-
-	newFleet := fleet.NewInstance(
 		s.gen,
+		s.repo,
 		flightplan.ID(requestDpo.GetFlightplanID()),
-		requestDpo.GetNumberOfVehicles())
-	for _, assignmentID := range newFleet.GetAllAssignmentID() {
-		newFleet.AddNewEvent(assignmentID)
-	}
-	if ret := s.repo.Save(tx, newFleet); ret != nil {
+		requestDpo.GetNumberOfVehicles(),
+	); ret != nil {
 		return ret
 	}
 
