@@ -1,6 +1,7 @@
 package rabbitmq
 
 import (
+	"flightplan/pkg/flightplan/domain/fleet"
 	"flightplan/pkg/flightplan/domain/flightplan"
 )
 
@@ -37,6 +38,16 @@ func (p *Publisher) Flush() error {
 		}
 		if event, ok := e.(flightplan.CopiedEvent); ok {
 			if err := PublishFlightplanCopiedEvent(p.ch, event); err != nil {
+				return err
+			}
+		}
+		if event, ok := e.(fleet.VehicleCopiedWhenCopiedEvent); ok {
+			if err := PublishVehicleCopiedWhenCopiedEvent(p.ch, event); err != nil {
+				return err
+			}
+		}
+		if event, ok := e.(fleet.MissionCopiedWhenCopiedEvent); ok {
+			if err := PublishMissionCopiedWhenCopiedEvent(p.ch, event); err != nil {
 				return err
 			}
 		}

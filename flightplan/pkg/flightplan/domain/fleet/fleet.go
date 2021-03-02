@@ -257,5 +257,7 @@ type Generator interface {
 	NewID() ID
 	NewAssignmentID() AssignmentID
 	NewEventID() EventID
+	NewVehicleID() VehicleID
+	NewMissionID() MissionID
 	NewVersion() Version
 }

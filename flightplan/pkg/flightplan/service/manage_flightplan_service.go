@@ -13,6 +13,7 @@ type ManageFlightplanService interface {
 	CreateFlightplan(requestDpo CreateFlightplanRequestDpo, responseDpo CreateFlightplanResponseDpo) error
 	UpdateFlightplan(requestDpo UpdateFlightplanRequestDpo, responseDpo UpdateFlightplanResponseDpo) error
 	DeleteFlightplan(requestDpo DeleteFlightplanRequestDpo) error
+	CarbonCopyFlightplan(requestDpo CarbonCopyFlightplanRequestDpo) error
 }
 
 // CreateFlightplanRequestDpo .

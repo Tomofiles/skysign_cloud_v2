@@ -3,6 +3,7 @@ package rabbitmq
 import (
 	"context"
 	"errors"
+	"flightplan/pkg/flightplan/domain/fleet"
 	"flightplan/pkg/flightplan/domain/flightplan"
 	"testing"
 
@@ -57,6 +58,8 @@ func TestMultipleEventWhenPublish(t *testing.T) {
 	event1 := flightplan.CreatedEvent{}
 	event2 := flightplan.DeletedEvent{}
 	event3 := flightplan.CopiedEvent{}
+	event4 := fleet.VehicleCopiedWhenCopiedEvent{}
+	event5 := fleet.MissionCopiedWhenCopiedEvent{}
 
 	connMock := &connectionMockCommon{}
 	chMock := &channelMockPublish{}
@@ -71,10 +74,12 @@ func TestMultipleEventWhenPublish(t *testing.T) {
 	pub.Publish(event1)
 	pub.Publish(event2)
 	pub.Publish(event3)
+	pub.Publish(event4)
+	pub.Publish(event5)
 	ret := pub.Flush()
 
 	a.Nil(ret)
-	a.Equal(chMock.messageCallCount, 3)
+	a.Equal(chMock.messageCallCount, 5)
 }
 
 func TestFanoutExchangeDeclareErrorWhenCreatedEventPublish(t *testing.T) {
@@ -201,6 +206,102 @@ func TestPublishErrorWhenCopiedEventPublish(t *testing.T) {
 	a := assert.New(t)
 
 	event := flightplan.CopiedEvent{}
+
+	errPub := errors.New("publish error")
+
+	connMock := &connectionMockCommon{}
+	chMock := &channelMockPublish{}
+	connMock.On("GetChannel").Return(chMock, nil)
+	chMock.On("FanoutExchangeDeclare", mock.Anything).Return(nil)
+	chMock.On("Publish", mock.Anything).Return(errPub)
+
+	psm := NewPubSubManager(connMock)
+
+	pub, _, _ := psm.GetPublisher()
+
+	pub.Publish(event)
+	ret := pub.Flush()
+
+	a.Equal(ret, errPub)
+	a.Equal(chMock.messageCallCount, 1)
+}
+
+func TestFanoutExchangeDeclareErrorWhenVehicleCopiedWhenCopiedEventPublish(t *testing.T) {
+	a := assert.New(t)
+
+	event := fleet.VehicleCopiedWhenCopiedEvent{}
+
+	errPub := errors.New("publish error")
+
+	connMock := &connectionMockCommon{}
+	chMock := &channelMockPublish{}
+	connMock.On("GetChannel").Return(chMock, nil)
+	chMock.On("FanoutExchangeDeclare", mock.Anything).Return(errPub)
+	chMock.On("Publish", mock.Anything).Return(nil)
+
+	psm := NewPubSubManager(connMock)
+
+	pub, _, _ := psm.GetPublisher()
+
+	pub.Publish(event)
+	ret := pub.Flush()
+
+	a.Equal(ret, errPub)
+	a.Equal(chMock.messageCallCount, 0)
+}
+
+func TestPublishErrorWhenVehicleCopiedWhenCopiedEventPublish(t *testing.T) {
+	a := assert.New(t)
+
+	event := fleet.VehicleCopiedWhenCopiedEvent{}
+
+	errPub := errors.New("publish error")
+
+	connMock := &connectionMockCommon{}
+	chMock := &channelMockPublish{}
+	connMock.On("GetChannel").Return(chMock, nil)
+	chMock.On("FanoutExchangeDeclare", mock.Anything).Return(nil)
+	chMock.On("Publish", mock.Anything).Return(errPub)
+
+	psm := NewPubSubManager(connMock)
+
+	pub, _, _ := psm.GetPublisher()
+
+	pub.Publish(event)
+	ret := pub.Flush()
+
+	a.Equal(ret, errPub)
+	a.Equal(chMock.messageCallCount, 1)
+}
+
+func TestFanoutExchangeDeclareErrorWhenMissionCopiedWhenCopiedEventPublish(t *testing.T) {
+	a := assert.New(t)
+
+	event := fleet.MissionCopiedWhenCopiedEvent{}
+
+	errPub := errors.New("publish error")
+
+	connMock := &connectionMockCommon{}
+	chMock := &channelMockPublish{}
+	connMock.On("GetChannel").Return(chMock, nil)
+	chMock.On("FanoutExchangeDeclare", mock.Anything).Return(errPub)
+	chMock.On("Publish", mock.Anything).Return(nil)
+
+	psm := NewPubSubManager(connMock)
+
+	pub, _, _ := psm.GetPublisher()
+
+	pub.Publish(event)
+	ret := pub.Flush()
+
+	a.Equal(ret, errPub)
+	a.Equal(chMock.messageCallCount, 0)
+}
+
+func TestPublishErrorWhenMissionCopiedWhenCopiedEventPublish(t *testing.T) {
+	a := assert.New(t)
+
+	event := fleet.MissionCopiedWhenCopiedEvent{}
 
 	errPub := errors.New("publish error")
 

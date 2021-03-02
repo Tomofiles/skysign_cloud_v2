@@ -284,6 +284,116 @@ func (x *FlightplanDeletedEvent) GetFlightplanId() string {
 	return ""
 }
 
+type VehicleCopiedWhenCopiedEvent struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	OriginalVehicleId string `protobuf:"bytes,1,opt,name=original_vehicle_id,json=originalVehicleId,proto3" json:"original_vehicle_id,omitempty"`
+	NewVehicleId      string `protobuf:"bytes,2,opt,name=new_vehicle_id,json=newVehicleId,proto3" json:"new_vehicle_id,omitempty"`
+}
+
+func (x *VehicleCopiedWhenCopiedEvent) Reset() {
+	*x = VehicleCopiedWhenCopiedEvent{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_event_proto_msgTypes[5]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *VehicleCopiedWhenCopiedEvent) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*VehicleCopiedWhenCopiedEvent) ProtoMessage() {}
+
+func (x *VehicleCopiedWhenCopiedEvent) ProtoReflect() protoreflect.Message {
+	mi := &file_event_proto_msgTypes[5]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use VehicleCopiedWhenCopiedEvent.ProtoReflect.Descriptor instead.
+func (*VehicleCopiedWhenCopiedEvent) Descriptor() ([]byte, []int) {
+	return file_event_proto_rawDescGZIP(), []int{5}
+}
+
+func (x *VehicleCopiedWhenCopiedEvent) GetOriginalVehicleId() string {
+	if x != nil {
+		return x.OriginalVehicleId
+	}
+	return ""
+}
+
+func (x *VehicleCopiedWhenCopiedEvent) GetNewVehicleId() string {
+	if x != nil {
+		return x.NewVehicleId
+	}
+	return ""
+}
+
+type MissionCopiedWhenCopiedEvent struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	OriginalMissionId string `protobuf:"bytes,1,opt,name=original_mission_id,json=originalMissionId,proto3" json:"original_mission_id,omitempty"`
+	NewMissionId      string `protobuf:"bytes,2,opt,name=new_mission_id,json=newMissionId,proto3" json:"new_mission_id,omitempty"`
+}
+
+func (x *MissionCopiedWhenCopiedEvent) Reset() {
+	*x = MissionCopiedWhenCopiedEvent{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_event_proto_msgTypes[6]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *MissionCopiedWhenCopiedEvent) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*MissionCopiedWhenCopiedEvent) ProtoMessage() {}
+
+func (x *MissionCopiedWhenCopiedEvent) ProtoReflect() protoreflect.Message {
+	mi := &file_event_proto_msgTypes[6]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use MissionCopiedWhenCopiedEvent.ProtoReflect.Descriptor instead.
+func (*MissionCopiedWhenCopiedEvent) Descriptor() ([]byte, []int) {
+	return file_event_proto_rawDescGZIP(), []int{6}
+}
+
+func (x *MissionCopiedWhenCopiedEvent) GetOriginalMissionId() string {
+	if x != nil {
+		return x.OriginalMissionId
+	}
+	return ""
+}
+
+func (x *MissionCopiedWhenCopiedEvent) GetNewMissionId() string {
+	if x != nil {
+		return x.NewMissionId
+	}
+	return ""
+}
+
 var File_event_proto protoreflect.FileDescriptor
 
 var file_event_proto_rawDesc = []byte{
@@ -316,10 +426,25 @@ var file_event_proto_rawDesc = []byte{
 	0x67, 0x68, 0x74, 0x70, 0x6c, 0x61, 0x6e, 0x44, 0x65, 0x6c, 0x65, 0x74, 0x65, 0x64, 0x45, 0x76,
 	0x65, 0x6e, 0x74, 0x12, 0x23, 0x0a, 0x0d, 0x66, 0x6c, 0x69, 0x67, 0x68, 0x74, 0x70, 0x6c, 0x61,
 	0x6e, 0x5f, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0c, 0x66, 0x6c, 0x69, 0x67,
-	0x68, 0x74, 0x70, 0x6c, 0x61, 0x6e, 0x49, 0x64, 0x42, 0x28, 0x0a, 0x13, 0x70, 0x72, 0x6f, 0x74,
-	0x6f, 0x2e, 0x73, 0x6b, 0x79, 0x73, 0x69, 0x67, 0x6e, 0x2e, 0x65, 0x76, 0x65, 0x6e, 0x74, 0x50,
-	0x01, 0x5a, 0x0f, 0x2e, 0x3b, 0x73, 0x6b, 0x79, 0x73, 0x69, 0x67, 0x6e, 0x5f, 0x70, 0x72, 0x6f,
-	0x74, 0x6f, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x68, 0x74, 0x70, 0x6c, 0x61, 0x6e, 0x49, 0x64, 0x22, 0x74, 0x0a, 0x1c, 0x56, 0x65, 0x68, 0x69,
+	0x63, 0x6c, 0x65, 0x43, 0x6f, 0x70, 0x69, 0x65, 0x64, 0x57, 0x68, 0x65, 0x6e, 0x43, 0x6f, 0x70,
+	0x69, 0x65, 0x64, 0x45, 0x76, 0x65, 0x6e, 0x74, 0x12, 0x2e, 0x0a, 0x13, 0x6f, 0x72, 0x69, 0x67,
+	0x69, 0x6e, 0x61, 0x6c, 0x5f, 0x76, 0x65, 0x68, 0x69, 0x63, 0x6c, 0x65, 0x5f, 0x69, 0x64, 0x18,
+	0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x11, 0x6f, 0x72, 0x69, 0x67, 0x69, 0x6e, 0x61, 0x6c, 0x56,
+	0x65, 0x68, 0x69, 0x63, 0x6c, 0x65, 0x49, 0x64, 0x12, 0x24, 0x0a, 0x0e, 0x6e, 0x65, 0x77, 0x5f,
+	0x76, 0x65, 0x68, 0x69, 0x63, 0x6c, 0x65, 0x5f, 0x69, 0x64, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09,
+	0x52, 0x0c, 0x6e, 0x65, 0x77, 0x56, 0x65, 0x68, 0x69, 0x63, 0x6c, 0x65, 0x49, 0x64, 0x22, 0x74,
+	0x0a, 0x1c, 0x4d, 0x69, 0x73, 0x73, 0x69, 0x6f, 0x6e, 0x43, 0x6f, 0x70, 0x69, 0x65, 0x64, 0x57,
+	0x68, 0x65, 0x6e, 0x43, 0x6f, 0x70, 0x69, 0x65, 0x64, 0x45, 0x76, 0x65, 0x6e, 0x74, 0x12, 0x2e,
+	0x0a, 0x13, 0x6f, 0x72, 0x69, 0x67, 0x69, 0x6e, 0x61, 0x6c, 0x5f, 0x6d, 0x69, 0x73, 0x73, 0x69,
+	0x6f, 0x6e, 0x5f, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x11, 0x6f, 0x72, 0x69,
+	0x67, 0x69, 0x6e, 0x61, 0x6c, 0x4d, 0x69, 0x73, 0x73, 0x69, 0x6f, 0x6e, 0x49, 0x64, 0x12, 0x24,
+	0x0a, 0x0e, 0x6e, 0x65, 0x77, 0x5f, 0x6d, 0x69, 0x73, 0x73, 0x69, 0x6f, 0x6e, 0x5f, 0x69, 0x64,
+	0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0c, 0x6e, 0x65, 0x77, 0x4d, 0x69, 0x73, 0x73, 0x69,
+	0x6f, 0x6e, 0x49, 0x64, 0x42, 0x28, 0x0a, 0x13, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2e, 0x73, 0x6b,
+	0x79, 0x73, 0x69, 0x67, 0x6e, 0x2e, 0x65, 0x76, 0x65, 0x6e, 0x74, 0x50, 0x01, 0x5a, 0x0f, 0x2e,
+	0x3b, 0x73, 0x6b, 0x79, 0x73, 0x69, 0x67, 0x6e, 0x5f, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x06,
+	0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
@@ -334,13 +459,15 @@ func file_event_proto_rawDescGZIP() []byte {
 	return file_event_proto_rawDescData
 }
 
-var file_event_proto_msgTypes = make([]protoimpl.MessageInfo, 5)
+var file_event_proto_msgTypes = make([]protoimpl.MessageInfo, 7)
 var file_event_proto_goTypes = []interface{}{
-	(*CommunicationIdGaveEvent)(nil),    // 0: skysign_proto.CommunicationIdGaveEvent
-	(*CommunicationIdRemovedEvent)(nil), // 1: skysign_proto.CommunicationIdRemovedEvent
-	(*FlightplanCreatedEvent)(nil),      // 2: skysign_proto.FlightplanCreatedEvent
-	(*FlightplanCopiedEvent)(nil),       // 3: skysign_proto.FlightplanCopiedEvent
-	(*FlightplanDeletedEvent)(nil),      // 4: skysign_proto.FlightplanDeletedEvent
+	(*CommunicationIdGaveEvent)(nil),     // 0: skysign_proto.CommunicationIdGaveEvent
+	(*CommunicationIdRemovedEvent)(nil),  // 1: skysign_proto.CommunicationIdRemovedEvent
+	(*FlightplanCreatedEvent)(nil),       // 2: skysign_proto.FlightplanCreatedEvent
+	(*FlightplanCopiedEvent)(nil),        // 3: skysign_proto.FlightplanCopiedEvent
+	(*FlightplanDeletedEvent)(nil),       // 4: skysign_proto.FlightplanDeletedEvent
+	(*VehicleCopiedWhenCopiedEvent)(nil), // 5: skysign_proto.VehicleCopiedWhenCopiedEvent
+	(*MissionCopiedWhenCopiedEvent)(nil), // 6: skysign_proto.MissionCopiedWhenCopiedEvent
 }
 var file_event_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type
@@ -416,6 +543,30 @@ func file_event_proto_init() {
 				return nil
 			}
 		}
+		file_event_proto_msgTypes[5].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*VehicleCopiedWhenCopiedEvent); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_event_proto_msgTypes[6].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*MissionCopiedWhenCopiedEvent); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
 	}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
@@ -423,7 +574,7 @@ func file_event_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_event_proto_rawDesc,
 			NumEnums:      0,
-			NumMessages:   5,
+			NumMessages:   7,
 			NumExtensions: 0,
 			NumServices:   0,
 		},

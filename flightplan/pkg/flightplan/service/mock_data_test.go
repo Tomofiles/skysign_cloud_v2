@@ -143,6 +143,10 @@ type generatorMockFleet struct {
 	assignmentIDIndex int
 	eventIDs          []fl.EventID
 	eventIDIndex      int
+	vehicleIDs        []fl.VehicleID
+	vehicleIDIndex    int
+	missionIDs        []fl.MissionID
+	missionIDIndex    int
 	versions          []fl.Version
 	versionIndex      int
 }
@@ -159,6 +163,16 @@ func (gen *generatorMockFleet) NewEventID() fl.EventID {
 	eventID := gen.eventIDs[gen.eventIDIndex]
 	gen.eventIDIndex++
 	return eventID
+}
+func (gen *generatorMockFleet) NewVehicleID() fl.VehicleID {
+	vehicleID := gen.vehicleIDs[gen.vehicleIDIndex]
+	gen.vehicleIDIndex++
+	return vehicleID
+}
+func (gen *generatorMockFleet) NewMissionID() fl.MissionID {
+	missionID := gen.missionIDs[gen.missionIDIndex]
+	gen.missionIDIndex++
+	return missionID
 }
 func (gen *generatorMockFleet) NewVersion() fl.Version {
 	version := gen.versions[gen.versionIndex]

@@ -28,3 +28,13 @@ message FlightplanCopiedEvent {
 message FlightplanDeletedEvent {
     string flightplan_id = 1;
 }
+
+message VehicleCopiedWhenCopiedEvent {
+    string original_vehicle_id = 1;
+    string new_vehicle_id = 2;
+}
+
+message MissionCopiedWhenCopiedEvent {
+    string original_mission_id = 1;
+    string new_mission_id = 2;
+}

@@ -138,16 +138,26 @@ func TestCarbonCopyFleetTransaction(t *testing.T) {
 	)
 
 	gen := &generatorMockFleet{}
-
 	repo := &fleetRepositoryMock{}
+	txm := &txManagerMock{}
+	pub := &publisherMock{}
+	psm := &pubSubManagerMock{}
+
+	var isClose bool
+	close := func() error {
+		isClose = true
+		return nil
+	}
+
+	psm.On("GetPublisher").Return(pub, close, nil)
 	repo.On("GetByFlightplanID", DefaultFlightplanOriginalID).Return(fleet, nil)
 	repo.On("Save", mock.Anything).Return(nil)
-	txm := &txManagerMock{}
 
 	service := &manageFleetService{
 		gen:  gen,
 		repo: repo,
 		txm:  txm,
+		psm:  psm,
 	}
 
 	req := &carbonCopyRequestMock{
@@ -158,6 +168,9 @@ func TestCarbonCopyFleetTransaction(t *testing.T) {
 
 	a.Nil(ret)
 	a.Nil(ret)
+	a.Len(pub.events, 0)
+	a.True(pub.isFlush)
+	a.True(isClose)
 	a.Nil(txm.isOpe)
 	a.Nil(txm.isEH)
 }
@@ -185,11 +198,13 @@ func TestCarbonCopyFleetOperation(t *testing.T) {
 	repo := &fleetRepositoryMock{}
 	repo.On("GetByFlightplanID", DefaultFlightplanOriginalID).Return(fleet, nil)
 	repo.On("Save", mock.Anything).Return(nil)
+	pub := &publisherMock{}
 
 	service := &manageFleetService{
 		gen:  gen,
 		repo: repo,
 		txm:  nil,
+		psm:  nil,
 	}
 
 	req := &carbonCopyRequestMock{
@@ -198,8 +213,10 @@ func TestCarbonCopyFleetOperation(t *testing.T) {
 	}
 	ret := service.carbonCopyFleetOperation(
 		nil,
+		pub,
 		req,
 	)
 
 	a.Nil(ret)
+	a.Len(pub.events, 0)
 }

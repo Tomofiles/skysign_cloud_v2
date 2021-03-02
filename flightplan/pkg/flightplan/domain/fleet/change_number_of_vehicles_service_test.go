@@ -263,16 +263,3 @@ func (r *repositoryMock) DeleteByFlightplanID(
 	r.deleteID = id
 	return ret.Error(0)
 }
-
-// Flightplan用汎用パブリッシャモック
-type publisherMock struct {
-	events []interface{}
-}
-
-func (rm *publisherMock) Publish(event interface{}) {
-	rm.events = append(rm.events, event)
-}
-
-func (rm *publisherMock) Flush() error {
-	return nil
-}

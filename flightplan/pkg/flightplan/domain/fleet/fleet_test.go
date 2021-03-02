@@ -59,7 +59,7 @@ func TestCannotChangeErrorWhenAssignVehicle(t *testing.T) {
 		version:      DefaultVersion1,
 		newVersion:   DefaultVersion1,
 	}
-	fleet := Copy(gen, CopiedID, original)
+	fleet := Copy(gen, nil, CopiedID, original)
 
 	ret := fleet.AssignVehicle(DefaultAssignmentID, DefaultVehicleID)
 
@@ -192,7 +192,7 @@ func TestCannotChangeErrorWhenCancelVehiclesAssignment(t *testing.T) {
 		version:      DefaultVersion1,
 		newVersion:   DefaultVersion1,
 	}
-	fleet := Copy(gen, CopiedID, original)
+	fleet := Copy(gen, nil, CopiedID, original)
 
 	ret := fleet.CancelVehiclesAssignment(DefaultAssignmentID)
 
@@ -292,7 +292,7 @@ func TestCannotChangeErrorWhenAddNewEvent(t *testing.T) {
 		version:      DefaultVersion1,
 		newVersion:   DefaultVersion1,
 	}
-	fleet := Copy(gen, CopiedID, original)
+	fleet := Copy(gen, nil, CopiedID, original)
 
 	eventID, ret := fleet.AddNewEvent(DefaultAssignmentID)
 
@@ -387,7 +387,7 @@ func TestCannotChangeErrorWhenRemoveEvent(t *testing.T) {
 		version:      DefaultVersion1,
 		newVersion:   DefaultVersion1,
 	}
-	fleet := Copy(gen, CopiedID, original)
+	fleet := Copy(gen, nil, CopiedID, original)
 
 	ret := fleet.RemoveEvent(DefaultEventID)
 
@@ -494,7 +494,7 @@ func TestCannotChangeErrorWhenAssignMission(t *testing.T) {
 		version:      DefaultVersion1,
 		newVersion:   DefaultVersion1,
 	}
-	fleet := Copy(gen, CopiedID, original)
+	fleet := Copy(gen, nil, CopiedID, original)
 
 	ret := fleet.AssignMission(DefaultEventID, DefaultMissionID)
 
@@ -672,7 +672,7 @@ func TestCannotChangeErrorWhenCancelMission(t *testing.T) {
 		version:      DefaultVersion1,
 		newVersion:   DefaultVersion1,
 	}
-	fleet := Copy(gen, CopiedID, original)
+	fleet := Copy(gen, nil, CopiedID, original)
 
 	ret := fleet.CancelMission(DefaultEventID)
 

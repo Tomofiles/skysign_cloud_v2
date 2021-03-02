@@ -1,6 +1,7 @@
 package service
 
 import (
+	"flightplan/pkg/flightplan/domain/event"
 	"flightplan/pkg/flightplan/domain/fleet"
 	"flightplan/pkg/flightplan/domain/flightplan"
 	"flightplan/pkg/flightplan/domain/txmanager"
@@ -34,11 +35,13 @@ func NewManageFleetService(
 	gen fleet.Generator,
 	repo fleet.Repository,
 	txm txmanager.TransactionManager,
+	psm event.PubSubManager,
 ) ManageFleetService {
 	return &manageFleetService{
 		gen:  gen,
 		repo: repo,
 		txm:  txm,
+		psm:  psm,
 	}
 }
 
@@ -46,6 +49,7 @@ type manageFleetService struct {
 	gen  fleet.Generator
 	repo fleet.Repository
 	txm  txmanager.TransactionManager
+	psm  event.PubSubManager
 }
 
 func (s *manageFleetService) CreateFleet(
@@ -102,24 +106,36 @@ func (s *manageFleetService) deleteFleetOperation(
 func (s *manageFleetService) CarbonCopyFleet(
 	requestDpo CarbonCopyFleetRequestDpo,
 ) error {
-	return s.txm.Do(
+	pub, chClose, err := s.psm.GetPublisher()
+	if err != nil {
+		return err
+	}
+	defer chClose()
+
+	return s.txm.DoAndEndHook(
 		func(tx txmanager.Tx) error {
 			return s.carbonCopyFleetOperation(
 				tx,
+				pub,
 				requestDpo,
 			)
+		},
+		func() error {
+			return pub.Flush()
 		},
 	)
 }
 
 func (s *manageFleetService) carbonCopyFleetOperation(
 	tx txmanager.Tx,
+	pub event.Publisher,
 	requestDpo CarbonCopyFleetRequestDpo,
 ) error {
 	if ret := fleet.CarbonCopyFleet(
 		tx,
 		s.gen,
 		s.repo,
+		pub,
 		flightplan.ID(requestDpo.GetOriginalID()),
 		flightplan.ID(requestDpo.GetNewID()),
 	); ret != nil {

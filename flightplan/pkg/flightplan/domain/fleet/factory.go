@@ -1,6 +1,9 @@
 package fleet
 
-import "flightplan/pkg/flightplan/domain/flightplan"
+import (
+	"flightplan/pkg/flightplan/domain/event"
+	"flightplan/pkg/flightplan/domain/flightplan"
+)
 
 // NewInstance .
 func NewInstance(gen Generator, flightplanID flightplan.ID, numberOfVehicles int32) *Fleet {
@@ -25,28 +28,66 @@ func NewInstance(gen Generator, flightplanID flightplan.ID, numberOfVehicles int
 }
 
 // Copy .
-func Copy(gen Generator, id flightplan.ID, original *Fleet) *Fleet {
+func Copy(
+	gen Generator,
+	pub event.Publisher,
+	id flightplan.ID,
+	original *Fleet,
+) *Fleet {
 	var vehicleAssignments []*VehicleAssignment
 	var eventPlannings []*EventPlanning
 
+	assignmentIDMap := map[AssignmentID]AssignmentID{}
+	vehicleIDMap := map[VehicleID]VehicleID{"": ""}
+	missionIDMap := map[MissionID]MissionID{"": ""}
 	for _, va := range original.vehicleAssignments {
+		assignmentIDMap[va.assignmentID] = gen.NewAssignmentID()
+		if va.vehicleID != "" {
+			vehicleIDMap[va.vehicleID] = gen.NewVehicleID()
+		}
 		vehicleAssignments = append(
 			vehicleAssignments,
 			&VehicleAssignment{
-				assignmentID: va.assignmentID,
-				vehicleID:    va.vehicleID,
+				assignmentID: assignmentIDMap[va.assignmentID],
+				vehicleID:    vehicleIDMap[va.vehicleID],
 			},
 		)
 	}
 	for _, ep := range original.eventPlannings {
+		if ep.missionID != "" {
+			missionIDMap[ep.missionID] = gen.NewMissionID()
+		}
 		eventPlannings = append(
 			eventPlannings,
 			&EventPlanning{
-				eventID:      ep.eventID,
-				assignmentID: ep.assignmentID,
-				missionID:    ep.missionID,
+				eventID:      gen.NewEventID(),
+				assignmentID: assignmentIDMap[ep.assignmentID],
+				missionID:    missionIDMap[ep.missionID],
 			},
 		)
+	}
+
+	if pub != nil {
+		for k, v := range vehicleIDMap {
+			if k == "" {
+				continue
+			}
+			event := VehicleCopiedWhenCopiedEvent{
+				OriginalID: k,
+				NewID:      v,
+			}
+			pub.Publish(event)
+		}
+		for k, v := range missionIDMap {
+			if k == "" {
+				continue
+			}
+			event := MissionCopiedWhenCopiedEvent{
+				OriginalID: k,
+				NewID:      v,
+			}
+			pub.Publish(event)
+		}
 	}
 
 	return &Fleet{

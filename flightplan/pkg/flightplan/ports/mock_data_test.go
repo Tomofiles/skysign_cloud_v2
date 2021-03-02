@@ -74,6 +74,13 @@ func (s *manageFlightplanServiceMock) DeleteFlightplan(
 	return ret.Error(0)
 }
 
+func (s *manageFlightplanServiceMock) CarbonCopyFlightplan(
+	requestDpo service.CarbonCopyFlightplanRequestDpo,
+) error {
+	ret := s.Called()
+	return ret.Error(0)
+}
+
 type manageFleetServiceMock struct {
 	mock.Mock
 	ID         string

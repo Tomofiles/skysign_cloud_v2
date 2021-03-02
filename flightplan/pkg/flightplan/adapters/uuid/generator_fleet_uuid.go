@@ -32,6 +32,18 @@ func (g *FleetUUID) NewEventID() fleet.EventID {
 	return fleet.EventID(uuid.String())
 }
 
+// NewVehicleID .
+func (g *FleetUUID) NewVehicleID() fleet.VehicleID {
+	uuid, _ := uuid.NewRandom()
+	return fleet.VehicleID(uuid.String())
+}
+
+// NewMissionID .
+func (g *FleetUUID) NewMissionID() fleet.MissionID {
+	uuid, _ := uuid.NewRandom()
+	return fleet.MissionID(uuid.String())
+}
+
 // NewVersion .
 func (g *FleetUUID) NewVersion() fleet.Version {
 	uuid, _ := uuid.NewRandom()

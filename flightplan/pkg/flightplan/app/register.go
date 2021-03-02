@@ -30,7 +30,7 @@ func newApplication(
 	return Application{
 		Services: Services{
 			ManageFlightplan: service.NewManageFlightplanService(flightplanGen, flightplanRepo, txm, psm),
-			ManageFleet:      service.NewManageFleetService(fleetGen, fleetRepo, txm),
+			ManageFleet:      service.NewManageFleetService(fleetGen, fleetRepo, txm, psm),
 			AssignFleet:      service.NewAssignFleetService(fleetGen, fleetRepo, txm),
 		},
 	}
