@@ -42,6 +42,7 @@ public class ManageMissionEndpoint extends ManageMissionServiceImplBase {
             responseObserver.onError(Status
                     .INTERNAL
                     .withCause(e)
+                    .withDescription(e.getMessage())
                     .asRuntimeException());
             return;
         }
@@ -61,6 +62,7 @@ public class ManageMissionEndpoint extends ManageMissionServiceImplBase {
             responseObserver.onError(Status
                     .INTERNAL
                     .withCause(e)
+                    .withDescription(e.getMessage())
                     .asRuntimeException());
             return;
         }
@@ -89,6 +91,7 @@ public class ManageMissionEndpoint extends ManageMissionServiceImplBase {
             responseObserver.onError(Status
                     .INTERNAL
                     .withCause(e)
+                    .withDescription(e.getMessage())
                     .asRuntimeException());
             return;
         }
@@ -108,6 +111,7 @@ public class ManageMissionEndpoint extends ManageMissionServiceImplBase {
             responseObserver.onError(Status
                     .INTERNAL
                     .withCause(e)
+                    .withDescription(e.getMessage())
                     .asRuntimeException());
             return;
         }
@@ -136,6 +140,7 @@ public class ManageMissionEndpoint extends ManageMissionServiceImplBase {
             responseObserver.onError(Status
                     .INTERNAL
                     .withCause(e)
+                    .withDescription(e.getMessage())
                     .asRuntimeException());
             return;
         }

@@ -13,6 +13,7 @@ public class MissionComponentDto {
     private String id;
     private String name;
     private double takeoffPointGroundHeightWGS84M;
+    private boolean isCarbonCopy;
     private String version;
     private String newVersion;
     private List<WaypointComponentDto> waypoints;

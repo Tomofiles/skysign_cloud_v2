@@ -8,16 +8,32 @@ import net.tomofiles.skysign.mission.domain.mission.component.WaypointComponentD
 public class MissionFactory {
     
     public static Mission newInstance(Generator generator) {
-        return new Mission(generator.newMissionId(), generator.newVersion(), generator);
+        return Mission.newOriginal(generator.newMissionId(), generator.newVersion(), generator);
     }
 
-    public static Mission newInstance(MissionId missionId, Generator generator) {
-        return new Mission(missionId, generator.newVersion(), generator);
+    public static Mission copy(Mission original, MissionId newId, Generator generator) {
+        Mission mission = Mission.newCarbonCopy(newId, original.getVersion(), generator);
+        mission.setMissionName(original.getMissionName());
+
+        if (original.getNavigation() != null) {
+            Navigation navigation = new Navigation();
+            navigation.setTakeoffPointGroundHeight(original.getNavigation().getTakeoffPointGroundHeight());
+            original.getNavigation().getWaypoints()
+                    .forEach(waypoint -> {
+                            navigation.pushNextWaypoint(
+                            new GeodesicCoordinates(waypoint.getLatitude(), waypoint.getLongitude()),
+                            Height.fromM(waypoint.getRelativeHeightM()),
+                            Speed.fromMS(waypoint.getSpeedMS()));
+                    });
+            mission.setNavigation(navigation);
+        }
+        return mission;
     }
 
     public static Mission assembleFrom(MissionComponentDto dto, Generator generator) {
         Mission mission = new Mission(
                 new MissionId(dto.getId()),
+                dto.isCarbonCopy(),
                 new Version(dto.getVersion()),
                 generator);
 
@@ -43,6 +59,7 @@ public class MissionFactory {
                 mission.getId().getId(),
                 mission.getMissionName(),
                 mission.getNavigation().getTakeoffPointGroundHeight().getHeightM(),
+                mission.isCarbonCopy(),
                 mission.getVersion().getVersion(),
                 mission.getNewVersion().getVersion(),
                 mission.getNavigation().getWaypoints().stream()

@@ -11,6 +11,7 @@ public class MissionRecord {
     private String id;
     private String name;
     private double takeoffPointGroundHeightWGS84EllipsoidM;
+    private boolean isCarbonCopy;
     private String version;
     private String newVersion;
 }

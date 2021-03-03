@@ -35,6 +35,7 @@ import proto.skysign.ListMissionsResponses;
 import static net.tomofiles.skysign.mission.api.GrpcObjectMother.newSingleItemMissionGrpc;
 import static net.tomofiles.skysign.mission.api.GrpcObjectMother.newSingleItemMissionNoIDGrpc;
 import static net.tomofiles.skysign.mission.domain.mission.MissionObjectMother.newSingleNavigationMission;
+import static net.tomofiles.skysign.mission.domain.mission.MissionObjectMother.newSingleNavigationCarbonCopiedMission;
 
 public class ManageMissionEndpointTests {
     
@@ -77,7 +78,7 @@ public class ManageMissionEndpointTests {
      */
     @Test
     public void getAllApi() {
-        when(repository.getAll()).thenReturn(Arrays.asList(new Mission[] {
+        when(repository.getAllOriginal()).thenReturn(Arrays.asList(new Mission[] {
             newSingleNavigationMission(DEFAULT_MISSION_ID, DEFAULT_VERSION, DEFAULT_GENERATOR.get()),
             newSingleNavigationMission(DEFAULT_MISSION_ID, DEFAULT_VERSION, DEFAULT_GENERATOR.get()),
             newSingleNavigationMission(DEFAULT_MISSION_ID, DEFAULT_VERSION, DEFAULT_GENERATOR.get())
@@ -103,7 +104,7 @@ public class ManageMissionEndpointTests {
      */
     @Test
     public void getAllApiInternalError() {
-        when(repository.getAll()).thenThrow(new IllegalStateException());
+        when(repository.getAllOriginal()).thenThrow(new IllegalStateException());
 
         Empty request = Empty.newBuilder().build();
         StreamRecorder<ListMissionsResponses> responseObserver = StreamRecorder.create();
@@ -328,11 +329,10 @@ public class ManageMissionEndpointTests {
     @Test
     public void deleteApiInternalError() {
         when(repository.getById(DEFAULT_MISSION_ID))
-                .thenReturn(newSingleNavigationMission(
+                .thenReturn(newSingleNavigationCarbonCopiedMission(
                         DEFAULT_MISSION_ID,
                         DEFAULT_VERSION,
                         DEFAULT_GENERATOR.get()));
-        doThrow(new IllegalStateException()).when(repository).remove(any(), any());
 
         DeleteMissionRequest request = DeleteMissionRequest.newBuilder()
                 .setId(DEFAULT_MISSION_ID.getId())
