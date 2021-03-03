@@ -33,6 +33,7 @@ func TestCarbonCopyFlightplanService(t *testing.T) {
 	}
 	gen := &generatorMock{}
 	repo := &repositoryMockCopyService{}
+	repo.On("GetByID", NewID).Return(nil, ErrNotFound)
 	repo.On("GetByID", DefaultID).Return(&testFlightplan, nil)
 	repo.On("Save", mock.Anything).Return(nil)
 
@@ -62,7 +63,41 @@ func TestCarbonCopyFlightplanService(t *testing.T) {
 	a.Nil(ret)
 }
 
-// Flightplanを削除するドメインサービスをテストする。
+// Flightplanをカーボンコピーするドメインサービスをテストする。
+// コピー後のIDのFlightplanのがすでに存在する場合、コピーを行わず
+// 正常終了することを検証する。
+func TestCopySuccessWhenAlreadyExistsFlightplanWhenCarbonCopyFlightplanService(t *testing.T) {
+	a := assert.New(t)
+
+	ctx := context.Background()
+
+	var (
+		NewID = DefaultID + "-new"
+	)
+
+	testFlightplan := Flightplan{
+		id:           NewID,
+		name:         DefaultName,
+		description:  DefaultDescription,
+		isCarbonCopy: CarbonCopy,
+		version:      DefaultVersion,
+		newVersion:   DefaultVersion,
+		gen:          nil,
+	}
+	gen := &generatorMock{}
+	repo := &repositoryMockCopyService{}
+	repo.On("GetByID", NewID).Return(&testFlightplan, nil)
+
+	pub := &publisherMock{}
+
+	ret := CarbonCopyFlightplan(ctx, gen, repo, pub, DefaultID, NewID)
+
+	a.Len(repo.saveFlightplans, 0)
+	a.Len(pub.events, 0)
+	a.Nil(ret)
+}
+
+// Flightplanをカーボンコピーするドメインサービスをテストする。
 // 指定されたIDのFlightplanの取得がエラーとなった場合、
 // 削除が失敗し、エラーが返却されることを検証する。
 // また、ドメインイベントは発行されないことを検証する。
@@ -71,28 +106,63 @@ func TestGetErrorWhenCarbonCopyFlightplanService(t *testing.T) {
 
 	ctx := context.Background()
 
-	repo := &repositoryMockDeleteService{}
+	var (
+		NewID = DefaultID + "-new"
+	)
+
+	gen := &generatorMock{}
+	repo := &repositoryMockCopyService{}
+	repo.On("GetByID", NewID).Return(nil, ErrGet)
 	repo.On("GetByID", DefaultID).Return(nil, ErrGet)
-	repo.On("Delete", mock.Anything).Return(nil)
+	repo.On("Save", mock.Anything).Return(nil)
 
 	pub := &publisherMock{}
 
-	ret := DeleteFlightplan(ctx, repo, pub, DefaultID)
+	ret := CarbonCopyFlightplan(ctx, gen, repo, pub, DefaultID, NewID)
 
-	a.Len(repo.deleteIDs, 0)
 	a.Len(pub.events, 0)
-
 	a.Equal(ret, ErrGet)
 }
 
-// Flightplanを削除するドメインサービスをテストする。
-// 削除時にリポジトリがエラーとなった場合、、
+// Flightplanをカーボンコピーするドメインサービスをテストする。
+// 指定されたIDのFlightplanの取得がエラーとなった場合、
 // 削除が失敗し、エラーが返却されることを検証する。
 // また、ドメインイベントは発行されないことを検証する。
-func TestDeleteErrorWhenCarbonCopyFlightplanService(t *testing.T) {
+func TestGetError2WhenCarbonCopyFlightplanService(t *testing.T) {
 	a := assert.New(t)
 
 	ctx := context.Background()
+
+	var (
+		NewID = DefaultID + "-new"
+	)
+
+	gen := &generatorMock{}
+	repo := &repositoryMockCopyService{}
+	repo.On("GetByID", NewID).Return(nil, ErrNotFound)
+	repo.On("GetByID", DefaultID).Return(nil, ErrGet)
+	repo.On("Save", mock.Anything).Return(nil)
+
+	pub := &publisherMock{}
+
+	ret := CarbonCopyFlightplan(ctx, gen, repo, pub, DefaultID, NewID)
+
+	a.Len(pub.events, 0)
+	a.Equal(ret, ErrGet)
+}
+
+// Flightplanをカーボンコピーするドメインサービスをテストする。
+// 保存時にリポジトリがエラーとなった場合、、
+// 保存が失敗し、エラーが返却されることを検証する。
+// また、ドメインイベントは発行されないことを検証する。
+func TestSaveErrorWhenCarbonCopyFlightplanService(t *testing.T) {
+	a := assert.New(t)
+
+	ctx := context.Background()
+
+	var (
+		NewID = DefaultID + "-new"
+	)
 
 	testFlightplan := Flightplan{
 		id:           DefaultID,
@@ -103,50 +173,18 @@ func TestDeleteErrorWhenCarbonCopyFlightplanService(t *testing.T) {
 		newVersion:   DefaultVersion,
 		gen:          nil,
 	}
-	repo := &repositoryMockDeleteService{}
+	gen := &generatorMock{}
+	repo := &repositoryMockCopyService{}
+	repo.On("GetByID", NewID).Return(nil, ErrNotFound)
 	repo.On("GetByID", DefaultID).Return(&testFlightplan, nil)
-	repo.On("Delete", mock.Anything).Return(ErrDelete)
+	repo.On("Save", mock.Anything).Return(ErrSave)
 
 	pub := &publisherMock{}
 
-	ret := DeleteFlightplan(ctx, repo, pub, DefaultID)
+	ret := CarbonCopyFlightplan(ctx, gen, repo, pub, DefaultID, NewID)
 
-	a.Len(repo.deleteIDs, 0)
 	a.Len(pub.events, 0)
-
-	a.Equal(ret, ErrDelete)
-}
-
-// Flightplanを削除するドメインサービスをテストする。
-// カーボンコピーされたFlightplanを削除しようとした場合、、
-// 削除が失敗し、エラーが返却されることを検証する。
-// また、ドメインイベントは発行されないことを検証する。
-func TestCannnotDeleteErrorWhenCarbonCopyFlightplanService(t *testing.T) {
-	a := assert.New(t)
-
-	ctx := context.Background()
-
-	testFlightplan := Flightplan{
-		id:           DefaultID,
-		name:         DefaultName,
-		description:  DefaultDescription,
-		isCarbonCopy: CarbonCopy,
-		version:      DefaultVersion,
-		newVersion:   DefaultVersion,
-		gen:          nil,
-	}
-	repo := &repositoryMockDeleteService{}
-	repo.On("GetByID", DefaultID).Return(&testFlightplan, nil)
-	repo.On("Delete", mock.Anything).Return(ErrDelete)
-
-	pub := &publisherMock{}
-
-	ret := DeleteFlightplan(ctx, repo, pub, DefaultID)
-
-	a.Len(repo.deleteIDs, 0)
-	a.Len(pub.events, 0)
-
-	a.Equal(ret, ErrCannotChange)
+	a.Equal(ret, ErrSave)
 }
 
 // Flightplan削除サービス用リポジトリモック
