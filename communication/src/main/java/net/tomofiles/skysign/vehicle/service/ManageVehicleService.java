@@ -11,6 +11,8 @@ import net.tomofiles.skysign.vehicle.domain.vehicle.Vehicle;
 import net.tomofiles.skysign.vehicle.domain.vehicle.VehicleFactory;
 import net.tomofiles.skysign.vehicle.domain.vehicle.VehicleRepository;
 import net.tomofiles.skysign.vehicle.event.Publisher;
+import net.tomofiles.skysign.vehicle.service.dpo.CarbonCopyVehicleRequestDpo;
+import net.tomofiles.skysign.vehicle.service.dpo.CarbonCopyVehicleResponseDpo;
 import net.tomofiles.skysign.vehicle.service.dpo.CreateVehicleRequestDpo;
 import net.tomofiles.skysign.vehicle.service.dpo.CreateVehicleResponseDpo;
 import net.tomofiles.skysign.vehicle.service.dpo.DeleteVehicleRequestDpo;
@@ -91,4 +93,26 @@ public class ManageVehicleService {
 
         responsesDpo.setVehicles(vehicles);
     }
+
+    @Transactional
+    public void carbonCopyVehicle(CarbonCopyVehicleRequestDpo requestDpo, CarbonCopyVehicleResponseDpo responseDpo) {
+        Vehicle newVehicle = this.vehicleRepository.getById(requestDpo.getNewId());
+
+        if (newVehicle != null) {
+            return;
+        }
+
+        Vehicle original = this.vehicleRepository.getById(requestDpo.getOriginalId());
+
+        if (original == null) {
+            return;
+        }
+
+        Vehicle copy = VehicleFactory.copy(original, requestDpo.getNewId(), this.generator);
+
+        this.vehicleRepository.save(copy);
+
+        responseDpo.setVehicle(copy);
+    }
+
 }
