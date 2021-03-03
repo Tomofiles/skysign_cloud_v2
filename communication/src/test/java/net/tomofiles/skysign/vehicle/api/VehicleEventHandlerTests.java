@@ -61,9 +61,9 @@ public class VehicleEventHandlerTests {
     }
 
     /**
-     * Vehicleが作成されたときにCommunicationIDが付与されたイベントを
+     * Flightplanがコピーされたときに新たなVehicleIDが発行されたイベントを
      * 受信した場合の処理を確認する。<br>
-     * 新しくCommunicationのレコードが作成されたことを検証する。
+     * 対象のVehicleのカーボンコピーが作成されたことを検証する。
      */
     @Test
     public void fireVehicleCopiedWhenFlightplanCopiedEvent() throws Exception {
