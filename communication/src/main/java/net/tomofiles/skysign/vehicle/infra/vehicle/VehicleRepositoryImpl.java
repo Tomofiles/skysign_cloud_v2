@@ -89,4 +89,21 @@ public class VehicleRepositoryImpl implements VehicleRepository {
 
         return results;
     }
+
+    @Override
+    public List<Vehicle> getAllOriginal() {
+        List<VehicleRecord> records = this.vehicleMapper.findAllOriginal();
+
+        List<Vehicle> results = records.stream()
+                .map(record -> VehicleFactory.rebuild(
+                        new VehicleId(record.getId()),
+                        record.getName(),
+                        record.getCommId(),
+                        record.isCarbonCopy(),
+                        record.getVersion(),
+                        generator))
+                .collect(Collectors.toList());
+
+        return results;
+    }
 }

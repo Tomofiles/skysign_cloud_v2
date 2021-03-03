@@ -89,7 +89,7 @@ public class ManageVehicleService {
 
     @Transactional
     public void listVehicles(ListVehiclesResponsesDpo responsesDpo) {
-        List<Vehicle> vehicles = this.vehicleRepository.getAll();
+        List<Vehicle> vehicles = this.vehicleRepository.getAllOriginal();
 
         responsesDpo.setVehicles(vehicles);
     }

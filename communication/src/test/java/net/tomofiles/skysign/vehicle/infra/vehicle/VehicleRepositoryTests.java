@@ -127,6 +127,43 @@ public class VehicleRepositoryTests {
     }
 
     /**
+     * リポジトリーからカーボンコピーでないオリジナルのVehicleエンティティをすべて取得する。
+     */
+    @Test
+    public void getAllOriginalVehiclesTest() {
+        when(this.vehicleMapper.findAllOriginal()).thenReturn(Arrays.asList(new VehicleRecord[] {
+            newCarbonCopiedVehicleRecord(DEFAULT_VEHICLE_ID, DEFAULT_VERSION, DEFAULT_GENERATOR.get()),
+            newCarbonCopiedVehicleRecord(DEFAULT_VEHICLE_ID, DEFAULT_VERSION, DEFAULT_GENERATOR.get()),
+            newCarbonCopiedVehicleRecord(DEFAULT_VEHICLE_ID, DEFAULT_VERSION, DEFAULT_GENERATOR.get())
+        }));
+
+        List<Vehicle> vehicles = this.repository.getAllOriginal();
+
+        Vehicle expectVehicle = newCarbonCopiedVehicle(DEFAULT_VEHICLE_ID, DEFAULT_VERSION, DEFAULT_GENERATOR.get());
+
+        assertAll(
+            () -> assertThat(vehicles).hasSize(3),
+            () -> assertThat(vehicles.get(0).getId()).isEqualTo(expectVehicle.getId()),
+            () -> assertThat(vehicles.get(0).getVehicleName()).isEqualTo(expectVehicle.getVehicleName()),
+            () -> assertThat(vehicles.get(0).getCommId()).isEqualTo(expectVehicle.getCommId()),
+            () -> assertThat(vehicles.get(0).isCarbonCopy()).isEqualTo(expectVehicle.isCarbonCopy()),
+            () -> assertThat(vehicles.get(0).getVersion()).isEqualTo(expectVehicle.getVersion()),
+            () -> assertThat(vehicles.get(0).getNewVersion()).isEqualTo(expectVehicle.getNewVersion())
+        );
+    }
+
+    /**
+     * リポジトリーからカーボンコピーでないオリジナルのVehicleエンティティをすべて取得する。<br>
+     * エンティティが存在しない場合、空リストが返却されることを検証する。
+     */
+    @Test
+    public void getAllOriginalNoVehiclesTest() {
+        List<Vehicle> vehicles = this.repository.getAllOriginal();
+
+        assertThat(vehicles).hasSize(0);
+    }
+
+    /**
      * リポジトリーにVehicleエンティティを一つ保存する。<br>
      * 既存のエンティティが無いため、新規登録されることを検証する。
      */
