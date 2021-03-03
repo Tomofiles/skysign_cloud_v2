@@ -37,7 +37,7 @@ public class VehicleEventHandler {
         VehicleCopiedWhenFlightplanCopiedEventPb eventPb = new VehicleCopiedWhenFlightplanCopiedEventPb(message);
         logger.info("RECEIVE , Event: {}, Message: {}", EXCHANGE_NAME_COPIED_EVENT, eventPb);
         CarbonCopyVehicleRequestDpoEvent requestDpo = new CarbonCopyVehicleRequestDpoEvent(eventPb.getEvent());
-        this.manageVehicleService.carbonCopyVehicle(requestDpo, vehicle -> {/** 何もしない */});
+        this.manageVehicleService.carbonCopyVehicle(requestDpo);
     }
 
 }
