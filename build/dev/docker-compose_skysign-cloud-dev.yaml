@@ -33,6 +33,15 @@ services:
     ports:
       - 54323:5432
 
+  skysign-flightoperation-db-for-debugging:
+    container_name: skysign-flightoperation-db
+    hostname: skysign-flightoperation-db
+    build:
+      context: ../../skysign-db/flightoperation-db
+      dockerfile: Dockerfile
+    ports:
+      - 54324:5432
+
   skysign-mq-for-debugging:
     container_name: skysign-mq
     hostname: skysign-mq
@@ -92,6 +101,20 @@ services:
       - skysign-flightplan-db-for-debugging
       - skysign-mq-for-debugging
 
+  skysign-flightoperation-backend-for-debugging:
+    container_name: skysign-flightoperation-backend
+    hostname: skysign-flightoperation-backend
+    build:
+      context: ../../flightoperation
+      dockerfile: Dockerfile
+    environment:
+     - DB_HOST=skysign-flightoperation-db
+     - MQ_HOST=skysign-mq
+    command: /app/flightoperation -logtostderr
+    depends_on:
+      - skysign-flightoperation-db-for-debugging
+      - skysign-mq-for-debugging
+
   skysign-communication-gateway-for-debugging:
     container_name: skysign-communication-gateway
     hostname: skysign-communication-gateway
@@ -142,6 +165,16 @@ services:
     depends_on:
       - skysign-flightplan-backend-for-debugging
 
+  skysign-flightoperation-gateway-for-debugging:
+    container_name: skysign-flightoperation-gateway
+    hostname: skysign-flightoperation-gateway
+    build:
+      context: ../../http-gateway
+      dockerfile: Dockerfile
+    command: /app/flightoperation-gateway -backend_host skysign-flightoperation-backend -backend_port 5001
+    depends_on:
+      - skysign-flightoperation-backend-for-debugging
+
   skysign-frontend-for-debugging:
     container_name: skysign-cloud-frontend
     hostname: skysign-cloud-frontend
@@ -165,6 +198,7 @@ services:
       - skysign-mission-gateway-for-debugging
       - skysign-helper-gateway-for-debugging
       - skysign-flightplan-gateway-for-debugging
+      - skysign-flightoperation-gateway-for-debugging
       - skysign-frontend-for-debugging
 
 networks:
