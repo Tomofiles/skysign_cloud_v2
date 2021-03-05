@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 
 import {
   Typography,
@@ -7,17 +7,26 @@ import {
   Box,
   List,
   Divider,
-  Paper
+  Select,
+  Paper,
+  FormControl,
+  MenuItem,
 } from '@material-ui/core';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
+import ArrowDropDown from '@material-ui/icons/ArrowDropDown';
+import ArrowDropUp from '@material-ui/icons/ArrowDropUp';
 import { grey } from '@material-ui/core/colors';
 
 import { getMission, deleteMission } from './MissionUtils'
 import WaypointItem from './WaypointItem';
 import { AppContext } from '../../context/Context';
 
+const EDIT_MISSION = "edit_mission"
+const DELETE_MISSION = "delete_mission"
+
 const MissionsDetail = (props) => {
   const { editMission, dispatchEditMission, dispatchMapPosition } = useContext(AppContext);
+  const [ openAction, setOpenAction ] = useState(false);
 
   useEffect(() => {
     getMission(props.id)
@@ -40,29 +49,77 @@ const MissionsDetail = (props) => {
     }
   }, [ props.id, dispatchEditMission, dispatchMapPosition ])
 
-  const onClickEdit = () => {
-    props.openEdit(props.id);
-  }
-
-  const onClickDelete = () => {
-    deleteMission(props.id)
-      .then(data => {
-        props.openList();
-      })
-  }
-
   const onClickReturn = () => {
     props.openList();  
   }
 
+  const handleActionChange = e => {
+    switch (e.target.value) {
+      case EDIT_MISSION:
+        props.openEdit(props.id);
+        break;
+      case DELETE_MISSION:
+        deleteMission(props.id)
+          .then(data => {
+            props.openList();
+          })
+        break;
+      default:
+        break;
+    }
+  };
+
+  const handleActionClose = () => {
+    setOpenAction(false);
+  };
+
+  const handleActionOpen = () => {
+    setOpenAction(true);
+  };
+
   return (
     <div className={props.classes.funcPanel}>
       <Box>
-        <Button onClick={onClickReturn}>
-          <ChevronLeftIcon style={{ color: grey[50] }} />
-        </Button>
-        <Box p={2} style={{display: 'flex'}}>
-          <Typography>{editMission.name}</Typography>
+        <Box style={{display: 'flex', justifyContent: 'space-between'}}>
+          <Button onClick={onClickReturn}>
+            <ChevronLeftIcon style={{ color: grey[50] }} />
+          </Button>
+        </Box>
+        <Box m={2} style={{display: 'flex', justifyContent: 'space-between'}}>
+          <Box>
+            <Typography>{editMission.name}</Typography>
+          </Box>
+          <Box style={{display: 'flex'}}>
+            <Box px={1}>
+              <FormControl>
+                <Button
+                    id="openMenu"
+                    className={props.classes.funcButton}
+                    onClick={handleActionOpen} >
+                  Action
+                  {!openAction ? (
+                    <ArrowDropDown fontSize="small"/>
+                  ) : (
+                    <ArrowDropUp fontSize="small"/>
+                  )}
+                </Button>
+                <Select
+                  onChange={handleActionChange}
+                  style={{ display: "none" }}
+                  open={openAction}
+                  onClose={handleActionClose}
+                  value=""
+                  MenuProps={{
+                    anchorEl: document.getElementById("openMenu"),
+                    style: { marginTop: 60 }
+                  }}
+                >
+                  <MenuItem value={EDIT_MISSION}>Edit Mission</MenuItem>
+                  <MenuItem value={DELETE_MISSION}>Delete Mission</MenuItem>
+                </Select>
+              </FormControl>
+            </Box>
+          </Box>
         </Box>
       </Box>
       <Box pb={2}>
@@ -120,24 +177,6 @@ const MissionsDetail = (props) => {
             <Divider/>
           </Box>
         </Paper>
-      </Box>
-      <Box>
-        <Box style={{display: 'flex', justifyContent: 'flex-end'}}>
-          <Box px={1}>
-            <Button 
-                className={props.classes.funcButton}
-                onClick={onClickDelete}>
-              Delete
-            </Button>
-          </Box>
-          <Box px={1}>
-            <Button
-                className={props.classes.funcButton}
-                onClick={onClickEdit}>
-              Edit
-            </Button>
-          </Box>
-        </Box>
       </Box>
     </div>
   );

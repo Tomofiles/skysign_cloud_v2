@@ -18,6 +18,8 @@ import { grey } from '@material-ui/core/colors';
 
 import { getFlightplan, deleteFlightplan, getAssignments } from './FlightplansUtils';
 
+const EDIT_FLIGHTPLAN = "edit_flightplan"
+const DELETE_FLIGHTPLAN = "delete_flightplan"
 const CHANGE_NUMBER_OF_VEHICLES = "change_number_of_vehicles"
 const ASSGN_ASSETS = "assign_assets"
 
@@ -37,19 +39,12 @@ const FlightplansDetail = (props) => {
       })
   }, [ props.id ])
 
-  const onClickDelete = () => {
-    deleteFlightplan(props.id)
-      .then(data => {
-        props.openList();
-      })
-  }
-
-  const onClickEdit = () => {
-    props.openEdit(props.id);
-  }
-
   const onClickReturn = () => {
     props.openList();  
+  }
+
+  const onClickFlight = () => {
+
   }
 
   const handleActionChange = e => {
@@ -59,6 +54,15 @@ const FlightplansDetail = (props) => {
         break;
       case ASSGN_ASSETS:
         props.openAssignDetail(props.id);
+        break;
+      case EDIT_FLIGHTPLAN:
+        props.openEdit(props.id);
+        break;
+      case DELETE_FLIGHTPLAN:
+        deleteFlightplan(props.id)
+          .then(data => {
+            props.openList();
+          })
         break;
       default:
         break;
@@ -76,11 +80,51 @@ const FlightplansDetail = (props) => {
   return (
     <div className={props.classes.funcPanel}>
       <Box>
-        <Button onClick={onClickReturn}>
-          <ChevronLeftIcon style={{ color: grey[50] }} />
-        </Button>
-        <Box p={2} style={{display: 'flex'}}>
-          <Typography>{flightplan.name}</Typography>
+        <Box style={{display: 'flex', justifyContent: 'space-between'}}>
+          <Button onClick={onClickReturn}>
+            <ChevronLeftIcon style={{ color: grey[50] }} />
+          </Button>
+        </Box>
+        <Box m={2} style={{display: 'flex', justifyContent: 'space-between'}}>
+          <Box>
+            <Typography>{flightplan.name}</Typography>
+          </Box>
+          <Box style={{display: 'flex'}}>
+            <Box px={1}>
+              <Button className={props.classes.funcImportantButton} onClick={onClickFlight}>Flight</Button>
+            </Box>
+            <Box px={1}>
+              <FormControl>
+                <Button
+                    id="openMenu"
+                    className={props.classes.funcButton}
+                    onClick={handleActionOpen} >
+                  Action
+                  {!openAction ? (
+                    <ArrowDropDown fontSize="small"/>
+                  ) : (
+                    <ArrowDropUp fontSize="small"/>
+                  )}
+                </Button>
+                <Select
+                  onChange={handleActionChange}
+                  style={{ display: "none" }}
+                  open={openAction}
+                  onClose={handleActionClose}
+                  value=""
+                  MenuProps={{
+                    anchorEl: document.getElementById("openMenu"),
+                    style: { marginTop: 60 }
+                  }}
+                >
+                  <MenuItem value={EDIT_FLIGHTPLAN}>Edit Flightplan</MenuItem>
+                  <MenuItem value={CHANGE_NUMBER_OF_VEHICLES}>Change Number Of Vehicles</MenuItem>
+                  <MenuItem value={ASSGN_ASSETS}>Assign Assets</MenuItem>
+                  <MenuItem value={DELETE_FLIGHTPLAN}>Delete Flightplan</MenuItem>
+                </Select>
+              </FormControl>
+            </Box>
+          </Box>
         </Box>
       </Box>
       <Box pb={2}>
@@ -138,53 +182,6 @@ const FlightplansDetail = (props) => {
             </Grid>
           </Box>
         </Paper>
-      </Box>
-      <Box>
-        <Box style={{display: 'flex', justifyContent: 'flex-end'}}>
-          <Box px={1}>
-            <FormControl>
-              <Button
-                  id="openMenu"
-                  className={props.classes.funcButton}
-                  onClick={handleActionOpen} >
-                Action
-                {!openAction ? (
-                  <ArrowDropDown fontSize="small"/>
-                ) : (
-                  <ArrowDropUp fontSize="small"/>
-                )}
-              </Button>
-              <Select
-                onChange={handleActionChange}
-                style={{ display: "none" }}
-                open={openAction}
-                onClose={handleActionClose}
-                value=""
-                MenuProps={{
-                  anchorEl: document.getElementById("openMenu"),
-                  style: { marginTop: 60 }
-                }}
-              >
-                <MenuItem value={CHANGE_NUMBER_OF_VEHICLES}>Change Number Of Vehicles</MenuItem>
-                <MenuItem value={ASSGN_ASSETS}>Assign Assets</MenuItem>
-              </Select>
-            </FormControl>
-          </Box>
-          <Box px={1}>
-            <Button
-                className={props.classes.funcButton}
-                onClick={onClickDelete}>
-              Delete
-            </Button>
-          </Box>
-          <Box px={1}>
-            <Button
-                className={props.classes.funcButton}
-                onClick={onClickEdit}>
-              Edit
-            </Button>
-          </Box>
-        </Box>
       </Box>
     </div>
   );

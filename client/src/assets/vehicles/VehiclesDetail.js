@@ -6,15 +6,24 @@ import {
   Grid,
   Box,
   Paper,
-  Divider
+  Divider,
+  Select,
+  FormControl,
+  MenuItem,
 } from '@material-ui/core';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
+import ArrowDropDown from '@material-ui/icons/ArrowDropDown';
+import ArrowDropUp from '@material-ui/icons/ArrowDropUp';
 import { grey } from '@material-ui/core/colors';
 
 import { deleteVehicle, getVehicle } from './VehicleUtils'
 
+const EDIT_VEHICLE = "edit_vehicle"
+const DELETE_VEHICLE = "delete_vehicle"
+
 const VehiclesDetail = (props) => {
   const [vehicle, setVehicle] = useState({id: "-", name: "-", commId: "-"});
+  const [ openAction, setOpenAction ] = useState(false);
 
   useEffect(() => {
     getVehicle(props.id)
@@ -27,29 +36,77 @@ const VehiclesDetail = (props) => {
       })
   }, [ props.id ])
 
-  const onClickEdit = () => {
-    props.openEdit(vehicle.id);
-  }
-
   const onClickReturn = () => {
     props.openList();  
   }
 
-  const onClickDelete = () => {
-    deleteVehicle(vehicle.id)
-      .then(data => {
-        props.openList();
-      })
-  }
+  const handleActionChange = e => {
+    switch (e.target.value) {
+      case EDIT_VEHICLE:
+        props.openEdit(vehicle.id);
+        break;
+      case DELETE_VEHICLE:
+        deleteVehicle(vehicle.id)
+          .then(data => {
+            props.openList();
+          })
+        break;
+      default:
+        break;
+    }
+  };
+
+  const handleActionClose = () => {
+    setOpenAction(false);
+  };
+
+  const handleActionOpen = () => {
+    setOpenAction(true);
+  };
 
   return (
     <div className={props.classes.funcPanel}>
       <Box>
-        <Button onClick={onClickReturn}>
-          <ChevronLeftIcon style={{ color: grey[50] }} />
-        </Button>
-        <Box p={2} style={{display: 'flex'}}>
-          <Typography>{vehicle.name}</Typography>
+        <Box style={{display: 'flex', justifyContent: 'space-between'}}>
+          <Button onClick={onClickReturn}>
+            <ChevronLeftIcon style={{ color: grey[50] }} />
+          </Button>
+        </Box>
+        <Box m={2} style={{display: 'flex', justifyContent: 'space-between'}}>
+          <Box>
+            <Typography>{vehicle.name}</Typography>
+          </Box>
+          <Box style={{display: 'flex'}}>
+            <Box px={1}>
+              <FormControl>
+                <Button
+                    id="openMenu"
+                    className={props.classes.funcButton}
+                    onClick={handleActionOpen} >
+                  Action
+                  {!openAction ? (
+                    <ArrowDropDown fontSize="small"/>
+                  ) : (
+                    <ArrowDropUp fontSize="small"/>
+                  )}
+                </Button>
+                <Select
+                  onChange={handleActionChange}
+                  style={{ display: "none" }}
+                  open={openAction}
+                  onClose={handleActionClose}
+                  value=""
+                  MenuProps={{
+                    anchorEl: document.getElementById("openMenu"),
+                    style: { marginTop: 60 }
+                  }}
+                >
+                  <MenuItem value={EDIT_VEHICLE}>Edit Vehicle</MenuItem>
+                  <MenuItem value={DELETE_VEHICLE}>Delete Vehicle</MenuItem>
+                </Select>
+              </FormControl>
+            </Box>
+          </Box>
         </Box>
       </Box>
       <Box pb={2}>
@@ -88,24 +145,6 @@ const VehiclesDetail = (props) => {
             <Divider/>
           </Box>
         </Paper>
-      </Box>
-      <Box>
-        <Box style={{display: 'flex', justifyContent: 'flex-end'}}>
-          <Box px={1}>
-            <Button 
-                className={props.classes.funcButton}
-                onClick={onClickDelete}>
-              Delete
-            </Button>
-          </Box>
-          <Box px={1}>
-            <Button
-                className={props.classes.funcButton}
-                onClick={onClickEdit}>
-              Edit
-            </Button>
-          </Box>
-        </Box>
       </Box>
     </div>
   );
