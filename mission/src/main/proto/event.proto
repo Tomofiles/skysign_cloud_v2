@@ -23,3 +23,13 @@ message FlightplanCreatedEvent {
 message FlightplanDeletedEvent {
     string flightplan_id = 1;
 }
+
+message FlightoperationCreatedEvent {
+    string flightoperation_id = 1;
+    string flightplan_id = 2;
+}
+
+message FlightplanCopiedWhenFlightoperationCreatedEvent {
+    string original_flightplan_id = 1;
+    string new_flightplan_id = 2;
+}
