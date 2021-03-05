@@ -639,6 +639,7 @@ func TestCarbonCopyFlightplanTransaction(t *testing.T) {
 	}
 
 	psm.On("GetPublisher").Return(pub, close, nil)
+	repo.On("GetByID", DefaultNewID).Return(nil, fpl.ErrNotFound)
 	repo.On("GetByID", DefaultOriginalID).Return(flightplan, nil)
 	repo.On("Save", mock.Anything).Return(nil)
 
@@ -684,6 +685,7 @@ func TestCarbonCopyFlightplanOperation(t *testing.T) {
 	)
 
 	repo := &flightplanRepositoryMock{}
+	repo.On("GetByID", DefaultNewID).Return(nil, fpl.ErrNotFound)
 	repo.On("GetByID", DefaultOriginalID).Return(flightplan, nil)
 	repo.On("Save", mock.Anything).Return(nil)
 	pub := &publisherMock{}
