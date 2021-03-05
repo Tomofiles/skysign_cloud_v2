@@ -2,8 +2,11 @@ package app
 
 import (
 	"context"
+	"flightoperation/pkg/flightoperation/adapters/postgresql"
+	"flightoperation/pkg/flightoperation/adapters/uuid"
 	"flightoperation/pkg/flightoperation/domain/event"
 	"flightoperation/pkg/flightoperation/domain/txmanager"
+	"flightoperation/pkg/flightoperation/service"
 )
 
 // NewApplication .
@@ -20,16 +23,11 @@ func newApplication(
 	txm txmanager.TransactionManager,
 	psm event.PubSubManager,
 ) Application {
-	// flightplanGen := uuid.NewFlightplanUUID()
-	// fleetGen := uuid.NewFleetUUID()
-	// flightplanRepo := postgresql.NewFlightplanRepository(flightplanGen)
-	// fleetRepo := postgresql.NewFleetRepository(fleetGen)
-	// return Application{
-	// 	Services: Services{
-	// 		ManageFlightplan: service.NewManageFlightplanService(flightplanGen, flightplanRepo, txm, psm),
-	// 		ManageFleet:      service.NewManageFleetService(fleetGen, fleetRepo, txm, psm),
-	// 		AssignFleet:      service.NewAssignFleetService(fleetGen, fleetRepo, txm),
-	// 	},
-	// }
-	return Application{}
+	flightoperationGen := uuid.NewFlightoperationUUID()
+	flightoperationRepo := postgresql.NewFlightoperationRepository(flightoperationGen)
+	return Application{
+		Services: Services{
+			ManageFlightoperation: service.NewManageFlightoperationService(flightoperationGen, flightoperationRepo, txm, psm),
+		},
+	}
 }

@@ -8,35 +8,27 @@ func NewInstance(gen Generator, flightplanID FlightplanID) *Flightoperation {
 	}
 }
 
-// // AssembleFrom .
-// func AssembleFrom(gen Generator, comp Component) *Flightplan {
-// 	return &Flightplan{
-// 		id:          ID(comp.GetID()),
-// 		name:        comp.GetName(),
-// 		description: comp.GetDescription(),
-// 		version:     Version(comp.GetVersion()),
-// 		newVersion:  Version(comp.GetVersion()),
-// 		gen:         gen,
-// 	}
-// }
+// AssembleFrom .
+func AssembleFrom(gen Generator, comp Component) *Flightoperation {
+	return &Flightoperation{
+		id:           ID(comp.GetID()),
+		flightplanID: FlightplanID(comp.GetFlightplanID()),
+	}
+}
 
-// // TakeApart .
-// func TakeApart(
-// 	flightplan *Flightplan,
-// 	component func(id, name, description, version string),
-// ) {
-// 	component(
-// 		string(flightplan.id),
-// 		flightplan.name,
-// 		flightplan.description,
-// 		string(flightplan.version),
-// 	)
-// }
+// TakeApart .
+func TakeApart(
+	flightoperation *Flightoperation,
+	component func(id, flightplanID string),
+) {
+	component(
+		string(flightoperation.id),
+		string(flightoperation.flightplanID),
+	)
+}
 
-// // Component .
-// type Component interface {
-// 	GetID() string
-// 	GetName() string
-// 	GetDescription() string
-// 	GetVersion() string
-// }
+// Component .
+type Component interface {
+	GetID() string
+	GetFlightplanID() string
+}

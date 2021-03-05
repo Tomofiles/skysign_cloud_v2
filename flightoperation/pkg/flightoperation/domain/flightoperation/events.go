@@ -22,12 +22,12 @@ type FlightplanCopiedWhenCreatedEvent struct {
 	NewID      FlightplanID
 }
 
-// GetOriginalFlightplanID .
-func (e *FlightplanCopiedWhenCreatedEvent) GetOriginalFlightplanID() string {
+// GetOriginalID .
+func (e *FlightplanCopiedWhenCreatedEvent) GetOriginalID() string {
 	return string(e.OriginalID)
 }
 
-// GetNewFlightplanID .
-func (e *FlightplanCopiedWhenCreatedEvent) GetNewFlightplanID() string {
+// GetNewID .
+func (e *FlightplanCopiedWhenCreatedEvent) GetNewID() string {
 	return string(e.NewID)
 }
