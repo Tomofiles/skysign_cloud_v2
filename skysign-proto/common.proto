@@ -72,3 +72,8 @@ message Assignment {
     string vehicle_id = 3;
     string mission_id = 4;
 }
+
+message Flightoperation {
+    string id = 1;
+    string flightplan_id = 2;
+}
