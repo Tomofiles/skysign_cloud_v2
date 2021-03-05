@@ -77,6 +77,15 @@ func run() error {
 			}
 		},
 	)
+	psm.SetConsumer(
+		ctx,
+		ports.FlightplanCopiedWhenFlightoperationCreatedEventExchangeName,
+		func(event []byte) {
+			if err := evt.HandleCopiedWhenFlightoperationCreatedEvent(ctx, event); err != nil {
+				glog.Error(err)
+			}
+		},
+	)
 
 	proto.RegisterManageFlightplanServiceServer(s, &svc)
 	proto.RegisterAssignAssetsToFlightplanServiceServer(s, &svc)

@@ -100,3 +100,38 @@ func TestHandleCopiedEvent(t *testing.T) {
 	a.Equal(service.OriginalID, DefaultFlightplanOriginalID)
 	a.Equal(service.NewID, DefaultFlightplanNewID)
 }
+
+func TestHandleCopiedWhenFlightoperationCreatedEvent(t *testing.T) {
+	a := assert.New(t)
+
+	var (
+		DefaultFlightplanOriginalID = DefaultFlightplanID + "-new"
+		DefaultFlightplanNewID      = DefaultFlightplanID + "-new"
+	)
+
+	service := manageFlightplanServiceMock{}
+
+	service.On("CarbonCopyFlightplan", mock.Anything).Return(nil)
+
+	app := app.Application{
+		Services: app.Services{
+			ManageFlightplan: &service,
+		},
+	}
+
+	handler := NewEventHandler(app)
+
+	requestPb := &skysign_proto.FlightplanCopiedWhenFlightoperationCreatedEvent{
+		OriginalFlightplanId: DefaultFlightplanOriginalID,
+		NewFlightplanId:      DefaultFlightplanNewID,
+	}
+	requestBin, _ := proto.Marshal(requestPb)
+	err := handler.HandleCopiedWhenFlightoperationCreatedEvent(
+		nil,
+		requestBin,
+	)
+
+	a.Nil(err)
+	a.Equal(service.OriginalID, DefaultFlightplanOriginalID)
+	a.Equal(service.NewID, DefaultFlightplanNewID)
+}

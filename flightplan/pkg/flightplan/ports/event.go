@@ -16,6 +16,8 @@ const (
 	FlightplanDeletedEventExchangeName = "flightplan.flightplan_deleted_event"
 	// FlightplanCopiedEventExchangeName .
 	FlightplanCopiedEventExchangeName = "flightplan.flightplan_copied_event"
+	// FlightplanCopiedWhenFlightoperationCreatedEventExchangeName .
+	FlightplanCopiedWhenFlightoperationCreatedEventExchangeName = "flightoperation.flightplan_copied_when_flightoperation_created_event"
 )
 
 // EventHandler .
@@ -83,6 +85,28 @@ func (h *EventHandler) HandleCopiedEvent(
 		newID:      eventPb.GetNewFlightplanId(),
 	}
 	if ret := h.app.Services.ManageFleet.CarbonCopyFleet(&requestDpo); ret != nil {
+		return ret
+	}
+	return nil
+}
+
+// HandleCopiedWhenFlightoperationCreatedEvent .
+func (h *EventHandler) HandleCopiedWhenFlightoperationCreatedEvent(
+	ctx context.Context,
+	event []byte,
+) error {
+	eventPb := skysign_proto.FlightplanCopiedWhenFlightoperationCreatedEvent{}
+	if err := proto.Unmarshal(event, &eventPb); err != nil {
+		return err
+	}
+
+	glog.Infof("RECEIVE , Event: %s, Message: %s", FlightplanCopiedWhenFlightoperationCreatedEventExchangeName, eventPb.String())
+
+	requestDpo := copyRequestDpoHolder{
+		originalID: eventPb.GetOriginalFlightplanId(),
+		newID:      eventPb.GetNewFlightplanId(),
+	}
+	if ret := h.app.Services.ManageFlightplan.CarbonCopyFlightplan(&requestDpo); ret != nil {
 		return ret
 	}
 	return nil
