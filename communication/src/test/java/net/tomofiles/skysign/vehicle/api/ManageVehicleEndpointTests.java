@@ -89,7 +89,7 @@ public class ManageVehicleEndpointTests {
      */
     @Test
     public void getAllApi() {
-        when(this.repository.getAll()).thenReturn(Arrays.asList(new Vehicle[] {
+        when(this.repository.getAllOriginal()).thenReturn(Arrays.asList(new Vehicle[] {
             newNormalVehicle(DEFAULT_VEHICLE_ID, DEFAULT_VERSION1, DEFAULT_GENERATOR.get()),
             newNormalVehicle(DEFAULT_VEHICLE_ID, DEFAULT_VERSION1, DEFAULT_GENERATOR.get()),
             newNormalVehicle(DEFAULT_VEHICLE_ID, DEFAULT_VERSION1, DEFAULT_GENERATOR.get())
@@ -131,7 +131,7 @@ public class ManageVehicleEndpointTests {
      */
     @Test
     public void getAllApiInternalError() {
-        when(this.repository.getAll()).thenThrow(new IllegalStateException());
+        when(this.repository.getAllOriginal()).thenThrow(new IllegalStateException());
 
         Empty request = Empty.newBuilder().build();
         StreamRecorder<ListVehiclesResponses> responseObserver = StreamRecorder.create();

@@ -15,6 +15,20 @@ public class RecordObjectMother {
                 vehicleId.getId(),
                 "vehicle name",
                 new CommunicationId("comm id").getId(),
+                false,
+                version.getVersion(),
+                version.getVersion());
+    }
+
+    /**
+     * カーボンコピーされたVehicleレコードを生成する。
+     */
+    public static VehicleRecord newCarbonCopiedVehicleRecord(VehicleId vehicleId, Version version, Generator generator) {
+        return new VehicleRecord(
+                vehicleId.getId(),
+                "vehicle name",
+                new CommunicationId("comm id").getId(),
+                true,
                 version.getVersion(),
                 version.getVersion());
     }

@@ -41,10 +41,11 @@ func GetNewDbMock() (*gorm.DB, sqlmock.Sqlmock, error) {
 
 // Flightplan構成オブジェクトモック
 type flightplanComponentMock struct {
-	id          string
-	name        string
-	description string
-	version     string
+	id           string
+	name         string
+	description  string
+	isCarbonCopy bool
+	version      string
 }
 
 func (f *flightplanComponentMock) GetID() string {
@@ -59,6 +60,10 @@ func (f *flightplanComponentMock) GetDescription() string {
 	return f.description
 }
 
+func (f *flightplanComponentMock) GetIsCarbonCopy() bool {
+	return f.isCarbonCopy
+}
+
 func (f *flightplanComponentMock) GetVersion() string {
 	return f.version
 }
@@ -67,6 +72,7 @@ func (f *flightplanComponentMock) GetVersion() string {
 type fleetComponentMock struct {
 	id           string
 	flightplanID string
+	isCarbonCopy bool
 	assignments  []assignmentComponentMock
 	events       []eventComponentMock
 	version      string
@@ -78,6 +84,10 @@ func (f *fleetComponentMock) GetID() string {
 
 func (f *fleetComponentMock) GetFlightplanID() string {
 	return f.flightplanID
+}
+
+func (f *fleetComponentMock) GetIsCarbonCopy() bool {
+	return f.isCarbonCopy
 }
 
 func (f *fleetComponentMock) GetVersion() string {

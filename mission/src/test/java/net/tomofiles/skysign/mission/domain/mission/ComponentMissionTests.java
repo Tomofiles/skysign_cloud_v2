@@ -3,16 +3,15 @@ package net.tomofiles.skysign.mission.domain.mission;
 import org.junit.jupiter.api.Test;
 
 import static com.google.common.truth.Truth.assertThat;
-
-import net.tomofiles.skysign.mission.domain.mission.component.MissionComponentDto;
-
-import static net.tomofiles.skysign.mission.domain.mission.MissionObjectMother.newSeveralNavigationMission;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 import java.util.UUID;
 import java.util.function.Supplier;
 
-import static net.tomofiles.skysign.mission.domain.mission.ComponentDtoObjectMother.newSeveralNavigationMissionComponentDto;
+import net.tomofiles.skysign.mission.domain.mission.component.MissionComponentDto;
+
+import static net.tomofiles.skysign.mission.domain.mission.MissionObjectMother.newSeveralNavigationCarbonCopiedMission;
+import static net.tomofiles.skysign.mission.domain.mission.ComponentDtoObjectMother.newSeveralNavigationCarbonCopiedMissionComponentDto;
 
 public class ComponentMissionTests {
     
@@ -46,13 +45,13 @@ public class ComponentMissionTests {
     @Test
     public void assembleIntoMissionTest() {
         Mission mission = MissionFactory.assembleFrom(
-                newSeveralNavigationMissionComponentDto(
+                newSeveralNavigationCarbonCopiedMissionComponentDto(
                         DEFAULT_MISSION_ID,
                         DEFAULT_VERSION1
                 ),
                 DEFAULT_GENERATOR.get());
 
-        Mission expectedMission = newSeveralNavigationMission(
+        Mission expectedMission = newSeveralNavigationCarbonCopiedMission(
                 DEFAULT_MISSION_ID,
                 DEFAULT_VERSION1,
                 DEFAULT_GENERATOR.get());
@@ -61,6 +60,7 @@ public class ComponentMissionTests {
             () -> assertThat(mission.getId()).isEqualTo(expectedMission.getId()),
             () -> assertThat(mission.getMissionName()).isEqualTo(expectedMission.getMissionName()),
             () -> assertThat(mission.getNavigation()).isEqualTo(expectedMission.getNavigation()),
+            () -> assertThat(mission.isCarbonCopy()).isEqualTo(expectedMission.isCarbonCopy()),
             () -> assertThat(mission.getVersion()).isEqualTo(expectedMission.getVersion()),
             () -> assertThat(mission.getNewVersion()).isEqualTo(expectedMission.getNewVersion())
         );
@@ -72,11 +72,11 @@ public class ComponentMissionTests {
     @Test
     public void takeApartMissionTest() {
         MissionComponentDto dto = MissionFactory.takeApart(
-                newSeveralNavigationMission(
+                newSeveralNavigationCarbonCopiedMission(
                         DEFAULT_MISSION_ID,
                         DEFAULT_VERSION1,
                         DEFAULT_GENERATOR.get()));
 
-        assertThat(dto).isEqualTo(newSeveralNavigationMissionComponentDto(DEFAULT_MISSION_ID, DEFAULT_VERSION1));
+        assertThat(dto).isEqualTo(newSeveralNavigationCarbonCopiedMissionComponentDto(DEFAULT_MISSION_ID, DEFAULT_VERSION1));
     }
 }

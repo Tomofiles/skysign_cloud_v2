@@ -24,8 +24,8 @@ func TestFleetRepositoryGetByFlightplanID(t *testing.T) {
 			regexp.QuoteMeta(`SELECT * FROM "fleets" WHERE flightplan_id = $1`)).
 		WithArgs(DefaultFlightplanID).
 		WillReturnRows(
-			sqlmock.NewRows([]string{"id", "flightplan_id", "version"}).
-				AddRow(DefaultFleetID, DefaultFlightplanID, DefaultFlightplanVersion),
+			sqlmock.NewRows([]string{"id", "flightplan_id", "is_carbon_copy", "version"}).
+				AddRow(DefaultFleetID, DefaultFlightplanID, fl.CarbonCopy, DefaultFlightplanVersion),
 		)
 	mock.
 		ExpectQuery(
@@ -69,6 +69,7 @@ func TestFleetRepositoryGetByFlightplanID(t *testing.T) {
 		flightplanID: string(DefaultFlightplanID),
 		assignments:  assignmentComps,
 		events:       eventComps,
+		isCarbonCopy: fl.CarbonCopy,
 		version:      string(DefaultFleetVersion),
 	}
 	expectFl := fl.AssembleFrom(
@@ -94,7 +95,7 @@ func TestFleetRepositoryNotFoundWhenGetByFlightplanID(t *testing.T) {
 			regexp.QuoteMeta(`SELECT * FROM "fleets" WHERE flightplan_id = $1`)).
 		WithArgs(DefaultFlightplanID).
 		WillReturnRows(
-			sqlmock.NewRows([]string{"id", "flightplan_id", "version"}),
+			sqlmock.NewRows([]string{"id", "flightplan_id", "is_carbon_copy", "version"}),
 		)
 
 	gen := uuid.NewFleetUUID()
@@ -120,13 +121,13 @@ func TestFleetRepositorySingleDataCreateSave(t *testing.T) {
 			regexp.QuoteMeta(`SELECT * FROM "fleets" WHERE flightplan_id = $1`)).
 		WithArgs(DefaultFlightplanID).
 		WillReturnRows(
-			sqlmock.NewRows([]string{"id", "flightplan_id", "version"}),
+			sqlmock.NewRows([]string{"id", "flightplan_id", "is_carbon_copy", "version"}),
 		)
 
 	mock.
 		ExpectExec(
-			regexp.QuoteMeta(`INSERT INTO "fleets" ("id","flightplan_id","version") VALUES ($1,$2,$3)`)).
-		WithArgs(DefaultFleetID, DefaultFlightplanID, DefaultFleetVersion).
+			regexp.QuoteMeta(`INSERT INTO "fleets" ("id","flightplan_id","is_carbon_copy","version") VALUES ($1,$2,$3,$4)`)).
+		WithArgs(DefaultFleetID, DefaultFlightplanID, fl.CarbonCopy, DefaultFleetVersion).
 		WillReturnResult(
 			sqlmock.NewResult(1, 1),
 		)
@@ -170,6 +171,7 @@ func TestFleetRepositorySingleDataCreateSave(t *testing.T) {
 		flightplanID: string(DefaultFlightplanID),
 		assignments:  assignmentComps,
 		events:       eventComps,
+		isCarbonCopy: fl.CarbonCopy,
 		version:      string(DefaultFleetVersion),
 	}
 	fleet := fl.AssembleFrom(
@@ -196,13 +198,13 @@ func TestFleetRepositoryNoneDataCreateSave(t *testing.T) {
 			regexp.QuoteMeta(`SELECT * FROM "fleets" WHERE flightplan_id = $1`)).
 		WithArgs(DefaultFlightplanID).
 		WillReturnRows(
-			sqlmock.NewRows([]string{"id", "flightplan_id", "version"}),
+			sqlmock.NewRows([]string{"id", "flightplan_id", "is_carbon_copy", "version"}),
 		)
 
 	mock.
 		ExpectExec(
-			regexp.QuoteMeta(`INSERT INTO "fleets" ("id","flightplan_id","version") VALUES ($1,$2,$3)`)).
-		WithArgs(DefaultFleetID, DefaultFlightplanID, DefaultFleetVersion).
+			regexp.QuoteMeta(`INSERT INTO "fleets" ("id","flightplan_id","is_carbon_copy","version") VALUES ($1,$2,$3,$4)`)).
+		WithArgs(DefaultFleetID, DefaultFlightplanID, fl.CarbonCopy, DefaultFleetVersion).
 		WillReturnResult(
 			sqlmock.NewResult(1, 1),
 		)
@@ -213,6 +215,7 @@ func TestFleetRepositoryNoneDataCreateSave(t *testing.T) {
 	fleetComp := fleetComponentMock{
 		id:           string(DefaultFleetID),
 		flightplanID: string(DefaultFlightplanID),
+		isCarbonCopy: fl.CarbonCopy,
 		version:      string(DefaultFleetVersion),
 	}
 	fleet := fl.AssembleFrom(
@@ -241,13 +244,13 @@ func TestFleetRepositoryMultipleDataCreateSave(t *testing.T) {
 			regexp.QuoteMeta(`SELECT * FROM "fleets" WHERE flightplan_id = $1`)).
 		WithArgs(DefaultFlightplanID).
 		WillReturnRows(
-			sqlmock.NewRows([]string{"id", "flightplan_id", "version"}),
+			sqlmock.NewRows([]string{"id", "flightplan_id", "is_carbon_copy", "version"}),
 		)
 
 	mock.
 		ExpectExec(
-			regexp.QuoteMeta(`INSERT INTO "fleets" ("id","flightplan_id","version") VALUES ($1,$2,$3)`)).
-		WithArgs(DefaultFleetID, DefaultFlightplanID, DefaultFleetVersion).
+			regexp.QuoteMeta(`INSERT INTO "fleets" ("id","flightplan_id","is_carbon_copy","version") VALUES ($1,$2,$3,$4)`)).
+		WithArgs(DefaultFleetID, DefaultFlightplanID, fl.CarbonCopy, DefaultFleetVersion).
 		WillReturnResult(
 			sqlmock.NewResult(1, 1),
 		)
@@ -339,6 +342,7 @@ func TestFleetRepositoryMultipleDataCreateSave(t *testing.T) {
 		flightplanID: string(DefaultFlightplanID),
 		assignments:  assignmentComps,
 		events:       eventComps,
+		isCarbonCopy: fl.CarbonCopy,
 		version:      string(DefaultFleetVersion),
 	}
 	fleet := fl.AssembleFrom(
@@ -365,14 +369,14 @@ func TestFleetRepositorySingleDataUpdateSave(t *testing.T) {
 			regexp.QuoteMeta(`SELECT * FROM "fleets" WHERE flightplan_id = $1`)).
 		WithArgs(DefaultFlightplanID).
 		WillReturnRows(
-			sqlmock.NewRows([]string{"id", "flightplan_id", "version"}).
-				AddRow(DefaultFleetID, DefaultFlightplanID, DefaultFlightplanVersion),
+			sqlmock.NewRows([]string{"id", "flightplan_id", "is_carbon_copy", "version"}).
+				AddRow(DefaultFleetID, DefaultFlightplanID, fl.CarbonCopy, DefaultFlightplanVersion),
 		)
 
 	mock.
 		ExpectExec(
-			regexp.QuoteMeta(`UPDATE "fleets" SET "flightplan_id"=$1,"version"=$2 WHERE "id" = $3`)).
-		WithArgs(DefaultFlightplanID, DefaultFleetVersion, DefaultFleetID).
+			regexp.QuoteMeta(`UPDATE "fleets" SET "flightplan_id"=$1,"is_carbon_copy"=$2,"version"=$3 WHERE "id" = $4`)).
+		WithArgs(DefaultFlightplanID, fl.CarbonCopy, DefaultFleetVersion, DefaultFleetID).
 		WillReturnResult(
 			sqlmock.NewResult(1, 1),
 		)
@@ -432,6 +436,7 @@ func TestFleetRepositorySingleDataUpdateSave(t *testing.T) {
 		flightplanID: string(DefaultFlightplanID),
 		assignments:  assignmentComps,
 		events:       eventComps,
+		isCarbonCopy: fl.CarbonCopy,
 		version:      string(DefaultFleetVersion),
 	}
 	fleet := fl.AssembleFrom(
@@ -458,14 +463,14 @@ func TestFleetRepositoryNoneDataUpdateSave(t *testing.T) {
 			regexp.QuoteMeta(`SELECT * FROM "fleets" WHERE flightplan_id = $1`)).
 		WithArgs(DefaultFlightplanID).
 		WillReturnRows(
-			sqlmock.NewRows([]string{"id", "flightplan_id", "version"}).
-				AddRow(DefaultFleetID, DefaultFlightplanID, DefaultFlightplanVersion),
+			sqlmock.NewRows([]string{"id", "flightplan_id", "is_carbon_copy", "version"}).
+				AddRow(DefaultFleetID, DefaultFlightplanID, fl.CarbonCopy, DefaultFlightplanVersion),
 		)
 
 	mock.
 		ExpectExec(
-			regexp.QuoteMeta(`UPDATE "fleets" SET "flightplan_id"=$1,"version"=$2 WHERE "id" = $3`)).
-		WithArgs(DefaultFlightplanID, DefaultFleetVersion, DefaultFleetID).
+			regexp.QuoteMeta(`UPDATE "fleets" SET "flightplan_id"=$1,"is_carbon_copy"=$2,"version"=$3 WHERE "id" = $4`)).
+		WithArgs(DefaultFlightplanID, fl.CarbonCopy, DefaultFleetVersion, DefaultFleetID).
 		WillReturnResult(
 			sqlmock.NewResult(1, 1),
 		)
@@ -492,6 +497,7 @@ func TestFleetRepositoryNoneDataUpdateSave(t *testing.T) {
 	fleetComp := fleetComponentMock{
 		id:           string(DefaultFleetID),
 		flightplanID: string(DefaultFlightplanID),
+		isCarbonCopy: fl.CarbonCopy,
 		version:      string(DefaultFleetVersion),
 	}
 	fleet := fl.AssembleFrom(
@@ -520,14 +526,14 @@ func TestFleetRepositoryMultipleDataUpdateSave(t *testing.T) {
 			regexp.QuoteMeta(`SELECT * FROM "fleets" WHERE flightplan_id = $1`)).
 		WithArgs(DefaultFlightplanID).
 		WillReturnRows(
-			sqlmock.NewRows([]string{"id", "flightplan_id", "version"}).
-				AddRow(DefaultFleetID, DefaultFlightplanID, DefaultFlightplanVersion),
+			sqlmock.NewRows([]string{"id", "flightplan_id", "is_carbon_copy", "version"}).
+				AddRow(DefaultFleetID, DefaultFlightplanID, fl.CarbonCopy, DefaultFlightplanVersion),
 		)
 
 	mock.
 		ExpectExec(
-			regexp.QuoteMeta(`UPDATE "fleets" SET "flightplan_id"=$1,"version"=$2 WHERE "id" = $3`)).
-		WithArgs(DefaultFlightplanID, DefaultFleetVersion, DefaultFleetID).
+			regexp.QuoteMeta(`UPDATE "fleets" SET "flightplan_id"=$1,"is_carbon_copy"=$2,"version"=$3 WHERE "id" = $4`)).
+		WithArgs(DefaultFlightplanID, fl.CarbonCopy, DefaultFleetVersion, DefaultFleetID).
 		WillReturnResult(
 			sqlmock.NewResult(1, 1),
 		)
@@ -635,6 +641,7 @@ func TestFleetRepositoryMultipleDataUpdateSave(t *testing.T) {
 		flightplanID: string(DefaultFlightplanID),
 		assignments:  assignmentComps,
 		events:       eventComps,
+		isCarbonCopy: fl.CarbonCopy,
 		version:      string(DefaultFleetVersion),
 	}
 	fleet := fl.AssembleFrom(
@@ -661,8 +668,8 @@ func TestFleetRepositoryDeleteByFlightplanID(t *testing.T) {
 			regexp.QuoteMeta(`SELECT * FROM "fleets" WHERE flightplan_id = $1`)).
 		WithArgs(DefaultFlightplanID).
 		WillReturnRows(
-			sqlmock.NewRows([]string{"id", "flightplan_id", "version"}).
-				AddRow(DefaultFleetID, DefaultFlightplanID, DefaultFlightplanVersion),
+			sqlmock.NewRows([]string{"id", "flightplan_id", "is_carbon_copy", "version"}).
+				AddRow(DefaultFleetID, DefaultFlightplanID, fl.CarbonCopy, DefaultFlightplanVersion),
 		)
 
 	mock.
@@ -711,7 +718,7 @@ func TestFleetRepositoryNotFoundWhenDeleteByFlightplanID(t *testing.T) {
 			regexp.QuoteMeta(`SELECT * FROM "fleets" WHERE flightplan_id = $1`)).
 		WithArgs(DefaultFlightplanID).
 		WillReturnRows(
-			sqlmock.NewRows([]string{"id", "flightplan_id", "version"}),
+			sqlmock.NewRows([]string{"id", "flightplan_id", "is_carbon_copy", "version"}),
 		)
 
 	gen := uuid.NewFleetUUID()

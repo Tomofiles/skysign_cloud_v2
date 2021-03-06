@@ -17,6 +17,9 @@ public class Vehicle {
     private final Generator generator;
     
     @Getter
+    private final boolean isCarbonCopy;
+
+    @Getter
     @Setter(value = AccessLevel.PACKAGE)
     private String vehicleName = null;
 
@@ -35,20 +38,37 @@ public class Vehicle {
     @Setter
     private Publisher publisher = new EmptyPublisher();
     
-    Vehicle(VehicleId id, Version version, Generator generator) {
+    Vehicle(VehicleId id, boolean isCarbonCopy, Version version, Generator generator) {
         this.id = id;
+        this.isCarbonCopy = isCarbonCopy;
         this.version = version;
         this.newVersion = version;
 
         this.generator = generator;
     }
 
+    static Vehicle newOriginal(VehicleId id, Version version, Generator generator) {
+        return new Vehicle(id, false, version, generator);
+    } 
+
+    static Vehicle newCarbonCopy(VehicleId id, Version version, Generator generator) {
+        return new Vehicle(id, true, version, generator);
+    } 
+
     public void nameVehicle(String name) {
+        if (this.isCarbonCopy) {
+            throw new CannotChangeVehicleException("cannot change carbon copied vehicle");
+        }
+
         this.vehicleName = name;
         this.newVersion = this.generator.newVersion();
     }
 
     public void giveCommId(CommunicationId id) {
+        if (this.isCarbonCopy) {
+            throw new CannotChangeVehicleException("cannot change carbon copied vehicle");
+        }
+
         if (this.commId == null) {
             this.commId = id;
             this.newVersion = this.generator.newVersion();
@@ -69,6 +89,10 @@ public class Vehicle {
     }
 
     public void removeCommId() {
+        if (this.isCarbonCopy) {
+            throw new CannotChangeVehicleException("cannot change carbon copied vehicle");
+        }
+
         CommunicationId removedId = this.commId;
         this.commId = null;
         this.newVersion = this.generator.newVersion();

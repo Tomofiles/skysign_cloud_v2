@@ -5,6 +5,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 
+import static org.junit.Assert.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -20,7 +21,8 @@ import static net.tomofiles.skysign.vehicle.domain.vehicle.VehicleObjectMother.n
 
 public class ManagementVehiclesTests {
     
-    private static final VehicleId DEFAULT_VEHICLE_ID = new VehicleId(UUID.randomUUID().toString());
+    private static final VehicleId DEFAULT_VEHICLE_ID1 = new VehicleId(UUID.randomUUID().toString());
+    private static final VehicleId DEFAULT_VEHICLE_ID2 = new VehicleId(UUID.randomUUID().toString());
     private static final CommunicationId DEFAULT_COMMUNICATION_ID = new CommunicationId("comm id");
     private static final Version DEFAULT_VERSION1 = new Version(UUID.randomUUID().toString());
     private static final Version DEFAULT_VERSION2 = new Version(UUID.randomUUID().toString());
@@ -28,7 +30,7 @@ public class ManagementVehiclesTests {
         return new Generator(){
             @Override
             public VehicleId newVehicleId() {
-                return DEFAULT_VEHICLE_ID;
+                return DEFAULT_VEHICLE_ID1;
             }
 
             @Override
@@ -43,7 +45,7 @@ public class ManagementVehiclesTests {
 
             @Override
             public VehicleId newVehicleId() {
-                return DEFAULT_VEHICLE_ID;
+                return DEFAULT_VEHICLE_ID1;
             }
 
             @Override
@@ -78,9 +80,10 @@ public class ManagementVehiclesTests {
         Vehicle vehicle = VehicleFactory.newInstance(DEFAULT_GENERATOR_2CALL.get());
 
         assertAll(
-            () -> assertThat(vehicle.getId()).isEqualTo(DEFAULT_VEHICLE_ID),
+            () -> assertThat(vehicle.getId()).isEqualTo(DEFAULT_VEHICLE_ID1),
             () -> assertThat(vehicle.getVehicleName()).isNull(),
             () -> assertThat(vehicle.getCommId()).isNull(),
+            () -> assertThat(vehicle.isCarbonCopy()).isFalse(),
             () -> assertThat(vehicle.getVersion()).isEqualTo(DEFAULT_VERSION1),
             () -> assertThat(vehicle.getNewVersion()).isEqualTo(DEFAULT_VERSION1)
         );
@@ -120,7 +123,7 @@ public class ManagementVehiclesTests {
         CommunicationIdGaveEvent event
                 = new CommunicationIdGaveEvent(
                     newCommId,
-                    DEFAULT_VEHICLE_ID,
+                    DEFAULT_VEHICLE_ID1,
                     DEFAULT_VERSION2
                 );
 
@@ -141,10 +144,10 @@ public class ManagementVehiclesTests {
      */
     @Test
     public void changePreExistVehiclesCommIdAndPublishEventTest() {
-        when(this.repository.getById(DEFAULT_VEHICLE_ID))
-                .thenReturn(newNormalVehicle(DEFAULT_VEHICLE_ID, DEFAULT_VERSION1, DEFAULT_GENERATOR_1CALL.get()));
+        when(this.repository.getById(DEFAULT_VEHICLE_ID1))
+                .thenReturn(newNormalVehicle(DEFAULT_VEHICLE_ID1, DEFAULT_VERSION1, DEFAULT_GENERATOR_1CALL.get()));
 
-        Vehicle vehicle = this.repository.getById(DEFAULT_VEHICLE_ID);
+        Vehicle vehicle = this.repository.getById(DEFAULT_VEHICLE_ID1);
 
         vehicle.setPublisher(this.publisher);
 
@@ -160,7 +163,7 @@ public class ManagementVehiclesTests {
         CommunicationIdGaveEvent gaveEvent
                 = new CommunicationIdGaveEvent(
                     newCommId,
-                    DEFAULT_VEHICLE_ID,
+                    DEFAULT_VEHICLE_ID1,
                     DEFAULT_VERSION2
                 );
 
@@ -181,10 +184,10 @@ public class ManagementVehiclesTests {
      */
     @Test
     public void removePreExistVehiclesCommIdAndPublishEventTest() {
-        when(this.repository.getById(DEFAULT_VEHICLE_ID))
-                .thenReturn(newNormalVehicle(DEFAULT_VEHICLE_ID, DEFAULT_VERSION1, DEFAULT_GENERATOR_1CALL.get()));
+        when(this.repository.getById(DEFAULT_VEHICLE_ID1))
+                .thenReturn(newNormalVehicle(DEFAULT_VEHICLE_ID1, DEFAULT_VERSION1, DEFAULT_GENERATOR_1CALL.get()));
 
-        Vehicle vehicle = this.repository.getById(DEFAULT_VEHICLE_ID);
+        Vehicle vehicle = this.repository.getById(DEFAULT_VEHICLE_ID1);
 
         vehicle.setPublisher(this.publisher);
 
@@ -203,4 +206,111 @@ public class ManagementVehiclesTests {
             () -> verify(this.publisher, times(1)).publish(event)
         );
     }
+
+    /**
+     * 既存のVehicleエンティティのカーボンコピーを作成する。<br>
+     * コピーされたVehicleエンティティの内部状態を検証する。
+     */
+    @Test
+    public void carbonCopyVehicleTest() {
+        Generator generator = DEFAULT_GENERATOR_1CALL.get();
+        Vehicle original = VehicleFactory.newInstance(generator);
+
+        String vehicleName = "now vehicle";
+        CommunicationId commId = new CommunicationId("now comm id");
+
+        original.setVehicleName(vehicleName);
+        original.setCommId(commId);
+
+        Vehicle vehicle = VehicleFactory.copy(original, DEFAULT_VEHICLE_ID2, generator);
+
+        assertAll(
+            () -> assertThat(vehicle.getId()).isEqualTo(DEFAULT_VEHICLE_ID2),
+            () -> assertThat(vehicle.getVehicleName()).isEqualTo(vehicleName),
+            () -> assertThat(vehicle.getCommId()).isEqualTo(commId),
+            () -> assertThat(vehicle.isCarbonCopy()).isTrue(),
+            () -> assertThat(vehicle.getVersion()).isEqualTo(DEFAULT_VERSION2),
+            () -> assertThat(vehicle.getNewVersion()).isEqualTo(DEFAULT_VERSION2)
+        );
+    }
+
+    /**
+     * カーボンコピーされたVehicleエンティティに対してVehicle Nameを付与する。
+     * 更新時に例外がスローされることを検証する。
+     */
+    @Test
+    public void cannotChangeErrorWhenChangeCarbonCopiedVehiclesNameTest() {
+        Generator generator = DEFAULT_GENERATOR_1CALL.get();
+        Vehicle original = VehicleFactory.newInstance(generator);
+
+        String vehicleName = "now vehicle";
+        CommunicationId commId = new CommunicationId("now comm id");
+
+        original.setVehicleName(vehicleName);
+        original.setCommId(commId);
+
+        Vehicle vehicle = VehicleFactory.copy(original, DEFAULT_VEHICLE_ID2, generator);
+
+        String newVehicleName = "new vehicle";
+
+        CannotChangeVehicleException e
+                = assertThrows(
+                        CannotChangeVehicleException.class,
+                        () -> vehicle.nameVehicle(newVehicleName));
+
+        assertThat(e).hasMessageThat().contains("cannot change carbon copied vehicle");
+    }
+
+    /**
+     * カーボンコピーされたVehicleエンティティに対してCommunicationIDを付与する。
+     * 更新時に例外がスローされることを検証する。
+     */
+    @Test
+    public void cannotChangeErrorWhenChangeCarbonCopiedVehiclesCommIdTest() {
+        Generator generator = DEFAULT_GENERATOR_1CALL.get();
+        Vehicle original = VehicleFactory.newInstance(generator);
+
+        String vehicleName = "now vehicle";
+        CommunicationId commId = new CommunicationId("now comm id");
+
+        original.setVehicleName(vehicleName);
+        original.setCommId(commId);
+
+        Vehicle vehicle = VehicleFactory.copy(original, DEFAULT_VEHICLE_ID2, generator);
+
+        CommunicationId newCommId = new CommunicationId("new comm id");
+
+        CannotChangeVehicleException e
+                = assertThrows(
+                        CannotChangeVehicleException.class,
+                        () -> vehicle.giveCommId(newCommId));
+
+        assertThat(e).hasMessageThat().contains("cannot change carbon copied vehicle");
+    }
+
+    /**
+     * カーボンコピーされたVehicleエンティティのCommunicationIDを削除する。
+     * 更新時に例外がスローされることを検証する。
+     */
+    @Test
+    public void cannotChangeErrorWhenRemoveCarbonCopiedVehiclesCommIdTest() {
+        Generator generator = DEFAULT_GENERATOR_1CALL.get();
+        Vehicle original = VehicleFactory.newInstance(generator);
+
+        String vehicleName = "now vehicle";
+        CommunicationId commId = new CommunicationId("now comm id");
+
+        original.setVehicleName(vehicleName);
+        original.setCommId(commId);
+
+        Vehicle vehicle = VehicleFactory.copy(original, DEFAULT_VEHICLE_ID2, generator);
+
+        CannotChangeVehicleException e
+                = assertThrows(
+                        CannotChangeVehicleException.class,
+                        () -> vehicle.removeCommId());
+
+        assertThat(e).hasMessageThat().contains("cannot change carbon copied vehicle");
+    }
+
 }

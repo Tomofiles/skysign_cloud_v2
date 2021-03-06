@@ -1,6 +1,9 @@
 package fleet
 
-import "flightplan/pkg/flightplan/domain/flightplan"
+import (
+	"flightplan/pkg/flightplan/domain/event"
+	"flightplan/pkg/flightplan/domain/flightplan"
+)
 
 // NewInstance .
 func NewInstance(gen Generator, flightplanID flightplan.ID, numberOfVehicles int32) *Fleet {
@@ -17,8 +20,84 @@ func NewInstance(gen Generator, flightplanID flightplan.ID, numberOfVehicles int
 		id:                 gen.NewID(),
 		flightplanID:       flightplanID,
 		vehicleAssignments: vehicleAssignments,
+		isCarbonCopy:       Original,
 		version:            version,
 		newVersion:         version,
+		gen:                gen,
+	}
+}
+
+// Copy .
+func Copy(
+	gen Generator,
+	pub event.Publisher,
+	id flightplan.ID,
+	original *Fleet,
+) *Fleet {
+	var vehicleAssignments []*VehicleAssignment
+	var eventPlannings []*EventPlanning
+
+	assignmentIDMap := map[AssignmentID]AssignmentID{}
+	vehicleIDMap := map[VehicleID]VehicleID{"": ""}
+	missionIDMap := map[MissionID]MissionID{"": ""}
+	for _, va := range original.vehicleAssignments {
+		assignmentIDMap[va.assignmentID] = gen.NewAssignmentID()
+		if va.vehicleID != "" {
+			vehicleIDMap[va.vehicleID] = gen.NewVehicleID()
+		}
+		vehicleAssignments = append(
+			vehicleAssignments,
+			&VehicleAssignment{
+				assignmentID: assignmentIDMap[va.assignmentID],
+				vehicleID:    vehicleIDMap[va.vehicleID],
+			},
+		)
+	}
+	for _, ep := range original.eventPlannings {
+		if ep.missionID != "" {
+			missionIDMap[ep.missionID] = gen.NewMissionID()
+		}
+		eventPlannings = append(
+			eventPlannings,
+			&EventPlanning{
+				eventID:      gen.NewEventID(),
+				assignmentID: assignmentIDMap[ep.assignmentID],
+				missionID:    missionIDMap[ep.missionID],
+			},
+		)
+	}
+
+	if pub != nil {
+		for k, v := range vehicleIDMap {
+			if k == "" {
+				continue
+			}
+			event := VehicleCopiedWhenCopiedEvent{
+				OriginalID: k,
+				NewID:      v,
+			}
+			pub.Publish(event)
+		}
+		for k, v := range missionIDMap {
+			if k == "" {
+				continue
+			}
+			event := MissionCopiedWhenCopiedEvent{
+				OriginalID: k,
+				NewID:      v,
+			}
+			pub.Publish(event)
+		}
+	}
+
+	return &Fleet{
+		id:                 gen.NewID(),
+		flightplanID:       id,
+		vehicleAssignments: vehicleAssignments,
+		eventPlannings:     eventPlannings,
+		isCarbonCopy:       CarbonCopy,
+		version:            original.version,
+		newVersion:         original.newVersion,
 		gen:                gen,
 	}
 }
@@ -51,6 +130,7 @@ func AssembleFrom(gen Generator, comp Component) *Fleet {
 		flightplanID:       flightplan.ID(comp.GetFlightplanID()),
 		vehicleAssignments: vehicleAssignments,
 		eventPlannings:     eventPlannings,
+		isCarbonCopy:       comp.GetIsCarbonCopy(),
 		version:            Version(comp.GetVersion()),
 		newVersion:         Version(comp.GetVersion()),
 		gen:                gen,
@@ -60,7 +140,7 @@ func AssembleFrom(gen Generator, comp Component) *Fleet {
 // TakeApart .
 func TakeApart(
 	fleet *Fleet,
-	fleetComp func(id, flightplanID, version string),
+	fleetComp func(id, flightplanID, version string, isCarbonCopy bool),
 	assignmentComp func(id, fleetID, vehicleID string),
 	eventComp func(id, fleetID, assignmentID, missionID string),
 ) {
@@ -68,6 +148,7 @@ func TakeApart(
 		string(fleet.id),
 		string(fleet.flightplanID),
 		string(fleet.version),
+		fleet.isCarbonCopy,
 	)
 	for _, a := range fleet.vehicleAssignments {
 		assignmentComp(
@@ -90,6 +171,7 @@ func TakeApart(
 type Component interface {
 	GetID() string
 	GetFlightplanID() string
+	GetIsCarbonCopy() bool
 	GetVersion() string
 	GetAssignments() []AssignmentComponent
 	GetEvents() []EventComponent

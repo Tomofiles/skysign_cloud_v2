@@ -34,12 +34,25 @@ var (
 	ErrEventNotFound = errors.New("event not found")
 )
 
+const (
+	// Original .
+	Original = false
+	// CarbonCopy .
+	CarbonCopy = true
+)
+
+var (
+	// ErrCannotChange .
+	ErrCannotChange = errors.New("cannnot carbon copied fleet")
+)
+
 // Fleet .
 type Fleet struct {
 	id                 ID
 	flightplanID       flightplan.ID
 	vehicleAssignments []*VehicleAssignment
 	eventPlannings     []*EventPlanning
+	isCarbonCopy       bool
 	version            Version
 	newVersion         Version
 	gen                Generator
@@ -94,6 +107,10 @@ func (f *Fleet) GetNewVersion() Version {
 
 // AssignVehicle .
 func (f *Fleet) AssignVehicle(assignmentID AssignmentID, vehicleID VehicleID) error {
+	if f.isCarbonCopy {
+		return ErrCannotChange
+	}
+
 	contains := false
 	for _, va := range f.vehicleAssignments {
 		if va.assignmentID != assignmentID && va.vehicleID == vehicleID {
@@ -116,6 +133,10 @@ func (f *Fleet) AssignVehicle(assignmentID AssignmentID, vehicleID VehicleID) er
 
 // CancelVehiclesAssignment .
 func (f *Fleet) CancelVehiclesAssignment(assignmentID AssignmentID) error {
+	if f.isCarbonCopy {
+		return ErrCannotChange
+	}
+
 	for _, va := range f.vehicleAssignments {
 		if va.assignmentID == assignmentID {
 			va.vehicleID = ""
@@ -128,6 +149,10 @@ func (f *Fleet) CancelVehiclesAssignment(assignmentID AssignmentID) error {
 
 // AddNewEvent .
 func (f *Fleet) AddNewEvent(assignmentID AssignmentID) (EventID, error) {
+	if f.isCarbonCopy {
+		return "", ErrCannotChange
+	}
+
 	notContains := true
 	for _, va := range f.vehicleAssignments {
 		if va.assignmentID == assignmentID {
@@ -152,6 +177,10 @@ func (f *Fleet) AddNewEvent(assignmentID AssignmentID) (EventID, error) {
 
 // RemoveEvent .
 func (f *Fleet) RemoveEvent(eventID EventID) error {
+	if f.isCarbonCopy {
+		return ErrCannotChange
+	}
+
 	var eventPlannings []*EventPlanning
 	for _, ep := range f.eventPlannings {
 		if ep.eventID != eventID {
@@ -168,6 +197,10 @@ func (f *Fleet) RemoveEvent(eventID EventID) error {
 
 // AssignMission .
 func (f *Fleet) AssignMission(eventID EventID, missionID MissionID) error {
+	if f.isCarbonCopy {
+		return ErrCannotChange
+	}
+
 	contains := false
 	for _, ep := range f.eventPlannings {
 		if ep.eventID != eventID && ep.missionID == missionID {
@@ -190,6 +223,10 @@ func (f *Fleet) AssignMission(eventID EventID, missionID MissionID) error {
 
 // CancelMission .
 func (f *Fleet) CancelMission(eventID EventID) error {
+	if f.isCarbonCopy {
+		return ErrCannotChange
+	}
+
 	for _, ep := range f.eventPlannings {
 		if ep.eventID == eventID {
 			ep.missionID = ""
@@ -220,5 +257,7 @@ type Generator interface {
 	NewID() ID
 	NewAssignmentID() AssignmentID
 	NewEventID() EventID
+	NewVehicleID() VehicleID
+	NewMissionID() MissionID
 	NewVersion() Version
 }

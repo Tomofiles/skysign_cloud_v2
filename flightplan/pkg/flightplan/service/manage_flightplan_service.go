@@ -13,6 +13,7 @@ type ManageFlightplanService interface {
 	CreateFlightplan(requestDpo CreateFlightplanRequestDpo, responseDpo CreateFlightplanResponseDpo) error
 	UpdateFlightplan(requestDpo UpdateFlightplanRequestDpo, responseDpo UpdateFlightplanResponseDpo) error
 	DeleteFlightplan(requestDpo DeleteFlightplanRequestDpo) error
+	CarbonCopyFlightplan(requestDpo CarbonCopyFlightplanRequestDpo) error
 }
 
 // CreateFlightplanRequestDpo .
@@ -48,6 +49,12 @@ type ListFlightplansResponseDpo = func(id, name, description string)
 // DeleteFlightplanRequestDpo .
 type DeleteFlightplanRequestDpo interface {
 	GetID() string
+}
+
+// CarbonCopyFlightplanRequestDpo .
+type CarbonCopyFlightplanRequestDpo interface {
+	GetOriginalID() string
+	GetNewID() string
 }
 
 // NewManageFlightplanService .
@@ -118,7 +125,7 @@ func (s *manageFlightplanService) listFlightplansOperation(
 	tx txmanager.Tx,
 	responseEachDpo ListFlightplansResponseDpo,
 ) error {
-	flightplans, err := s.repo.GetAll(tx)
+	flightplans, err := s.repo.GetAllOrigin(tx)
 	if err != nil {
 		return err
 	}
@@ -215,8 +222,12 @@ func (s *manageFlightplanService) updateFlightplanOperation(
 		return err
 	}
 
-	flightplan.NameFlightplan(requestDpo.GetName())
-	flightplan.ChangeDescription(requestDpo.GetDescription())
+	if err := flightplan.NameFlightplan(requestDpo.GetName()); err != nil {
+		return err
+	}
+	if err := flightplan.ChangeDescription(requestDpo.GetDescription()); err != nil {
+		return err
+	}
 
 	if ret := s.repo.Save(tx, flightplan); ret != nil {
 		return ret
@@ -263,6 +274,48 @@ func (s *manageFlightplanService) deleteFlightplanOperation(
 		s.repo,
 		pub,
 		fpl.ID(requestDpo.GetID()),
+	); ret != nil {
+		return ret
+	}
+
+	return nil
+}
+
+func (s *manageFlightplanService) CarbonCopyFlightplan(
+	requestDpo CarbonCopyFlightplanRequestDpo,
+) error {
+	pub, chClose, err := s.psm.GetPublisher()
+	if err != nil {
+		return err
+	}
+	defer chClose()
+
+	return s.txm.DoAndEndHook(
+		func(tx txmanager.Tx) error {
+			return s.carbonCopyFlightplanOperation(
+				tx,
+				pub,
+				requestDpo,
+			)
+		},
+		func() error {
+			return pub.Flush()
+		},
+	)
+}
+
+func (s *manageFlightplanService) carbonCopyFlightplanOperation(
+	tx txmanager.Tx,
+	pub event.Publisher,
+	requestDpo CarbonCopyFlightplanRequestDpo,
+) error {
+	if ret := fpl.CarbonCopyFlightplan(
+		tx,
+		s.gen,
+		s.repo,
+		pub,
+		fpl.ID(requestDpo.GetOriginalID()),
+		fpl.ID(requestDpo.GetNewID()),
 	); ret != nil {
 		return ret
 	}

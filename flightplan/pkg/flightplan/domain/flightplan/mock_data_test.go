@@ -45,10 +45,11 @@ func (rm *publisherMock) Flush() error {
 
 // Flightplan構成オブジェクトモック
 type flightplanComponentMock struct {
-	id          string
-	name        string
-	description string
-	version     string
+	id           string
+	name         string
+	description  string
+	isCarbonCopy bool
+	version      string
 }
 
 func (f *flightplanComponentMock) GetID() string {
@@ -61,6 +62,10 @@ func (f *flightplanComponentMock) GetName() string {
 
 func (f *flightplanComponentMock) GetDescription() string {
 	return f.description
+}
+
+func (f *flightplanComponentMock) GetIsCarbonCopy() bool {
+	return f.isCarbonCopy
 }
 
 func (f *flightplanComponentMock) GetVersion() string {

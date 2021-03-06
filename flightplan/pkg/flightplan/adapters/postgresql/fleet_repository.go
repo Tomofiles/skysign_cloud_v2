@@ -81,10 +81,11 @@ func (r *FleetRepository) Save(
 
 	fl.TakeApart(
 		fleet,
-		func(id, flightplanID, version string) {
+		func(id, flightplanID, version string, isCarbonCopy bool) {
 			fleetRecord.ID = id
 			fleetRecord.FlightplanID = flightplanID
 			fleetRecord.Version = version
+			fleetRecord.IsCarbonCopy = isCarbonCopy
 		},
 		func(id, fleetID, vehicleID string) {
 			assignmentRecords = append(

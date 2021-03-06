@@ -11,16 +11,19 @@ import net.tomofiles.skysign.vehicle.infra.common.DeleteCondition;
 
 @Mapper
 public interface VehicleMapper {
-    @Select("SELECT id, name, comm_id as commId, version FROM vehicle WHERE id = #{id}")
+    @Select("SELECT id, name, comm_id as commId, is_carbon_copy as isCarbonCopy, version FROM vehicle WHERE id = #{id}")
     VehicleRecord find(String id);
 
-    @Select("SELECT id, name, comm_id as commId, version FROM vehicle")
+    @Select("SELECT id, name, comm_id as commId, is_carbon_copy as isCarbonCopy, version FROM vehicle")
     List<VehicleRecord> findAll();
 
-    @Insert("INSERT INTO vehicle (id, name, comm_id, version) VALUES (#{id}, #{name}, #{commId}, #{version})")
+    @Select("SELECT id, name, comm_id as commId, is_carbon_copy as isCarbonCopy, version FROM vehicle WHERE is_carbon_copy = false")
+    List<VehicleRecord> findAllOriginal();
+
+    @Insert("INSERT INTO vehicle (id, name, comm_id, is_carbon_copy, version) VALUES (#{id}, #{name}, #{commId}, #{isCarbonCopy}, #{version})")
     void create(VehicleRecord vehicle);
 
-    @Update("UPDATE vehicle SET name = #{name}, comm_id = #{commId}, version = #{newVersion} WHERE id = #{id} AND version = #{version}")
+    @Update("UPDATE vehicle SET name = #{name}, comm_id = #{commId}, is_carbon_copy = #{isCarbonCopy}, version = #{newVersion} WHERE id = #{id} AND version = #{version}")
     void update(VehicleRecord vehicle);
 
     @Update("DELETE FROM vehicle WHERE id = #{id} AND version = #{version}")

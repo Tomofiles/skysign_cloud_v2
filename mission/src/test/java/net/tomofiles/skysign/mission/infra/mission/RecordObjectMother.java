@@ -16,6 +16,20 @@ public class RecordObjectMother {
                 missionId.getId(),
                 "mission name",
                 0.0,
+                false,
+                version.getVersion(),
+                version.getVersion());
+    }
+
+    /**
+     * カーボンコピーされたMissionレコードを生成する。
+     */
+    public static MissionRecord newNormalCarbonCopiedMissionRecord(MissionId missionId, Version version) {
+        return new MissionRecord(
+                missionId.getId(),
+                "mission name",
+                0.0,
+                true,
                 version.getVersion(),
                 version.getVersion());
     }

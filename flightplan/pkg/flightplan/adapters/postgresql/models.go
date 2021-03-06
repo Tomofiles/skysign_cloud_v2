@@ -4,10 +4,11 @@ import "flightplan/pkg/flightplan/domain/fleet"
 
 // Flightplan .
 type Flightplan struct {
-	ID          string `gorm:"primaryKey"`
-	Name        string
-	Description string
-	Version     string
+	ID           string `gorm:"primaryKey"`
+	Name         string
+	Description  string
+	IsCarbonCopy bool
+	Version      string
 }
 
 // GetID .
@@ -25,6 +26,11 @@ func (f *Flightplan) GetDescription() string {
 	return f.Description
 }
 
+// GetIsCarbonCopy .
+func (f *Flightplan) GetIsCarbonCopy() bool {
+	return f.IsCarbonCopy
+}
+
 // GetVersion .
 func (f *Flightplan) GetVersion() string {
 	return f.Version
@@ -34,6 +40,7 @@ func (f *Flightplan) GetVersion() string {
 type Fleet struct {
 	ID           string `gorm:"primaryKey"`
 	FlightplanID string
+	IsCarbonCopy bool
 	Assignments  []*Assignment `gorm:"-"`
 	Events       []*Event      `gorm:"-"`
 	Version      string
@@ -47,6 +54,11 @@ func (f *Fleet) GetID() string {
 // GetFlightplanID .
 func (f *Fleet) GetFlightplanID() string {
 	return f.FlightplanID
+}
+
+// GetIsCarbonCopy .
+func (f *Fleet) GetIsCarbonCopy() bool {
+	return f.IsCarbonCopy
 }
 
 // GetVersion .

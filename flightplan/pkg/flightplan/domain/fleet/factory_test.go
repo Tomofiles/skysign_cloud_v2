@@ -29,6 +29,7 @@ func TestCreateSingleFleetNewFleet(t *testing.T) {
 	a.Equal(fleet.GetFlightplanID(), DefaultFlightplanID)
 	a.Equal(fleet.GetNumberOfVehicles(), 1)
 	a.Equal(fleet.GetAllAssignmentID(), []AssignmentID{DefaultAssignmentID})
+	a.Equal(fleet.isCarbonCopy, Original)
 	a.Equal(fleet.GetVersion(), DefaultVersion)
 	a.Equal(fleet.GetNewVersion(), DefaultVersion)
 	a.Len(fleet.vehicleAssignments, 1)
@@ -76,6 +77,7 @@ func TestCreateMultipleFleetNewFleet(t *testing.T) {
 	a.Equal(fleet.GetFlightplanID(), DefaultFlightplanID)
 	a.Equal(fleet.GetNumberOfVehicles(), 3)
 	a.Equal(fleet.GetAllAssignmentID(), []AssignmentID{DefaultAssignmentID1, DefaultAssignmentID2, DefaultAssignmentID3})
+	a.Equal(fleet.isCarbonCopy, Original)
 	a.Equal(fleet.GetVersion(), DefaultVersion)
 	a.Equal(fleet.GetNewVersion(), DefaultVersion)
 	a.Len(fleet.vehicleAssignments, 3)
@@ -101,10 +103,157 @@ func TestCreateNonFleetNewFleet(t *testing.T) {
 	a.Equal(fleet.GetFlightplanID(), DefaultFlightplanID)
 	a.Equal(fleet.GetNumberOfVehicles(), 0)
 	a.Equal(fleet.GetAllAssignmentID(), *new([]AssignmentID))
+	a.Equal(fleet.isCarbonCopy, Original)
 	a.Equal(fleet.GetVersion(), DefaultVersion)
 	a.Equal(fleet.GetNewVersion(), DefaultVersion)
 	a.Len(fleet.vehicleAssignments, 0)
 	a.Len(fleet.eventPlannings, 0)
+}
+
+// Fleetのカーボンコピーを作成し、初期状態を検証する。
+func TestCopyFleet(t *testing.T) {
+	a := assert.New(t)
+
+	var (
+		CopiedFlightplanID  = ID(DefaultFlightplanID) + "-copied"
+		CopiedAssignmentID1 = DefaultAssignmentID + "-copied-1"
+		CopiedAssignmentID2 = DefaultAssignmentID + "-copied-2"
+		CopiedAssignmentID3 = DefaultAssignmentID + "-copied-3"
+		CopiedEventID1      = DefaultEventID + "-copied-1"
+		CopiedEventID2      = DefaultEventID + "-copied-2"
+		CopiedEventID3      = DefaultEventID + "-copied-3"
+		CopiedVehicleID1    = DefaultVehicleID + "-copied-1"
+		// CopiedVehicleID2     = DefaultVehicleID + "-copied-2"
+		CopiedVehicleID3 = DefaultVehicleID + "-copied-3"
+		CopiedMissionID1 = DefaultMissionID + "-copied-1"
+		// CopiedMissionID2     = DefaultMissionID + "-copied-2"
+		CopiedMissionID3     = DefaultMissionID + "-copied-3"
+		DefaultAssignmentID1 = DefaultAssignmentID + "-1"
+		DefaultAssignmentID2 = DefaultAssignmentID + "-2"
+		DefaultAssignmentID3 = DefaultAssignmentID + "-3"
+		DefaultEventID1      = DefaultEventID + "-1"
+		DefaultEventID2      = DefaultEventID + "-2"
+		DefaultEventID3      = DefaultEventID + "-3"
+		DefaultVehicleID1    = DefaultVehicleID + "-1"
+		// DefaultVehicleID2    = DefaultVehicleID + "-2"
+		DefaultVehicleID3 = DefaultVehicleID + "-3"
+		DefaultMissionID1 = DefaultMissionID + "-1"
+		// DefaultMissionID2    = DefaultMissionID + "-2"
+		DefaultMissionID3 = DefaultMissionID + "-3"
+	)
+
+	gen := &generatorMock{
+		id:            CopiedFlightplanID,
+		assignmentIDs: []AssignmentID{CopiedAssignmentID1, CopiedAssignmentID2, CopiedAssignmentID3},
+		eventIDs:      []EventID{CopiedEventID1, CopiedEventID2, CopiedEventID3},
+		vehicleIDs:    []VehicleID{CopiedVehicleID1, CopiedVehicleID3},
+		missionIDs:    []MissionID{CopiedMissionID1, CopiedMissionID3},
+	}
+	pub := &publisherMock{}
+	id := DefaultFlightplanID + "-copied"
+	original := &Fleet{
+		id:           DefaultID,
+		flightplanID: DefaultFlightplanID,
+		vehicleAssignments: []*VehicleAssignment{
+			{
+				assignmentID: DefaultAssignmentID1,
+				vehicleID:    DefaultVehicleID1,
+			},
+			{
+				assignmentID: DefaultAssignmentID2,
+				vehicleID:    "",
+			},
+			{
+				assignmentID: DefaultAssignmentID3,
+				vehicleID:    DefaultVehicleID3,
+			},
+		},
+		eventPlannings: []*EventPlanning{
+			{
+				eventID:      DefaultEventID1,
+				assignmentID: DefaultAssignmentID1,
+				missionID:    DefaultMissionID1,
+			},
+			{
+				eventID:      DefaultEventID2,
+				assignmentID: DefaultAssignmentID2,
+				missionID:    "",
+			},
+			{
+				eventID:      DefaultEventID3,
+				assignmentID: DefaultAssignmentID3,
+				missionID:    DefaultMissionID3,
+			},
+		},
+		isCarbonCopy: Original,
+		version:      DefaultVersion,
+		newVersion:   DefaultVersion,
+	}
+	fleet := Copy(gen, pub, id, original)
+
+	expectAssignment1 := &VehicleAssignment{
+		assignmentID: CopiedAssignmentID1,
+		vehicleID:    CopiedVehicleID1,
+	}
+	expectAssignment2 := &VehicleAssignment{
+		assignmentID: CopiedAssignmentID2,
+		vehicleID:    "",
+	}
+	expectAssignment3 := &VehicleAssignment{
+		assignmentID: CopiedAssignmentID3,
+		vehicleID:    CopiedVehicleID3,
+	}
+
+	expectEventPlanning1 := &EventPlanning{
+		eventID:      CopiedEventID1,
+		assignmentID: CopiedAssignmentID1,
+		missionID:    CopiedMissionID1,
+	}
+	expectEventPlanning2 := &EventPlanning{
+		eventID:      CopiedEventID2,
+		assignmentID: CopiedAssignmentID2,
+		missionID:    "",
+	}
+	expectEventPlanning3 := &EventPlanning{
+		eventID:      CopiedEventID3,
+		assignmentID: CopiedAssignmentID3,
+		missionID:    CopiedMissionID3,
+	}
+
+	expectEvent1 := VehicleCopiedWhenCopiedEvent{
+		OriginalID: DefaultVehicleID1,
+		NewID:      CopiedVehicleID1,
+	}
+	expectEvent2 := VehicleCopiedWhenCopiedEvent{
+		OriginalID: DefaultVehicleID3,
+		NewID:      CopiedVehicleID3,
+	}
+	expectEvent3 := MissionCopiedWhenCopiedEvent{
+		OriginalID: DefaultMissionID1,
+		NewID:      CopiedMissionID1,
+	}
+	expectEvent4 := MissionCopiedWhenCopiedEvent{
+		OriginalID: DefaultMissionID3,
+		NewID:      CopiedMissionID3,
+	}
+
+	a.Equal(fleet.GetID(), CopiedFlightplanID)
+	a.Equal(fleet.GetFlightplanID(), id)
+	a.Equal(fleet.GetNumberOfVehicles(), 3)
+	a.Equal(fleet.GetAllAssignmentID(), []AssignmentID{CopiedAssignmentID1, CopiedAssignmentID2, CopiedAssignmentID3})
+	a.Equal(fleet.isCarbonCopy, CarbonCopy)
+	a.Equal(fleet.GetVersion(), DefaultVersion)
+	a.Equal(fleet.GetNewVersion(), DefaultVersion)
+	a.Len(fleet.vehicleAssignments, 3)
+	a.Equal(fleet.vehicleAssignments, []*VehicleAssignment{expectAssignment1, expectAssignment2, expectAssignment3})
+	a.Len(fleet.eventPlannings, 3)
+	a.Equal(fleet.eventPlannings, []*EventPlanning{expectEventPlanning1, expectEventPlanning2, expectEventPlanning3})
+	a.Len(pub.events, 4)
+	// a.Equal(pub.events, []interface{}{expectEvent1, expectEvent2, expectEvent3, expectEvent4})
+	a.Equal(pub.events[0], expectEvent1)
+	a.Equal(pub.events[1], expectEvent2)
+	a.Equal(pub.events[2], expectEvent3)
+	a.Equal(pub.events[3], expectEvent4)
 }
 
 // Fleetを構成オブジェクトから組み立て直し、
@@ -171,6 +320,7 @@ func TestFleetAssembleFromComponent(t *testing.T) {
 	fleetComp := fleetComponentMock{
 		id:           string(DefaultID),
 		flightplanID: string(DefaultFlightplanID),
+		isCarbonCopy: CarbonCopy,
 		assignments:  assignmentComps,
 		events:       eventComps,
 		version:      string(DefaultVersion),
@@ -210,6 +360,7 @@ func TestFleetAssembleFromComponent(t *testing.T) {
 	a.Equal(fleet.GetFlightplanID(), DefaultFlightplanID)
 	a.Equal(fleet.GetNumberOfVehicles(), 3)
 	a.Equal(fleet.GetAllAssignmentID(), []AssignmentID{DefaultAssignmentID1, DefaultAssignmentID2, DefaultAssignmentID3})
+	a.Equal(fleet.isCarbonCopy, CarbonCopy)
 	a.Equal(fleet.GetVersion(), DefaultVersion)
 	a.Equal(fleet.GetNewVersion(), DefaultVersion)
 	a.Len(fleet.vehicleAssignments, 3)
@@ -277,6 +428,7 @@ func TestTakeApartFleet(t *testing.T) {
 			missionID:    DefaultMissionID3,
 		},
 	)
+	fleet.isCarbonCopy = CarbonCopy
 
 	var fleetComp fleetComponentMock
 	var assignmentComps []assignmentComponentMock
@@ -284,10 +436,11 @@ func TestTakeApartFleet(t *testing.T) {
 
 	TakeApart(
 		fleet,
-		func(id, flightplanID, version string) {
+		func(id, flightplanID, version string, isCarbonCopy bool) {
 			fleetComp.id = id
 			fleetComp.flightplanID = flightplanID
 			fleetComp.version = version
+			fleetComp.isCarbonCopy = isCarbonCopy
 		},
 		func(id, fleetID, vehicleID string) {
 			assignmentComps = append(
@@ -316,6 +469,7 @@ func TestTakeApartFleet(t *testing.T) {
 		id:           string(DefaultID),
 		flightplanID: string(DefaultFlightplanID),
 		version:      string(DefaultVersion1),
+		isCarbonCopy: CarbonCopy,
 	}
 	expectAssignments := []assignmentComponentMock{
 		{

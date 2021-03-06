@@ -17,6 +17,8 @@ const DefaultFleetMissionID = "mission-id"
 
 type manageFlightplanServiceMock struct {
 	mock.Mock
+	OriginalID string
+	NewID      string
 }
 
 func (s *manageFlightplanServiceMock) GetFlightplan(
@@ -74,9 +76,20 @@ func (s *manageFlightplanServiceMock) DeleteFlightplan(
 	return ret.Error(0)
 }
 
+func (s *manageFlightplanServiceMock) CarbonCopyFlightplan(
+	requestDpo service.CarbonCopyFlightplanRequestDpo,
+) error {
+	ret := s.Called()
+	s.OriginalID = requestDpo.GetOriginalID()
+	s.NewID = requestDpo.GetNewID()
+	return ret.Error(0)
+}
+
 type manageFleetServiceMock struct {
 	mock.Mock
-	ID string
+	ID         string
+	OriginalID string
+	NewID      string
 }
 
 func (s *manageFleetServiceMock) CreateFleet(
@@ -92,6 +105,15 @@ func (s *manageFleetServiceMock) DeleteFleet(
 ) error {
 	ret := s.Called()
 	s.ID = requestDpo.GetFlightplanID()
+	return ret.Error(0)
+}
+
+func (s *manageFleetServiceMock) CarbonCopyFleet(
+	requestDpo service.CarbonCopyFleetRequestDpo,
+) error {
+	ret := s.Called()
+	s.OriginalID = requestDpo.GetOriginalID()
+	s.NewID = requestDpo.GetNewID()
 	return ret.Error(0)
 }
 

@@ -109,6 +109,13 @@ export const useStyles = makeStyles(theme => ({
       background: '#00939a'
     }
   },
+  funcImportantButton: {
+    background: '#ed803d',
+    color: '#fafafa',
+    "&:hover": {
+      background: '#d1611c'
+    }
+  },
   textLabel: {
     color: '#fafafa',
   },

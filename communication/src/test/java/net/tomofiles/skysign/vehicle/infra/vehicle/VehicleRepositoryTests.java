@@ -24,8 +24,8 @@ import net.tomofiles.skysign.vehicle.domain.vehicle.VehicleId;
 import net.tomofiles.skysign.vehicle.domain.vehicle.Version;
 import net.tomofiles.skysign.vehicle.infra.common.DeleteCondition;
 
-import static net.tomofiles.skysign.vehicle.domain.vehicle.VehicleObjectMother.newNormalVehicle;
-import static net.tomofiles.skysign.vehicle.infra.vehicle.RecordObjectMother.newNormalVehicleRecord;
+import static net.tomofiles.skysign.vehicle.domain.vehicle.VehicleObjectMother.newCarbonCopiedVehicle;
+import static net.tomofiles.skysign.vehicle.infra.vehicle.RecordObjectMother.newCarbonCopiedVehicleRecord;
 
 public class VehicleRepositoryTests {
     
@@ -62,16 +62,17 @@ public class VehicleRepositoryTests {
     @Test
     public void getVehicleByIdTest() {
         when(this.vehicleMapper.find(DEFAULT_VEHICLE_ID.getId()))
-                .thenReturn(newNormalVehicleRecord(DEFAULT_VEHICLE_ID, DEFAULT_VERSION, DEFAULT_GENERATOR.get()));
+                .thenReturn(newCarbonCopiedVehicleRecord(DEFAULT_VEHICLE_ID, DEFAULT_VERSION, DEFAULT_GENERATOR.get()));
 
         Vehicle vehicle = this.repository.getById(DEFAULT_VEHICLE_ID);
 
-        Vehicle expectVehicle = newNormalVehicle(DEFAULT_VEHICLE_ID, DEFAULT_VERSION, DEFAULT_GENERATOR.get());
+        Vehicle expectVehicle = newCarbonCopiedVehicle(DEFAULT_VEHICLE_ID, DEFAULT_VERSION, DEFAULT_GENERATOR.get());
 
         assertAll(
             () -> assertThat(vehicle.getId()).isEqualTo(expectVehicle.getId()),
             () -> assertThat(vehicle.getVehicleName()).isEqualTo(expectVehicle.getVehicleName()),
             () -> assertThat(vehicle.getCommId()).isEqualTo(expectVehicle.getCommId()),
+            () -> assertThat(vehicle.isCarbonCopy()).isEqualTo(expectVehicle.isCarbonCopy()),
             () -> assertThat(vehicle.getVersion()).isEqualTo(expectVehicle.getVersion()),
             () -> assertThat(vehicle.getNewVersion()).isEqualTo(expectVehicle.getNewVersion())
         );
@@ -94,20 +95,21 @@ public class VehicleRepositoryTests {
     @Test
     public void getAllVehiclesTest() {
         when(this.vehicleMapper.findAll()).thenReturn(Arrays.asList(new VehicleRecord[] {
-            newNormalVehicleRecord(DEFAULT_VEHICLE_ID, DEFAULT_VERSION, DEFAULT_GENERATOR.get()),
-            newNormalVehicleRecord(DEFAULT_VEHICLE_ID, DEFAULT_VERSION, DEFAULT_GENERATOR.get()),
-            newNormalVehicleRecord(DEFAULT_VEHICLE_ID, DEFAULT_VERSION, DEFAULT_GENERATOR.get())
+            newCarbonCopiedVehicleRecord(DEFAULT_VEHICLE_ID, DEFAULT_VERSION, DEFAULT_GENERATOR.get()),
+            newCarbonCopiedVehicleRecord(DEFAULT_VEHICLE_ID, DEFAULT_VERSION, DEFAULT_GENERATOR.get()),
+            newCarbonCopiedVehicleRecord(DEFAULT_VEHICLE_ID, DEFAULT_VERSION, DEFAULT_GENERATOR.get())
         }));
 
         List<Vehicle> vehicles = this.repository.getAll();
 
-        Vehicle expectVehicle = newNormalVehicle(DEFAULT_VEHICLE_ID, DEFAULT_VERSION, DEFAULT_GENERATOR.get());
+        Vehicle expectVehicle = newCarbonCopiedVehicle(DEFAULT_VEHICLE_ID, DEFAULT_VERSION, DEFAULT_GENERATOR.get());
 
         assertAll(
             () -> assertThat(vehicles).hasSize(3),
             () -> assertThat(vehicles.get(0).getId()).isEqualTo(expectVehicle.getId()),
             () -> assertThat(vehicles.get(0).getVehicleName()).isEqualTo(expectVehicle.getVehicleName()),
             () -> assertThat(vehicles.get(0).getCommId()).isEqualTo(expectVehicle.getCommId()),
+            () -> assertThat(vehicles.get(0).isCarbonCopy()).isEqualTo(expectVehicle.isCarbonCopy()),
             () -> assertThat(vehicles.get(0).getVersion()).isEqualTo(expectVehicle.getVersion()),
             () -> assertThat(vehicles.get(0).getNewVersion()).isEqualTo(expectVehicle.getNewVersion())
         );
@@ -125,15 +127,52 @@ public class VehicleRepositoryTests {
     }
 
     /**
+     * リポジトリーからカーボンコピーでないオリジナルのVehicleエンティティをすべて取得する。
+     */
+    @Test
+    public void getAllOriginalVehiclesTest() {
+        when(this.vehicleMapper.findAllOriginal()).thenReturn(Arrays.asList(new VehicleRecord[] {
+            newCarbonCopiedVehicleRecord(DEFAULT_VEHICLE_ID, DEFAULT_VERSION, DEFAULT_GENERATOR.get()),
+            newCarbonCopiedVehicleRecord(DEFAULT_VEHICLE_ID, DEFAULT_VERSION, DEFAULT_GENERATOR.get()),
+            newCarbonCopiedVehicleRecord(DEFAULT_VEHICLE_ID, DEFAULT_VERSION, DEFAULT_GENERATOR.get())
+        }));
+
+        List<Vehicle> vehicles = this.repository.getAllOriginal();
+
+        Vehicle expectVehicle = newCarbonCopiedVehicle(DEFAULT_VEHICLE_ID, DEFAULT_VERSION, DEFAULT_GENERATOR.get());
+
+        assertAll(
+            () -> assertThat(vehicles).hasSize(3),
+            () -> assertThat(vehicles.get(0).getId()).isEqualTo(expectVehicle.getId()),
+            () -> assertThat(vehicles.get(0).getVehicleName()).isEqualTo(expectVehicle.getVehicleName()),
+            () -> assertThat(vehicles.get(0).getCommId()).isEqualTo(expectVehicle.getCommId()),
+            () -> assertThat(vehicles.get(0).isCarbonCopy()).isEqualTo(expectVehicle.isCarbonCopy()),
+            () -> assertThat(vehicles.get(0).getVersion()).isEqualTo(expectVehicle.getVersion()),
+            () -> assertThat(vehicles.get(0).getNewVersion()).isEqualTo(expectVehicle.getNewVersion())
+        );
+    }
+
+    /**
+     * リポジトリーからカーボンコピーでないオリジナルのVehicleエンティティをすべて取得する。<br>
+     * エンティティが存在しない場合、空リストが返却されることを検証する。
+     */
+    @Test
+    public void getAllOriginalNoVehiclesTest() {
+        List<Vehicle> vehicles = this.repository.getAllOriginal();
+
+        assertThat(vehicles).hasSize(0);
+    }
+
+    /**
      * リポジトリーにVehicleエンティティを一つ保存する。<br>
      * 既存のエンティティが無いため、新規登録されることを検証する。
      */
     @Test
     public void saveNewVehicleTest() {
-        this.repository.save(newNormalVehicle(DEFAULT_VEHICLE_ID, DEFAULT_VERSION, DEFAULT_GENERATOR.get()));
+        this.repository.save(newCarbonCopiedVehicle(DEFAULT_VEHICLE_ID, DEFAULT_VERSION, DEFAULT_GENERATOR.get()));
 
         verify(this.vehicleMapper, times(1))
-                .create(newNormalVehicleRecord(DEFAULT_VEHICLE_ID, DEFAULT_VERSION, DEFAULT_GENERATOR.get()));
+                .create(newCarbonCopiedVehicleRecord(DEFAULT_VEHICLE_ID, DEFAULT_VERSION, DEFAULT_GENERATOR.get()));
     }
 
     /**
@@ -143,14 +182,14 @@ public class VehicleRepositoryTests {
     @Test
     public void savePreExistVehicleTest() {
         when(this.vehicleMapper.find(DEFAULT_VEHICLE_ID.getId()))
-                .thenReturn(newNormalVehicleRecord(DEFAULT_VEHICLE_ID, DEFAULT_VERSION, DEFAULT_GENERATOR.get()));
+                .thenReturn(newCarbonCopiedVehicleRecord(DEFAULT_VEHICLE_ID, DEFAULT_VERSION, DEFAULT_GENERATOR.get()));
 
         Vehicle vehicle = this.repository.getById(DEFAULT_VEHICLE_ID);
 
         repository.save(vehicle);
 
         verify(this.vehicleMapper, times(1))
-                .update(newNormalVehicleRecord(DEFAULT_VEHICLE_ID, DEFAULT_VERSION, DEFAULT_GENERATOR.get()));
+                .update(newCarbonCopiedVehicleRecord(DEFAULT_VEHICLE_ID, DEFAULT_VERSION, DEFAULT_GENERATOR.get()));
     }
 
     /**

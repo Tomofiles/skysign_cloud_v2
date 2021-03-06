@@ -39,6 +39,19 @@ func (r *flightplanRepositoryMock) GetAll(
 	return f, ret.Error(1)
 }
 
+func (r *flightplanRepositoryMock) GetAllOrigin(
+	tx txmanager.Tx,
+) ([]*fpl.Flightplan, error) {
+	ret := r.Called()
+	var f []*fpl.Flightplan
+	if ret.Get(0) == nil {
+		f = nil
+	} else {
+		f = ret.Get(0).([]*fpl.Flightplan)
+	}
+	return f, ret.Error(1)
+}
+
 func (r *flightplanRepositoryMock) GetByID(
 	tx txmanager.Tx,
 	id fpl.ID,
@@ -130,6 +143,10 @@ type generatorMockFleet struct {
 	assignmentIDIndex int
 	eventIDs          []fl.EventID
 	eventIDIndex      int
+	vehicleIDs        []fl.VehicleID
+	vehicleIDIndex    int
+	missionIDs        []fl.MissionID
+	missionIDIndex    int
 	versions          []fl.Version
 	versionIndex      int
 }
@@ -146,6 +163,16 @@ func (gen *generatorMockFleet) NewEventID() fl.EventID {
 	eventID := gen.eventIDs[gen.eventIDIndex]
 	gen.eventIDIndex++
 	return eventID
+}
+func (gen *generatorMockFleet) NewVehicleID() fl.VehicleID {
+	vehicleID := gen.vehicleIDs[gen.vehicleIDIndex]
+	gen.vehicleIDIndex++
+	return vehicleID
+}
+func (gen *generatorMockFleet) NewMissionID() fl.MissionID {
+	missionID := gen.missionIDs[gen.missionIDIndex]
+	gen.missionIDIndex++
+	return missionID
 }
 func (gen *generatorMockFleet) NewVersion() fl.Version {
 	version := gen.versions[gen.versionIndex]
@@ -204,10 +231,11 @@ func (txm *txManagerMock) DoAndEndHook(operation func(txmanager.Tx) error, endHo
 }
 
 type flightplanComponentMock struct {
-	ID          string
-	Name        string
-	Description string
-	Version     string
+	ID           string
+	Name         string
+	Description  string
+	IsCarbonCopy bool
+	Version      string
 }
 
 func (f *flightplanComponentMock) GetID() string {
@@ -222,6 +250,10 @@ func (f *flightplanComponentMock) GetDescription() string {
 	return f.Description
 }
 
+func (f *flightplanComponentMock) GetIsCarbonCopy() bool {
+	return f.IsCarbonCopy
+}
+
 func (f *flightplanComponentMock) GetVersion() string {
 	return f.Version
 }
@@ -231,6 +263,7 @@ type fleetComponentMock struct {
 	FlightplanID string
 	Assignments  []*assignmentComponentMock
 	Events       []*eventComponentMock
+	IsCarbonCopy bool
 	Version      string
 }
 
@@ -240,6 +273,10 @@ func (f *fleetComponentMock) GetID() string {
 
 func (f *fleetComponentMock) GetFlightplanID() string {
 	return f.FlightplanID
+}
+
+func (f *fleetComponentMock) GetIsCarbonCopy() bool {
+	return f.IsCarbonCopy
 }
 
 func (f *fleetComponentMock) GetVersion() string {
@@ -335,6 +372,19 @@ type fleetIDRequestMock struct {
 
 func (f *fleetIDRequestMock) GetFlightplanID() string {
 	return f.FlightplanID
+}
+
+type carbonCopyRequestMock struct {
+	OriginalID string
+	NewID      string
+}
+
+func (f *carbonCopyRequestMock) GetOriginalID() string {
+	return f.OriginalID
+}
+
+func (f *carbonCopyRequestMock) GetNewID() string {
+	return f.NewID
 }
 
 type changeNumberOfVehiclesRequestMock struct {

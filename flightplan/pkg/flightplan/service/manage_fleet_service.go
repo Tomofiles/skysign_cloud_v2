@@ -1,6 +1,7 @@
 package service
 
 import (
+	"flightplan/pkg/flightplan/domain/event"
 	"flightplan/pkg/flightplan/domain/fleet"
 	"flightplan/pkg/flightplan/domain/flightplan"
 	"flightplan/pkg/flightplan/domain/txmanager"
@@ -10,6 +11,7 @@ import (
 type ManageFleetService interface {
 	CreateFleet(requestDpo CreateFleetRequestDpo) error
 	DeleteFleet(requestDpo DeleteFleetRequestDpo) error
+	CarbonCopyFleet(requestDpo CarbonCopyFleetRequestDpo) error
 }
 
 // CreateFleetRequestDpo .
@@ -22,16 +24,24 @@ type DeleteFleetRequestDpo interface {
 	GetFlightplanID() string
 }
 
+// CarbonCopyFleetRequestDpo .
+type CarbonCopyFleetRequestDpo interface {
+	GetOriginalID() string
+	GetNewID() string
+}
+
 // NewManageFleetService .
 func NewManageFleetService(
 	gen fleet.Generator,
 	repo fleet.Repository,
 	txm txmanager.TransactionManager,
+	psm event.PubSubManager,
 ) ManageFleetService {
 	return &manageFleetService{
 		gen:  gen,
 		repo: repo,
 		txm:  txm,
+		psm:  psm,
 	}
 }
 
@@ -39,6 +49,7 @@ type manageFleetService struct {
 	gen  fleet.Generator
 	repo fleet.Repository
 	txm  txmanager.TransactionManager
+	psm  event.PubSubManager
 }
 
 func (s *manageFleetService) CreateFleet(
@@ -85,6 +96,48 @@ func (s *manageFleetService) deleteFleetOperation(
 	if ret := s.repo.DeleteByFlightplanID(
 		tx,
 		flightplan.ID(requestDpo.GetFlightplanID()),
+	); ret != nil {
+		return ret
+	}
+
+	return nil
+}
+
+func (s *manageFleetService) CarbonCopyFleet(
+	requestDpo CarbonCopyFleetRequestDpo,
+) error {
+	pub, chClose, err := s.psm.GetPublisher()
+	if err != nil {
+		return err
+	}
+	defer chClose()
+
+	return s.txm.DoAndEndHook(
+		func(tx txmanager.Tx) error {
+			return s.carbonCopyFleetOperation(
+				tx,
+				pub,
+				requestDpo,
+			)
+		},
+		func() error {
+			return pub.Flush()
+		},
+	)
+}
+
+func (s *manageFleetService) carbonCopyFleetOperation(
+	tx txmanager.Tx,
+	pub event.Publisher,
+	requestDpo CarbonCopyFleetRequestDpo,
+) error {
+	if ret := fleet.CarbonCopyFleet(
+		tx,
+		s.gen,
+		s.repo,
+		pub,
+		flightplan.ID(requestDpo.GetOriginalID()),
+		flightplan.ID(requestDpo.GetNewID()),
 	); ret != nil {
 		return ret
 	}

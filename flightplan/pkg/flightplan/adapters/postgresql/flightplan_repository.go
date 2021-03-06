@@ -43,6 +43,30 @@ func (r *FlightplanRepository) GetAll(
 	return flightplans, nil
 }
 
+// GetAllOrigin .
+func (r *FlightplanRepository) GetAllOrigin(
+	tx txmanager.Tx,
+) ([]*fpl.Flightplan, error) {
+	txGorm, ok := tx.(*gorm.DB)
+	if !ok {
+		panic("developer error")
+	}
+
+	var records []*Flightplan
+
+	if err := txGorm.Where("is_carbon_copy = false").Find(&records).Error; err != nil {
+		return nil, err
+	}
+
+	var flightplans []*fpl.Flightplan
+	for _, record := range records {
+		flightplan := fpl.AssembleFrom(r.gen, record)
+		flightplans = append(flightplans, flightplan)
+	}
+
+	return flightplans, nil
+}
+
 // GetByID .
 func (r *FlightplanRepository) GetByID(
 	tx txmanager.Tx,
@@ -92,10 +116,11 @@ func (r *FlightplanRepository) Save(
 
 	fpl.TakeApart(
 		flightplan,
-		func(id, name, description, version string) {
+		func(id, name, description, version string, isCarbonCopy bool) {
 			record.Name = name
 			record.Description = description
 			record.Version = version
+			record.IsCarbonCopy = isCarbonCopy
 		},
 	)
 

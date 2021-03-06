@@ -110,7 +110,7 @@ func TestListFlightplansTransaction(t *testing.T) {
 	repo := &flightplanRepositoryMock{}
 	txm := &txManagerMock{}
 
-	repo.On("GetAll").Return(flightplans, nil)
+	repo.On("GetAllOrigin").Return(flightplans, nil)
 
 	service := &manageFlightplanService{
 		gen:  nil,
@@ -180,7 +180,7 @@ func TestListFlightplansOperation(t *testing.T) {
 	}
 
 	repo := &flightplanRepositoryMock{}
-	repo.On("GetAll").Return(flightplans, nil)
+	repo.On("GetAllOrigin").Return(flightplans, nil)
 
 	service := &manageFlightplanService{
 		gen:  nil,
@@ -403,10 +403,11 @@ func TestUpdateFlightplanOperation(t *testing.T) {
 	flightplan := fpl.AssembleFrom(
 		gen,
 		&flightplanComponentMock{
-			ID:          string(DefaultFlightplanID),
-			Name:        DefaultFlightplanName,
-			Description: DefaultFlightplanDescription,
-			Version:     string(DefaultFlightplanVersion),
+			ID:           string(DefaultFlightplanID),
+			Name:         DefaultFlightplanName,
+			Description:  DefaultFlightplanDescription,
+			IsCarbonCopy: fpl.Original,
+			Version:      string(DefaultFlightplanVersion),
 		},
 	)
 
@@ -443,6 +444,64 @@ func TestUpdateFlightplanOperation(t *testing.T) {
 	a.Equal(resID, string(DefaultFlightplanID))
 	a.Equal(resName, AfterFlightplanName)
 	a.Equal(resDescription, AfterFlightplanDescription)
+	a.Len(pub.events, 0)
+}
+
+func TestCannotChangeErrorWhenUpdateFlightplanOperation(t *testing.T) {
+	a := assert.New(t)
+
+	var (
+		AfterFlightplanName        = DefaultFlightplanName + "-after"
+		AfterFlightplanDescription = DefaultFlightplanDescription + "-after"
+		DefaultFlightplanVersion1  = DefaultFlightplanVersion + "-1"
+		DefaultFlightplanVersion2  = DefaultFlightplanVersion + "-2"
+	)
+
+	gen := &generatorMockFlightplan{
+		id:       DefaultFlightplanID,
+		versions: []fpl.Version{DefaultFlightplanVersion1, DefaultFlightplanVersion2},
+	}
+
+	flightplan := fpl.AssembleFrom(
+		gen,
+		&flightplanComponentMock{
+			ID:           string(DefaultFlightplanID),
+			Name:         DefaultFlightplanName,
+			Description:  DefaultFlightplanDescription,
+			IsCarbonCopy: fpl.CarbonCopy,
+			Version:      string(DefaultFlightplanVersion),
+		},
+	)
+
+	repo := &flightplanRepositoryMock{}
+	repo.On("GetByID", DefaultFlightplanID).Return(flightplan, nil)
+	repo.On("Save", mock.Anything).Return(nil)
+	pub := &publisherMock{}
+
+	service := &manageFlightplanService{
+		gen:  nil,
+		repo: repo,
+		txm:  nil,
+		psm:  nil,
+	}
+
+	req := &flightplanRequestMock{
+		ID:          string(DefaultFlightplanID),
+		Name:        AfterFlightplanName,
+		Description: AfterFlightplanDescription,
+	}
+	resCall := false
+	ret := service.updateFlightplanOperation(
+		nil,
+		pub,
+		req,
+		func(id, name, description string) {
+			resCall = true
+		},
+	)
+
+	a.Equal(ret, fpl.ErrCannotChange)
+	a.False(resCall)
 	a.Len(pub.events, 0)
 }
 
@@ -542,6 +601,116 @@ func TestDeleteFlightplanOperation(t *testing.T) {
 	)
 
 	expectEvent := fpl.DeletedEvent{ID: DefaultFlightplanID}
+
+	a.Nil(ret)
+	a.Len(pub.events, 1)
+	a.Equal(pub.events[0], expectEvent)
+}
+
+func TestCarbonCopyFlightplanTransaction(t *testing.T) {
+	a := assert.New(t)
+
+	var (
+		DefaultOriginalID = DefaultFlightplanID + "-original"
+		DefaultNewID      = DefaultFlightplanID + "-new"
+	)
+
+	gen := &generatorMockFlightplan{}
+
+	flightplan := fpl.AssembleFrom(
+		gen,
+		&flightplanComponentMock{
+			ID:          string(DefaultOriginalID),
+			Name:        DefaultFlightplanName,
+			Description: DefaultFlightplanDescription,
+			Version:     string(DefaultFlightplanVersion),
+		},
+	)
+
+	repo := &flightplanRepositoryMock{}
+	txm := &txManagerMock{}
+	pub := &publisherMock{}
+	psm := &pubSubManagerMock{}
+
+	var isClose bool
+	close := func() error {
+		isClose = true
+		return nil
+	}
+
+	psm.On("GetPublisher").Return(pub, close, nil)
+	repo.On("GetByID", DefaultNewID).Return(nil, fpl.ErrNotFound)
+	repo.On("GetByID", DefaultOriginalID).Return(flightplan, nil)
+	repo.On("Save", mock.Anything).Return(nil)
+
+	service := &manageFlightplanService{
+		gen:  gen,
+		repo: repo,
+		txm:  txm,
+		psm:  psm,
+	}
+
+	req := &carbonCopyRequestMock{
+		OriginalID: string(DefaultOriginalID),
+		NewID:      string(DefaultNewID),
+	}
+	ret := service.CarbonCopyFlightplan(req)
+
+	a.Nil(ret)
+	a.Len(pub.events, 1)
+	a.True(isClose)
+	a.True(pub.isFlush)
+	a.Nil(txm.isOpe)
+	a.Nil(txm.isEH)
+}
+
+func TestCarbonCopyFlightplanOperation(t *testing.T) {
+	a := assert.New(t)
+
+	var (
+		DefaultOriginalID = DefaultFlightplanID + "-original"
+		DefaultNewID      = DefaultFlightplanID + "-new"
+	)
+
+	gen := &generatorMockFlightplan{}
+
+	flightplan := fpl.AssembleFrom(
+		gen,
+		&flightplanComponentMock{
+			ID:          string(DefaultOriginalID),
+			Name:        DefaultFlightplanName,
+			Description: DefaultFlightplanDescription,
+			Version:     string(DefaultFlightplanVersion),
+		},
+	)
+
+	repo := &flightplanRepositoryMock{}
+	repo.On("GetByID", DefaultNewID).Return(nil, fpl.ErrNotFound)
+	repo.On("GetByID", DefaultOriginalID).Return(flightplan, nil)
+	repo.On("Save", mock.Anything).Return(nil)
+	pub := &publisherMock{}
+
+	service := &manageFlightplanService{
+		gen:  gen,
+		repo: repo,
+		txm:  nil,
+		psm:  nil,
+	}
+
+	req := &carbonCopyRequestMock{
+		OriginalID: string(DefaultOriginalID),
+		NewID:      string(DefaultNewID),
+	}
+	ret := service.carbonCopyFlightplanOperation(
+		nil,
+		pub,
+		req,
+	)
+
+	expectEvent := fpl.CopiedEvent{
+		OriginalID: DefaultOriginalID,
+		NewID:      DefaultNewID,
+	}
 
 	a.Nil(ret)
 	a.Len(pub.events, 1)
