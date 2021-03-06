@@ -249,7 +249,11 @@ func TestCopyFleet(t *testing.T) {
 	a.Len(fleet.eventPlannings, 3)
 	a.Equal(fleet.eventPlannings, []*EventPlanning{expectEventPlanning1, expectEventPlanning2, expectEventPlanning3})
 	a.Len(pub.events, 4)
-	a.Equal(pub.events, []interface{}{expectEvent1, expectEvent2, expectEvent3, expectEvent4})
+	// a.Equal(pub.events, []interface{}{expectEvent1, expectEvent2, expectEvent3, expectEvent4})
+	a.Equal(pub.events[0], expectEvent1)
+	a.Equal(pub.events[1], expectEvent2)
+	a.Equal(pub.events[2], expectEvent3)
+	a.Equal(pub.events[3], expectEvent4)
 }
 
 // Fleetを構成オブジェクトから組み立て直し、
