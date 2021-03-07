@@ -162,6 +162,7 @@ export const theme = createMuiTheme({
     MuiStepper: {
       "root": {
         background: '#333333',
+        padding: '16px',
       },
     },
     MuiStepLabel: {

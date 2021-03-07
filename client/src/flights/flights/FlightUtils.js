@@ -12,17 +12,17 @@ export async function getFlights() {
   }
 }
 
-// export async function getMission(id) {
-//   try {
-//     const res = await axios
-//       .get(`/api/v1/missions/${id}`, {
-//         params: {}
-//       })
-//     return res.data;
-//   } catch(error) {
-//     console.log(error);
-//   }
-// }
+export async function getFlight(id) {
+  try {
+    const res = await axios
+      .get(`/api/v1/flightoperations/${id}`, {
+        params: {}
+      })
+    return res.data;
+  } catch(error) {
+    console.log(error);
+  }
+}
 
 // export async function createMission(data) {
 //   try {
