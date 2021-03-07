@@ -119,6 +119,10 @@ export const useStyles = makeStyles(theme => ({
   textLabel: {
     color: '#fafafa',
   },
+  textLabelTelemetry: {
+    color: '#fafafa',
+    fontSize: "14px",
+  },
   textInput: {
     background: '#fafafa',
   },
@@ -154,6 +158,27 @@ export const theme = createMuiTheme({
           cursor: 'pointer',
         }
       }
+    },
+    MuiStepper: {
+      "root": {
+        background: '#333333',
+      },
+    },
+    MuiStepLabel: {
+      "label": {
+        color: '#a0a0a0',
+        '&$active': {
+          color: '#fafafa',
+        },
+      },
+    },
+    MuiStepIcon: {
+      "root": {
+        color: '#a0a0a0',
+        '&$active': {
+          color: 'rgba(0, 173, 181, 1.0)',
+        },
+      },
     }
   }
 });

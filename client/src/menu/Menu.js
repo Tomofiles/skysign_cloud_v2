@@ -17,28 +17,35 @@ import Flight from '@material-ui/icons/Flight';
 import EventNote from '@material-ui/icons/EventNote';
 import Timeline from '@material-ui/icons/Timeline';
 import Settings from '@material-ui/icons/Settings';
-import Games from '@material-ui/icons/Games';
+// import Games from '@material-ui/icons/Games';
+import Send from '@material-ui/icons/Send';
 import MapMode from './MapMode';
 import { AppContext } from '../context/Context';
 import { FUNC_MODE } from '../context/FuncMode';
 
 const Menu = (props) => {
   const { funcMode, dispatchFuncMode } = useContext(AppContext);
-  const [ controlsOpen, setControlsOpen ] = useState(false);
+  const [ flightsOpen, setFlightsOpen ] = useState(false);
+  // const [ controlsOpen, setControlsOpen ] = useState(false);
   const [ plansOpen, setPlansOpen ] = useState(false);
   const [ missionsOpen, setMissionsOpen ] = useState(false);
   const [ assetsOpen, setAssetsOpen ] = useState(false);
 
   useEffect(() => {
-    setControlsOpen(funcMode === FUNC_MODE.CONTROLS);
+    setFlightsOpen(funcMode === FUNC_MODE.FLIGHTS);
+    // setControlsOpen(funcMode === FUNC_MODE.CONTROLS);
     setPlansOpen(funcMode === FUNC_MODE.PLANS);
     setMissionsOpen(funcMode === FUNC_MODE.MISSIONS);
     setAssetsOpen(funcMode === FUNC_MODE.ASSETS);
   }, [ funcMode ])
 
-  const openControls = () => {
-    dispatchFuncMode({ type: 'CONTROLS' });
+  const openFlights = () => {
+    dispatchFuncMode({ type: 'FLIGHTS' });
   }
+
+  // const openControls = () => {
+  //   dispatchFuncMode({ type: 'CONTROLS' });
+  // }
 
   const openPlans = () => {
     dispatchFuncMode({ type: 'PLANS' });
@@ -79,7 +86,21 @@ const Menu = (props) => {
       <Box px={1} py={2} />
       <List>
         <MapMode classes={props.classes} />
-        <ListItem button onClick={openControls}>
+        <ListItem button onClick={openFlights}>
+          <ListItemIcon >
+            <Grid container className={props.classes.menuItem} >
+              <Grid item xs={12} >
+                <Badge color="secondary" variant="dot" invisible={!flightsOpen}>
+                  <Send style={{ color: grey[50] }} fontSize="large" />
+                </Badge>
+              </Grid>
+              <Grid item xs={12}>
+                <Typography align="center" style={{ color: grey[50], fontSize: "6px" }} >Flights</Typography>
+              </Grid>
+            </Grid>
+          </ListItemIcon>
+        </ListItem>
+        {/* <ListItem button onClick={openControls}>
           <ListItemIcon >
             <Grid container className={props.classes.menuItem} >
               <Grid item xs={12} >
@@ -92,7 +113,7 @@ const Menu = (props) => {
               </Grid>
             </Grid>
           </ListItemIcon>
-        </ListItem>
+        </ListItem> */}
         <ListItem button onClick={openPlans}>
           <ListItemIcon>
             <Grid container className={props.classes.menuItem} >
