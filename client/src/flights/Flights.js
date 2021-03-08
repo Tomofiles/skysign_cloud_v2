@@ -11,6 +11,7 @@ import YourFlights from './flights/YourFlights'
 import { AppContext } from '../context/Context';
 import { FUNC_MODE } from '../context/FuncMode';
 import { OPERATION_MODE } from '../context/OperationMode';
+import FlightOperationSlider from './flights/FlightOperationSlider';
 
 const Flights = (props) => {
   const { funcMode, operationMode } = useContext(AppContext);
@@ -40,19 +41,22 @@ const Flights = (props) => {
   return (
     <>
       {open && (
-        <div className={props.classes.func + ` ${operation ? props.classes.funcEditable : ''}`} >
-          <div className={props.classes.funcPaper} >
-            <Box m={4}>
-              <Box style={{display: 'flex'}}>
-                <Settings style={{ color: grey[50] }} fontSize="small" />
-                <Typography align="left" component="div">
-                  Flights
-                </Typography>
+        <>
+          <div className={props.classes.func + ` ${operation ? props.classes.funcEditable : ''}`} >
+            <div className={props.classes.funcPaper} >
+              <Box m={4}>
+                <Box style={{display: 'flex'}}>
+                  <Settings style={{ color: grey[50] }} fontSize="small" />
+                  <Typography align="left" component="div">
+                    Flights
+                  </Typography>
+                </Box>
               </Box>
-            </Box>
-            <YourFlights classes={props.classes} open={open}/>
+              <YourFlights classes={props.classes} open={open}/>
+            </div>
           </div>
-        </div>
+          <FlightOperationSlider classes={props.classes} />
+        </>
       )}
     </>
   );

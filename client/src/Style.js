@@ -89,6 +89,17 @@ export const useStyles = makeStyles(theme => ({
       background: 'rgba(0, 173, 181, 1.0)'
     }
   },
+  funcSlider: {
+    position: "absolute",
+    height: "150px",
+    width: "250px",
+    bottom: 30,
+    left: 0,
+    right: 0,
+    margin: "auto",
+    background: 'rgba(0, 0, 0, 0.7)',
+    color: '#fafafa',
+  },
   missionList: {
     maxHeight: '300px',
     overflow: 'auto',

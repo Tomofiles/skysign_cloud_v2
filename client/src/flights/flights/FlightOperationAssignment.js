@@ -7,53 +7,36 @@ import {
   Divider,
   Grid,
   ListItem,
-  IconButton,
 } from '@material-ui/core';
-import Visibility from '@material-ui/icons/Visibility';
-import { grey } from '@material-ui/core/colors';
-
-import { getVehicle } from '../../assets/vehicles/VehicleUtils'
 import FlightOperationCommunication from './FlightOperationCommunication';
 import { AppContext } from '../../context/Context';
 
 const FlightOperationAssignment = props => {
-  const { missions } = useContext(AppContext);
+  const { vehicles, missions } = useContext(AppContext);
   const [ vehicleName, setVehicleName ] = useState("-");
   const [ missionName, setMissionName ] = useState("-");
   const [ communicationId, setCommunicationId ] = useState(undefined);
 
   useEffect(() => {
-    getVehicle(props.vehicleId)
-      .then(data => {
-        setVehicleName(data.name);
-        setCommunicationId(data.commId);
-      })
-  }, [ props.vehicleId, setVehicleName, setCommunicationId ])
+    vehicles
+      .filter(vehicle => vehicle.id === props.vehicleId)
+      .forEach(vehicle => {
+        setVehicleName(vehicle.name);
+        setCommunicationId(vehicle.commId);
+      });
+  }, [ props.vehicleId, vehicles, setVehicleName, setCommunicationId ])
 
   useEffect(() => {
-    console.log(props.missionId);
-    console.log(missions);
     missions
       .filter(mission => mission.id === props.missionId)
       .forEach(mission => setMissionName(mission.name));
   }, [ props.missionId, missions, setMissionName ])
-
-  const onClickJump = () => {
-
-  }
 
   return (
     <Box pb={1}>
       <ListItem component={Paper} className={props.classes.funcPanelEdit}>
         <Box>
           <Grid container className={props.classes.textLabel}>
-            <Grid item xs={12}>
-              <Box style={{display: 'flex', justifyContent: 'flex-end'}}>
-                <IconButton size="small" onClick={onClickJump}>
-                  <Visibility style={{ color: grey[50] }} />
-                </IconButton>
-              </Box>
-            </Grid>
             <Grid item xs={6}>
               <Box>
                 <Typography>Vehicle</Typography>

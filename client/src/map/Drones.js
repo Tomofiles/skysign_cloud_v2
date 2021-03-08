@@ -4,13 +4,12 @@ import { AppContext } from '../context/Context';
 import Drone from './Drone';
 
 const Drones = () => {
-  const { stagingRows } = useContext(AppContext);
+  const { telemetries } = useContext(AppContext);
 
   return (
     <div>
-      {stagingRows.map(data => (
-        data.isControlled &&
-          <Drone key={data.id} data={data} />
+      {telemetries.map(telemetry => (
+        <Drone key={telemetry.id} telemetry={telemetry} />
       ))}
     </div>
   );
