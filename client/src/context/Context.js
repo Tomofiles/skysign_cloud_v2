@@ -1,5 +1,4 @@
 import React, { createContext, useEffect, useReducer } from 'react';
-import { assignmentsReducer, initialAssignments } from './Assignments';
 
 import { initialEditMission, editMissionReducer } from './EditMission';
 import { initialEditMode, editModeReducer } from './EditMode';
@@ -11,20 +10,30 @@ import { initialOperationMode, operationModeReducer } from './OperationMode';
 import { initialStagingRows, stagingRowsReducer } from './StagingRows';
 import { initialVehicles, vehiclesReducer } from './Vehicles';
 import { initialTelemetries, telemetriesReducer } from './Telemetries';
+import { initialFlight, flightReducer } from './Flight';
+import { initialAssignments, assignmentsReducer } from './Assignments';
+import { initialFlightplan, flightplanReducer } from './Flightplan';
+import { initialSteps, stepsReducer } from './Steps';
+
+import { Cartesian3, HeadingPitchRoll, Quaternion, Math, Transforms, Matrix4, Matrix3 } from 'cesium';
+import useInterval from 'use-interval';
 
 import { getMission } from '../missions/missions/MissionUtils'
 import { getVehicle } from '../assets/vehicles/VehicleUtils';
-import useInterval from 'use-interval';
 import { getTelemetry } from '../map/MapUtils';
-import { Cartesian3, HeadingPitchRoll, Quaternion, Math, Transforms, Matrix4, Matrix3 } from 'cesium';
+import { getAssignments, getFlightplan } from '../plans/flightplans/FlightplansUtils';
+import { getFlight } from '../flights/flights/FlightUtils';
 
 export const AppContext = createContext();
 
 const AppContextProvider = ({children}) => {
+  const [ flight, dispatchFlight ] = useReducer(flightReducer, initialFlight);
+  const [ flightplan, dispatchFlightplan ] = useReducer(flightplanReducer, initialFlightplan);
   const [ assignments, dispatchAssignments ] = useReducer(assignmentsReducer, initialAssignments);
   const [ vehicles, dispatchVehicles ] = useReducer(vehiclesReducer, initialVehicles);
   const [ missions, dispatchMissions ] = useReducer(missionsReducer, initialMissions);
   const [ telemetries, dispatchTelemetries ] = useReducer(telemetriesReducer, initialTelemetries);
+  const [ steps, dispatchSteps ] = useReducer(stepsReducer, initialSteps);
   const [ stagingRows, dispatchStagingRows ] = useReducer(stagingRowsReducer, initialStagingRows);
   const [ editMission, dispatchEditMission ] = useReducer(editMissionReducer, initialEditMission);
   const [ editMode, dispatchEditMode ] = useReducer(editModeReducer, initialEditMode);
@@ -34,6 +43,30 @@ const AppContextProvider = ({children}) => {
   const [ mapPosition, dispatchMapPosition ] = useReducer(mapPositionReducer, initialMapPosition);
 
   useEffect(() => {
+    if (flight) {
+      getFlight(flight)
+      .then(data => {
+        getFlightplan(data.flightplan_id)
+          .then(data => {
+            dispatchFlightplan({ type: 'DATA', data: data });
+          })
+        getAssignments(data.flightplan_id)
+          .then(data => {
+            dispatchAssignments({ type: 'ROWS', rows: data.assignments });
+          })
+      })
+    } else {
+      dispatchFlightplan({ type: 'NONE' });
+      dispatchAssignments({ type: 'NONE' });
+    }
+  }, [ flight, dispatchFlightplan, dispatchAssignments ])
+
+  useEffect(() => {
+    if (assignments.length === 0) {
+      dispatchVehicles({ type: 'NONE' });
+      return;
+    }
+
     let vehicles = [];
     assignments
       .forEach(assignment => {
@@ -48,6 +81,11 @@ const AppContextProvider = ({children}) => {
   }, [ assignments, dispatchVehicles ])
 
   useEffect(() => {
+    if (assignments.length === 0) {
+      dispatchMissions({ type: 'NONE' });
+      return;
+    }
+
     let missions = [];
     assignments
       .forEach(assignment => {
@@ -105,9 +143,28 @@ const AppContextProvider = ({children}) => {
   },
   1000);
 
+  useEffect(() => {
+    if (vehicles.length === 0) {
+      dispatchSteps({ type: 'NONE' });
+      return;
+    }
+
+    let communicationIds = [];
+    vehicles
+      .forEach(vehicle => {
+        communicationIds.push(vehicle.commId);
+      });
+
+    dispatchSteps({ type: 'INIT', ids: communicationIds });
+  }, [ vehicles, dispatchSteps ])
+
   return (
     <AppContext.Provider
       value={{
+        flight,
+        dispatchFlight,
+        flightplan,
+        dispatchFlightplan,
         assignments,
         dispatchAssignments,
         vehicles,
@@ -116,6 +173,8 @@ const AppContextProvider = ({children}) => {
         dispatchMissions,
         telemetries,
         dispatchTelemetries,
+        steps,
+        dispatchSteps,
         stagingRows,
         dispatchStagingRows,
         editMission,

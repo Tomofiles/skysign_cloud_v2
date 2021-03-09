@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 
 import {
   Typography,
@@ -17,6 +17,8 @@ import ArrowDropUp from '@material-ui/icons/ArrowDropUp';
 import { grey } from '@material-ui/core/colors';
 
 import { getFlightplan, deleteFlightplan, getAssignments } from './FlightplansUtils';
+import { AppContext } from '../../context/Context';
+import { createFlight } from '../../flights/flights/FlightUtils';
 
 const EDIT_FLIGHTPLAN = "edit_flightplan"
 const DELETE_FLIGHTPLAN = "delete_flightplan"
@@ -24,6 +26,7 @@ const CHANGE_NUMBER_OF_VEHICLES = "change_number_of_vehicles"
 const ASSGN_ASSETS = "assign_assets"
 
 const FlightplansDetail = (props) => {
+  const { dispatchFuncMode } = useContext(AppContext);
   const [ flightplan, setFlightplan ] = useState({id: "-", name: "-", description: "-"});
   const [ numberOfVehicles, setNumberOfVehicles ] = useState("-");
   const [ openAction, setOpenAction ] = useState(false);
@@ -44,7 +47,8 @@ const FlightplansDetail = (props) => {
   }
 
   const onClickFlight = () => {
-
+    createFlight(props.id)
+      .then(data => dispatchFuncMode({ type: 'FLIGHTS' }));
   }
 
   const handleActionChange = e => {

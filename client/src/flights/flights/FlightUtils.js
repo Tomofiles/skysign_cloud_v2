@@ -1,5 +1,17 @@
 import axios from 'axios';
 
+export async function createFlight(id) {
+  try {
+    const res = await axios
+      .post(`/api/v1/flightoperations`, {
+        flightplan_id: id
+      })
+    return res.data;
+  } catch(error) {
+    console.log(error);
+  }
+}
+
 export async function getFlights() {
   try {
     const res = await axios
@@ -23,48 +35,3 @@ export async function getFlight(id) {
     console.log(error);
   }
 }
-
-// export async function createMission(data) {
-//   try {
-//     const res = await axios
-//       .post(`/api/v1/missions`, data)
-//     return res.data;
-//   } catch(error) {
-//     console.log(error);
-//   }
-// }
-
-// export async function updateMission(id, data) {
-//   try {
-//     const res = await axios
-//       .put(`/api/v1/missions/${id}`, data)
-//     return res.data;
-//   } catch(error) {
-//     console.log(error);
-//   }
-// }
-
-// export async function deleteMission(id) {
-//   try {
-//     const res = await axios
-//       .delete(`/api/v1/missions/${id}`, {})
-//     return res.data;
-//   } catch(error) {
-//     console.log(error);
-//   }
-// }
-
-// export async function getTakeoffHeight(latitude, longitude) {
-//   try {
-//     const res = await axios
-//       .get(`/api/v1/helper/ellipsoidheight`, {
-//         params: {
-//             latitude: latitude,
-//             longitude: longitude
-//         }
-//       })
-//     return res.data;
-//   } catch(error) {
-//     console.log(error);
-//   }
-// }

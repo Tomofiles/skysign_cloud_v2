@@ -1,9 +1,17 @@
-import { Box, Slider, Typography, withStyles } from '@material-ui/core';
-import { ArrowForward } from '@material-ui/icons';
 import React, { useContext, useState } from 'react';
+
+import {
+  Box,
+  CircularProgress,
+  Slider,
+  Typography,
+  withStyles,
+} from '@material-ui/core';
+import { ArrowForward } from '@material-ui/icons';
 
 import { AppContext } from '../../context/Context';
 import { OPERATION_MODE } from '../../context/OperationMode';
+import { command, upload, COMMAND_TYPE } from './FlightControlUtils';
 
 const PrettoSlider = withStyles({
   root: {
@@ -46,8 +54,9 @@ function ArrowThumbComponent(props) {
 }
 
 const FlightOperationSlider = (props) => {
-  const { operationMode } = useContext(AppContext);
+  const { operationMode, steps } = useContext(AppContext);
   const [ value, setValue ] = useState(0);
+  const [ progress, setProgress ] = useState(false);
 
   const handleChange = (e, value) => {
     setValue(value);
@@ -55,10 +64,28 @@ const FlightOperationSlider = (props) => {
 
   const handleChangeCommitted = (e, value) => {
     if (value === 100) {
-      setValue(value);
-    } else {
-      setValue(0);
+      executeSteps();
     }
+    setValue(0);
+  }
+
+  const executeSteps = () => {
+    setProgress(true);
+    const controls = [];
+    steps
+      .forEach(step => {
+        if (step.command === COMMAND_TYPE.UPLOAD) {
+          controls.push(upload(step.mission, step.communication_id));
+        } else {
+          controls.push(command(step.command, step.communication_id));
+        }
+      });
+    Promise
+      .all(controls)
+      .then(data => {
+        console.log(data);
+        setProgress(false);
+      });
   }
 
   return (
@@ -72,11 +99,17 @@ const FlightOperationSlider = (props) => {
             <Box style={{display: 'flex', justifyContent: 'center'}}>
               <Typography variant="caption">Send command to all vehicles.</Typography>
             </Box>
-            <PrettoSlider
-              value={value}
-              ThumbComponent={ArrowThumbComponent}
-              onChange={handleChange}
-              onChangeCommitted={handleChangeCommitted}/>
+            {progress ?
+              <Box py={2} style={{display: 'flex', justifyContent: 'center'}}>
+                <CircularProgress size={25}/>
+              </Box>
+            :
+              <PrettoSlider
+                value={value}
+                ThumbComponent={ArrowThumbComponent}
+                onChange={handleChange}
+                onChangeCommitted={handleChangeCommitted}/>
+            }
           </Box>
         </div>
       )}

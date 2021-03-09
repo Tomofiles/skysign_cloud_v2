@@ -65,7 +65,8 @@ const FlightOperationAssignment = props => {
             </Grid>
             <FlightOperationCommunication 
               classes={props.classes} 
-              communicationId={communicationId} />
+              communicationId={communicationId}
+              missionId={props.missionId} />
           </Grid>
         </Box>
       </ListItem>

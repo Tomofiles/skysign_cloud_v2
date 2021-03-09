@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useState } from 'react';
 
 import {
   Box,
@@ -30,15 +30,12 @@ const initialTelemetry = {
     roll: "-",
 };
 
-function getSteps() {
-  return ['UPLOAD', 'TAKEOFF', 'START', 'PAUSE', 'LAND', 'RETURN'];
-}
+const allSteps = ['UPLOAD', 'TAKEOFF', 'START', 'PAUSE', 'LAND', 'RETURN'];
 
 const FlightOperationCommunication = props => {
-  const { telemetries, dispatchMapPosition } = useContext(AppContext);
+  const { telemetries, steps, dispatchSteps, dispatchMapPosition } = useContext(AppContext);
   const [ telemetry, setTelemetry ] = useState(initialTelemetry);
   const [ activeStep, setActiveStep ] = React.useState(0);
-  const steps = getSteps();
 
   useEffect(() => {
     if (props.communicationId) {
@@ -48,9 +45,24 @@ const FlightOperationCommunication = props => {
     }
   }, [ props.communicationId, telemetries, setTelemetry ])
 
-  const handleStep = step => {
-    setActiveStep(step);
-  };
+  useEffect(() => {
+    steps
+      .filter(step => step.communication_id === props.communicationId)
+      .forEach(step => setActiveStep(step.step));
+  }, [ props.communicationId, steps, setActiveStep ])
+
+  const handleStep = useCallback(step => {
+    dispatchSteps({
+      type: 'CHANGE_STEP',
+      communication_id: props.communicationId,
+      mission_id: props.missionId,
+      step: step,
+    });
+  }, [ props.communicationId, props.missionId, dispatchSteps ]);
+
+  useEffect(() => {
+    handleStep(0);
+  }, [ handleStep ])
 
   const onClickJump = () => {
     dispatchMapPosition({
@@ -187,7 +199,7 @@ const FlightOperationCommunication = props => {
       </Grid>
       <Grid item xs={12}>
         <Stepper alternativeLabel nonLinear activeStep={activeStep}>
-          {steps.map((label, index) => (
+          {allSteps.map((label, index) => (
             <Step key={label}>
               <StepButton onClick={() => handleStep(index)}>
                 {label}

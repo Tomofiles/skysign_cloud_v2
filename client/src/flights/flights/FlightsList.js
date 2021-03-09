@@ -16,24 +16,47 @@ import {
 
 import { getFlights } from './FlightUtils'
 import Refresh from '@material-ui/icons/Refresh';
+import { getFlightplan } from '../../plans/flightplans/FlightplansUtils';
 
 const FlightsList = (props) => {
-  const [rows, setRows] = useState([]);
+  const [ rows, setRows ] = useState([]);
 
   useEffect(() => {
     if (props.open) {
       getFlights()
         .then(data => {
-          setRows(data.flightoperations);
+          data.flightoperations
+            .forEach(flight => {
+              getFlightplan(flight.flightplan_id)
+                .then(flightplan => {
+                  flight.flightplan_name = flightplan.name;
+                  setRows(rows => {
+                    const newRows = [ ...rows ];
+                    newRows.push(flight);
+                    return newRows;
+                  });
+                });
+            });
         })
     }
-  }, [props.open])
+  }, [ props.open ])
 
   const onClickRefresh = () => {
     setRows([]);
     getFlights()
       .then(data => {
-        setRows(data.flightoperations);
+        data.flightoperations
+          .forEach(flight => {
+            getFlightplan(flight.flightplan_id)
+              .then(flightplan => {
+                flight.flightplan_name = flightplan.name;
+                setRows(rows => {
+                  const newRows = [ ...rows ];
+                  newRows.push(flight);
+                  return newRows;
+                });
+              });
+          });
       })
   }
 
@@ -67,7 +90,7 @@ const FlightsList = (props) => {
                 {rows.map((row) => (
                   <TableRow key={row.id} onClick={() => onSelect(row.id)}>
                     <TableCell component="th" scope="row">
-                      {row.flightplan_id}
+                      {row.flightplan_name}
                     </TableCell>
                   </TableRow>
                 ))}

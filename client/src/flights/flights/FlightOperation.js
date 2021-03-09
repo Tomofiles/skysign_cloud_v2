@@ -10,33 +10,20 @@ import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import { grey } from '@material-ui/core/colors';
 
 import { AppContext } from '../../context/Context';
-import { getFlight } from './FlightUtils';
-import { getFlightplan, getAssignments } from '../../plans/flightplans/FlightplansUtils'
 import FlightOperationAssignment from './FlightOperationAssignment';
 
 const FlightOperation = (props) => {
-  const { dispatchOperationMode, assignments, dispatchAssignments } = useContext(AppContext);
+  const { dispatchOperationMode, flightplan, assignments, dispatchFlight } = useContext(AppContext);
   const [ listsize, setListsize ] = useState("0vh");
-  const [ flightplanName, setFlightplanName ] = useState("-");
 
   useEffect(() => {
-    getFlight(props.id)
-      .then(data => {
-        getFlightplan(data.flightplan_id)
-          .then(data => {
-            setFlightplanName(data.name);
-          })
-        getAssignments(data.flightplan_id)
-          .then(data => {
-            dispatchAssignments({ type: 'ROWS', rows: data.assignments });
-          })
-      })
+    dispatchFlight({ type: 'ID', id: props.id });
     dispatchOperationMode({ type: 'OPERATION' });
     return () => {
-      dispatchAssignments({ type: 'NONE' });
+      dispatchFlight({ type: 'NONE' });
       dispatchOperationMode({ type: 'NONE' });
     }
-  }, [ props.id, dispatchOperationMode, dispatchAssignments ])
+  }, [ props.id, dispatchOperationMode, dispatchFlight ])
 
   useLayoutEffect(() => {
     // 仮画面サイズ調整
@@ -58,7 +45,7 @@ const FlightOperation = (props) => {
         </Box>
         <Box m={2} style={{display: 'flex', justifyContent: 'space-between'}}>
           <Box>
-            <Typography>{flightplanName}</Typography>
+            <Typography>{flightplan.name}</Typography>
           </Box>
         </Box>
       </Box>

@@ -191,6 +191,11 @@ export const theme = createMuiTheme({
           color: 'rgba(0, 173, 181, 1.0)',
         },
       },
+    },
+    MuiCircularProgress: {
+      "circle": {
+        color: 'rgba(0, 173, 181, 1.0)',
+      }
     }
   }
 });
