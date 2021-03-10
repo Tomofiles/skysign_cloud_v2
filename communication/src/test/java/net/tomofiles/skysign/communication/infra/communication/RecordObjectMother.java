@@ -12,8 +12,8 @@ public class RecordObjectMother {
     /**
      * 通常のCommunicationレコードを生成する。
      */
-    public static CommunicationRecord newNormalCommunicationRecord(CommunicationId id, boolean controlled) {
-        return new CommunicationRecord(id.getId(), controlled);
+    public static CommunicationRecord newNormalCommunicationRecord(CommunicationId id) {
+        return new CommunicationRecord(id.getId());
     }
     
     /**

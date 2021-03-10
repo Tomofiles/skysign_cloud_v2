@@ -13,7 +13,6 @@ import lombok.ToString;
 @ToString
 public class CommunicationComponentDto {
     private String id;
-    private boolean controlled;
     private TelemetryComponentDto telemetry;
     private List<CommandComponentDto> commands;
     private List<UploadMissionComponentDto> uploadMissions;

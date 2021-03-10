@@ -9,5 +9,4 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class CommunicationRecord {
     private String id;
-    private boolean controlled;
 }

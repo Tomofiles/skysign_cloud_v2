@@ -20,10 +20,6 @@ public class Communication {
 
     private final Generator generator;
 
-    @Getter
-    @Setter(value = AccessLevel.PACKAGE)
-    private boolean controlled = false;
-
     @Getter(value = AccessLevel.PACKAGE)
     @Setter(value = AccessLevel.PACKAGE)
     private Telemetry telemetry = null;
@@ -80,14 +76,6 @@ public class Communication {
                 .sorted(Comparator.comparing(Command::getTime))
                 .map(Command::getId)
                 .collect(Collectors.toList());
-    }
-
-    public void control() {
-        this.controlled = true;
-    }
-
-    public void uncontrol() {
-        this.controlled = false;
     }
 
     public CommandId pushCommand(CommandType commandType) {

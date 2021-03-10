@@ -1,6 +1,6 @@
-export const initialStagingRows = [];
+export const initialAssignments = [];
 
-export const stagingRowsReducer = (state, action) => {
+export const assignmentsReducer = (state, action) => {
   switch (action.type) {
     case 'ROWS': {
       return [
@@ -9,7 +9,7 @@ export const stagingRowsReducer = (state, action) => {
     }
     default: {
       return [
-        ...initialStagingRows
+        ...initialAssignments
       ];
     }
   }

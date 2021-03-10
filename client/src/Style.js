@@ -89,6 +89,17 @@ export const useStyles = makeStyles(theme => ({
       background: 'rgba(0, 173, 181, 1.0)'
     }
   },
+  funcSlider: {
+    position: "absolute",
+    height: "150px",
+    width: "250px",
+    bottom: 30,
+    left: 0,
+    right: 0,
+    margin: "auto",
+    background: 'rgba(0, 0, 0, 0.7)',
+    color: '#fafafa',
+  },
   missionList: {
     maxHeight: '300px',
     overflow: 'auto',
@@ -118,6 +129,10 @@ export const useStyles = makeStyles(theme => ({
   },
   textLabel: {
     color: '#fafafa',
+  },
+  textLabelTelemetry: {
+    color: '#fafafa',
+    fontSize: "14px",
   },
   textInput: {
     background: '#fafafa',
@@ -153,6 +168,33 @@ export const theme = createMuiTheme({
         '&:hover': {
           cursor: 'pointer',
         }
+      }
+    },
+    MuiStepper: {
+      "root": {
+        background: '#333333',
+        padding: '16px',
+      },
+    },
+    MuiStepLabel: {
+      "label": {
+        color: '#a0a0a0',
+        '&$active': {
+          color: '#fafafa',
+        },
+      },
+    },
+    MuiStepIcon: {
+      "root": {
+        color: '#a0a0a0',
+        '&$active': {
+          color: 'rgba(0, 173, 181, 1.0)',
+        },
+      },
+    },
+    MuiCircularProgress: {
+      "circle": {
+        color: 'rgba(0, 173, 181, 1.0)',
       }
     }
   }

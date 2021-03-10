@@ -4,15 +4,14 @@ import { AppContext } from '../context/Context';
 import Mission from './Mission';
 
 const Missions = () => {
-  const { stagingRows } = useContext(AppContext);
+  const { missions } = useContext(AppContext);
 
   return (
-    <div>
-      {stagingRows.map(data => (
-        data.isControlled && data.missionId !== "" &&
-          <Mission key={data.id} data={data} />
+    <>
+      {missions.map(mission => (
+        <Mission key={mission.id} mission={mission} />
       ))}
-    </div>
+    </>
   );
 }
 

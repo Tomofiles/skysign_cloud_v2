@@ -39,7 +39,6 @@ import static net.tomofiles.skysign.communication.infra.communication.RecordObje
 public class CommunicationRepositoryTests {
 
     private static final CommunicationId DEFAULT_COMMUNICATION_ID = new CommunicationId(UUID.randomUUID().toString());
-    private static final boolean DEFAULT_CONTROLLED = true;
     private static final CommandId DEFAULT_COMMAND_ID1 = new CommandId(UUID.randomUUID().toString());
     private static final CommandId DEFAULT_COMMAND_ID2 = new CommandId(UUID.randomUUID().toString());
     private static final CommandId DEFAULT_COMMAND_ID3 = new CommandId(UUID.randomUUID().toString());
@@ -121,14 +120,11 @@ public class CommunicationRepositoryTests {
         when(this.communicationMapper.findAll())
                 .thenReturn(Arrays.asList(new CommunicationRecord[] {
                         newNormalCommunicationRecord(
-                                DEFAULT_COMMUNICATION_ID,
-                                DEFAULT_CONTROLLED),
+                                DEFAULT_COMMUNICATION_ID),
                         newNormalCommunicationRecord(
-                                DEFAULT_COMMUNICATION_ID,
-                                DEFAULT_CONTROLLED),
+                                DEFAULT_COMMUNICATION_ID),
                         newNormalCommunicationRecord(
-                                DEFAULT_COMMUNICATION_ID,
-                                DEFAULT_CONTROLLED)
+                                DEFAULT_COMMUNICATION_ID)
                 }));
         when(this.telemetryMapper.find(DEFAULT_COMMUNICATION_ID.getId()))
                 .thenReturn(newNormalTelemetryRecord(DEFAULT_COMMUNICATION_ID));
@@ -146,7 +142,6 @@ public class CommunicationRepositoryTests {
         CommunicationComponentDto dto = CommunicationFactory.takeApart(communications.get(0));
         CommunicationComponentDto expectDto = newNormalCommunicationComponentDto(
                 DEFAULT_COMMUNICATION_ID,
-                DEFAULT_CONTROLLED,
                 DEFAULT_GENERATOR.get(),
                 DEFAULT_GENERATOR.get());
         
@@ -174,8 +169,7 @@ public class CommunicationRepositoryTests {
     public void getCommunicationByIdTest() {
         when(this.communicationMapper.find(DEFAULT_COMMUNICATION_ID.getId()))
                 .thenReturn(newNormalCommunicationRecord(
-                        DEFAULT_COMMUNICATION_ID,
-                        DEFAULT_CONTROLLED));
+                        DEFAULT_COMMUNICATION_ID));
         when(this.telemetryMapper.find(DEFAULT_COMMUNICATION_ID.getId()))
                 .thenReturn(newNormalTelemetryRecord(
                         DEFAULT_COMMUNICATION_ID));
@@ -193,7 +187,6 @@ public class CommunicationRepositoryTests {
         CommunicationComponentDto dto = CommunicationFactory.takeApart(communication);
         CommunicationComponentDto expectDto = newNormalCommunicationComponentDto(
                 DEFAULT_COMMUNICATION_ID,
-                DEFAULT_CONTROLLED,
                 DEFAULT_GENERATOR.get(),
                 DEFAULT_GENERATOR.get());
 
@@ -219,15 +212,13 @@ public class CommunicationRepositoryTests {
     public void saveNewCommunicationTest() {
         this.repository.save(newSingleCommandCommunication(
                 DEFAULT_COMMUNICATION_ID,
-                DEFAULT_CONTROLLED,
                 DEFAULT_GENERATOR.get(),
                 DEFAULT_GENERATOR_SINGLE_1.get(),
                 DEFAULT_GENERATOR_SINGLE_1.get()));
 
         verify(this.communicationMapper, times(1))
                 .create(newNormalCommunicationRecord(
-                        DEFAULT_COMMUNICATION_ID,
-                        DEFAULT_CONTROLLED));
+                        DEFAULT_COMMUNICATION_ID));
         verify(this.telemetryMapper, times(1))
                 .create(newNormalTelemetryRecord(DEFAULT_COMMUNICATION_ID));
         verify(this.commandMapper, times(1))
@@ -248,8 +239,7 @@ public class CommunicationRepositoryTests {
     public void savePreExistCommunicationTest() {
         when(this.communicationMapper.find(DEFAULT_COMMUNICATION_ID.getId()))
                 .thenReturn(newNormalCommunicationRecord(
-                        DEFAULT_COMMUNICATION_ID,
-                        DEFAULT_CONTROLLED));
+                        DEFAULT_COMMUNICATION_ID));
         when(this.telemetryMapper.find(DEFAULT_COMMUNICATION_ID.getId()))
                 .thenReturn(newEmptyTelemetryRecord(DEFAULT_COMMUNICATION_ID));
         when(this.commandMapper.findByCommId(DEFAULT_COMMUNICATION_ID.getId()))
@@ -267,15 +257,10 @@ public class CommunicationRepositoryTests {
 
         this.repository.save(newSingleCommandCommunication(
                 DEFAULT_COMMUNICATION_ID,
-                DEFAULT_CONTROLLED,
                 DEFAULT_GENERATOR.get(),
                 DEFAULT_GENERATOR_SINGLE_2.get(),
                 DEFAULT_GENERATOR_SINGLE_2.get()));
 
-        verify(this.communicationMapper, times(1))
-                .update(newNormalCommunicationRecord(
-                        DEFAULT_COMMUNICATION_ID,
-                        DEFAULT_CONTROLLED));
         verify(this.telemetryMapper, times(1))
                 .update(newNormalTelemetryRecord(DEFAULT_COMMUNICATION_ID));
         verify(this.commandMapper, times(1))

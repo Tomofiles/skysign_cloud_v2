@@ -15,12 +15,10 @@ public class ComponentDtoObjectMother {
      */
     public static CommunicationComponentDto newNormalCommunicationComponentDto(
             CommunicationId communicationId,
-            boolean controlled,
             Generator generatorCommand,
             Generator generatorUploadMission) {
         return new CommunicationComponentDto(
                 communicationId.getId(),
-                controlled,
                 newNormalTelemetryComponentDto(),
                 newSeveralCommandsComponentDto(generatorCommand),
                 newSeveralUploadMissionsComponentDto(generatorUploadMission)

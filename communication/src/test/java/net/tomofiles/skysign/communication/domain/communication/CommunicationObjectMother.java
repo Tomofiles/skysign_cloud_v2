@@ -11,10 +11,8 @@ public class CommunicationObjectMother {
      */
     public static Communication newNormalCommunication(
             CommunicationId communicationId,
-            boolean controlled,
             Generator generator) {
         Communication communication = CommunicationFactory.newInstance(communicationId, generator);
-        communication.setControlled(controlled);
         communication.setTelemetry(newNormalTelemetry());
         return communication;
     }
@@ -24,12 +22,10 @@ public class CommunicationObjectMother {
      */
     public static Communication newSingleCommandCommunication(
             CommunicationId communicationId,
-            boolean controlled,
             Generator generator,
             Generator generatorCommand,
             Generator generatorUploadMission) {
         Communication communication = CommunicationFactory.newInstance(communicationId, generator);
-        communication.setControlled(controlled);
         communication.getCommands().addAll(newSingleCommands(generatorCommand, CommandType.ARM));
         communication.getUploadMissions().addAll(newSingleUploadMissions(generatorUploadMission));
         communication.setTelemetry(newNormalTelemetry());
@@ -41,12 +37,10 @@ public class CommunicationObjectMother {
      */
     public static Communication newSeveralCommandsCommunication(
             CommunicationId communicationId,
-            boolean controlled,
             Generator generator,
             Generator generatorCommand,
             Generator generatorUploadMission) {
         Communication communication = CommunicationFactory.newInstance(communicationId, generator);
-        communication.setControlled(controlled);
         communication.getCommands().addAll(newSeveralCommands(generatorCommand));
         communication.getUploadMissions().addAll(newSeveralUploadMissions(generatorUploadMission));
         communication.setTelemetry(newNormalTelemetry());

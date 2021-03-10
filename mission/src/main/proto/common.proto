@@ -55,11 +55,6 @@ message Telemetry {
     double orientationW = 11;
 }
 
-message Communication {
-    string id = 1;
-    bool isControlled = 2;
-}
-
 message Flightplan {
     string id = 1;
     string name = 2;

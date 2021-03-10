@@ -21,7 +21,6 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 public class ComponentCommunicationTests {
     
     private static final CommunicationId DEFAULT_COMMUNICATION_ID = new CommunicationId(UUID.randomUUID().toString());
-    private static final boolean DEFAULT_CONTROLLED = true;
     private static final CommandId DEFAULT_COMMAND_ID1 = new CommandId(UUID.randomUUID().toString());
     private static final CommandId DEFAULT_COMMAND_ID2 = new CommandId(UUID.randomUUID().toString());
     private static final CommandId DEFAULT_COMMAND_ID3 = new CommandId(UUID.randomUUID().toString());
@@ -59,7 +58,6 @@ public class ComponentCommunicationTests {
         Communication communication = CommunicationFactory.assembleFrom(
                 newNormalCommunicationComponentDto(
                         DEFAULT_COMMUNICATION_ID,
-                        DEFAULT_CONTROLLED,
                         DEFAULT_GENERATOR.get(),
                         DEFAULT_GENERATOR.get()
                 ),
@@ -68,7 +66,6 @@ public class ComponentCommunicationTests {
 
         assertAll(
             () -> assertThat(communication.getId()).isEqualTo(DEFAULT_COMMUNICATION_ID),
-            () -> assertThat(communication.isControlled()).isEqualTo(DEFAULT_CONTROLLED),
             () -> assertThat(communication.getCommands()).isEqualTo(newSeveralCommands(DEFAULT_GENERATOR.get())),
             () -> assertThat(communication.getTelemetry()).isEqualTo(newNormalTelemetry())
         );
@@ -82,7 +79,6 @@ public class ComponentCommunicationTests {
         CommunicationComponentDto dto = CommunicationFactory.takeApart(
                 newSeveralCommandsCommunication(
                         DEFAULT_COMMUNICATION_ID,
-                        DEFAULT_CONTROLLED,
                         DEFAULT_GENERATOR.get(),
                         DEFAULT_GENERATOR.get(),
                         DEFAULT_GENERATOR.get()
@@ -92,7 +88,6 @@ public class ComponentCommunicationTests {
         assertThat(dto)
                 .isEqualTo(newNormalCommunicationComponentDto(
                         DEFAULT_COMMUNICATION_ID,
-                        DEFAULT_CONTROLLED,
                         DEFAULT_GENERATOR.get(),
                         DEFAULT_GENERATOR.get()
                 ));
