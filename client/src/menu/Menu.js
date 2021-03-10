@@ -17,7 +17,6 @@ import Flight from '@material-ui/icons/Flight';
 import EventNote from '@material-ui/icons/EventNote';
 import Timeline from '@material-ui/icons/Timeline';
 import Settings from '@material-ui/icons/Settings';
-// import Games from '@material-ui/icons/Games';
 import Send from '@material-ui/icons/Send';
 import MapMode from './MapMode';
 import { AppContext } from '../context/Context';
@@ -26,14 +25,12 @@ import { FUNC_MODE } from '../context/FuncMode';
 const Menu = (props) => {
   const { funcMode, dispatchFuncMode } = useContext(AppContext);
   const [ flightsOpen, setFlightsOpen ] = useState(false);
-  // const [ controlsOpen, setControlsOpen ] = useState(false);
   const [ plansOpen, setPlansOpen ] = useState(false);
   const [ missionsOpen, setMissionsOpen ] = useState(false);
   const [ assetsOpen, setAssetsOpen ] = useState(false);
 
   useEffect(() => {
     setFlightsOpen(funcMode === FUNC_MODE.FLIGHTS);
-    // setControlsOpen(funcMode === FUNC_MODE.CONTROLS);
     setPlansOpen(funcMode === FUNC_MODE.PLANS);
     setMissionsOpen(funcMode === FUNC_MODE.MISSIONS);
     setAssetsOpen(funcMode === FUNC_MODE.ASSETS);
@@ -42,10 +39,6 @@ const Menu = (props) => {
   const openFlights = () => {
     dispatchFuncMode({ type: 'FLIGHTS' });
   }
-
-  // const openControls = () => {
-  //   dispatchFuncMode({ type: 'CONTROLS' });
-  // }
 
   const openPlans = () => {
     dispatchFuncMode({ type: 'PLANS' });
@@ -100,20 +93,6 @@ const Menu = (props) => {
             </Grid>
           </ListItemIcon>
         </ListItem>
-        {/* <ListItem button onClick={openControls}>
-          <ListItemIcon >
-            <Grid container className={props.classes.menuItem} >
-              <Grid item xs={12} >
-                <Badge color="secondary" variant="dot" invisible={!controlsOpen}>
-                  <Games style={{ color: grey[50] }} fontSize="large" />
-                </Badge>
-              </Grid>
-              <Grid item xs={12}>
-                <Typography align="center" style={{ color: grey[50], fontSize: "6px" }} >Controls</Typography>
-              </Grid>
-            </Grid>
-          </ListItemIcon>
-        </ListItem> */}
         <ListItem button onClick={openPlans}>
           <ListItemIcon>
             <Grid container className={props.classes.menuItem} >
