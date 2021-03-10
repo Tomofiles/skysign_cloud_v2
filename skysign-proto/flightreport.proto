@@ -1,0 +1,43 @@
+syntax = "proto3";
+
+package skysign_proto;
+
+import "google/api/annotations.proto";
+import "common.proto";
+
+option java_package = "proto.skysign";
+option java_multiple_files = true;
+option go_package = ".;skysign_proto";
+
+service ReportFlightService {
+    rpc ListFlightreports (Empty) returns (ListFlightreportsResponses) {
+        option (google.api.http) = {
+            get: "/api/v1/flightreports"
+        };
+    };
+
+    rpc GetFlightreport (GetFlightreportRequest) returns (Flightreport) {
+        option (google.api.http) = {
+            get: "/api/v1/flightreports/{id}"
+        };
+    };
+
+    rpc CreateFlightreport (CreateFlightreportRequest) returns (Empty) {
+        option (google.api.http) = {
+            post: "/api/v1/flightreports"
+            body: "*"
+        };
+    };
+}
+
+message GetFlightreportRequest {
+    string id = 1;
+}
+
+message CreateFlightreportRequest {
+    string flightplan_id = 1;
+}
+
+message ListFlightreportsResponses {
+    repeated Flightreport flightreports = 1;
+}
