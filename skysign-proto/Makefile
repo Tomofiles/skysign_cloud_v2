@@ -37,26 +37,14 @@ compile_flightoperation: common.proto flightoperation.proto event.proto
 	protoc -I/usr/local/include -I.   -I$(GOPATH)/src   -I$(GOPATH)/pkg/mod/github.com/grpc-ecosystem/grpc-gateway@v1.9.6/third_party/googleapis   --go_out=plugins=grpc:../flightoperation/pkg/skysign_proto flightoperation.proto
 	protoc -I/usr/local/include -I.   -I$(GOPATH)/src   -I$(GOPATH)/pkg/mod/github.com/grpc-ecosystem/grpc-gateway@v1.9.6/third_party/googleapis   --go_out=plugins=grpc:../flightoperation/pkg/skysign_proto event.proto
 
-cp_communication: common.proto communication_edge.proto communication_user.proto mission.proto vehicle.proto helper_user.proto event.proto flightplan.proto flightplan_assignments.proto flightoperation.proto
+cp_communication: common.proto communication_edge.proto communication_user.proto vehicle.proto event.proto
 	cp common.proto ../communication/src/main/proto
 	cp communication_edge.proto ../communication/src/main/proto
 	cp communication_user.proto ../communication/src/main/proto
-	cp mission.proto ../communication/src/main/proto
 	cp vehicle.proto ../communication/src/main/proto
-	cp helper_user.proto ../communication/src/main/proto
 	cp event.proto ../communication/src/main/proto
-	cp flightplan.proto ../communication/src/main/proto
-	cp flightplan_assignments.proto ../communication/src/main/proto
-	cp flightoperation.proto ../communication/src/main/proto
 
-cp_mission: common.proto communication_edge.proto communication_user.proto mission.proto vehicle.proto helper_user.proto event.proto flightplan.proto flightplan_assignments.proto flightoperation.proto
+cp_mission: common.proto mission.proto vehicle.proto event.proto
 	cp common.proto ../mission/src/main/proto
-	cp communication_edge.proto ../mission/src/main/proto
-	cp communication_user.proto ../mission/src/main/proto
 	cp mission.proto ../mission/src/main/proto
-	cp vehicle.proto ../mission/src/main/proto
-	cp helper_user.proto ../mission/src/main/proto
 	cp event.proto ../mission/src/main/proto
-	cp flightplan.proto ../mission/src/main/proto
-	cp flightplan_assignments.proto ../mission/src/main/proto
-	cp flightoperation.proto ../mission/src/main/proto
