@@ -1,6 +1,8 @@
 GOPATH := $(shell go env GOPATH)
 GOBIN := $(GOPATH)/bin
 
+all: compile_http-gateway compile_gw_http-gateway compile_helper-api compile_flightplan compile_flightoperation compile_flightreport cp_communication cp_mission
+
 compile_http-gateway: common.proto communication_edge.proto communication_user.proto mission.proto vehicle.proto helper_user.proto flightplan.proto flightplan_assignments.proto flightoperation.proto flightreport.proto
 	protoc -I/usr/local/include -I.   -I$(GOPATH)/src   -I$(GOPATH)/pkg/mod/github.com/grpc-ecosystem/grpc-gateway@v1.9.6/third_party/googleapis   --go_out=plugins=grpc:../http-gateway/pkg/skysign_proto common.proto
 	protoc -I/usr/local/include -I.   -I$(GOPATH)/src   -I$(GOPATH)/pkg/mod/github.com/grpc-ecosystem/grpc-gateway@v1.9.6/third_party/googleapis   --go_out=plugins=grpc:../http-gateway/pkg/skysign_proto communication_edge.proto
