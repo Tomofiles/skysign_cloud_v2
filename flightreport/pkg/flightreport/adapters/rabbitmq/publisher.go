@@ -1,6 +1,6 @@
 package rabbitmq
 
-import fope "flightreport/pkg/flightreport/domain/flightoperation"
+import frep "flightreport/pkg/flightreport/domain/flightreport"
 
 // Publisher .
 type Publisher struct {
@@ -23,13 +23,13 @@ func (p *Publisher) Publish(event interface{}) {
 // Flush .
 func (p *Publisher) Flush() error {
 	for _, e := range p.events {
-		if event, ok := e.(fope.CreatedEvent); ok {
-			if err := PublishFlightoperationCreatedEvent(p.ch, event); err != nil {
+		if event, ok := e.(frep.CreatedEvent); ok {
+			if err := PublishFlightreportCreatedEvent(p.ch, event); err != nil {
 				return err
 			}
 		}
-		if event, ok := e.(fope.FlightplanCopiedWhenCreatedEvent); ok {
-			if err := PublishFlightplanCopiedWhenFlightoperationCreatedEvent(p.ch, event); err != nil {
+		if event, ok := e.(frep.FlightoperationCopiedWhenCreatedEvent); ok {
+			if err := PublishFlightoperationCopiedWhenFlightreportCreatedEvent(p.ch, event); err != nil {
 				return err
 			}
 		}

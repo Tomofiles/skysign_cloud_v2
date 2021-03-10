@@ -1,15 +1,15 @@
 package postgresql
 
 import (
-	fope "flightreport/pkg/flightreport/domain/flightoperation"
+	frep "flightreport/pkg/flightreport/domain/flightreport"
 
 	sqlmock "github.com/DATA-DOG/go-sqlmock"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
 
-const DefaultFlightoperationID = fope.ID("flightoperation-id")
-const DefaultFlightplanID = fope.FlightplanID("flightplan-id")
+const DefaultFlightreportID = frep.ID("flightreport-id")
+const DefaultFlightoperationID = frep.FlightoperationID("flightoperation-id")
 
 func GetNewDbMock() (*gorm.DB, sqlmock.Sqlmock, error) {
 	db, mock, err := sqlmock.New()
@@ -30,16 +30,16 @@ func GetNewDbMock() (*gorm.DB, sqlmock.Sqlmock, error) {
 	return gormDB, mock, nil
 }
 
-// Flightoperation構成オブジェクトモック
-type flightoperationComponentMock struct {
-	id           string
-	flightplanID string
+// Flightreport構成オブジェクトモック
+type flightreportComponentMock struct {
+	id                string
+	flightoperationID string
 }
 
-func (f *flightoperationComponentMock) GetID() string {
+func (f *flightreportComponentMock) GetID() string {
 	return f.id
 }
 
-func (f *flightoperationComponentMock) GetFlightplanID() string {
-	return f.flightplanID
+func (f *flightreportComponentMock) GetFlightoperationID() string {
+	return f.flightoperationID
 }

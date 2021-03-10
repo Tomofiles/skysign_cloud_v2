@@ -23,11 +23,11 @@ func newApplication(
 	txm txmanager.TransactionManager,
 	psm event.PubSubManager,
 ) Application {
-	flightoperationGen := uuid.NewFlightoperationUUID()
-	flightoperationRepo := postgresql.NewFlightoperationRepository(flightoperationGen)
+	flightreportGen := uuid.NewFlightreportUUID()
+	flightreportRepo := postgresql.NewFlightreportRepository(flightreportGen)
 	return Application{
 		Services: Services{
-			ManageFlightoperation: service.NewManageFlightoperationService(flightoperationGen, flightoperationRepo, txm, psm),
+			ManageFlightreport: service.NewManageFlightreportService(flightreportGen, flightreportRepo, txm, psm),
 		},
 	}
 }

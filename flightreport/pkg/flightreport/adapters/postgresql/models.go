@@ -1,17 +1,17 @@
 package postgresql
 
-// Flightoperation .
-type Flightoperation struct {
-	ID           string `gorm:"primaryKey"`
-	FlightplanID string
+// Flightreport .
+type Flightreport struct {
+	ID                string `gorm:"primaryKey"`
+	FlightoperationID string
 }
 
 // GetID .
-func (f *Flightoperation) GetID() string {
+func (f *Flightreport) GetID() string {
 	return f.ID
 }
 
-// GetFlightplanID .
-func (f *Flightoperation) GetFlightplanID() string {
-	return f.FlightplanID
+// GetFlightoperationID .
+func (f *Flightreport) GetFlightoperationID() string {
+	return f.FlightoperationID
 }

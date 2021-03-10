@@ -9,22 +9,22 @@ import (
 	"github.com/stretchr/testify/mock"
 )
 
-func TestSingleFlightoperationsListFlightoperations(t *testing.T) {
+func TestSingleFlightreportsListFlightreports(t *testing.T) {
 	a := assert.New(t)
 
-	service := manageFlightoperationServiceMock{}
+	service := manageFlightreportServiceMock{}
 
-	flightoperations := []flightoperationMock{
+	flightreports := []flightreportMock{
 		{
-			id:           string(DefaultFlightoperationID),
-			flightplanID: string(DefaultFlightplanID),
+			id:                string(DefaultFlightreportID),
+			flightoperationID: string(DefaultFlightoperationID),
 		},
 	}
-	service.On("ListFlightoperations", mock.Anything).Return(flightoperations, nil)
+	service.On("ListFlightreports", mock.Anything).Return(flightreports, nil)
 
 	app := app.Application{
 		Services: app.Services{
-			ManageFlightoperation: &service,
+			ManageFlightreport: &service,
 		},
 	}
 
@@ -39,8 +39,8 @@ func TestSingleFlightoperationsListFlightoperations(t *testing.T) {
 	expectResponse := &skysign_proto.ListFlightreportsResponses{
 		Flightreports: []*skysign_proto.Flightreport{
 			{
-				Id:                string(DefaultFlightoperationID),
-				FlightoperationId: string(DefaultFlightplanID),
+				Id:                string(DefaultFlightreportID),
+				FlightoperationId: string(DefaultFlightoperationID),
 			},
 		},
 	}
@@ -49,39 +49,39 @@ func TestSingleFlightoperationsListFlightoperations(t *testing.T) {
 	a.Equal(response, expectResponse)
 }
 
-func TestMultipleFlightoperationsListFlightoperations(t *testing.T) {
+func TestMultipleFlightreportsListFlightreports(t *testing.T) {
 	a := assert.New(t)
 
 	var (
+		DefaultFlightreportID1    = DefaultFlightreportID + "-1"
+		DefaultFlightreportID2    = DefaultFlightreportID + "-2"
+		DefaultFlightreportID3    = DefaultFlightreportID + "-3"
 		DefaultFlightoperationID1 = DefaultFlightoperationID + "-1"
 		DefaultFlightoperationID2 = DefaultFlightoperationID + "-2"
 		DefaultFlightoperationID3 = DefaultFlightoperationID + "-3"
-		DefaultFlightplanID1      = DefaultFlightplanID + "-1"
-		DefaultFlightplanID2      = DefaultFlightplanID + "-2"
-		DefaultFlightplanID3      = DefaultFlightplanID + "-3"
 	)
 
-	service := manageFlightoperationServiceMock{}
+	service := manageFlightreportServiceMock{}
 
-	flightoperations := []flightoperationMock{
+	flightreports := []flightreportMock{
 		{
-			id:           string(DefaultFlightoperationID1),
-			flightplanID: string(DefaultFlightplanID1),
+			id:                string(DefaultFlightreportID1),
+			flightoperationID: string(DefaultFlightoperationID1),
 		},
 		{
-			id:           string(DefaultFlightoperationID2),
-			flightplanID: string(DefaultFlightplanID2),
+			id:                string(DefaultFlightreportID2),
+			flightoperationID: string(DefaultFlightoperationID2),
 		},
 		{
-			id:           string(DefaultFlightoperationID3),
-			flightplanID: string(DefaultFlightplanID3),
+			id:                string(DefaultFlightreportID3),
+			flightoperationID: string(DefaultFlightoperationID3),
 		},
 	}
-	service.On("ListFlightoperations", mock.Anything).Return(flightoperations, nil)
+	service.On("ListFlightreports", mock.Anything).Return(flightreports, nil)
 
 	app := app.Application{
 		Services: app.Services{
-			ManageFlightoperation: &service,
+			ManageFlightreport: &service,
 		},
 	}
 
@@ -96,16 +96,16 @@ func TestMultipleFlightoperationsListFlightoperations(t *testing.T) {
 	expectResponse := &skysign_proto.ListFlightreportsResponses{
 		Flightreports: []*skysign_proto.Flightreport{
 			{
-				Id:                string(DefaultFlightoperationID1),
-				FlightoperationId: string(DefaultFlightplanID1),
+				Id:                string(DefaultFlightreportID1),
+				FlightoperationId: string(DefaultFlightoperationID1),
 			},
 			{
-				Id:                string(DefaultFlightoperationID2),
-				FlightoperationId: string(DefaultFlightplanID2),
+				Id:                string(DefaultFlightreportID2),
+				FlightoperationId: string(DefaultFlightoperationID2),
 			},
 			{
-				Id:                string(DefaultFlightoperationID3),
-				FlightoperationId: string(DefaultFlightplanID3),
+				Id:                string(DefaultFlightreportID3),
+				FlightoperationId: string(DefaultFlightoperationID3),
 			},
 		},
 	}
@@ -114,17 +114,17 @@ func TestMultipleFlightoperationsListFlightoperations(t *testing.T) {
 	a.Equal(response, expectResponse)
 }
 
-func TestNoneFlightoperationsListFlightoperations(t *testing.T) {
+func TestNoneFlightreportsListFlightreports(t *testing.T) {
 	a := assert.New(t)
 
-	service := manageFlightoperationServiceMock{}
+	service := manageFlightreportServiceMock{}
 
-	flightoperations := []flightoperationMock{}
-	service.On("ListFlightoperations", mock.Anything).Return(flightoperations, nil)
+	flightreports := []flightreportMock{}
+	service.On("ListFlightreports", mock.Anything).Return(flightreports, nil)
 
 	app := app.Application{
 		Services: app.Services{
-			ManageFlightoperation: &service,
+			ManageFlightreport: &service,
 		},
 	}
 
@@ -142,27 +142,27 @@ func TestNoneFlightoperationsListFlightoperations(t *testing.T) {
 	a.Equal(response, expectResponse)
 }
 
-func TestGetFlightplan(t *testing.T) {
+func TestGetFlightreport(t *testing.T) {
 	a := assert.New(t)
 
-	service := manageFlightoperationServiceMock{}
+	service := manageFlightreportServiceMock{}
 
-	flightoperation := flightoperationMock{
-		id:           string(DefaultFlightoperationID),
-		flightplanID: string(DefaultFlightplanID),
+	flightreport := flightreportMock{
+		id:                string(DefaultFlightreportID),
+		flightoperationID: string(DefaultFlightoperationID),
 	}
-	service.On("GetFlightoperation", mock.Anything, mock.Anything).Return(flightoperation, nil)
+	service.On("GetFlightreport", mock.Anything, mock.Anything).Return(flightreport, nil)
 
 	app := app.Application{
 		Services: app.Services{
-			ManageFlightoperation: &service,
+			ManageFlightreport: &service,
 		},
 	}
 
 	grpc := NewGrpcServer(app)
 
 	request := &skysign_proto.GetFlightreportRequest{
-		Id: string(DefaultFlightoperationID),
+		Id: string(DefaultFlightreportID),
 	}
 	response, err := grpc.GetFlightreport(
 		nil,
@@ -170,31 +170,31 @@ func TestGetFlightplan(t *testing.T) {
 	)
 
 	expectResponse := &skysign_proto.Flightreport{
-		Id:                string(DefaultFlightoperationID),
-		FlightoperationId: string(DefaultFlightplanID),
+		Id:                string(DefaultFlightreportID),
+		FlightoperationId: string(DefaultFlightoperationID),
 	}
 
 	a.Nil(err)
 	a.Equal(response, expectResponse)
 }
 
-func TestCreateFlightplan(t *testing.T) {
+func TestCreateFlightreport(t *testing.T) {
 	a := assert.New(t)
 
-	service := manageFlightoperationServiceMock{}
+	service := manageFlightreportServiceMock{}
 
-	service.On("CreateFlightoperation", mock.Anything).Return(nil)
+	service.On("CreateFlightreport", mock.Anything).Return(nil)
 
 	app := app.Application{
 		Services: app.Services{
-			ManageFlightoperation: &service,
+			ManageFlightreport: &service,
 		},
 	}
 
 	grpc := NewGrpcServer(app)
 
 	request := &skysign_proto.CreateFlightreportRequest{
-		FlightplanId: string(DefaultFlightplanID),
+		FlightoperationId: string(DefaultFlightoperationID),
 	}
 	response, err := grpc.CreateFlightreport(
 		nil,

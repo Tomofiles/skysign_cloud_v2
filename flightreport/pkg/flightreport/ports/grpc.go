@@ -43,13 +43,13 @@ func (s *GrpcServer) ListFlightreports(
 	request *proto.Empty,
 ) (*proto.ListFlightreportsResponses, error) {
 	response := &proto.ListFlightreportsResponses{}
-	if ret := s.app.Services.ManageFlightoperation.ListFlightoperations(
-		func(id, flightplanID string) {
+	if ret := s.app.Services.ManageFlightreport.ListFlightreports(
+		func(id, flightoperationID string) {
 			response.Flightreports = append(
 				response.Flightreports,
 				&proto.Flightreport{
 					Id:                id,
-					FlightoperationId: flightplanID,
+					FlightoperationId: flightoperationID,
 				},
 			)
 		},
@@ -65,14 +65,14 @@ func (s *GrpcServer) GetFlightreport(
 	request *proto.GetFlightreportRequest,
 ) (*proto.Flightreport, error) {
 	response := &proto.Flightreport{}
-	requestDpo := &flightoperationIDRequestDpo{
+	requestDpo := &flightreportIDRequestDpo{
 		id: request.Id,
 	}
-	if ret := s.app.Services.ManageFlightoperation.GetFlightoperation(
+	if ret := s.app.Services.ManageFlightreport.GetFlightreport(
 		requestDpo,
-		func(id, flightplanID string) {
+		func(id, flightoperationID string) {
 			response.Id = id
-			response.FlightoperationId = flightplanID
+			response.FlightoperationId = flightoperationID
 		},
 	); ret != nil {
 		return nil, ret
@@ -85,10 +85,10 @@ func (s *GrpcServer) CreateFlightreport(
 	ctx context.Context,
 	request *proto.CreateFlightreportRequest,
 ) (*proto.Empty, error) {
-	requestDpo := &flightplanIDRequestDpo{
-		flightplanID: request.FlightplanId,
+	requestDpo := &flightoperationIDRequestDpo{
+		flightoperationID: request.FlightoperationId,
 	}
-	if ret := s.app.Services.ManageFlightoperation.CreateFlightoperation(
+	if ret := s.app.Services.ManageFlightreport.CreateFlightreport(
 		requestDpo,
 	); ret != nil {
 		return nil, ret
@@ -96,18 +96,18 @@ func (s *GrpcServer) CreateFlightreport(
 	return &proto.Empty{}, nil
 }
 
-type flightoperationIDRequestDpo struct {
+type flightreportIDRequestDpo struct {
 	id string
 }
 
-func (f *flightoperationIDRequestDpo) GetID() string {
+func (f *flightreportIDRequestDpo) GetID() string {
 	return f.id
 }
 
-type flightplanIDRequestDpo struct {
-	flightplanID string
+type flightoperationIDRequestDpo struct {
+	flightoperationID string
 }
 
-func (f *flightplanIDRequestDpo) GetFlightplanID() string {
-	return f.flightplanID
+func (f *flightoperationIDRequestDpo) GetFlightoperationID() string {
+	return f.flightoperationID
 }

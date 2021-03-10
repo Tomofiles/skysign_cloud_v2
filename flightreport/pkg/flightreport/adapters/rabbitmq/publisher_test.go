@@ -3,7 +3,7 @@ package rabbitmq
 import (
 	"context"
 	"errors"
-	fope "flightreport/pkg/flightreport/domain/flightoperation"
+	frep "flightreport/pkg/flightreport/domain/flightreport"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -32,7 +32,7 @@ func TestNoneEventWhenPublish(t *testing.T) {
 func TestSingleEventWhenPublish(t *testing.T) {
 	a := assert.New(t)
 
-	event := fope.CreatedEvent{}
+	event := frep.CreatedEvent{}
 
 	connMock := &connectionMockCommon{}
 	chMock := &channelMockPublish{}
@@ -54,8 +54,8 @@ func TestSingleEventWhenPublish(t *testing.T) {
 func TestMultipleEventWhenPublish(t *testing.T) {
 	a := assert.New(t)
 
-	event1 := fope.CreatedEvent{}
-	event2 := fope.FlightplanCopiedWhenCreatedEvent{}
+	event1 := frep.CreatedEvent{}
+	event2 := frep.FlightoperationCopiedWhenCreatedEvent{}
 
 	connMock := &connectionMockCommon{}
 	chMock := &channelMockPublish{}
@@ -78,7 +78,7 @@ func TestMultipleEventWhenPublish(t *testing.T) {
 func TestFanoutExchangeDeclareErrorWhenCreatedEventPublish(t *testing.T) {
 	a := assert.New(t)
 
-	event := fope.CreatedEvent{}
+	event := frep.CreatedEvent{}
 
 	errPub := errors.New("publish error")
 
@@ -102,7 +102,7 @@ func TestFanoutExchangeDeclareErrorWhenCreatedEventPublish(t *testing.T) {
 func TestPublishErrorWhenCreatedEventPublish(t *testing.T) {
 	a := assert.New(t)
 
-	event := fope.CreatedEvent{}
+	event := frep.CreatedEvent{}
 
 	errPub := errors.New("publish error")
 
@@ -123,10 +123,10 @@ func TestPublishErrorWhenCreatedEventPublish(t *testing.T) {
 	a.Equal(chMock.messageCallCount, 1)
 }
 
-func TestFanoutExchangeDeclareErrorWhenFlightplanCopiedWhenCreatedEventPublish(t *testing.T) {
+func TestFanoutExchangeDeclareErrorWhenFlightoperationCopiedWhenCreatedEventPublish(t *testing.T) {
 	a := assert.New(t)
 
-	event := fope.FlightplanCopiedWhenCreatedEvent{}
+	event := frep.FlightoperationCopiedWhenCreatedEvent{}
 
 	errPub := errors.New("publish error")
 
@@ -147,10 +147,10 @@ func TestFanoutExchangeDeclareErrorWhenFlightplanCopiedWhenCreatedEventPublish(t
 	a.Equal(chMock.messageCallCount, 0)
 }
 
-func TestPublishErrorWhenFlightplanCopiedWhenCreatedEventPublish(t *testing.T) {
+func TestPublishErrorWhenFlightoperationCopiedWhenCreatedEventPublish(t *testing.T) {
 	a := assert.New(t)
 
-	event := fope.FlightplanCopiedWhenCreatedEvent{}
+	event := frep.FlightoperationCopiedWhenCreatedEvent{}
 
 	errPub := errors.New("publish error")
 

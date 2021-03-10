@@ -3,65 +3,65 @@ package service
 import (
 	"context"
 	"flightreport/pkg/flightreport/domain/event"
-	fope "flightreport/pkg/flightreport/domain/flightoperation"
+	frep "flightreport/pkg/flightreport/domain/flightreport"
 	"flightreport/pkg/flightreport/domain/txmanager"
 
 	"github.com/stretchr/testify/mock"
 )
 
-const DefaultFlightoperationID = fope.ID("flightoperation-id")
-const DefaultFlightplanID = fope.FlightplanID("flightplan-id")
+const DefaultFlightreportID = frep.ID("flightreport-id")
+const DefaultFlightoperationID = frep.FlightoperationID("flightoperation-id")
 
-type flightoperationRepositoryMock struct {
+type flightreportRepositoryMock struct {
 	mock.Mock
 }
 
-func (r *flightoperationRepositoryMock) GetAll(
+func (r *flightreportRepositoryMock) GetAll(
 	tx txmanager.Tx,
-) ([]*fope.Flightoperation, error) {
+) ([]*frep.Flightreport, error) {
 	ret := r.Called()
-	var f []*fope.Flightoperation
+	var f []*frep.Flightreport
 	if ret.Get(0) == nil {
 		f = nil
 	} else {
-		f = ret.Get(0).([]*fope.Flightoperation)
+		f = ret.Get(0).([]*frep.Flightreport)
 	}
 	return f, ret.Error(1)
 }
 
-func (r *flightoperationRepositoryMock) GetByID(
+func (r *flightreportRepositoryMock) GetByID(
 	tx txmanager.Tx,
-	id fope.ID,
-) (*fope.Flightoperation, error) {
+	id frep.ID,
+) (*frep.Flightreport, error) {
 	ret := r.Called(id)
-	var f *fope.Flightoperation
+	var f *frep.Flightreport
 	if ret.Get(0) == nil {
 		f = nil
 	} else {
-		f = ret.Get(0).(*fope.Flightoperation)
+		f = ret.Get(0).(*frep.Flightreport)
 	}
 	return f, ret.Error(1)
 }
 
-func (r *flightoperationRepositoryMock) Save(
+func (r *flightreportRepositoryMock) Save(
 	tx txmanager.Tx,
-	flightoperation *fope.Flightoperation,
+	flightreport *frep.Flightreport,
 ) error {
-	ret := r.Called(flightoperation)
+	ret := r.Called(flightreport)
 	return ret.Error(0)
 }
 
-type generatorMockFlightoperation struct {
-	fope.Generator
-	id           fope.ID
-	flightplanID fope.FlightplanID
+type generatorMockFlightreport struct {
+	frep.Generator
+	id                frep.ID
+	flightoperationID frep.FlightoperationID
 }
 
-func (gen *generatorMockFlightoperation) NewID() fope.ID {
+func (gen *generatorMockFlightreport) NewID() frep.ID {
 	return gen.id
 }
-func (gen *generatorMockFlightoperation) NewFlightplanID() fope.FlightplanID {
-	return gen.flightplanID
+func (gen *generatorMockFlightreport) NewFlightoperationID() frep.FlightoperationID {
+	return gen.flightoperationID
 }
 
 type publisherMock struct {
@@ -114,31 +114,31 @@ func (txm *txManagerMock) DoAndEndHook(operation func(txmanager.Tx) error, endHo
 	return nil
 }
 
-type flightoperationComponentMock struct {
-	ID           string
-	FlightplanID string
+type flightreportComponentMock struct {
+	ID                string
+	FlightoperationID string
 }
 
-func (f *flightoperationComponentMock) GetID() string {
+func (f *flightreportComponentMock) GetID() string {
 	return f.ID
 }
 
-func (f *flightoperationComponentMock) GetFlightplanID() string {
-	return f.FlightplanID
+func (f *flightreportComponentMock) GetFlightoperationID() string {
+	return f.FlightoperationID
 }
 
-type flightoperationIDRequestMock struct {
+type flightreportIDRequestMock struct {
 	ID string
 }
 
-func (f *flightoperationIDRequestMock) GetID() string {
+func (f *flightreportIDRequestMock) GetID() string {
 	return f.ID
 }
 
-type flightplanIDRequestMock struct {
-	FlightplanID string
+type flightoperationIDRequestMock struct {
+	FlightoperationID string
 }
 
-func (f *flightplanIDRequestMock) GetFlightplanID() string {
-	return f.FlightplanID
+func (f *flightoperationIDRequestMock) GetFlightoperationID() string {
+	return f.FlightoperationID
 }

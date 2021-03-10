@@ -1,50 +1,50 @@
 package ports
 
 import (
-	fope "flightreport/pkg/flightreport/domain/flightoperation"
+	frep "flightreport/pkg/flightreport/domain/flightreport"
 	"flightreport/pkg/flightreport/service"
 
 	"github.com/stretchr/testify/mock"
 )
 
-const DefaultFlightoperationID = fope.ID("flightoperation-id")
-const DefaultFlightplanID = fope.FlightplanID("flightplan-id")
+const DefaultFlightreportID = frep.ID("flightreport-id")
+const DefaultFlightoperationID = frep.FlightoperationID("flightoperation-id")
 
-type manageFlightoperationServiceMock struct {
+type manageFlightreportServiceMock struct {
 	mock.Mock
 }
 
-func (s *manageFlightoperationServiceMock) GetFlightoperation(
-	requestDpo service.GetFlightoperationRequestDpo,
-	responseDpo service.GetFlightoperationResponseDpo,
+func (s *manageFlightreportServiceMock) GetFlightreport(
+	requestDpo service.GetFlightreportRequestDpo,
+	responseDpo service.GetFlightreportResponseDpo,
 ) error {
 	ret := s.Called()
-	if flightoperation := ret.Get(0); flightoperation != nil {
-		f := flightoperation.(flightoperationMock)
-		responseDpo(f.id, f.flightplanID)
+	if flightreport := ret.Get(0); flightreport != nil {
+		f := flightreport.(flightreportMock)
+		responseDpo(f.id, f.flightoperationID)
 	}
 	return ret.Error(1)
 }
 
-func (s *manageFlightoperationServiceMock) ListFlightoperations(
-	responseEachDpo service.ListFlightoperationsResponseDpo,
+func (s *manageFlightreportServiceMock) ListFlightreports(
+	responseEachDpo service.ListFlightreportsResponseDpo,
 ) error {
 	ret := s.Called()
-	if flightoperations := ret.Get(0); flightoperations != nil {
-		for _, f := range flightoperations.([]flightoperationMock) {
-			responseEachDpo(f.id, f.flightplanID)
+	if flightreports := ret.Get(0); flightreports != nil {
+		for _, f := range flightreports.([]flightreportMock) {
+			responseEachDpo(f.id, f.flightoperationID)
 		}
 	}
 	return ret.Error(1)
 }
 
-func (s *manageFlightoperationServiceMock) CreateFlightoperation(
-	requestDpo service.CreateFlightoperationRequestDpo,
+func (s *manageFlightreportServiceMock) CreateFlightreport(
+	requestDpo service.CreateFlightreportRequestDpo,
 ) error {
 	ret := s.Called()
 	return ret.Error(0)
 }
 
-type flightoperationMock struct {
-	id, flightplanID string
+type flightreportMock struct {
+	id, flightoperationID string
 }
