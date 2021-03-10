@@ -89,6 +89,19 @@ jobs:
           checkout: true
           path: ./flightoperation
 
+  build_and_test_flightreport:
+    executor: aws-ecr/default
+    steps:
+      - aws-ecr/build-image:
+          region: AWS_DEFAULT_REGION
+          account-url: AWS_ACCOUNT_URL
+          aws-access-key-id: AWS_ACCESS_KEY_ID
+          aws-secret-access-key: AWS_SECRET_ACCESS_KEY
+          repo: ${AWS_RESOURCE_NAME_PREFIX}
+          tag: "flightreport_${CIRCLE_SHA1}"
+          checkout: true
+          path: ./flightreport
+
   build_and_test_client:
     executor: aws-ecr/default
     steps:
@@ -187,6 +200,18 @@ jobs:
           repo: ${AWS_RESOURCE_NAME_PREFIX}
           tag: "flightoperation_${CIRCLE_SHA1}"
           path: ./flightoperation
+
+  build_and_push_flightreport:
+    executor: aws-ecr/default
+    steps:
+      - aws-ecr/build-and-push-image:
+          region: AWS_DEFAULT_REGION
+          account-url: AWS_ACCOUNT_URL
+          aws-access-key-id: AWS_ACCESS_KEY_ID
+          aws-secret-access-key: AWS_SECRET_ACCESS_KEY
+          repo: ${AWS_RESOURCE_NAME_PREFIX}
+          tag: "flightreport_${CIRCLE_SHA1}"
+          path: ./flightreport
 
   build_and_push_client:
     executor: aws-ecr/default
@@ -307,6 +332,11 @@ workflows:
             branches:
               ignore: master
           <<: *slack-fail-post-step
+      - build_and_test_flightreport:
+          filters:
+            branches:
+              ignore: master
+          <<: *slack-fail-post-step
       - build_and_test_client:
           filters:
             branches:
@@ -325,6 +355,7 @@ workflows:
             - build_and_test_mission
             - build_and_test_flightplan
             - build_and_test_flightoperation
+            - build_and_test_flightreport
             - build_and_test_client
             - build_and_test_edge
           filters:
@@ -360,6 +391,11 @@ workflows:
             branches:
               only: master
           <<: *slack-fail-post-step
+      - build_and_push_flightreport:
+          filters:
+            branches:
+              only: master
+          <<: *slack-fail-post-step
       - build_and_push_client:
           filters:
             branches:
@@ -373,6 +409,7 @@ workflows:
             - build_and_push_mission
             - build_and_push_flightplan
             - build_and_push_flightoperation
+            - build_and_push_flightreport
             - build_and_push_client
           filters:
             branches:
