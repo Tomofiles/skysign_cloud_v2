@@ -47,7 +47,6 @@ public class CommunicateEdgeEndpointTests {
     private static final CommandId DEFAULT_COMMAND_ID = new CommandId(UUID.randomUUID().toString());
     private static final String DEFAULT_COMMAND_TYPE = "ARM";
     private static final MissionId DEFAULT_MISSION_ID = new MissionId("MISSION_ID_SAMPLE_1");
-    private static final boolean DEFAULT_CONTROLLED = true;
     private static final LocalDateTime DEFAULT_COMMAND_TIME = LocalDateTime.of(2020, 1, 1, 0, 0, 0);
     private static final Supplier<Generator> DEFAULT_GENERATOR = () -> {
         return new Generator(){
@@ -121,7 +120,6 @@ public class CommunicateEdgeEndpointTests {
         when(this.repository.getById(DEFAULT_COMMUNICATION_ID))
                 .thenReturn(newSingleCommandCommunication(
                         DEFAULT_COMMUNICATION_ID,
-                        DEFAULT_CONTROLLED,
                         DEFAULT_GENERATOR.get(),
                         DEFAULT_GENERATOR.get(),
                         DEFAULT_GENERATOR.get()));
@@ -197,7 +195,6 @@ public class CommunicateEdgeEndpointTests {
         when(this.repository.getById(DEFAULT_COMMUNICATION_ID))
                 .thenReturn(newSingleCommandCommunication(
                         DEFAULT_COMMUNICATION_ID,
-                        DEFAULT_CONTROLLED,
                         DEFAULT_GENERATOR.get(),
                         DEFAULT_GENERATOR.get(),
                         DEFAULT_GENERATOR.get()));
@@ -298,7 +295,6 @@ public class CommunicateEdgeEndpointTests {
         when(this.repository.getById(DEFAULT_COMMUNICATION_ID))
                 .thenReturn(newSingleCommandCommunication(
                         DEFAULT_COMMUNICATION_ID,
-                        DEFAULT_CONTROLLED,
                         DEFAULT_GENERATOR.get(),
                         DEFAULT_GENERATOR.get(),
                         DEFAULT_GENERATOR.get()));

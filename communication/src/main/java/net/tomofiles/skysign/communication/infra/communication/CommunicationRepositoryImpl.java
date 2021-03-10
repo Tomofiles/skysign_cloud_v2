@@ -52,8 +52,6 @@ public class CommunicationRepositoryImpl implements CommunicationRepository {
             uploadMissionsInDB.addAll(this.uploadMissionMapper.findByCommId(componentDto.getId()));
         }
 
-        communication.setControlled(componentDto.isControlled());
-
         telemetry.setLatitude(componentDto.getTelemetry().getLatitude());
         telemetry.setLongitude(componentDto.getTelemetry().getLongitude());
         telemetry.setAltitude(componentDto.getTelemetry().getAltitude());
@@ -86,7 +84,6 @@ public class CommunicationRepositoryImpl implements CommunicationRepository {
             uploadMissions.stream()
                     .forEach(this.uploadMissionMapper::create);
         } else {
-            this.communicationMapper.update(communication);
             this.telemetryMapper.update(telemetry);
 
             commands.stream()
@@ -129,7 +126,6 @@ public class CommunicationRepositoryImpl implements CommunicationRepository {
         return CommunicationFactory.assembleFrom(
                 new CommunicationComponentDto(
                         id.getId(),
-                        communication.isControlled(),
                         new TelemetryComponentDto(
                                 telemetry.getLatitude(),
                                 telemetry.getLongitude(),
@@ -178,7 +174,6 @@ public class CommunicationRepositoryImpl implements CommunicationRepository {
             Communication communication = CommunicationFactory.assembleFrom(
                     new CommunicationComponentDto(
                             commRecord.getId(),
-                            commRecord.isControlled(),
                             new TelemetryComponentDto(
                                     telemetry.getLatitude(),
                                     telemetry.getLongitude(),

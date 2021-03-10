@@ -21,8 +21,6 @@ public class UserCommunicationTests {
     private static final CommunicationId DEFAULT_COMMUNICATION_ID = new CommunicationId(UUID.randomUUID().toString());
     private static final CommandId DEFAULT_COMMAND_ID = new CommandId(UUID.randomUUID().toString());
     private static final MissionId DEFAULT_MISSION_ID = new MissionId(UUID.randomUUID().toString());
-    private static final boolean DEFAULT_CONTROLLED = true;
-    private static final boolean DEFAULT_UNCONTROLLED = false;
     private static final LocalDateTime DEFAULT_COMMAND_TIME = LocalDateTime.of(2020, 1, 1, 0, 0, 0);
     private static final Supplier<Generator> DEFAULT_GENERATOR = () -> {
         return new Generator(){
@@ -57,7 +55,6 @@ public class UserCommunicationTests {
 
         assertAll(
             () -> assertThat(communication.getId()).isEqualTo(DEFAULT_COMMUNICATION_ID),
-            () -> assertThat(communication.isControlled()).isEqualTo(DEFAULT_UNCONTROLLED),
             () -> assertThat(communication.getCommands()).hasSize(0),
             () -> assertThat(communication.getTelemetry()).isEqualTo(Telemetry.newInstance())
         );
@@ -125,7 +122,6 @@ public class UserCommunicationTests {
         when(this.repository.getById(DEFAULT_COMMUNICATION_ID))
                 .thenReturn(newNormalCommunication(
                         DEFAULT_COMMUNICATION_ID,
-                        DEFAULT_CONTROLLED,
                         DEFAULT_GENERATOR.get()));
 
         Communication communication = this.repository.getById(DEFAULT_COMMUNICATION_ID);
@@ -134,42 +130,4 @@ public class UserCommunicationTests {
 
         assertThat(telemetry).isEqualTo(newNormalTelemetrySnapshot());
     }
-
-    /**
-     * Userが、既存のCommunicationエンティティを管制状態にする。<br>
-     * controlledであることを検証する。
-     */
-    @Test
-    public void controlledCommunicationTest() {
-        when(this.repository.getById(DEFAULT_COMMUNICATION_ID))
-                .thenReturn(CommunicationFactory.newInstance(
-                        DEFAULT_COMMUNICATION_ID,
-                        DEFAULT_GENERATOR.get()));
-
-        Communication communication = this.repository.getById(DEFAULT_COMMUNICATION_ID);
-
-        communication.control();
-
-        assertThat(communication.isControlled()).isTrue();
-    }
-
-    /**
-     * Userが、既存のCommunicationエンティティを非管制状態にする。<br>
-     * uncontrolledであることを検証する。
-     */
-    @Test
-    public void uncontrolledCommunicationTest() {
-        when(this.repository.getById(DEFAULT_COMMUNICATION_ID))
-                .thenReturn(newNormalCommunication(
-                        DEFAULT_COMMUNICATION_ID,
-                        DEFAULT_CONTROLLED,
-                        DEFAULT_GENERATOR.get()));
-
-        Communication communication = this.repository.getById(DEFAULT_COMMUNICATION_ID);
-
-        communication.uncontrol();
-
-        assertThat(communication.isControlled()).isFalse();
-    }
-
 }

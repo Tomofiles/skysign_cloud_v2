@@ -20,7 +20,6 @@ public class CommunicationFactory {
                 new CommunicationId(componentDto.getId()),
                 generator
         );
-        communication.setControlled(componentDto.isControlled());
         communication.setTelemetry(Telemetry.newInstance()
                 .setPosition(
                         componentDto.getTelemetry().getLatitude(),
@@ -61,7 +60,6 @@ public class CommunicationFactory {
     public static CommunicationComponentDto takeApart(Communication communication) {
         return  new CommunicationComponentDto(
                 communication.getId().getId(),
-                communication.isControlled(),
                 new TelemetryComponentDto(
                         communication.getTelemetry().getPosition().getLatitude(),
                         communication.getTelemetry().getPosition().getLongitude(),
