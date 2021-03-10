@@ -142,7 +142,7 @@ func TestNoneFlightoperationsListFlightoperations(t *testing.T) {
 	a.Equal(response, expectResponse)
 }
 
-func TestGetFlightplan(t *testing.T) {
+func TestGetFlightoperation(t *testing.T) {
 	a := assert.New(t)
 
 	service := manageFlightoperationServiceMock{}
@@ -178,7 +178,7 @@ func TestGetFlightplan(t *testing.T) {
 	a.Equal(response, expectResponse)
 }
 
-func TestCreateFlightplan(t *testing.T) {
+func TestCreateFlightoperation(t *testing.T) {
 	a := assert.New(t)
 
 	service := manageFlightoperationServiceMock{}

@@ -109,7 +109,7 @@ func TestFlightoperationRepositoryGetMultipleWhenGetAll(t *testing.T) {
 	a.Equal(flightoperations, expectFopes)
 }
 
-func TestFlightplanRepositoryGetNoneWhenGetAll(t *testing.T) {
+func TestFlightoperationRepositoryGetNoneWhenGetAll(t *testing.T) {
 	a := assert.New(t)
 
 	db, mock, err := GetNewDbMock()
