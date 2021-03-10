@@ -35,7 +35,7 @@ message GetFlightreportRequest {
 }
 
 message CreateFlightreportRequest {
-    string flightplan_id = 1;
+    string flightoperation_id = 1;
 }
 
 message ListFlightreportsResponses {
