@@ -21,21 +21,10 @@ service ReportFlightService {
             get: "/api/v1/flightreports/{id}"
         };
     };
-
-    rpc CreateFlightreport (CreateFlightreportRequest) returns (Empty) {
-        option (google.api.http) = {
-            post: "/api/v1/flightreports"
-            body: "*"
-        };
-    };
 }
 
 message GetFlightreportRequest {
     string id = 1;
-}
-
-message CreateFlightreportRequest {
-    string flightoperation_id = 1;
 }
 
 message ListFlightreportsResponses {

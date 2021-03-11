@@ -44,17 +44,11 @@ message FlightoperationCreatedEvent {
     string flightplan_id = 2;
 }
 
+message FlightoperationCompletedEvent {
+    string flightoperation_id = 1;
+}
+
 message FlightplanCopiedWhenFlightoperationCreatedEvent {
     string original_flightplan_id = 1;
     string new_flightplan_id = 2;
-}
-
-message FlightreportCreatedEvent {
-    string flightreport_id = 1;
-    string flightoperation_id = 2;
-}
-
-message FlightoperationCopiedWhenFlightreportCreatedEvent {
-    string original_flightoperation_id = 1;
-    string new_flightoperation_id = 2;
 }

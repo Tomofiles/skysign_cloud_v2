@@ -28,6 +28,13 @@ service OperateFlightService {
             body: "*"
         };
     };
+
+    rpc CompleteFlightoperation (CompleteFlightoperationRequest) returns (Empty) {
+        option (google.api.http) = {
+            post: "/api/v1/flightoperations/{id}/complete"
+            body: "*"
+        };
+    };
 }
 
 message GetFlightoperationRequest {
@@ -36,6 +43,10 @@ message GetFlightoperationRequest {
 
 message CreateFlightoperationRequest {
     string flightplan_id = 1;
+}
+
+message CompleteFlightoperationRequest {
+    string id = 1;
 }
 
 message ListFlightoperationsResponses {
