@@ -1,6 +1,9 @@
 package flightoperation
 
-import "flightoperation/pkg/flightoperation/domain/event"
+import (
+	"errors"
+	"flightoperation/pkg/flightoperation/domain/event"
+)
 
 // ID .
 type ID string
@@ -16,6 +19,11 @@ const (
 	Operating = false
 	// Completed .
 	Completed = true
+)
+
+var (
+	// ErrCannotChange .
+	ErrCannotChange = errors.New("cannnot change completed flightoperation")
 )
 
 // Flightoperation .
@@ -55,14 +63,19 @@ func (f *Flightoperation) GetNewVersion() Version {
 }
 
 // Complete .
-func (f *Flightoperation) Complete() {
-	if f.pub != nil && f.isCompleted != Completed {
+func (f *Flightoperation) Complete() error {
+	if f.isCompleted {
+		return ErrCannotChange
+	}
+	if f.pub != nil {
 		f.pub.Publish(&CompletedEvent{
 			ID: f.id,
 		})
 	}
 	f.isCompleted = Completed
 	f.newVersion = f.gen.NewVersion()
+
+	return nil
 }
 
 // Generator .

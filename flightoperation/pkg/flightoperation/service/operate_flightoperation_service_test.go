@@ -115,3 +115,50 @@ func TestCompleteFlightoperationOperation(t *testing.T) {
 	a.Len(pub.events, 1)
 	a.Equal(pub.events, []interface{}{expectEvent})
 }
+
+func TestCannotChangeErrorWhenCompleteFlightoperationOperation(t *testing.T) {
+	a := assert.New(t)
+
+	const (
+		CompletedIsCompleted = fope.Completed
+		NewVersion           = DefaultVersion + "-new"
+	)
+
+	gen := &generatorMockFlightoperation{
+		version: NewVersion,
+	}
+
+	flightoperation := fope.AssembleFrom(
+		gen,
+		&flightoperationComponentMock{
+			ID:           string(DefaultFlightoperationID),
+			FlightplanID: string(DefaultFlightplanID),
+			IsCompleted:  CompletedIsCompleted,
+			Version:      string(DefaultVersion),
+		},
+	)
+
+	repo := &flightoperationRepositoryMock{}
+	repo.On("GetByID", DefaultFlightoperationID).Return(flightoperation, nil)
+	repo.On("Save", mock.Anything).Return(nil)
+	pub := &publisherMock{}
+
+	service := &operateFlightoperationService{
+		gen:  nil,
+		repo: repo,
+		txm:  nil,
+		psm:  nil,
+	}
+
+	req := &flightoperationIDRequestMock{
+		ID: string(DefaultFlightoperationID),
+	}
+	ret := service.completeFlightoperationOperation(
+		nil,
+		pub,
+		req,
+	)
+
+	a.Len(pub.events, 0)
+	a.Equal(ret, fope.ErrCannotChange)
+}

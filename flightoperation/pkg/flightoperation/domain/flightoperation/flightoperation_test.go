@@ -28,11 +28,12 @@ func TestCompleteFlightoperation(t *testing.T) {
 		gen:          gen,
 	}
 
-	flightoperation.Complete()
+	err := flightoperation.Complete()
 
 	a.Equal(flightoperation.isCompleted, Completed)
 	a.Equal(flightoperation.GetVersion(), DefaultVersion)
 	a.Equal(flightoperation.GetNewVersion(), NewVersion)
+	a.Nil(err)
 }
 
 // FlightoperationをComplete状態に更新する。
@@ -63,7 +64,7 @@ func TestPublishCompletedEventWhenCompleteFlightoperation(t *testing.T) {
 
 	flightoperation.SetPublisher(pub)
 
-	flightoperation.Complete()
+	err := flightoperation.Complete()
 
 	expectEvent := &CompletedEvent{
 		ID: DefaultID,
@@ -74,12 +75,11 @@ func TestPublishCompletedEventWhenCompleteFlightoperation(t *testing.T) {
 	a.Equal(flightoperation.GetNewVersion(), NewVersion)
 	a.Len(pub.events, 1)
 	a.Equal(pub.events[0], expectEvent)
+	a.Nil(err)
 }
 
 // FlightoperationをComplete状態に更新する。
-// イベントパブリッシャーが設定されている場合、
-// すでにComplete状態であれば、イベントが発行されない
-// ことを検証する。
+// すでにComplete状態であれば、エラーが発生することを検証する。
 func TestNonePublishWhenCompleteFlightoperation(t *testing.T) {
 	a := assert.New(t)
 
@@ -104,10 +104,11 @@ func TestNonePublishWhenCompleteFlightoperation(t *testing.T) {
 
 	flightoperation.SetPublisher(pub)
 
-	flightoperation.Complete()
+	err := flightoperation.Complete()
 
 	a.Equal(flightoperation.isCompleted, Completed)
 	a.Equal(flightoperation.GetVersion(), DefaultVersion)
-	a.Equal(flightoperation.GetNewVersion(), NewVersion)
+	a.Equal(flightoperation.GetNewVersion(), DefaultVersion)
 	a.Len(pub.events, 0)
+	a.Equal(err, ErrCannotChange)
 }

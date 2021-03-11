@@ -72,7 +72,9 @@ func (s *operateFlightoperationService) completeFlightoperationOperation(
 	}
 
 	flightoperation.SetPublisher(pub)
-	flightoperation.Complete()
+	if err := flightoperation.Complete(); err != nil {
+		return err
+	}
 
 	if err := s.repo.Save(tx, flightoperation); err != nil {
 		return err
