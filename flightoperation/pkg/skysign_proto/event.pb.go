@@ -551,116 +551,6 @@ func (x *FlightplanCopiedWhenFlightoperationCreatedEvent) GetNewFlightplanId() s
 	return ""
 }
 
-type FlightreportCreatedEvent struct {
-	state         protoimpl.MessageState
-	sizeCache     protoimpl.SizeCache
-	unknownFields protoimpl.UnknownFields
-
-	FlightreportId    string `protobuf:"bytes,1,opt,name=flightreport_id,json=flightreportId,proto3" json:"flightreport_id,omitempty"`
-	FlightoperationId string `protobuf:"bytes,2,opt,name=flightoperation_id,json=flightoperationId,proto3" json:"flightoperation_id,omitempty"`
-}
-
-func (x *FlightreportCreatedEvent) Reset() {
-	*x = FlightreportCreatedEvent{}
-	if protoimpl.UnsafeEnabled {
-		mi := &file_event_proto_msgTypes[10]
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		ms.StoreMessageInfo(mi)
-	}
-}
-
-func (x *FlightreportCreatedEvent) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*FlightreportCreatedEvent) ProtoMessage() {}
-
-func (x *FlightreportCreatedEvent) ProtoReflect() protoreflect.Message {
-	mi := &file_event_proto_msgTypes[10]
-	if protoimpl.UnsafeEnabled && x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use FlightreportCreatedEvent.ProtoReflect.Descriptor instead.
-func (*FlightreportCreatedEvent) Descriptor() ([]byte, []int) {
-	return file_event_proto_rawDescGZIP(), []int{10}
-}
-
-func (x *FlightreportCreatedEvent) GetFlightreportId() string {
-	if x != nil {
-		return x.FlightreportId
-	}
-	return ""
-}
-
-func (x *FlightreportCreatedEvent) GetFlightoperationId() string {
-	if x != nil {
-		return x.FlightoperationId
-	}
-	return ""
-}
-
-type FlightoperationCopiedWhenFlightreportCreatedEvent struct {
-	state         protoimpl.MessageState
-	sizeCache     protoimpl.SizeCache
-	unknownFields protoimpl.UnknownFields
-
-	OriginalFlightoperationId string `protobuf:"bytes,1,opt,name=original_flightoperation_id,json=originalFlightoperationId,proto3" json:"original_flightoperation_id,omitempty"`
-	NewFlightoperationId      string `protobuf:"bytes,2,opt,name=new_flightoperation_id,json=newFlightoperationId,proto3" json:"new_flightoperation_id,omitempty"`
-}
-
-func (x *FlightoperationCopiedWhenFlightreportCreatedEvent) Reset() {
-	*x = FlightoperationCopiedWhenFlightreportCreatedEvent{}
-	if protoimpl.UnsafeEnabled {
-		mi := &file_event_proto_msgTypes[11]
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		ms.StoreMessageInfo(mi)
-	}
-}
-
-func (x *FlightoperationCopiedWhenFlightreportCreatedEvent) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*FlightoperationCopiedWhenFlightreportCreatedEvent) ProtoMessage() {}
-
-func (x *FlightoperationCopiedWhenFlightreportCreatedEvent) ProtoReflect() protoreflect.Message {
-	mi := &file_event_proto_msgTypes[11]
-	if protoimpl.UnsafeEnabled && x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use FlightoperationCopiedWhenFlightreportCreatedEvent.ProtoReflect.Descriptor instead.
-func (*FlightoperationCopiedWhenFlightreportCreatedEvent) Descriptor() ([]byte, []int) {
-	return file_event_proto_rawDescGZIP(), []int{11}
-}
-
-func (x *FlightoperationCopiedWhenFlightreportCreatedEvent) GetOriginalFlightoperationId() string {
-	if x != nil {
-		return x.OriginalFlightoperationId
-	}
-	return ""
-}
-
-func (x *FlightoperationCopiedWhenFlightreportCreatedEvent) GetNewFlightoperationId() string {
-	if x != nil {
-		return x.NewFlightoperationId
-	}
-	return ""
-}
-
 var File_event_proto protoreflect.FileDescriptor
 
 var file_event_proto_rawDesc = []byte{
@@ -729,25 +619,7 @@ var file_event_proto_rawDesc = []byte{
 	0x67, 0x69, 0x6e, 0x61, 0x6c, 0x46, 0x6c, 0x69, 0x67, 0x68, 0x74, 0x70, 0x6c, 0x61, 0x6e, 0x49,
 	0x64, 0x12, 0x2a, 0x0a, 0x11, 0x6e, 0x65, 0x77, 0x5f, 0x66, 0x6c, 0x69, 0x67, 0x68, 0x74, 0x70,
 	0x6c, 0x61, 0x6e, 0x5f, 0x69, 0x64, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0f, 0x6e, 0x65,
-	0x77, 0x46, 0x6c, 0x69, 0x67, 0x68, 0x74, 0x70, 0x6c, 0x61, 0x6e, 0x49, 0x64, 0x22, 0x72, 0x0a,
-	0x18, 0x46, 0x6c, 0x69, 0x67, 0x68, 0x74, 0x72, 0x65, 0x70, 0x6f, 0x72, 0x74, 0x43, 0x72, 0x65,
-	0x61, 0x74, 0x65, 0x64, 0x45, 0x76, 0x65, 0x6e, 0x74, 0x12, 0x27, 0x0a, 0x0f, 0x66, 0x6c, 0x69,
-	0x67, 0x68, 0x74, 0x72, 0x65, 0x70, 0x6f, 0x72, 0x74, 0x5f, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01,
-	0x28, 0x09, 0x52, 0x0e, 0x66, 0x6c, 0x69, 0x67, 0x68, 0x74, 0x72, 0x65, 0x70, 0x6f, 0x72, 0x74,
-	0x49, 0x64, 0x12, 0x2d, 0x0a, 0x12, 0x66, 0x6c, 0x69, 0x67, 0x68, 0x74, 0x6f, 0x70, 0x65, 0x72,
-	0x61, 0x74, 0x69, 0x6f, 0x6e, 0x5f, 0x69, 0x64, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x11,
-	0x66, 0x6c, 0x69, 0x67, 0x68, 0x74, 0x6f, 0x70, 0x65, 0x72, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x49,
-	0x64, 0x22, 0xa9, 0x01, 0x0a, 0x31, 0x46, 0x6c, 0x69, 0x67, 0x68, 0x74, 0x6f, 0x70, 0x65, 0x72,
-	0x61, 0x74, 0x69, 0x6f, 0x6e, 0x43, 0x6f, 0x70, 0x69, 0x65, 0x64, 0x57, 0x68, 0x65, 0x6e, 0x46,
-	0x6c, 0x69, 0x67, 0x68, 0x74, 0x72, 0x65, 0x70, 0x6f, 0x72, 0x74, 0x43, 0x72, 0x65, 0x61, 0x74,
-	0x65, 0x64, 0x45, 0x76, 0x65, 0x6e, 0x74, 0x12, 0x3e, 0x0a, 0x1b, 0x6f, 0x72, 0x69, 0x67, 0x69,
-	0x6e, 0x61, 0x6c, 0x5f, 0x66, 0x6c, 0x69, 0x67, 0x68, 0x74, 0x6f, 0x70, 0x65, 0x72, 0x61, 0x74,
-	0x69, 0x6f, 0x6e, 0x5f, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x19, 0x6f, 0x72,
-	0x69, 0x67, 0x69, 0x6e, 0x61, 0x6c, 0x46, 0x6c, 0x69, 0x67, 0x68, 0x74, 0x6f, 0x70, 0x65, 0x72,
-	0x61, 0x74, 0x69, 0x6f, 0x6e, 0x49, 0x64, 0x12, 0x34, 0x0a, 0x16, 0x6e, 0x65, 0x77, 0x5f, 0x66,
-	0x6c, 0x69, 0x67, 0x68, 0x74, 0x6f, 0x70, 0x65, 0x72, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x5f, 0x69,
-	0x64, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x14, 0x6e, 0x65, 0x77, 0x46, 0x6c, 0x69, 0x67,
-	0x68, 0x74, 0x6f, 0x70, 0x65, 0x72, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x49, 0x64, 0x42, 0x28, 0x0a,
+	0x77, 0x46, 0x6c, 0x69, 0x67, 0x68, 0x74, 0x70, 0x6c, 0x61, 0x6e, 0x49, 0x64, 0x42, 0x28, 0x0a,
 	0x13, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2e, 0x73, 0x6b, 0x79, 0x73, 0x69, 0x67, 0x6e, 0x2e, 0x65,
 	0x76, 0x65, 0x6e, 0x74, 0x50, 0x01, 0x5a, 0x0f, 0x2e, 0x3b, 0x73, 0x6b, 0x79, 0x73, 0x69, 0x67,
 	0x6e, 0x5f, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
@@ -765,20 +637,18 @@ func file_event_proto_rawDescGZIP() []byte {
 	return file_event_proto_rawDescData
 }
 
-var file_event_proto_msgTypes = make([]protoimpl.MessageInfo, 12)
+var file_event_proto_msgTypes = make([]protoimpl.MessageInfo, 10)
 var file_event_proto_goTypes = []interface{}{
-	(*CommunicationIdGaveEvent)(nil),                          // 0: skysign_proto.CommunicationIdGaveEvent
-	(*CommunicationIdRemovedEvent)(nil),                       // 1: skysign_proto.CommunicationIdRemovedEvent
-	(*FlightplanCreatedEvent)(nil),                            // 2: skysign_proto.FlightplanCreatedEvent
-	(*FlightplanCopiedEvent)(nil),                             // 3: skysign_proto.FlightplanCopiedEvent
-	(*FlightplanDeletedEvent)(nil),                            // 4: skysign_proto.FlightplanDeletedEvent
-	(*VehicleCopiedWhenCopiedEvent)(nil),                      // 5: skysign_proto.VehicleCopiedWhenCopiedEvent
-	(*MissionCopiedWhenCopiedEvent)(nil),                      // 6: skysign_proto.MissionCopiedWhenCopiedEvent
-	(*FlightoperationCreatedEvent)(nil),                       // 7: skysign_proto.FlightoperationCreatedEvent
-	(*FlightoperationCompletedEvent)(nil),                     // 8: skysign_proto.FlightoperationCompletedEvent
-	(*FlightplanCopiedWhenFlightoperationCreatedEvent)(nil),   // 9: skysign_proto.FlightplanCopiedWhenFlightoperationCreatedEvent
-	(*FlightreportCreatedEvent)(nil),                          // 10: skysign_proto.FlightreportCreatedEvent
-	(*FlightoperationCopiedWhenFlightreportCreatedEvent)(nil), // 11: skysign_proto.FlightoperationCopiedWhenFlightreportCreatedEvent
+	(*CommunicationIdGaveEvent)(nil),                        // 0: skysign_proto.CommunicationIdGaveEvent
+	(*CommunicationIdRemovedEvent)(nil),                     // 1: skysign_proto.CommunicationIdRemovedEvent
+	(*FlightplanCreatedEvent)(nil),                          // 2: skysign_proto.FlightplanCreatedEvent
+	(*FlightplanCopiedEvent)(nil),                           // 3: skysign_proto.FlightplanCopiedEvent
+	(*FlightplanDeletedEvent)(nil),                          // 4: skysign_proto.FlightplanDeletedEvent
+	(*VehicleCopiedWhenCopiedEvent)(nil),                    // 5: skysign_proto.VehicleCopiedWhenCopiedEvent
+	(*MissionCopiedWhenCopiedEvent)(nil),                    // 6: skysign_proto.MissionCopiedWhenCopiedEvent
+	(*FlightoperationCreatedEvent)(nil),                     // 7: skysign_proto.FlightoperationCreatedEvent
+	(*FlightoperationCompletedEvent)(nil),                   // 8: skysign_proto.FlightoperationCompletedEvent
+	(*FlightplanCopiedWhenFlightoperationCreatedEvent)(nil), // 9: skysign_proto.FlightplanCopiedWhenFlightoperationCreatedEvent
 }
 var file_event_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type
@@ -914,30 +784,6 @@ func file_event_proto_init() {
 				return nil
 			}
 		}
-		file_event_proto_msgTypes[10].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*FlightreportCreatedEvent); i {
-			case 0:
-				return &v.state
-			case 1:
-				return &v.sizeCache
-			case 2:
-				return &v.unknownFields
-			default:
-				return nil
-			}
-		}
-		file_event_proto_msgTypes[11].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*FlightoperationCopiedWhenFlightreportCreatedEvent); i {
-			case 0:
-				return &v.state
-			case 1:
-				return &v.sizeCache
-			case 2:
-				return &v.unknownFields
-			default:
-				return nil
-			}
-		}
 	}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
@@ -945,7 +791,7 @@ func file_event_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_event_proto_rawDesc,
 			NumEnums:      0,
-			NumMessages:   12,
+			NumMessages:   10,
 			NumExtensions: 0,
 			NumServices:   0,
 		},
