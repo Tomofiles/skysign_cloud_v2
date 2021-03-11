@@ -31,3 +31,13 @@ func (e *FlightplanCopiedWhenCreatedEvent) GetOriginalID() string {
 func (e *FlightplanCopiedWhenCreatedEvent) GetNewID() string {
 	return string(e.NewID)
 }
+
+// CompletedEvent .
+type CompletedEvent struct {
+	ID ID
+}
+
+// GetID .
+func (e *CompletedEvent) GetID() string {
+	return string(e.ID)
+}

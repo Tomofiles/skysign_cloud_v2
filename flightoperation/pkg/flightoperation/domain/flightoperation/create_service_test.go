@@ -26,6 +26,7 @@ func TestCreateNewFlightoperationService(t *testing.T) {
 	gen := &generatorMock{
 		id:           DefaultID,
 		flightplanID: NewID,
+		version:      DefaultVersion,
 	}
 	repo := &repositoryMockCreateService{}
 	repo.On("Save", mock.Anything).Return(nil)
@@ -33,15 +34,19 @@ func TestCreateNewFlightoperationService(t *testing.T) {
 
 	ret := CreateNewFlightoperation(ctx, gen, repo, pub, OriginalID)
 
-	expectFlightoperation := Flightoperation{
+	expectFlightoperation := &Flightoperation{
 		id:           DefaultID,
 		flightplanID: NewID,
+		isCompleted:  Operating,
+		version:      DefaultVersion,
+		newVersion:   DefaultVersion,
+		gen:          gen,
 	}
 	expectEvent1 := CreatedEvent{ID: DefaultID, FlightplanID: NewID}
 	expectEvent2 := FlightplanCopiedWhenCreatedEvent{OriginalID: OriginalID, NewID: NewID}
 
 	a.Len(repo.saveFlightoperations, 1)
-	a.Equal(repo.saveFlightoperations[0], &expectFlightoperation)
+	a.Equal(repo.saveFlightoperations[0], expectFlightoperation)
 	a.Len(pub.events, 2)
 	a.Equal(pub.events, []interface{}{expectEvent1, expectEvent2})
 
