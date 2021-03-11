@@ -177,32 +177,3 @@ func TestGetFlightreport(t *testing.T) {
 	a.Nil(err)
 	a.Equal(response, expectResponse)
 }
-
-func TestCreateFlightreport(t *testing.T) {
-	a := assert.New(t)
-
-	service := manageFlightreportServiceMock{}
-
-	service.On("CreateFlightreport", mock.Anything).Return(nil)
-
-	app := app.Application{
-		Services: app.Services{
-			ManageFlightreport: &service,
-		},
-	}
-
-	grpc := NewGrpcServer(app)
-
-	request := &skysign_proto.CreateFlightreportRequest{
-		FlightoperationId: string(DefaultFlightoperationID),
-	}
-	response, err := grpc.CreateFlightreport(
-		nil,
-		request,
-	)
-
-	expectResponse := &skysign_proto.Empty{}
-
-	a.Nil(err)
-	a.Equal(response, expectResponse)
-}

@@ -12,6 +12,7 @@ const DefaultFlightoperationID = frep.FlightoperationID("flightoperation-id")
 
 type manageFlightreportServiceMock struct {
 	mock.Mock
+	ID string
 }
 
 func (s *manageFlightreportServiceMock) GetFlightreport(
@@ -42,6 +43,7 @@ func (s *manageFlightreportServiceMock) CreateFlightreport(
 	requestDpo service.CreateFlightreportRequestDpo,
 ) error {
 	ret := s.Called()
+	s.ID = requestDpo.GetFlightoperationID()
 	return ret.Error(0)
 }
 

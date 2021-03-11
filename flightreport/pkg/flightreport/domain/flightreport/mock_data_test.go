@@ -23,19 +23,6 @@ func (gen *generatorMock) NewFlightoperationID() FlightoperationID {
 	return gen.flightoperationID
 }
 
-// Flightreport用汎用パブリッシャモック
-type publisherMock struct {
-	events []interface{}
-}
-
-func (rm *publisherMock) Publish(event interface{}) {
-	rm.events = append(rm.events, event)
-}
-
-func (rm *publisherMock) Flush() error {
-	return nil
-}
-
 // Flightreport構成オブジェクトモック
 type flightreportComponentMock struct {
 	id                string

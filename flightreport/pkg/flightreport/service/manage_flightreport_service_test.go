@@ -200,24 +200,15 @@ func TestCreateFlightreportTransaction(t *testing.T) {
 	}
 	repo := &flightreportRepositoryMock{}
 	repo.On("Save", mock.Anything).Return(nil)
-	pub := &publisherMock{}
 	txm := &txManagerMock{}
-	psm := &pubSubManagerMock{}
 
-	var isClose bool
-	close := func() error {
-		isClose = true
-		return nil
-	}
-
-	psm.On("GetPublisher").Return(pub, close, nil)
 	repo.On("Save", mock.Anything).Return(nil)
 
 	service := &manageFlightreportService{
 		gen:  gen,
 		repo: repo,
 		txm:  txm,
-		psm:  psm,
+		psm:  nil,
 	}
 
 	req := &flightoperationIDRequestMock{
@@ -226,11 +217,7 @@ func TestCreateFlightreportTransaction(t *testing.T) {
 	ret := service.CreateFlightreport(req)
 
 	a.Nil(ret)
-	a.Len(pub.events, 2)
-	a.True(isClose)
-	a.True(pub.isFlush)
 	a.Nil(txm.isOpe)
-	a.Nil(txm.isEH)
 }
 
 func TestCreateFlightreportOperation(t *testing.T) {
@@ -247,7 +234,6 @@ func TestCreateFlightreportOperation(t *testing.T) {
 	}
 	repo := &flightreportRepositoryMock{}
 	repo.On("Save", mock.Anything).Return(nil)
-	pub := &publisherMock{}
 
 	service := &manageFlightreportService{
 		gen:  gen,
@@ -261,20 +247,8 @@ func TestCreateFlightreportOperation(t *testing.T) {
 	}
 	ret := service.createFlightreportOperation(
 		nil,
-		pub,
 		req,
 	)
 
-	expectEvent1 := frep.CreatedEvent{
-		ID:                DefaultFlightreportID,
-		FlightoperationID: NewID,
-	}
-	expectEvent2 := frep.FlightoperationCopiedWhenCreatedEvent{
-		OriginalID: OriginalID,
-		NewID:      NewID,
-	}
-
 	a.Nil(ret)
-	a.Len(pub.events, 2)
-	a.Equal(pub.events, []interface{}{expectEvent1, expectEvent2})
 }

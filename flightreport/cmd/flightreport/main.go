@@ -48,6 +48,17 @@ func run() error {
 	application := app.NewApplication(ctx, txm, psm)
 
 	svc := ports.NewGrpcServer(application)
+	evt := ports.NewEventHandler(application)
+
+	psm.SetConsumer(
+		ctx,
+		ports.FlightoperationCompletedEventExchangeName,
+		func(event []byte) {
+			if err := evt.HandleFlightoperationCompletedEvent(ctx, event); err != nil {
+				glog.Error(err)
+			}
+		},
+	)
 
 	proto.RegisterReportFlightServiceServer(s, &svc)
 

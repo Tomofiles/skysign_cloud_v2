@@ -80,34 +80,10 @@ func (s *GrpcServer) GetFlightreport(
 	return response, nil
 }
 
-// CreateFlightreport .
-func (s *GrpcServer) CreateFlightreport(
-	ctx context.Context,
-	request *proto.CreateFlightreportRequest,
-) (*proto.Empty, error) {
-	requestDpo := &flightoperationIDRequestDpo{
-		flightoperationID: request.FlightoperationId,
-	}
-	if ret := s.app.Services.ManageFlightreport.CreateFlightreport(
-		requestDpo,
-	); ret != nil {
-		return nil, ret
-	}
-	return &proto.Empty{}, nil
-}
-
 type flightreportIDRequestDpo struct {
 	id string
 }
 
 func (f *flightreportIDRequestDpo) GetID() string {
 	return f.id
-}
-
-type flightoperationIDRequestDpo struct {
-	flightoperationID string
-}
-
-func (f *flightoperationIDRequestDpo) GetFlightoperationID() string {
-	return f.flightoperationID
 }

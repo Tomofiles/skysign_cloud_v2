@@ -1,7 +1,6 @@
 package flightreport
 
 import (
-	"flightreport/pkg/flightreport/domain/event"
 	"flightreport/pkg/flightreport/domain/txmanager"
 )
 
@@ -10,7 +9,6 @@ func CreateNewFlightreport(
 	tx txmanager.Tx,
 	gen Generator,
 	repo Repository,
-	pub event.Publisher,
 	originalID FlightoperationID,
 ) error {
 	newID := gen.NewFlightoperationID()
@@ -21,13 +19,5 @@ func CreateNewFlightreport(
 		return err
 	}
 
-	pub.Publish(CreatedEvent{
-		ID:                flightreport.GetID(),
-		FlightoperationID: newID,
-	})
-	pub.Publish(FlightoperationCopiedWhenCreatedEvent{
-		OriginalID: originalID,
-		NewID:      newID,
-	})
 	return nil
 }

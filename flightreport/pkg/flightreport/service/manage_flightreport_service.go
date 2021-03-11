@@ -113,36 +113,24 @@ func (s *manageFlightreportService) listFlightreportsOperation(
 func (s *manageFlightreportService) CreateFlightreport(
 	requestDpo CreateFlightreportRequestDpo,
 ) error {
-	pub, chClose, err := s.psm.GetPublisher()
-	if err != nil {
-		return err
-	}
-	defer chClose()
-
-	return s.txm.DoAndEndHook(
+	return s.txm.Do(
 		func(tx txmanager.Tx) error {
 			return s.createFlightreportOperation(
 				tx,
-				pub,
 				requestDpo,
 			)
-		},
-		func() error {
-			return pub.Flush()
 		},
 	)
 }
 
 func (s *manageFlightreportService) createFlightreportOperation(
 	tx txmanager.Tx,
-	pub event.Publisher,
 	requestDpo CreateFlightreportRequestDpo,
 ) error {
 	if ret := frep.CreateNewFlightreport(
 		tx,
 		s.gen,
 		s.repo,
-		pub,
 		frep.FlightoperationID(requestDpo.GetFlightoperationID()),
 	); ret != nil {
 		return ret
