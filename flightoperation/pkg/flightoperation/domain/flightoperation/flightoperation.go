@@ -68,7 +68,7 @@ func (f *Flightoperation) Complete() error {
 		return ErrCannotChange
 	}
 	if f.pub != nil {
-		f.pub.Publish(&CompletedEvent{
+		f.pub.Publish(CompletedEvent{
 			ID: f.id,
 		})
 	}
