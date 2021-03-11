@@ -206,3 +206,32 @@ func TestCreateFlightoperation(t *testing.T) {
 	a.Nil(err)
 	a.Equal(response, expectResponse)
 }
+
+func TestCompleteFlightoperation(t *testing.T) {
+	a := assert.New(t)
+
+	service := operateFlightoperationServiceMock{}
+
+	service.On("CompleteFlightoperation", mock.Anything).Return(nil)
+
+	app := app.Application{
+		Services: app.Services{
+			OperateFlightoperation: &service,
+		},
+	}
+
+	grpc := NewGrpcServer(app)
+
+	request := &skysign_proto.CompleteFlightoperationRequest{
+		Id: string(DefaultFlightplanID),
+	}
+	response, err := grpc.CompleteFlightoperation(
+		nil,
+		request,
+	)
+
+	expectResponse := &skysign_proto.Empty{}
+
+	a.Nil(err)
+	a.Equal(response, expectResponse)
+}

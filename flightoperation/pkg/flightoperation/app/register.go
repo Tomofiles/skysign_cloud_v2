@@ -27,7 +27,8 @@ func newApplication(
 	flightoperationRepo := postgresql.NewFlightoperationRepository(flightoperationGen)
 	return Application{
 		Services: Services{
-			ManageFlightoperation: service.NewManageFlightoperationService(flightoperationGen, flightoperationRepo, txm, psm),
+			ManageFlightoperation:  service.NewManageFlightoperationService(flightoperationGen, flightoperationRepo, txm, psm),
+			OperateFlightoperation: service.NewOperateFlightoperationService(flightoperationGen, flightoperationRepo, txm, psm),
 		},
 	}
 }

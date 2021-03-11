@@ -96,6 +96,23 @@ func (s *GrpcServer) CreateFlightoperation(
 	return &proto.Empty{}, nil
 }
 
+// CompleteFlightoperation .
+func (s *GrpcServer) CompleteFlightoperation(
+	ctx context.Context,
+	request *proto.CompleteFlightoperationRequest,
+) (*proto.Empty, error) {
+	response := &proto.Empty{}
+	requestDpo := &flightoperationIDRequestDpo{
+		id: request.Id,
+	}
+	if ret := s.app.Services.OperateFlightoperation.CompleteFlightoperation(
+		requestDpo,
+	); ret != nil {
+		return nil, ret
+	}
+	return response, nil
+}
+
 type flightoperationIDRequestDpo struct {
 	id string
 }
