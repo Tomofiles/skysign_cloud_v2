@@ -28,6 +28,11 @@ func (p *Publisher) Flush() error {
 				return err
 			}
 		}
+		if event, ok := e.(fope.CompletedEvent); ok {
+			if err := PublishFlightoperationCompletedEvent(p.ch, event); err != nil {
+				return err
+			}
+		}
 		if event, ok := e.(fope.FlightplanCopiedWhenCreatedEvent); ok {
 			if err := PublishFlightplanCopiedWhenFlightoperationCreatedEvent(p.ch, event); err != nil {
 				return err

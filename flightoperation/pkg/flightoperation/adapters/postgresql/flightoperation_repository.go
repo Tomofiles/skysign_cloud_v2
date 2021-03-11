@@ -80,25 +80,33 @@ func (r *FlightoperationRepository) Save(
 
 	record := Flightoperation{}
 
+	isCreate := false
 	if err := txGorm.Limit(1).Find(&record, "id = ?", string(flightoperation.GetID())).Error; err != nil {
 		return err
 	}
 
-	if record.ID != "" {
-		return nil
+	if record.ID == "" {
+		isCreate = true
+		record.ID = string(flightoperation.GetID())
 	}
 
 	fope.TakeApart(
 		flightoperation,
-		func(id, flightplanID string) {
-			record.ID = id
+		func(id, flightplanID, version string, isCompleted bool) {
 			record.FlightplanID = flightplanID
+			record.IsCompleted = isCompleted
+			record.Version = version
 		},
 	)
 
-	if err := txGorm.Create(&record).Error; err != nil {
-		return err
+	if isCreate {
+		if err := txGorm.Create(&record).Error; err != nil {
+			return err
+		}
+	} else {
+		if err := txGorm.Save(&record).Error; err != nil {
+			return err
+		}
 	}
-
 	return nil
 }

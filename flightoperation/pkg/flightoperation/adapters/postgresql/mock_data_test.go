@@ -10,6 +10,8 @@ import (
 
 const DefaultFlightoperationID = fope.ID("flightoperation-id")
 const DefaultFlightplanID = fope.FlightplanID("flightplan-id")
+const DefaultIsCompleted = fope.Completed
+const DefaultVersion = fope.Version("version")
 
 func GetNewDbMock() (*gorm.DB, sqlmock.Sqlmock, error) {
 	db, mock, err := sqlmock.New()
@@ -34,6 +36,8 @@ func GetNewDbMock() (*gorm.DB, sqlmock.Sqlmock, error) {
 type flightoperationComponentMock struct {
 	id           string
 	flightplanID string
+	isCompleted  bool
+	version      string
 }
 
 func (f *flightoperationComponentMock) GetID() string {
@@ -42,4 +46,12 @@ func (f *flightoperationComponentMock) GetID() string {
 
 func (f *flightoperationComponentMock) GetFlightplanID() string {
 	return f.flightplanID
+}
+
+func (f *flightoperationComponentMock) GetIsCompleted() bool {
+	return f.isCompleted
+}
+
+func (f *flightoperationComponentMock) GetVersion() string {
+	return f.version
 }
