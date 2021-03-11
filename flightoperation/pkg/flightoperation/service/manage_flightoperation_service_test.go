@@ -107,7 +107,7 @@ func TestListFlightoperationsTransaction(t *testing.T) {
 
 	repo := &flightoperationRepositoryMock{}
 	txm := &txManagerMock{}
-	repo.On("GetAll").Return(flightoperations, nil)
+	repo.On("GetAllOperating").Return(flightoperations, nil)
 
 	service := &manageFlightoperationService{
 		gen:  nil,
@@ -174,7 +174,7 @@ func TestListFlightoperationsOperation(t *testing.T) {
 	}
 
 	repo := &flightoperationRepositoryMock{}
-	repo.On("GetAll").Return(flightoperations, nil)
+	repo.On("GetAllOperating").Return(flightoperations, nil)
 
 	service := &manageFlightoperationService{
 		gen:  nil,

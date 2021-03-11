@@ -92,6 +92,9 @@ type repositoryMockCreateService struct {
 func (rm *repositoryMockCreateService) GetAll(tx txmanager.Tx) ([]*Flightoperation, error) {
 	panic("implement me")
 }
+func (rm *repositoryMockCreateService) GetAllOperating(tx txmanager.Tx) ([]*Flightoperation, error) {
+	panic("implement me")
+}
 func (rm *repositoryMockCreateService) GetByID(tx txmanager.Tx, id ID) (*Flightoperation, error) {
 	panic("implement me")
 }

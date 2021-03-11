@@ -148,6 +148,144 @@ func TestFlightoperationRepositoryGetNoneWhenGetAll(t *testing.T) {
 	a.Equal(flightoperations, expectFopes)
 }
 
+func TestFlightoperationRepositoryGetSingleWhenGetAllOperating(t *testing.T) {
+	a := assert.New(t)
+
+	db, mock, err := GetNewDbMock()
+	if err != nil {
+		t.Errorf("failed to initialize mock DB: %v", err)
+		return
+	}
+
+	mock.
+		ExpectQuery(
+			regexp.QuoteMeta(`SELECT * FROM "flightoperations" WHERE is_completed = false`)).
+		WillReturnRows(
+			sqlmock.NewRows([]string{"id", "flightplan_id", "is_completed", "version"}).
+				AddRow(DefaultFlightoperationID, DefaultFlightplanID, DefaultIsCompleted, DefaultVersion),
+		)
+
+	gen := uuid.NewFlightoperationUUID()
+	repository := NewFlightoperationRepository(gen)
+
+	flightoperations, err := repository.GetAllOperating(db)
+
+	expectFopes := []*fope.Flightoperation{
+		fope.AssembleFrom(
+			gen,
+			&flightoperationComponentMock{
+				id:           string(DefaultFlightoperationID),
+				flightplanID: string(DefaultFlightplanID),
+				isCompleted:  DefaultIsCompleted,
+				version:      string(DefaultVersion),
+			},
+		),
+	}
+
+	a.Nil(err)
+	a.Len(flightoperations, 1)
+	a.Equal(flightoperations, expectFopes)
+}
+
+func TestFlightoperationRepositoryGetMultipleWhenGetAllOperating(t *testing.T) {
+	a := assert.New(t)
+
+	db, mock, err := GetNewDbMock()
+	if err != nil {
+		t.Errorf("failed to initialize mock DB: %v", err)
+		return
+	}
+
+	const (
+		DefaultFlightoperationID1 = DefaultFlightoperationID + "-1"
+		DefaultFlightoperationID2 = DefaultFlightoperationID + "-2"
+		DefaultFlightoperationID3 = DefaultFlightoperationID + "-3"
+		DefaultFlightplanID1      = DefaultFlightplanID + "-1"
+		DefaultFlightplanID2      = DefaultFlightplanID + "-2"
+		DefaultFlightplanID3      = DefaultFlightplanID + "-3"
+		DefaultVersion1           = DefaultVersion + "-1"
+		DefaultVersion2           = DefaultVersion + "-2"
+		DefaultVersion3           = DefaultVersion + "-3"
+	)
+
+	mock.
+		ExpectQuery(
+			regexp.QuoteMeta(`SELECT * FROM "flightoperations" WHERE is_completed = false`)).
+		WillReturnRows(
+			sqlmock.NewRows([]string{"id", "flightplan_id", "is_completed", "version"}).
+				AddRow(DefaultFlightoperationID1, DefaultFlightplanID1, DefaultIsCompleted, DefaultVersion1).
+				AddRow(DefaultFlightoperationID2, DefaultFlightplanID2, DefaultIsCompleted, DefaultVersion2).
+				AddRow(DefaultFlightoperationID3, DefaultFlightplanID3, DefaultIsCompleted, DefaultVersion3),
+		)
+
+	gen := uuid.NewFlightoperationUUID()
+	repository := NewFlightoperationRepository(gen)
+
+	flightoperations, err := repository.GetAllOperating(db)
+
+	expectFopes := []*fope.Flightoperation{
+		fope.AssembleFrom(
+			gen,
+			&flightoperationComponentMock{
+				id:           string(DefaultFlightoperationID1),
+				flightplanID: string(DefaultFlightplanID1),
+				isCompleted:  DefaultIsCompleted,
+				version:      string(DefaultVersion1),
+			},
+		),
+		fope.AssembleFrom(
+			gen,
+			&flightoperationComponentMock{
+				id:           string(DefaultFlightoperationID2),
+				flightplanID: string(DefaultFlightplanID2),
+				isCompleted:  DefaultIsCompleted,
+				version:      string(DefaultVersion2),
+			},
+		),
+		fope.AssembleFrom(
+			gen,
+			&flightoperationComponentMock{
+				id:           string(DefaultFlightoperationID3),
+				flightplanID: string(DefaultFlightplanID3),
+				isCompleted:  DefaultIsCompleted,
+				version:      string(DefaultVersion3),
+			},
+		),
+	}
+
+	a.Nil(err)
+	a.Len(flightoperations, 3)
+	a.Equal(flightoperations, expectFopes)
+}
+
+func TestFlightoperationRepositoryGetNoneWhenGetAllOperating(t *testing.T) {
+	a := assert.New(t)
+
+	db, mock, err := GetNewDbMock()
+	if err != nil {
+		t.Errorf("failed to initialize mock DB: %v", err)
+		return
+	}
+
+	mock.
+		ExpectQuery(
+			regexp.QuoteMeta(`SELECT * FROM "flightoperations" WHERE is_completed = false`)).
+		WillReturnRows(
+			sqlmock.NewRows([]string{"id", "flightplan_id", "is_completed", "version"}),
+		)
+
+	gen := uuid.NewFlightoperationUUID()
+	repository := NewFlightoperationRepository(gen)
+
+	flightoperations, err := repository.GetAllOperating(db)
+
+	var expectFopes []*fope.Flightoperation
+
+	a.Nil(err)
+	a.Len(flightoperations, 0)
+	a.Equal(flightoperations, expectFopes)
+}
+
 func TestFlightoperationRepositoryGetByID(t *testing.T) {
 	a := assert.New(t)
 

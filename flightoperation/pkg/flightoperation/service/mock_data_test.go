@@ -31,6 +31,19 @@ func (r *flightoperationRepositoryMock) GetAll(
 	return f, ret.Error(1)
 }
 
+func (r *flightoperationRepositoryMock) GetAllOperating(
+	tx txmanager.Tx,
+) ([]*fope.Flightoperation, error) {
+	ret := r.Called()
+	var f []*fope.Flightoperation
+	if ret.Get(0) == nil {
+		f = nil
+	} else {
+		f = ret.Get(0).([]*fope.Flightoperation)
+	}
+	return f, ret.Error(1)
+}
+
 func (r *flightoperationRepositoryMock) GetByID(
 	tx txmanager.Tx,
 	id fope.ID,

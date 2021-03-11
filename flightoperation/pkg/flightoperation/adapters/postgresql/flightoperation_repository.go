@@ -43,6 +43,30 @@ func (r *FlightoperationRepository) GetAll(
 	return flightoperations, nil
 }
 
+// GetAllOperating .
+func (r *FlightoperationRepository) GetAllOperating(
+	tx txmanager.Tx,
+) ([]*fope.Flightoperation, error) {
+	txGorm, ok := tx.(*gorm.DB)
+	if !ok {
+		panic("developer error")
+	}
+
+	var records []*Flightoperation
+
+	if err := txGorm.Where("is_completed = false").Find(&records).Error; err != nil {
+		return nil, err
+	}
+
+	var flightoperations []*fope.Flightoperation
+	for _, record := range records {
+		flightoperation := fope.AssembleFrom(r.gen, record)
+		flightoperations = append(flightoperations, flightoperation)
+	}
+
+	return flightoperations, nil
+}
+
 // GetByID .
 func (r *FlightoperationRepository) GetByID(
 	tx txmanager.Tx,
