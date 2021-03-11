@@ -11,6 +11,8 @@ import (
 
 const DefaultFlightoperationID = fope.ID("flightoperation-id")
 const DefaultFlightplanID = fope.FlightplanID("flightplan-id")
+const DefaultIsCompleted = fope.Completed
+const DefaultVersion = fope.Version("version")
 
 type flightoperationRepositoryMock struct {
 	mock.Mock
@@ -55,6 +57,7 @@ type generatorMockFlightoperation struct {
 	fope.Generator
 	id           fope.ID
 	flightplanID fope.FlightplanID
+	version      fope.Version
 }
 
 func (gen *generatorMockFlightoperation) NewID() fope.ID {
@@ -62,6 +65,9 @@ func (gen *generatorMockFlightoperation) NewID() fope.ID {
 }
 func (gen *generatorMockFlightoperation) NewFlightplanID() fope.FlightplanID {
 	return gen.flightplanID
+}
+func (gen *generatorMockFlightoperation) NewVersion() fope.Version {
+	return gen.version
 }
 
 type publisherMock struct {
@@ -117,6 +123,8 @@ func (txm *txManagerMock) DoAndEndHook(operation func(txmanager.Tx) error, endHo
 type flightoperationComponentMock struct {
 	ID           string
 	FlightplanID string
+	IsCompleted  bool
+	Version      string
 }
 
 func (f *flightoperationComponentMock) GetID() string {
@@ -125,6 +133,14 @@ func (f *flightoperationComponentMock) GetID() string {
 
 func (f *flightoperationComponentMock) GetFlightplanID() string {
 	return f.FlightplanID
+}
+
+func (f *flightoperationComponentMock) GetIsCompleted() bool {
+	return f.IsCompleted
+}
+
+func (f *flightoperationComponentMock) GetVersion() string {
+	return f.Version
 }
 
 type flightoperationIDRequestMock struct {
