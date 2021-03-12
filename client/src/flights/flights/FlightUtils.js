@@ -12,6 +12,16 @@ export async function createFlight(id) {
   }
 }
 
+export async function completeFlight(id) {
+  try {
+    const res = await axios
+      .post(`/api/v1/flightoperations/${id}/complete`, {})
+    return res.data;
+  } catch(error) {
+    console.log(error);
+  }
+}
+
 export async function getFlights() {
   try {
     const res = await axios

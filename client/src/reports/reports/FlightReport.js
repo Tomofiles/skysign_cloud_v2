@@ -10,21 +10,20 @@ import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import { grey } from '@material-ui/core/colors';
 
 import { AppContext } from '../../context/Context';
-import FlightOperationAssignment from './FlightOperationAssignment';
-import { completeFlight } from './FlightUtils';
+import FlightReportAssignment from './FlightReportAssignment';
 
-const FlightOperation = (props) => {
-  const { dispatchOperationMode, flightplan, assignments, dispatchFlightoperation, dispatchFuncMode } = useContext(AppContext);
+const FlightReport = (props) => {
+  const { dispatchOperationMode, flightplan, assignments, dispatchFlightreport } = useContext(AppContext);
   const [ listsize, setListsize ] = useState("0vh");
 
   useEffect(() => {
-    dispatchFlightoperation({ type: 'ID', id: props.id });
-    dispatchOperationMode({ type: 'OPERATION' });
+    dispatchFlightreport({ type: 'ID', id: props.id });
+    dispatchOperationMode({ type: 'REPORT' });
     return () => {
-      dispatchFlightoperation({ type: 'NONE' });
+      dispatchFlightreport({ type: 'NONE' });
       dispatchOperationMode({ type: 'NONE' });
     }
-  }, [ props.id, dispatchOperationMode, dispatchFlightoperation ])
+  }, [ props.id, dispatchOperationMode, dispatchFlightreport ])
 
   useLayoutEffect(() => {
     // 仮画面サイズ調整
@@ -34,11 +33,6 @@ const FlightOperation = (props) => {
 
   const onClickReturn = () => {
     props.openList();  
-  }
-
-  const onClickComplete = () => {
-    completeFlight(props.id)
-      .then(data => dispatchFuncMode({ type: 'REPORTS' }));
   }
 
   return (
@@ -53,15 +47,12 @@ const FlightOperation = (props) => {
           <Box>
             <Typography>{flightplan.name}</Typography>
           </Box>
-          <Box px={1}>
-            <Button className={props.classes.funcImportantButton} onClick={onClickComplete}>Complete</Button>
-          </Box>
         </Box>
       </Box>
       <Box pb={4}>
         <List style={{overflowY: "auto", height: listsize}}>
           {assignments.map(assignment => (
-            <FlightOperationAssignment
+            <FlightReportAssignment
               key={assignment.id}
               classes={props.classes}
               vehicleId={assignment.vehicle_id}
@@ -73,4 +64,4 @@ const FlightOperation = (props) => {
   );
 }
 
-export default FlightOperation;
+export default FlightReport;

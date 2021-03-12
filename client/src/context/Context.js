@@ -9,21 +9,24 @@ import { initialMissions, missionsReducer } from './Missions';
 import { initialOperationMode, operationModeReducer } from './OperationMode';
 import { initialVehicles, vehiclesReducer } from './Vehicles';
 import { initialTelemetries, telemetriesReducer } from './Telemetries';
-import { initialFlight, flightReducer } from './Flight';
+import { initialFlightoperation, flightoperationReducer } from './Flightoperation';
 import { initialAssignments, assignmentsReducer } from './Assignments';
 import { initialFlightplan, flightplanReducer } from './Flightplan';
 import { initialSteps, stepsReducer } from './Steps';
+import { initialFlightreport, flightreportReducer } from './Flightreport';
 
-import BridgeAssignmentToMission from '../flights/flights/context_bridge/BridgeAssignmentToMission';
-import BridgeAssignmentToVehicle from '../flights/flights/context_bridge/BridgeAssignmentToVehicle';
-import BridgeFlightIDToFlightplanAndAssignment from '../flights/flights/context_bridge/BridgeFlightIDToFlightplanAndAssignment';
-import BridgeVehicleToStep from '../flights/flights/context_bridge/BridgeVehicleToStep';
-import BridgeVehicleToTelemetry from '../flights/flights/context_bridge/BridgeVehicleToTelemetry';
+import BridgeFlightreportToFlightoperation from '../context_bridge/BridgeFlightreportToFlightoperation';
+import BridgeAssignmentToMission from '../context_bridge/BridgeAssignmentToMission';
+import BridgeAssignmentToVehicle from '../context_bridge/BridgeAssignmentToVehicle';
+import BridgeFlightoperationToFlightplanAndAssignment from '../context_bridge/BridgeFlightoperationToFlightplanAndAssignment';
+import BridgeVehicleToStep from '../context_bridge/BridgeVehicleToStep';
+import BridgeVehicleToTelemetry from '../context_bridge/BridgeVehicleToTelemetry';
 
 export const AppContext = createContext();
 
 const AppContextProvider = ({children}) => {
-  const [ flight, dispatchFlight ] = useReducer(flightReducer, initialFlight);
+  const [ flightoperation, dispatchFlightoperation ] = useReducer(flightoperationReducer, initialFlightoperation);
+  const [ flightreport, dispatchFlightreport ] = useReducer(flightreportReducer, initialFlightreport);
   const [ flightplan, dispatchFlightplan ] = useReducer(flightplanReducer, initialFlightplan);
   const [ assignments, dispatchAssignments ] = useReducer(assignmentsReducer, initialAssignments);
   const [ vehicles, dispatchVehicles ] = useReducer(vehiclesReducer, initialVehicles);
@@ -40,8 +43,10 @@ const AppContextProvider = ({children}) => {
   return (
     <AppContext.Provider
       value={{
-        flight,
-        dispatchFlight,
+        flightreport,
+        dispatchFlightreport,
+        flightoperation,
+        dispatchFlightoperation,
         flightplan,
         dispatchFlightplan,
         assignments,
@@ -68,9 +73,10 @@ const AppContextProvider = ({children}) => {
         dispatchMapPosition,
         }}>
       {children}
+      <BridgeFlightreportToFlightoperation />
+      <BridgeFlightoperationToFlightplanAndAssignment />
       <BridgeAssignmentToMission />
       <BridgeAssignmentToVehicle />
-      <BridgeFlightIDToFlightplanAndAssignment />
       <BridgeVehicleToStep />
       <BridgeVehicleToTelemetry />
     </AppContext.Provider>
