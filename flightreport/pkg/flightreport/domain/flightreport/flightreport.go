@@ -25,5 +25,4 @@ func (f *Flightreport) GetFlightoperationID() FlightoperationID {
 // Generator .
 type Generator interface {
 	NewID() ID
-	NewFlightoperationID() FlightoperationID
 }

@@ -16,23 +16,17 @@ func TestCreateNewFlightreportService(t *testing.T) {
 
 	ctx := context.Background()
 
-	var (
-		OriginalID = DefaultFlightoperationID + "-original"
-		NewID      = DefaultFlightoperationID + "-new"
-	)
-
 	gen := &generatorMock{
-		id:                DefaultID,
-		flightoperationID: NewID,
+		id: DefaultID,
 	}
 	repo := &repositoryMockCreateService{}
 	repo.On("Save", mock.Anything).Return(nil)
 
-	ret := CreateNewFlightreport(ctx, gen, repo, OriginalID)
+	ret := CreateNewFlightreport(ctx, gen, repo, DefaultFlightoperationID)
 
 	expectFlightreport := Flightreport{
 		id:                DefaultID,
-		flightoperationID: NewID,
+		flightoperationID: DefaultFlightoperationID,
 	}
 
 	a.Len(repo.saveFlightreports, 1)
@@ -49,19 +43,13 @@ func TestSaveErrorWhenCreateNewFlightreportService(t *testing.T) {
 
 	ctx := context.Background()
 
-	var (
-		OriginalID = DefaultFlightoperationID + "-original"
-		NewID      = DefaultFlightoperationID + "-new"
-	)
-
 	gen := &generatorMock{
-		id:                DefaultID,
-		flightoperationID: NewID,
+		id: DefaultID,
 	}
 	repo := &repositoryMockCreateService{}
 	repo.On("Save", mock.Anything).Return(ErrSave)
 
-	ret := CreateNewFlightreport(ctx, gen, repo, OriginalID)
+	ret := CreateNewFlightreport(ctx, gen, repo, DefaultFlightoperationID)
 
 	a.Len(repo.saveFlightreports, 0)
 	a.Equal(ret, ErrSave)

@@ -12,15 +12,11 @@ var (
 // Flightreport用汎用ジェネレータモック
 type generatorMock struct {
 	Generator
-	id                ID
-	flightoperationID FlightoperationID
+	id ID
 }
 
 func (gen *generatorMock) NewID() ID {
 	return gen.id
-}
-func (gen *generatorMock) NewFlightoperationID() FlightoperationID {
-	return gen.flightoperationID
 }
 
 // Flightreport構成オブジェクトモック

@@ -19,9 +19,3 @@ func (g *FlightreportUUID) NewID() frep.ID {
 	uuid, _ := uuid.NewRandom()
 	return frep.ID(uuid.String())
 }
-
-// NewFlightoperationID .
-func (g *FlightreportUUID) NewFlightoperationID() frep.FlightoperationID {
-	uuid, _ := uuid.NewRandom()
-	return frep.FlightoperationID(uuid.String())
-}

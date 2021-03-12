@@ -11,9 +11,7 @@ func CreateNewFlightreport(
 	repo Repository,
 	originalID FlightoperationID,
 ) error {
-	newID := gen.NewFlightoperationID()
-
-	flightreport := NewInstance(gen, newID)
+	flightreport := NewInstance(gen, originalID)
 
 	if err := repo.Save(tx, flightreport); err != nil {
 		return err
