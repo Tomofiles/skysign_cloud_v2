@@ -22,6 +22,7 @@ func PublishFlightplanCopiedWhenFlightoperationCreatedEvent(
 	}
 
 	eventPb := skysign_proto.FlightplanCopiedWhenFlightoperationCreatedEvent{
+		FlightoperationId:    event.GetFlightoperationID(),
 		OriginalFlightplanId: event.GetOriginalID(),
 		NewFlightplanId:      event.GetNewID(),
 	}

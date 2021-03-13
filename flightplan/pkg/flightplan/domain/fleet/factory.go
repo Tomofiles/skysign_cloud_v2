@@ -72,9 +72,10 @@ func Copy(
 			if k == "" {
 				continue
 			}
-			event := VehicleCopiedWhenCopiedEvent{
-				OriginalID: k,
-				NewID:      v,
+			event := VehicleCopiedWhenFlightplanCopiedEvent{
+				FlightplanID: id,
+				OriginalID:   k,
+				NewID:        v,
 			}
 			pub.Publish(event)
 		}
@@ -82,9 +83,10 @@ func Copy(
 			if k == "" {
 				continue
 			}
-			event := MissionCopiedWhenCopiedEvent{
-				OriginalID: k,
-				NewID:      v,
+			event := MissionCopiedWhenFlightplanCopiedEvent{
+				FlightplanID: id,
+				OriginalID:   k,
+				NewID:        v,
 			}
 			pub.Publish(event)
 		}

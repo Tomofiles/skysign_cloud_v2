@@ -10,6 +10,7 @@ import lombok.ToString;
 @EqualsAndHashCode
 @ToString
 public class MissionCopiedWhenFlightplanCopiedEvent {
+    private final String flightplanId;
     private final String originalId;
     private final String newId;
 }

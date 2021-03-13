@@ -41,13 +41,13 @@ func (p *Publisher) Flush() error {
 				return err
 			}
 		}
-		if event, ok := e.(fleet.VehicleCopiedWhenCopiedEvent); ok {
-			if err := PublishVehicleCopiedWhenCopiedEvent(p.ch, event); err != nil {
+		if event, ok := e.(fleet.VehicleCopiedWhenFlightplanCopiedEvent); ok {
+			if err := PublishVehicleCopiedWhenFlightplanCopiedEvent(p.ch, event); err != nil {
 				return err
 			}
 		}
-		if event, ok := e.(fleet.MissionCopiedWhenCopiedEvent); ok {
-			if err := PublishMissionCopiedWhenCopiedEvent(p.ch, event); err != nil {
+		if event, ok := e.(fleet.MissionCopiedWhenFlightplanCopiedEvent); ok {
+			if err := PublishMissionCopiedWhenFlightplanCopiedEvent(p.ch, event); err != nil {
 				return err
 			}
 		}

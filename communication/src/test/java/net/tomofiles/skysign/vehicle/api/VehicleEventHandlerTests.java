@@ -27,6 +27,7 @@ import static net.tomofiles.skysign.vehicle.domain.vehicle.VehicleObjectMother.n
 
 public class VehicleEventHandlerTests {
     
+    private static final String DEFAULT_FLIGHTPLAN_ID = UUID.randomUUID().toString();
     private static final VehicleId ORIGINAL_VEHICLE_ID = new VehicleId(UUID.randomUUID().toString());
     private static final VehicleId NEW_VEHICLE_ID = new VehicleId(UUID.randomUUID().toString());
     private static final Version DEFAULT_VERSION = new Version(UUID.randomUUID().toString());
@@ -75,6 +76,7 @@ public class VehicleEventHandlerTests {
 
         this.eventHandler.processVehicleCopiedWhenFlightplanCopiedEvent(
             newNormalVehicleCopiedWhenCopiedEvent(
+                DEFAULT_FLIGHTPLAN_ID,
                 ORIGINAL_VEHICLE_ID,
                 NEW_VEHICLE_ID
             ));

@@ -18,8 +18,14 @@ func (e *CreatedEvent) GetFlightplanID() string {
 
 // FlightplanCopiedWhenCreatedEvent .
 type FlightplanCopiedWhenCreatedEvent struct {
+	ID         ID
 	OriginalID FlightplanID
 	NewID      FlightplanID
+}
+
+// GetFlightoperationID .
+func (e *FlightplanCopiedWhenCreatedEvent) GetFlightoperationID() string {
+	return string(e.ID)
 }
 
 // GetOriginalID .

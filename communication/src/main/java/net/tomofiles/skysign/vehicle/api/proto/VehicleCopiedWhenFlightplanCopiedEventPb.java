@@ -7,10 +7,10 @@ import net.tomofiles.skysign.vehicle.api.event.event.VehicleCopiedWhenFlightplan
 
 public class VehicleCopiedWhenFlightplanCopiedEventPb {
 
-    private final proto.skysign.event.VehicleCopiedWhenCopiedEvent event;
+    private final proto.skysign.event.VehicleCopiedWhenFlightplanCopiedEvent event;
 
     public VehicleCopiedWhenFlightplanCopiedEventPb(byte[] message) throws InvalidProtocolBufferException {
-        this.event = proto.skysign.event.VehicleCopiedWhenCopiedEvent.parseFrom(message);
+        this.event = proto.skysign.event.VehicleCopiedWhenFlightplanCopiedEvent.parseFrom(message);
     }
 
     @Override
@@ -20,6 +20,7 @@ public class VehicleCopiedWhenFlightplanCopiedEventPb {
 
     public VehicleCopiedWhenFlightplanCopiedEvent getEvent() {
         return new VehicleCopiedWhenFlightplanCopiedEvent(
+            this.event.getFlightplanId(),
             this.event.getOriginalVehicleId(),
             this.event.getNewVehicleId());
     }

@@ -23,14 +23,14 @@ public class MissionEventHandler {
     
     private final ManageMissionService manageMissionService;
 
-    @Value("${skysign.event.flightplan.mission_copied_when_copied_event}")
+    @Value("${skysign.event.flightplan.mission_copied_when_flightplan_copied_event}")
     @Setter
     private String EXCHANGE_NAME_COPIED_EVENT;
 
     @RabbitListener(
         bindings = @QueueBinding(
-            value = @Queue(value = "${skysign.event.flightplan.mission_copied_when_copied_event}", durable = "false", exclusive = "false", autoDelete = "true"),
-            exchange = @Exchange(value = "${skysign.event.flightplan.mission_copied_when_copied_event}", type = "fanout", durable = "false", autoDelete = "true")
+            value = @Queue(value = "${skysign.event.flightplan.mission_copied_when_flightplan_copied_event}", durable = "false", exclusive = "false", autoDelete = "true"),
+            exchange = @Exchange(value = "${skysign.event.flightplan.mission_copied_when_flightplan_copied_event}", type = "fanout", durable = "false", autoDelete = "true")
         )
     )
     public void processMissionCopiedWhenFlightplanCopiedEvent(byte[] message) throws Exception {
