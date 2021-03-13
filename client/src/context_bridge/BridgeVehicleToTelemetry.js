@@ -1,15 +1,28 @@
 import React, { useContext } from 'react';
 
 import useInterval from 'use-interval';
-import { Cartesian3, HeadingPitchRoll, Math, Matrix3, Matrix4, Quaternion, Transforms } from 'cesium';
+import {
+  Cartesian3,
+  HeadingPitchRoll,
+  Math,
+  Matrix3,
+  Matrix4,
+  Quaternion,
+  Transforms,
+} from 'cesium';
 
-import { getTelemetry } from '../../../map/MapUtils';
-import { AppContext } from '../../../context/Context';
+import { getTelemetry } from '../map/MapUtils';
+import { AppContext } from '../context/Context';
+import { OPERATION_MODE } from '../context/OperationMode';
 
 const BridgeVehicleToTelemetry = () => {
-  const { vehicles, dispatchTelemetries } = useContext(AppContext);
+  const { vehicles, operationMode, dispatchTelemetries } = useContext(AppContext);
 
   useInterval(() => {
+    if (operationMode !== OPERATION_MODE.OPERATION) {
+      dispatchTelemetries({ type: 'NONE' });
+      return;
+    }
     if (vehicles.length === 0) {
       dispatchTelemetries({ type: 'NONE' });
       return;

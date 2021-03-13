@@ -45,6 +45,17 @@ func (s *manageFlightoperationServiceMock) CreateFlightoperation(
 	return ret.Error(0)
 }
 
+type operateFlightoperationServiceMock struct {
+	mock.Mock
+}
+
+func (s *operateFlightoperationServiceMock) CompleteFlightoperation(
+	requestDpo service.CompleteFlightoperationRequestDpo,
+) error {
+	ret := s.Called()
+	return ret.Error(0)
+}
+
 type flightoperationMock struct {
 	id, flightplanID string
 }

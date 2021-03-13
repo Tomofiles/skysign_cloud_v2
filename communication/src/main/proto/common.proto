@@ -72,3 +72,8 @@ message Flightoperation {
     string id = 1;
     string flightplan_id = 2;
 }
+
+message Flightreport {
+    string id = 1;
+    string flightoperation_id = 2;
+}

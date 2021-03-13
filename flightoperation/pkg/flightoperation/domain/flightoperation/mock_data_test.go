@@ -4,6 +4,8 @@ import "errors"
 
 const DefaultID = ID("flightoperation-id")
 const DefaultFlightplanID = FlightplanID("flightplan-id")
+const DefaultIsCompleted = Completed
+const DefaultVersion = Version("version")
 
 var (
 	ErrSave = errors.New("save error")
@@ -14,6 +16,7 @@ type generatorMock struct {
 	Generator
 	id           ID
 	flightplanID FlightplanID
+	version      Version
 }
 
 func (gen *generatorMock) NewID() ID {
@@ -21,6 +24,9 @@ func (gen *generatorMock) NewID() ID {
 }
 func (gen *generatorMock) NewFlightplanID() FlightplanID {
 	return gen.flightplanID
+}
+func (gen *generatorMock) NewVersion() Version {
+	return gen.version
 }
 
 // Flightoperation用汎用パブリッシャモック
@@ -40,6 +46,8 @@ func (rm *publisherMock) Flush() error {
 type flightoperationComponentMock struct {
 	id           string
 	flightplanID string
+	isCompleted  bool
+	version      string
 }
 
 func (f *flightoperationComponentMock) GetID() string {
@@ -48,4 +56,12 @@ func (f *flightoperationComponentMock) GetID() string {
 
 func (f *flightoperationComponentMock) GetFlightplanID() string {
 	return f.flightplanID
+}
+
+func (f *flightoperationComponentMock) GetIsCompleted() bool {
+	return f.isCompleted
+}
+
+func (f *flightoperationComponentMock) GetVersion() string {
+	return f.version
 }

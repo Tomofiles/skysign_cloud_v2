@@ -1,7 +1,7 @@
 import React, { useContext, useEffect } from 'react';
 
-import { getMission } from '../../../missions/missions/MissionUtils'
-import { AppContext } from '../../../context/Context';
+import { AppContext } from '../context/Context';
+import { getMission } from '../missions/missions/MissionUtils';
 
 const BridgeAssignmentToMission = () => {
   const { assignments, dispatchMissions } = useContext(AppContext);

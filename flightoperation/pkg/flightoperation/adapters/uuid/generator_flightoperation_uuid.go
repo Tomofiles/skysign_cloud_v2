@@ -25,3 +25,9 @@ func (g *FlightoperationUUID) NewFlightplanID() flightoperation.FlightplanID {
 	uuid, _ := uuid.NewRandom()
 	return flightoperation.FlightplanID(uuid.String())
 }
+
+// NewVersion .
+func (g *FlightoperationUUID) NewVersion() flightoperation.Version {
+	uuid, _ := uuid.NewRandom()
+	return flightoperation.Version(uuid.String())
+}

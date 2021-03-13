@@ -4,9 +4,10 @@ export const FUNC_MODE = {
   MISSIONS: 2,
   PLANS: 3,
   FLIGHTS: 4,
+  REPORTS: 5,
 }
 
-export const initialFuncMode = FUNC_MODE.FLIGHTS;
+export const initialFuncMode = FUNC_MODE.REPORTS;
 
 export const funcModeReducer = (state, action) => {
   switch (action.type) {
@@ -20,6 +21,8 @@ export const funcModeReducer = (state, action) => {
       return FUNC_MODE.PLANS;
     case 'FLIGHTS':
       return FUNC_MODE.FLIGHTS;
+    case 'REPORTS':
+      return FUNC_MODE.REPORTS;
     default:
       return FUNC_MODE.NONE;
     }

@@ -55,7 +55,8 @@ func TestMultipleEventWhenPublish(t *testing.T) {
 	a := assert.New(t)
 
 	event1 := fope.CreatedEvent{}
-	event2 := fope.FlightplanCopiedWhenCreatedEvent{}
+	event2 := fope.CompletedEvent{}
+	event3 := fope.FlightplanCopiedWhenCreatedEvent{}
 
 	connMock := &connectionMockCommon{}
 	chMock := &channelMockPublish{}
@@ -69,10 +70,11 @@ func TestMultipleEventWhenPublish(t *testing.T) {
 
 	pub.Publish(event1)
 	pub.Publish(event2)
+	pub.Publish(event3)
 	ret := pub.Flush()
 
 	a.Nil(ret)
-	a.Equal(chMock.messageCallCount, 2)
+	a.Equal(chMock.messageCallCount, 3)
 }
 
 func TestFanoutExchangeDeclareErrorWhenCreatedEventPublish(t *testing.T) {
@@ -103,6 +105,54 @@ func TestPublishErrorWhenCreatedEventPublish(t *testing.T) {
 	a := assert.New(t)
 
 	event := fope.CreatedEvent{}
+
+	errPub := errors.New("publish error")
+
+	connMock := &connectionMockCommon{}
+	chMock := &channelMockPublish{}
+	connMock.On("GetChannel").Return(chMock, nil)
+	chMock.On("FanoutExchangeDeclare", mock.Anything).Return(nil)
+	chMock.On("Publish", mock.Anything).Return(errPub)
+
+	psm := NewPubSubManager(connMock)
+
+	pub, _, _ := psm.GetPublisher()
+
+	pub.Publish(event)
+	ret := pub.Flush()
+
+	a.Equal(ret, errPub)
+	a.Equal(chMock.messageCallCount, 1)
+}
+
+func TestFanoutExchangeDeclareErrorWhenCompletedEventPublish(t *testing.T) {
+	a := assert.New(t)
+
+	event := fope.CompletedEvent{}
+
+	errPub := errors.New("publish error")
+
+	connMock := &connectionMockCommon{}
+	chMock := &channelMockPublish{}
+	connMock.On("GetChannel").Return(chMock, nil)
+	chMock.On("FanoutExchangeDeclare", mock.Anything).Return(errPub)
+	chMock.On("Publish", mock.Anything).Return(nil)
+
+	psm := NewPubSubManager(connMock)
+
+	pub, _, _ := psm.GetPublisher()
+
+	pub.Publish(event)
+	ret := pub.Flush()
+
+	a.Equal(ret, errPub)
+	a.Equal(chMock.messageCallCount, 0)
+}
+
+func TestPublishErrorWhenCompletedEventPublish(t *testing.T) {
+	a := assert.New(t)
+
+	event := fope.CompletedEvent{}
 
 	errPub := errors.New("publish error")
 

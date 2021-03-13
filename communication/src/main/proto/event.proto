@@ -46,6 +46,10 @@ message FlightoperationCreatedEvent {
     string flightplan_id = 2;
 }
 
+message FlightoperationCompletedEvent {
+    string flightoperation_id = 1;
+}
+
 message FlightplanCopiedWhenFlightoperationCreatedEvent {
     string flightoperation_id = 1;
     string original_flightplan_id = 2;

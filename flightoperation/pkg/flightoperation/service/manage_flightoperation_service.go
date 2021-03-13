@@ -96,7 +96,7 @@ func (s *manageFlightoperationService) listFlightoperationsOperation(
 	tx txmanager.Tx,
 	responseEachDpo ListFlightoperationsResponseDpo,
 ) error {
-	flightoperations, err := s.repo.GetAll(tx)
+	flightoperations, err := s.repo.GetAllOperating(tx)
 	if err != nil {
 		return err
 	}

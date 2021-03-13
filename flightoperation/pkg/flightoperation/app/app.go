@@ -9,5 +9,6 @@ type Application struct {
 
 // Services .
 type Services struct {
-	ManageFlightoperation service.ManageFlightoperationService
+	ManageFlightoperation  service.ManageFlightoperationService
+	OperateFlightoperation service.OperateFlightoperationService
 }

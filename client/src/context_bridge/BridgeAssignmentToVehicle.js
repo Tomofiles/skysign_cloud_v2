@@ -1,7 +1,7 @@
 import React, { useContext, useEffect } from 'react';
+import { getVehicle } from '../assets/vehicles/VehicleUtils';
 
-import { getVehicle } from '../../../assets/vehicles/VehicleUtils';
-import { AppContext } from '../../../context/Context';
+import { AppContext } from '../context/Context';
 
 const BridgeAssignmentToVehicle = () => {
   const { assignments, dispatchVehicles } = useContext(AppContext);

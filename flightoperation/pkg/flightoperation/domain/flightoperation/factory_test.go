@@ -15,12 +15,17 @@ func TestCreateNewFlightoperation(t *testing.T) {
 	)
 
 	gen := &generatorMock{
-		id: DefaultID,
+		id:      DefaultID,
+		version: DefaultVersion,
 	}
 	flightoperation := NewInstance(gen, NewID)
 
 	a.Equal(flightoperation.GetID(), DefaultID)
 	a.Equal(flightoperation.GetFlightplanID(), NewID)
+	a.Equal(flightoperation.isCompleted, Operating)
+	a.Equal(flightoperation.GetVersion(), DefaultVersion)
+	a.Equal(flightoperation.GetNewVersion(), DefaultVersion)
+	a.Equal(flightoperation.gen, gen)
 }
 
 // Flightoperationを構成オブジェクトから組み立て直し、
@@ -31,12 +36,18 @@ func TestFlightoperationAssembleFromComponent(t *testing.T) {
 	comp := &flightoperationComponentMock{
 		id:           string(DefaultID),
 		flightplanID: string(DefaultFlightplanID),
+		isCompleted:  DefaultIsCompleted,
+		version:      string(DefaultVersion),
 	}
 	gen := &generatorMock{}
 	flightoperation := AssembleFrom(gen, comp)
 
 	a.Equal(flightoperation.GetID(), DefaultID)
 	a.Equal(flightoperation.GetFlightplanID(), DefaultFlightplanID)
+	a.Equal(flightoperation.isCompleted, DefaultIsCompleted)
+	a.Equal(flightoperation.GetVersion(), DefaultVersion)
+	a.Equal(flightoperation.GetNewVersion(), DefaultVersion)
+	a.Equal(flightoperation.gen, gen)
 }
 
 // Flightoperationを構成オブジェクトに分解し、
@@ -47,19 +58,26 @@ func TestTakeApartFlightoperation(t *testing.T) {
 	flightoperation := &Flightoperation{
 		id:           DefaultID,
 		flightplanID: DefaultFlightplanID,
+		isCompleted:  DefaultIsCompleted,
+		version:      DefaultVersion,
+		newVersion:   DefaultVersion,
 	}
 	comp := &flightoperationComponentMock{}
 	TakeApart(
 		flightoperation,
-		func(id, flightplanID string) {
+		func(id, flightplanID, version string, isCompleted bool) {
 			comp.id = id
 			comp.flightplanID = flightplanID
+			comp.isCompleted = isCompleted
+			comp.version = version
 		},
 	)
 
 	expectComp := &flightoperationComponentMock{
 		id:           string(DefaultID),
 		flightplanID: string(DefaultFlightplanID),
+		isCompleted:  DefaultIsCompleted,
+		version:      string(DefaultVersion),
 	}
 	a.Equal(comp, expectComp)
 }

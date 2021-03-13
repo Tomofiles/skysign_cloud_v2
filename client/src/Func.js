@@ -5,11 +5,13 @@ import Plans from './plans/Plans'
 import Assets from './assets/Assets'
 import Missions from './missions/Missions';
 import Flights from './flights/Flights';
+import Reports from './reports/Reports';
 
 const Func = (props) => {
   return (
     <div className={props.classes.root}>
       <Menu classes={props.classes}/>
+      <Reports classes={props.classes} />
       <Flights classes={props.classes} />
       <Plans classes={props.classes} />
       <Missions classes={props.classes} />

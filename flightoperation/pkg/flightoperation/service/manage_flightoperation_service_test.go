@@ -16,6 +16,8 @@ func TestGetFlightoperationTransaction(t *testing.T) {
 		&flightoperationComponentMock{
 			ID:           string(DefaultFlightoperationID),
 			FlightplanID: string(DefaultFlightplanID),
+			IsCompleted:  DefaultIsCompleted,
+			Version:      string(DefaultVersion),
 		},
 	)
 
@@ -55,6 +57,8 @@ func TestGetFlightoperationOperation(t *testing.T) {
 		&flightoperationComponentMock{
 			ID:           string(DefaultFlightoperationID),
 			FlightplanID: string(DefaultFlightplanID),
+			IsCompleted:  DefaultIsCompleted,
+			Version:      string(DefaultVersion),
 		},
 	)
 
@@ -95,13 +99,15 @@ func TestListFlightoperationsTransaction(t *testing.T) {
 			&flightoperationComponentMock{
 				ID:           string(DefaultFlightoperationID),
 				FlightplanID: string(DefaultFlightplanID),
+				IsCompleted:  DefaultIsCompleted,
+				Version:      string(DefaultVersion),
 			},
 		),
 	}
 
 	repo := &flightoperationRepositoryMock{}
 	txm := &txManagerMock{}
-	repo.On("GetAll").Return(flightoperations, nil)
+	repo.On("GetAllOperating").Return(flightoperations, nil)
 
 	service := &manageFlightoperationService{
 		gen:  nil,
@@ -132,6 +138,9 @@ func TestListFlightoperationsOperation(t *testing.T) {
 		DefaultFlightplanID1      = DefaultFlightplanID + "-1"
 		DefaultFlightplanID2      = DefaultFlightplanID + "-2"
 		DefaultFlightplanID3      = DefaultFlightplanID + "-3"
+		DefaultVersion1           = DefaultVersion + "-1"
+		DefaultVersion2           = DefaultVersion + "-2"
+		DefaultVersion3           = DefaultVersion + "-3"
 	)
 
 	flightoperations := []*fope.Flightoperation{
@@ -140,6 +149,8 @@ func TestListFlightoperationsOperation(t *testing.T) {
 			&flightoperationComponentMock{
 				ID:           string(DefaultFlightoperationID1),
 				FlightplanID: string(DefaultFlightplanID1),
+				IsCompleted:  DefaultIsCompleted,
+				Version:      string(DefaultVersion1),
 			},
 		),
 		fope.AssembleFrom(
@@ -147,6 +158,8 @@ func TestListFlightoperationsOperation(t *testing.T) {
 			&flightoperationComponentMock{
 				ID:           string(DefaultFlightoperationID2),
 				FlightplanID: string(DefaultFlightplanID2),
+				IsCompleted:  DefaultIsCompleted,
+				Version:      string(DefaultVersion2),
 			},
 		),
 		fope.AssembleFrom(
@@ -154,12 +167,14 @@ func TestListFlightoperationsOperation(t *testing.T) {
 			&flightoperationComponentMock{
 				ID:           string(DefaultFlightoperationID3),
 				FlightplanID: string(DefaultFlightplanID3),
+				IsCompleted:  DefaultIsCompleted,
+				Version:      string(DefaultVersion3),
 			},
 		),
 	}
 
 	repo := &flightoperationRepositoryMock{}
-	repo.On("GetAll").Return(flightoperations, nil)
+	repo.On("GetAllOperating").Return(flightoperations, nil)
 
 	service := &manageFlightoperationService{
 		gen:  nil,
@@ -244,6 +259,7 @@ func TestCreateFlightoperationOperation(t *testing.T) {
 	gen := &generatorMockFlightoperation{
 		id:           DefaultFlightoperationID,
 		flightplanID: NewID,
+		version:      DefaultVersion,
 	}
 	repo := &flightoperationRepositoryMock{}
 	repo.On("Save", mock.Anything).Return(nil)

@@ -59,10 +59,12 @@ export const useStyles = makeStyles(theme => ({
     bottom: 0,
   },
   funcPanel: {
-    maxWidth: funcWidth
+    minWidth: funcWidth,
+    maxWidth: funcWidth,
   },
   funcPanel2: {
-    maxWidth: funcWidth2
+    minWidth: funcWidth2,
+    maxWidth: funcWidth2,
   },
   funcPanelEdit: {
     background: '#333333',

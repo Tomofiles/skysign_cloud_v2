@@ -21,20 +21,27 @@ import Send from '@material-ui/icons/Send';
 import MapMode from './MapMode';
 import { AppContext } from '../context/Context';
 import { FUNC_MODE } from '../context/FuncMode';
+import { Description } from '@material-ui/icons';
 
 const Menu = (props) => {
   const { funcMode, dispatchFuncMode } = useContext(AppContext);
+  const [ reportsOpen, setReportsOpen ] = useState(false);
   const [ flightsOpen, setFlightsOpen ] = useState(false);
   const [ plansOpen, setPlansOpen ] = useState(false);
   const [ missionsOpen, setMissionsOpen ] = useState(false);
   const [ assetsOpen, setAssetsOpen ] = useState(false);
 
   useEffect(() => {
+    setReportsOpen(funcMode === FUNC_MODE.REPORTS);
     setFlightsOpen(funcMode === FUNC_MODE.FLIGHTS);
     setPlansOpen(funcMode === FUNC_MODE.PLANS);
     setMissionsOpen(funcMode === FUNC_MODE.MISSIONS);
     setAssetsOpen(funcMode === FUNC_MODE.ASSETS);
   }, [ funcMode ])
+
+  const openReports = () => {
+    dispatchFuncMode({ type: 'REPORTS' });
+  }
 
   const openFlights = () => {
     dispatchFuncMode({ type: 'FLIGHTS' });
@@ -79,6 +86,20 @@ const Menu = (props) => {
       <Box px={1} py={2} />
       <List>
         <MapMode classes={props.classes} />
+        <ListItem button onClick={openReports}>
+          <ListItemIcon >
+            <Grid container className={props.classes.menuItem} >
+              <Grid item xs={12} >
+                <Badge color="secondary" variant="dot" invisible={!reportsOpen}>
+                  <Description style={{ color: grey[50] }} fontSize="large" />
+                </Badge>
+              </Grid>
+              <Grid item xs={12}>
+                <Typography align="center" style={{ color: grey[50], fontSize: "6px" }} >Reports</Typography>
+              </Grid>
+            </Grid>
+          </ListItemIcon>
+        </ListItem>
         <ListItem button onClick={openFlights}>
           <ListItemIcon >
             <Grid container className={props.classes.menuItem} >
