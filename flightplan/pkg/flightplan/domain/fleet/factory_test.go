@@ -111,6 +111,9 @@ func TestCreateNonFleetNewFleet(t *testing.T) {
 }
 
 // Fleetのカーボンコピーを作成し、初期状態を検証する。
+// コピーを作成すると、紐づくVehicleとMissionのコピーも作成される。
+// それぞれコピーされたことを表すイベントが配信されることを検証する。
+// なお、イベントの配信順序は順不同となる。
 func TestCopyFleet(t *testing.T) {
 	a := assert.New(t)
 
@@ -220,21 +223,25 @@ func TestCopyFleet(t *testing.T) {
 		missionID:    CopiedMissionID3,
 	}
 
-	expectEvent1 := VehicleCopiedWhenCopiedEvent{
-		OriginalID: DefaultVehicleID1,
-		NewID:      CopiedVehicleID1,
+	expectEvent1 := VehicleCopiedWhenFlightplanCopiedEvent{
+		FlightplanID: id,
+		OriginalID:   DefaultVehicleID1,
+		NewID:        CopiedVehicleID1,
 	}
-	expectEvent2 := VehicleCopiedWhenCopiedEvent{
-		OriginalID: DefaultVehicleID3,
-		NewID:      CopiedVehicleID3,
+	expectEvent2 := VehicleCopiedWhenFlightplanCopiedEvent{
+		FlightplanID: id,
+		OriginalID:   DefaultVehicleID3,
+		NewID:        CopiedVehicleID3,
 	}
-	expectEvent3 := MissionCopiedWhenCopiedEvent{
-		OriginalID: DefaultMissionID1,
-		NewID:      CopiedMissionID1,
+	expectEvent3 := MissionCopiedWhenFlightplanCopiedEvent{
+		FlightplanID: id,
+		OriginalID:   DefaultMissionID1,
+		NewID:        CopiedMissionID1,
 	}
-	expectEvent4 := MissionCopiedWhenCopiedEvent{
-		OriginalID: DefaultMissionID3,
-		NewID:      CopiedMissionID3,
+	expectEvent4 := MissionCopiedWhenFlightplanCopiedEvent{
+		FlightplanID: id,
+		OriginalID:   DefaultMissionID3,
+		NewID:        CopiedMissionID3,
 	}
 
 	a.Equal(fleet.GetID(), CopiedFlightplanID)
@@ -249,11 +256,10 @@ func TestCopyFleet(t *testing.T) {
 	a.Len(fleet.eventPlannings, 3)
 	a.Equal(fleet.eventPlannings, []*EventPlanning{expectEventPlanning1, expectEventPlanning2, expectEventPlanning3})
 	a.Len(pub.events, 4)
-	// a.Equal(pub.events, []interface{}{expectEvent1, expectEvent2, expectEvent3, expectEvent4})
-	a.Equal(pub.events[0], expectEvent1)
-	a.Equal(pub.events[1], expectEvent2)
-	a.Equal(pub.events[2], expectEvent3)
-	a.Equal(pub.events[3], expectEvent4)
+	a.Contains(pub.events, expectEvent1)
+	a.Contains(pub.events, expectEvent2)
+	a.Contains(pub.events, expectEvent3)
+	a.Contains(pub.events, expectEvent4)
 }
 
 // Fleetを構成オブジェクトから組み立て直し、
