@@ -7,10 +7,10 @@ import net.tomofiles.skysign.mission.api.event.event.MissionCopiedWhenFlightplan
 
 public class MissionCopiedWhenFlightplanCopiedEventPb {
 
-    private final proto.skysign.event.MissionCopiedWhenCopiedEvent event;
+    private final proto.skysign.event.MissionCopiedWhenFlightplanCopiedEvent event;
 
     public MissionCopiedWhenFlightplanCopiedEventPb(byte[] message) throws InvalidProtocolBufferException {
-        this.event = proto.skysign.event.MissionCopiedWhenCopiedEvent.parseFrom(message);
+        this.event = proto.skysign.event.MissionCopiedWhenFlightplanCopiedEvent.parseFrom(message);
     }
 
     @Override
@@ -20,6 +20,7 @@ public class MissionCopiedWhenFlightplanCopiedEventPb {
 
     public MissionCopiedWhenFlightplanCopiedEvent getEvent() {
         return new MissionCopiedWhenFlightplanCopiedEvent(
+            this.event.getFlightplanId(),
             this.event.getOriginalMissionId(),
             this.event.getNewMissionId());
     }
