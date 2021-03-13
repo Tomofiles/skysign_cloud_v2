@@ -26,6 +26,7 @@ func CreateNewFlightoperation(
 		FlightplanID: newID,
 	})
 	pub.Publish(FlightplanCopiedWhenCreatedEvent{
+		ID:         flightoperation.GetID(),
 		OriginalID: originalID,
 		NewID:      newID,
 	})

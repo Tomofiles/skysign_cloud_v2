@@ -38,7 +38,7 @@ func TestCreateNewFlightoperationService(t *testing.T) {
 		flightplanID: NewID,
 	}
 	expectEvent1 := CreatedEvent{ID: DefaultID, FlightplanID: NewID}
-	expectEvent2 := FlightplanCopiedWhenCreatedEvent{OriginalID: OriginalID, NewID: NewID}
+	expectEvent2 := FlightplanCopiedWhenCreatedEvent{ID: DefaultID, OriginalID: OriginalID, NewID: NewID}
 
 	a.Len(repo.saveFlightoperations, 1)
 	a.Equal(repo.saveFlightoperations[0], &expectFlightoperation)
