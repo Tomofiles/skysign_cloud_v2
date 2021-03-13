@@ -27,6 +27,7 @@ import static net.tomofiles.skysign.mission.domain.mission.MissionObjectMother.n
 
 public class MissionEventHandlerTests {
     
+    private static final String DEFAULT_FLIGHTPLAN_ID = UUID.randomUUID().toString();
     private static final MissionId ORIGINAL_MISSION_ID = new MissionId(UUID.randomUUID().toString());
     private static final MissionId NEW_MISSION_ID = new MissionId(UUID.randomUUID().toString());
     private static final Version DEFAULT_VERSION = new Version(UUID.randomUUID().toString());
@@ -75,6 +76,7 @@ public class MissionEventHandlerTests {
 
         this.eventHandler.processMissionCopiedWhenFlightplanCopiedEvent(
             newNormalMissionCopiedWhenCopiedEvent(
+                DEFAULT_FLIGHTPLAN_ID,
                 ORIGINAL_MISSION_ID,
                 NEW_MISSION_ID
             ));

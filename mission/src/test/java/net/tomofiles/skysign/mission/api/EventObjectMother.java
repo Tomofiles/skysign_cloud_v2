@@ -7,8 +7,9 @@ public class EventObjectMother {
     /**
      * テスト用MissionCopiedWhenCopiedEventのProtocolBuffersバイナリデータを生成する。
      */
-    public static byte[] newNormalMissionCopiedWhenCopiedEvent(MissionId originalId, MissionId newId) {
-        return proto.skysign.event.MissionCopiedWhenCopiedEvent.newBuilder()
+    public static byte[] newNormalMissionCopiedWhenCopiedEvent(String flightplanId, MissionId originalId, MissionId newId) {
+        return proto.skysign.event.MissionCopiedWhenFlightplanCopiedEvent.newBuilder()
+            .setFlightplanId(flightplanId)
             .setOriginalMissionId(originalId.getId())
             .setNewMissionId(newId.getId())
             .build()

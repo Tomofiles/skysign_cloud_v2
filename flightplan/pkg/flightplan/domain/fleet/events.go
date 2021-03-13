@@ -1,33 +1,47 @@
 package fleet
 
-// VehicleCopiedWhenCopiedEvent .
-type VehicleCopiedWhenCopiedEvent struct {
-	OriginalID VehicleID
-	NewID      VehicleID
+import "flightplan/pkg/flightplan/domain/flightplan"
+
+// VehicleCopiedWhenFlightplanCopiedEvent .
+type VehicleCopiedWhenFlightplanCopiedEvent struct {
+	FlightplanID flightplan.ID
+	OriginalID   VehicleID
+	NewID        VehicleID
+}
+
+// GetFlightplanID .
+func (e *VehicleCopiedWhenFlightplanCopiedEvent) GetFlightplanID() string {
+	return string(e.FlightplanID)
 }
 
 // GetOriginalID .
-func (e *VehicleCopiedWhenCopiedEvent) GetOriginalID() string {
+func (e *VehicleCopiedWhenFlightplanCopiedEvent) GetOriginalID() string {
 	return string(e.OriginalID)
 }
 
 // GetNewID .
-func (e *VehicleCopiedWhenCopiedEvent) GetNewID() string {
+func (e *VehicleCopiedWhenFlightplanCopiedEvent) GetNewID() string {
 	return string(e.NewID)
 }
 
-// MissionCopiedWhenCopiedEvent .
-type MissionCopiedWhenCopiedEvent struct {
-	OriginalID MissionID
-	NewID      MissionID
+// MissionCopiedWhenFlightplanCopiedEvent .
+type MissionCopiedWhenFlightplanCopiedEvent struct {
+	FlightplanID flightplan.ID
+	OriginalID   MissionID
+	NewID        MissionID
+}
+
+// GetFlightplanID .
+func (e *MissionCopiedWhenFlightplanCopiedEvent) GetFlightplanID() string {
+	return string(e.FlightplanID)
 }
 
 // GetOriginalID .
-func (e *MissionCopiedWhenCopiedEvent) GetOriginalID() string {
+func (e *MissionCopiedWhenFlightplanCopiedEvent) GetOriginalID() string {
 	return string(e.OriginalID)
 }
 
 // GetNewID .
-func (e *MissionCopiedWhenCopiedEvent) GetNewID() string {
+func (e *MissionCopiedWhenFlightplanCopiedEvent) GetNewID() string {
 	return string(e.NewID)
 }

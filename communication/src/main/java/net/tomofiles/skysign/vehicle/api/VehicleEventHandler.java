@@ -23,14 +23,14 @@ public class VehicleEventHandler {
     
     private final ManageVehicleService manageVehicleService;
 
-    @Value("${skysign.event.flightplan.vehicle_copied_when_copied_event}")
+    @Value("${skysign.event.flightplan.vehicle_copied_when_flightplan_copied_event}")
     @Setter
     private String EXCHANGE_NAME_COPIED_EVENT;
 
     @RabbitListener(
         bindings = @QueueBinding(
-            value = @Queue(value = "${skysign.event.flightplan.vehicle_copied_when_copied_event}", durable = "false", exclusive = "false", autoDelete = "true"),
-            exchange = @Exchange(value = "${skysign.event.flightplan.vehicle_copied_when_copied_event}", type = "fanout", durable = "false", autoDelete = "true")
+            value = @Queue(value = "${skysign.event.flightplan.vehicle_copied_when_flightplan_copied_event}", durable = "false", exclusive = "false", autoDelete = "true"),
+            exchange = @Exchange(value = "${skysign.event.flightplan.vehicle_copied_when_flightplan_copied_event}", type = "fanout", durable = "false", autoDelete = "true")
         )
     )
     public void processVehicleCopiedWhenFlightplanCopiedEvent(byte[] message) throws Exception {

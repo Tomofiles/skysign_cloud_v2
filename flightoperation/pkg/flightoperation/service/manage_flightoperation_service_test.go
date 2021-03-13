@@ -286,6 +286,7 @@ func TestCreateFlightoperationOperation(t *testing.T) {
 		FlightplanID: NewID,
 	}
 	expectEvent2 := fope.FlightplanCopiedWhenCreatedEvent{
+		ID:         DefaultFlightoperationID,
 		OriginalID: OriginalID,
 		NewID:      NewID,
 	}
