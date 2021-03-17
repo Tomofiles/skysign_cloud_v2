@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 
 import useInterval from 'use-interval';
 import {
@@ -17,10 +17,19 @@ import { OPERATION_MODE } from '../context/OperationMode';
 
 const BridgeVehicleToTelemetry = () => {
   const { vehicles, operationMode, dispatchTelemetries } = useContext(AppContext);
+  const [ isRender, setIsRender ] = useState(false);
+
+  useEffect(() => {
+    if (operationMode === OPERATION_MODE.OPERATION) {
+      setIsRender(true);
+    } else {
+      setIsRender(false);
+      dispatchTelemetries({ type: 'NONE' });
+    }
+  }, [ vehicles, operationMode, dispatchTelemetries ])
 
   useInterval(() => {
-    if (operationMode !== OPERATION_MODE.OPERATION) {
-      dispatchTelemetries({ type: 'NONE' });
+    if (!isRender) {
       return;
     }
     if (vehicles.length === 0) {

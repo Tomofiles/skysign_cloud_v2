@@ -40,10 +40,16 @@ func (e *FlightplanCopiedWhenCreatedEvent) GetNewID() string {
 
 // CompletedEvent .
 type CompletedEvent struct {
-	ID ID
+	ID           ID
+	FlightplanID FlightplanID
 }
 
 // GetID .
 func (e *CompletedEvent) GetID() string {
 	return string(e.ID)
+}
+
+// GetFlightplanID .
+func (e *CompletedEvent) GetFlightplanID() string {
+	return string(e.FlightplanID)
 }

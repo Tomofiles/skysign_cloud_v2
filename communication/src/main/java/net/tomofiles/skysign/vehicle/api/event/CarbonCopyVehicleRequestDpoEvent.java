@@ -2,6 +2,7 @@ package net.tomofiles.skysign.vehicle.api.event;
 
 import lombok.RequiredArgsConstructor;
 import net.tomofiles.skysign.vehicle.api.event.event.VehicleCopiedWhenFlightplanCopiedEvent;
+import net.tomofiles.skysign.vehicle.domain.vehicle.FlightplanId;
 import net.tomofiles.skysign.vehicle.domain.vehicle.VehicleId;
 import net.tomofiles.skysign.vehicle.service.dpo.CarbonCopyVehicleRequestDpo;
 
@@ -18,6 +19,11 @@ public class CarbonCopyVehicleRequestDpoEvent implements CarbonCopyVehicleReques
     @Override
     public VehicleId getNewId() {
         return new VehicleId(event.getNewId());
+    }
+
+    @Override
+    public FlightplanId getFlightplanId() {
+        return new FlightplanId(event.getFlightplanId());
     }
 
 }

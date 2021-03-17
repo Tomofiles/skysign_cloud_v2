@@ -23,3 +23,15 @@ export async function getReport(id) {
     console.log(error);
   }
 }
+
+export async function getTrajectory(id) {
+  try {
+    const res = await axios
+      .get(`/api/v1/actions/${id}/trajectory`, {
+        params: {}
+      })
+    return res.data;
+  } catch(error) {
+    console.log(error);
+  }
+}

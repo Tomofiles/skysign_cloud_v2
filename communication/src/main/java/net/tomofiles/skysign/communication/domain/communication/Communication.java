@@ -11,6 +11,8 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import net.tomofiles.skysign.communication.event.EmptyPublisher;
+import net.tomofiles.skysign.communication.event.Publisher;
 
 @EqualsAndHashCode(of = {"id"})
 @ToString
@@ -30,6 +32,9 @@ public class Communication {
     @Getter(value = AccessLevel.PACKAGE)
     private final List<UploadMission> uploadMissions;
 
+    @Setter
+    private Publisher publisher = new EmptyPublisher();
+    
     Communication(CommunicationId id, Generator generator) {
         this.id = id;
         this.commands = new ArrayList<>();
@@ -53,6 +58,13 @@ public class Communication {
                         snapshot.getY(),
                         snapshot.getZ(),
                         snapshot.getW());
+
+        this.publisher.publish(
+            new TelemetryUpdatedEvent(
+                this.id,
+                snapshot
+            )
+        );
     }
 
     public TelemetrySnapshot pullTelemetry() {

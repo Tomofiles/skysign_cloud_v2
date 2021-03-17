@@ -18,6 +18,7 @@ import java.util.function.Supplier;
 import net.tomofiles.skysign.vehicle.domain.vehicle.Generator;
 import net.tomofiles.skysign.vehicle.domain.vehicle.Vehicle;
 import net.tomofiles.skysign.vehicle.domain.vehicle.Version;
+import net.tomofiles.skysign.vehicle.event.Publisher;
 import net.tomofiles.skysign.vehicle.domain.vehicle.VehicleId;
 import net.tomofiles.skysign.vehicle.domain.vehicle.VehicleRepository;
 import net.tomofiles.skysign.vehicle.service.ManageVehicleService;
@@ -44,6 +45,9 @@ public class VehicleEventHandlerTests {
             }
         };
     };
+
+    @Mock
+    private Publisher publisher;
 
     @Mock
     private VehicleRepository repository;

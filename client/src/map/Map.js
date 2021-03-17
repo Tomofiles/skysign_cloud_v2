@@ -18,6 +18,7 @@ import MapDragAndDropEvent from './MapDragAndDropEvent';
 import SceneMode from './SceneMode'
 import Missions from './Missions';
 import CameraCurrentPosition from './CameraCurrentPosition';
+import Trajectories from './Trajectories';
 
 const imageryProvider = new IonImageryProvider({ assetId: 2 });
 
@@ -45,6 +46,7 @@ const Map = (props) => {
         <CameraCurrentPosition />
       </Camera>
       <Drones />
+      <Trajectories />
       <Missions />
       <EditMission />
       <ScreenSpaceEventHandler >

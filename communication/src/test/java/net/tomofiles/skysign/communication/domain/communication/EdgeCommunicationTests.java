@@ -5,7 +5,11 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 
+import net.tomofiles.skysign.communication.event.Publisher;
+
 import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
@@ -70,6 +74,9 @@ public class EdgeCommunicationTests {
     };
 
     @Mock
+    private Publisher publisher;
+
+    @Mock
     private CommunicationRepository repository;
 
     @BeforeEach
@@ -80,6 +87,7 @@ public class EdgeCommunicationTests {
     /**
      * Edgeが、既存のCommunicationエンティティのTelemetryを更新する。<br>
      * すべてのTelemetryのフィールドが更新されることを検証する。
+     * Telemetryが更新されたことを表すイベントが発行されることを検証する。
      */
     @Test
     public void pushTelemetryToCommunicationTest() {
@@ -90,9 +98,19 @@ public class EdgeCommunicationTests {
 
         Communication communication = this.repository.getById(DEFAULT_COMMUNICATION_ID);
 
+        communication.setPublisher(this.publisher);
         communication.pushTelemetry(newNormalTelemetrySnapshot());
 
-        assertThat(communication.getTelemetry()).isEqualTo(newNormalTelemetry());
+        TelemetryUpdatedEvent event
+                = new TelemetryUpdatedEvent(
+                    DEFAULT_COMMUNICATION_ID,
+                    newNormalTelemetrySnapshot()
+                );
+
+        assertAll(
+            () -> assertThat(communication.getTelemetry()).isEqualTo(newNormalTelemetry()),
+            () -> verify(this.publisher, times(1)).publish(event)
+        );
     }
 
     /**

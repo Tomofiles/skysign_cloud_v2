@@ -23,6 +23,7 @@ func PublishFlightoperationCompletedEvent(
 
 	eventPb := skysign_proto.FlightoperationCompletedEvent{
 		FlightoperationId: event.GetID(),
+		FlightplanId:      event.GetFlightplanID(),
 	}
 	eventBin, err := proto.Marshal(&eventPb)
 	if err != nil {

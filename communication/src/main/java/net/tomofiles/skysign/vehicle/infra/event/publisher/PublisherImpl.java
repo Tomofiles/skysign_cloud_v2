@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 import net.tomofiles.skysign.vehicle.event.Event;
 import net.tomofiles.skysign.vehicle.event.Publisher;
 
-@Component
+@Component("vehicle-publisher-impl")
 public class PublisherImpl implements ApplicationEventPublisherAware, Publisher {
 
     private ApplicationEventPublisher publisher;

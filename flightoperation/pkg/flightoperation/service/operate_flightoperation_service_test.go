@@ -109,7 +109,8 @@ func TestCompleteFlightoperationOperation(t *testing.T) {
 	)
 
 	expectEvent := fope.CompletedEvent{
-		ID: DefaultFlightoperationID,
+		ID:           DefaultFlightoperationID,
+		FlightplanID: DefaultFlightplanID,
 	}
 	a.Nil(ret)
 	a.Len(pub.events, 1)

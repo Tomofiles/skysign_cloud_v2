@@ -97,9 +97,11 @@ public class ManageVehicleService {
     @Transactional
     public void carbonCopyVehicle(CarbonCopyVehicleRequestDpo requestDpo) {
         CarbonCopyVehicleService.copy(
-            this.generator, 
+            this.generator,
+            this.publisher,
             this.vehicleRepository, 
             requestDpo.getOriginalId(), 
-            requestDpo.getNewId());
+            requestDpo.getNewId(),
+            requestDpo.getFlightplanId());
     }
 }
