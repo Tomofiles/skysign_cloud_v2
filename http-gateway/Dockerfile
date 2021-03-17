@@ -25,3 +25,4 @@ COPY --from=build /go/bin/comm-gateway .
 COPY --from=build /go/bin/flightplan-gateway .
 COPY --from=build /go/bin/flightoperation-gateway .
 COPY --from=build /go/bin/flightreport-gateway .
+COPY --from=build /go/bin/action-gateway .
