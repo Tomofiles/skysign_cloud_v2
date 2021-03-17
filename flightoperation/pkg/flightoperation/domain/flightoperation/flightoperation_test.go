@@ -67,7 +67,8 @@ func TestPublishCompletedEventWhenCompleteFlightoperation(t *testing.T) {
 	err := flightoperation.Complete()
 
 	expectEvent := CompletedEvent{
-		ID: DefaultID,
+		ID:           DefaultID,
+		FlightplanID: DefaultFlightplanID,
 	}
 
 	a.Equal(flightoperation.isCompleted, Completed)

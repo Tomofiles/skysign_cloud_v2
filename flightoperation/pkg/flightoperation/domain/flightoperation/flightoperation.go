@@ -69,7 +69,8 @@ func (f *Flightoperation) Complete() error {
 	}
 	if f.pub != nil {
 		f.pub.Publish(CompletedEvent{
-			ID: f.id,
+			ID:           f.id,
+			FlightplanID: f.flightplanID,
 		})
 	}
 	f.isCompleted = Completed
