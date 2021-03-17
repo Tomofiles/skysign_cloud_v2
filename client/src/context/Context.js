@@ -14,6 +14,7 @@ import { initialAssignments, assignmentsReducer } from './Assignments';
 import { initialFlightplan, flightplanReducer } from './Flightplan';
 import { initialSteps, stepsReducer } from './Steps';
 import { initialFlightreport, flightreportReducer } from './Flightreport';
+import { initialTrajectories, trajectoriesReducer } from './Trajectories';
 
 import BridgeFlightreportToFlightoperation from '../context_bridge/BridgeFlightreportToFlightoperation';
 import BridgeAssignmentToMission from '../context_bridge/BridgeAssignmentToMission';
@@ -21,6 +22,8 @@ import BridgeAssignmentToVehicle from '../context_bridge/BridgeAssignmentToVehic
 import BridgeFlightoperationToFlightplanAndAssignment from '../context_bridge/BridgeFlightoperationToFlightplanAndAssignment';
 import BridgeVehicleToStep from '../context_bridge/BridgeVehicleToStep';
 import BridgeVehicleToTelemetry from '../context_bridge/BridgeVehicleToTelemetry';
+import BridgeVehicleToReportsTrajectory from '../context_bridge/BridgeVehicleToReportsTrajectory';
+import BridgeVehicleToOperationTrajectory from '../context_bridge/BridgeVehicleToOperationTrajectory';
 
 export const AppContext = createContext();
 
@@ -32,6 +35,7 @@ const AppContextProvider = ({children}) => {
   const [ vehicles, dispatchVehicles ] = useReducer(vehiclesReducer, initialVehicles);
   const [ missions, dispatchMissions ] = useReducer(missionsReducer, initialMissions);
   const [ telemetries, dispatchTelemetries ] = useReducer(telemetriesReducer, initialTelemetries);
+  const [ trajectories, dispatchTrajectories ] = useReducer(trajectoriesReducer, initialTrajectories);
   const [ steps, dispatchSteps ] = useReducer(stepsReducer, initialSteps);
   const [ editMission, dispatchEditMission ] = useReducer(editMissionReducer, initialEditMission);
   const [ editMode, dispatchEditMode ] = useReducer(editModeReducer, initialEditMode);
@@ -57,6 +61,8 @@ const AppContextProvider = ({children}) => {
         dispatchMissions,
         telemetries,
         dispatchTelemetries,
+        trajectories,
+        dispatchTrajectories,
         steps,
         dispatchSteps,
         editMission,
@@ -79,6 +85,8 @@ const AppContextProvider = ({children}) => {
       <BridgeAssignmentToVehicle />
       <BridgeVehicleToStep />
       <BridgeVehicleToTelemetry />
+      <BridgeVehicleToOperationTrajectory />
+      <BridgeVehicleToReportsTrajectory />
     </AppContext.Provider>
   )
 }
