@@ -10,6 +10,7 @@ import net.tomofiles.skysign.communication.domain.communication.CommandType;
 import net.tomofiles.skysign.communication.domain.communication.Communication;
 import net.tomofiles.skysign.communication.domain.communication.CommunicationRepository;
 import net.tomofiles.skysign.communication.domain.communication.MissionId;
+import net.tomofiles.skysign.communication.event.Publisher;
 import net.tomofiles.skysign.communication.service.dpo.PullCommandRequestDpo;
 import net.tomofiles.skysign.communication.service.dpo.PullCommandResponseDpo;
 import net.tomofiles.skysign.communication.service.dpo.PullUploadMissionRequestDpo;
@@ -21,6 +22,7 @@ import net.tomofiles.skysign.communication.service.dpo.PushTelemetryResponseDpo;
 @AllArgsConstructor
 public class CommunicateEdgeService {
 
+    private final Publisher publisher;
     private final CommunicationRepository communicationRepository;
 
     @Transactional
@@ -33,6 +35,7 @@ public class CommunicateEdgeService {
 
         responseDpo.setCommunication(communication);
 
+        communication.setPublisher(this.publisher);
         communication.pushTelemetry(requestDpo.getTelemetry());
         
         List<CommandId> commandIds = communication.getCommandIds();

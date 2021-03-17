@@ -1,13 +1,13 @@
-package net.tomofiles.skysign.vehicle.infra.event.publisher;
+package net.tomofiles.skysign.communication.infra.event.publisher;
 
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.ApplicationEventPublisherAware;
 import org.springframework.stereotype.Component;
 
-import net.tomofiles.skysign.vehicle.event.Event;
-import net.tomofiles.skysign.vehicle.event.Publisher;
+import net.tomofiles.skysign.communication.event.Event;
+import net.tomofiles.skysign.communication.event.Publisher;
 
-@Component("vehicle-publisher-impl")
+@Component("communication-publisher-impl")
 public class PublisherImpl implements ApplicationEventPublisherAware, Publisher {
 
     private ApplicationEventPublisher publisher;

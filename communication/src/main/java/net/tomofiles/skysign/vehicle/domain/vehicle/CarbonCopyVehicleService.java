@@ -1,11 +1,15 @@
 package net.tomofiles.skysign.vehicle.domain.vehicle;
 
+import net.tomofiles.skysign.vehicle.event.Publisher;
+
 public class CarbonCopyVehicleService {
     public static void copy(
         Generator generator,
+        Publisher publisher,
         VehicleRepository repository,
         VehicleId originalId,
-        VehicleId newId
+        VehicleId newId,
+        FlightplanId flightplanId
     ) {
         Vehicle newVehicle = repository.getById(newId);
 
@@ -23,5 +27,12 @@ public class CarbonCopyVehicleService {
 
         repository.save(copy);
 
+        publisher.publish(
+            new CopiedVehicleCreatedEvent(
+                copy.getId(),
+                copy.getCommId(),
+                flightplanId
+            )
+        );
     }
 }
