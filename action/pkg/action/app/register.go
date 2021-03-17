@@ -1,8 +1,9 @@
 package app
 
 import (
-	"action/pkg/action/domain/event"
+	"action/pkg/action/adapters/postgresql"
 	"action/pkg/action/domain/txmanager"
+	"action/pkg/action/service"
 	"context"
 )
 
@@ -10,17 +11,19 @@ import (
 func NewApplication(
 	ctx context.Context,
 	txm txmanager.TransactionManager,
-	psm event.PubSubManager,
 ) Application {
-	return newApplication(ctx, txm, psm)
+	return newApplication(ctx, txm)
 }
 
 func newApplication(
 	ctx context.Context,
 	txm txmanager.TransactionManager,
-	psm event.PubSubManager,
 ) Application {
+	repo := postgresql.NewActionRepository()
 	return Application{
-		Services: Services{},
+		Services: Services{
+			ManageAction:  service.NewManageActionService(repo, txm),
+			OperateAction: service.NewOperateActionService(repo, txm),
+		},
 	}
 }
