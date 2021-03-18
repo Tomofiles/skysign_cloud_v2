@@ -60,6 +60,15 @@ services:
     ports:
       - 54326:5432
 
+  skysign-vehicle-db-for-debugging:
+    container_name: skysign-vehicle-db
+    hostname: skysign-vehicle-db
+    build:
+      context: ../../skysign-db/vehicle-db
+      dockerfile: Dockerfile
+    ports:
+      - 54327:5432
+
   skysign-mq-for-debugging:
     container_name: skysign-mq
     hostname: skysign-mq
@@ -80,9 +89,24 @@ services:
      - db.host=skysign-communication-db
      - mq.host=skysign-mq
      - mq.ssl.enabled=false
-    command: java -cp app:app/lib/* net.tomofiles.skysign.CommunicationApplication
+    command: java -cp app:app/lib/* net.tomofiles.skysign.communication.CommunicationApplication
     depends_on:
       - skysign-communication-db-for-debugging
+      - skysign-mq-for-debugging
+
+  skysign-vehicle-backend-for-debugging:
+    container_name: skysign-vehicle-backend
+    hostname: skysign-vehicle-backend
+    build:
+      context: ../../vehicle
+      dockerfile: Dockerfile
+    environment:
+     - db.host=skysign-vehicle-db
+     - mq.host=skysign-mq
+     - mq.ssl.enabled=false
+    command: java -cp app:app/lib/* net.tomofiles.skysign.vehicle.VehicleApplication
+    depends_on:
+      - skysign-vehicle-db-for-debugging
       - skysign-mq-for-debugging
 
   skysign-mission-backend-for-debugging:
@@ -179,9 +203,9 @@ services:
     build:
       context: ../../http-gateway
       dockerfile: Dockerfile
-    command: /app/vehicle-gateway -backend_host skysign-communication-backend -backend_port 5001
+    command: /app/vehicle-gateway -backend_host skysign-vehicle-backend -backend_port 5001
     depends_on:
-      - skysign-communication-backend-for-debugging
+      - skysign-vehicle-backend-for-debugging
 
   skysign-mission-gateway-for-debugging:
     container_name: skysign-mission-gateway
