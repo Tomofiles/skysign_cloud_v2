@@ -1,6 +1,6 @@
 package net.tomofiles.skysign.vehicle.api;
 
-import net.tomofiles.skysign.communication.domain.communication.CommunicationId;
+import net.tomofiles.skysign.vehicle.domain.vehicle.CommunicationId;
 import net.tomofiles.skysign.vehicle.domain.vehicle.VehicleId;
 import proto.skysign.common.Vehicle;
 
