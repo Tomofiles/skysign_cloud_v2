@@ -1,0 +1,93 @@
+// To render:
+// https://dreampuf.github.io/GraphvizOnline/
+digraph G {
+    rankdir = LR;
+    
+    Vehicle [label="Vehicle"]
+    VehicleExchange1 [label="- Exchange -\n<vehicle>\ncommunication_id gave event", shape=Box];
+    VehicleExchange2 [label="- Exchange -\n<vehicle>\ncommunication_id removed event", shape=Box];
+    VehicleExchange3 [label="- Exchange -\n<vehicle>\ncopied vehicle created event", shape=Box];
+    VehicleQueue1 [label="- Queue -\n<flightplan>\nvehicle copied when flightplan copied event", shape=cylinder];
+    
+    Communication [label="Communication"]
+    CommunicationExchange1 [label="- Exchange -\n<communication>\ntelemetry updated event", shape=Box];
+    CommunicationQueue1 [label="- Queue -\n<vehicle>\ncommunication_id gave event", shape=cylinder];
+    CommunicationQueue2 [label="- Queue -\n<vehicle>\ncommunication_id removed event", shape=cylinder];
+    
+    Action [label="Action"]
+    ActionQueue1 [label="- Queue -\n<vehicle>\ncopied vehicle created event", shape=cylinder];
+    ActionQueue2 [label="- Queue -\n<communication>\ntelemetry updated event", shape=cylinder];
+    ActionQueue3 [label="- Queue -\n<flightoperation>\nflightoperation completed event", shape=cylinder];
+    
+    Mission [label="Mission"]
+    MissionQueue1 [label="- Queue -\n<flightplan>\nmission copied when flightplan copied event", shape=cylinder];
+    
+    Flightplan [label="Flightplan"]
+    FlightplanExchange1 [label="- Exchange -\n<flightplan>\nflightplan created event", shape=Box];
+    FlightplanExchange2 [label="- Exchange -\n<flightplan>\nflightplan deleted event", shape=Box];
+    FlightplanExchange3 [label="- Exchange -\n<flightplan>\nflightplan copied event", shape=Box];
+    FlightplanExchange4 [label="- Exchange -\n<flightplan>\nvehicle copied when flightplan copied event", shape=Box];
+    FlightplanExchange5 [label="- Exchange -\n<flightplan>\nmission copied when flightplan copied event", shape=Box];
+    FlightplanQueue1 [label="- Queue -\n<flightplan>\nflightplan created event", shape=cylinder];
+    FlightplanQueue2 [label="- Queue -\n<flightplan>\nflightplan deleted event", shape=cylinder];
+    FlightplanQueue3 [label="- Queue -\n<flightplan>\nflightplan copied event", shape=cylinder];
+    FlightplanQueue4 [label="- Queue -\n<flightoperation>\nflightplan copied when flightoperation created event", shape=cylinder];
+    
+    Flightoperation [label="Flightoperation"]
+    FlightoperationExchange1 [label="- Exchange -\n<flightoperation>\nflightoperation created event", shape=Box];
+    FlightoperationExchange2 [label="- Exchange -\n<flightoperation>\nflightoperation completed event", shape=Box];
+    FlightoperationExchange3 [label="- Exchange -\n<flightoperation>\nflightplan copied when flightoperation created event", shape=Box];
+    
+    Flightreport [label="Flightreport"]
+    FlightreportQueue1 [label="- Queue -\n<flightoperation>\nflightoperation completed event", shape=cylinder];
+    
+    Vehicle -> VehicleExchange1;
+    Vehicle -> VehicleExchange2;
+    Vehicle -> VehicleExchange3;
+    Vehicle -> VehicleQueue1;
+    
+    Communication -> CommunicationExchange1;
+    Communication -> CommunicationQueue1;
+    Communication -> CommunicationQueue2;
+    
+    Mission -> MissionQueue1;
+    
+    Flightplan -> FlightplanExchange1;
+    Flightplan -> FlightplanExchange2;
+    Flightplan -> FlightplanExchange3;
+    Flightplan -> FlightplanExchange4;
+    Flightplan -> FlightplanExchange5;
+    Flightplan -> FlightplanQueue1;
+    Flightplan -> FlightplanQueue2;
+    Flightplan -> FlightplanQueue3;
+    Flightplan -> FlightplanQueue4;
+    
+    Action -> ActionQueue1;
+    Action -> ActionQueue2;
+    Action -> ActionQueue3;
+    
+    Flightoperation -> FlightoperationExchange1;
+    Flightoperation -> FlightoperationExchange2;
+    Flightoperation -> FlightoperationExchange3;
+    
+    Flightreport -> FlightreportQueue1;
+    
+    VehicleQueue1 -> FlightplanExchange4;
+    
+    CommunicationQueue1 -> VehicleExchange1;
+    CommunicationQueue2 -> VehicleExchange2;
+    
+    MissionQueue1 -> FlightplanExchange5;
+    
+    ActionQueue1 -> VehicleExchange3;
+    ActionQueue2 -> CommunicationExchange1;
+    
+    FlightplanQueue1 -> FlightplanExchange1;
+    FlightplanQueue2 -> FlightplanExchange2;
+    FlightplanQueue3 -> FlightplanExchange3;
+    FlightplanQueue4 -> FlightoperationExchange3;
+    
+    FlightreportQueue1 -> FlightoperationExchange2;
+    
+    ActionQueue3 -> FlightoperationExchange2;
+}
