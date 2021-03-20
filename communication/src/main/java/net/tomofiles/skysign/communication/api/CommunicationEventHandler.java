@@ -25,36 +25,36 @@ public class CommunicationEventHandler {
     
     private final ManageCommunicationService manageCommunicationService;
 
-    @Value("${skysign.event.communication_id_gave_event}")
+    @Value("${skysign.event.queue.communication_id_gave_event}")
     @Setter
-    private String EXCHANGE_NAME_GAVE_EVENT;
+    private String QUEUE_NAME_GAVE_EVENT;
 
-    @Value("${skysign.event.communication_id_removed_event}")
+    @Value("${skysign.event.queue.communication_id_removed_event}")
     @Setter
-    private String EXCHANGE_NAME_REMOVED_EVENT;
+    private String QUEUE_NAME_REMOVED_EVENT;
 
     @RabbitListener(
         bindings = @QueueBinding(
-            value = @Queue(value = "${skysign.event.communication_id_gave_event}", durable = "false", exclusive = "false", autoDelete = "true"),
-            exchange = @Exchange(value = "${skysign.event.communication_id_gave_event}", type = "fanout", durable = "false", autoDelete = "true")
+            value = @Queue(value = "${skysign.event.queue.communication_id_gave_event}", durable = "false", exclusive = "false", autoDelete = "true"),
+            exchange = @Exchange(value = "${skysign.event.exchange.communication_id_gave_event}", type = "fanout", durable = "false", autoDelete = "true")
         )
     )
     public void processCommunicationIdGaveEvent(byte[] message) throws Exception {
         CommunicationIdGaveEventPb eventPb = new CommunicationIdGaveEventPb(message);
-        logger.info("RECEIVE , Event: {}, Message: {}", EXCHANGE_NAME_GAVE_EVENT, eventPb);
+        logger.info("RECEIVE , Event: {}, Message: {}", QUEUE_NAME_GAVE_EVENT, eventPb);
         CreateCommunicationRequestDpoEvent requestDpo = new CreateCommunicationRequestDpoEvent(eventPb.getEvent());
         this.manageCommunicationService.createCommunication(requestDpo, communication -> {/** 何もしない */});
     }
 
     @RabbitListener(
         bindings = @QueueBinding(
-            value = @Queue(value = "${skysign.event.communication_id_removed_event}", durable = "false", exclusive = "false", autoDelete = "true"),
-            exchange = @Exchange(value = "${skysign.event.communication_id_removed_event}", type = "fanout", durable = "false", autoDelete = "true")
+            value = @Queue(value = "${skysign.event.queue.communication_id_removed_event}", durable = "false", exclusive = "false", autoDelete = "true"),
+            exchange = @Exchange(value = "${skysign.event.exchange.communication_id_removed_event}", type = "fanout", durable = "false", autoDelete = "true")
         )
     )
     public void processCommunicationIdRemovedEvent(byte[] message) throws Exception {
         CommunicationIdRemovedEventPb eventPb = new CommunicationIdRemovedEventPb(message);
-        logger.info("RECEIVE , Event: {}, Message: {}", EXCHANGE_NAME_REMOVED_EVENT, eventPb);
+        logger.info("RECEIVE , Event: {}, Message: {}", QUEUE_NAME_REMOVED_EVENT, eventPb);
         DeleteCommunicationRequestDpoEvent requestDpo = new DeleteCommunicationRequestDpoEvent(eventPb.getEvent());
         this.manageCommunicationService.deleteCommunication(requestDpo, communication -> {/** 何もしない */});
     }
