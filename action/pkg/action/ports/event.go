@@ -44,7 +44,7 @@ func (h *EventHandler) HandleCopiedVehicleCreatedEvent(
 		return err
 	}
 
-	glog.Infof("RECEIVE , Event: %s, Message: %s", CopiedVehicleCreatedEventExchangeName, eventPb.String())
+	glog.Infof("RECEIVE , Event: %s, Message: %s", CopiedVehicleCreatedEventQueueName, eventPb.String())
 
 	requestDpo := createRequestDpoHolder{event: &eventPb}
 	if ret := h.app.Services.ManageAction.CreateAction(&requestDpo); ret != nil {
@@ -63,7 +63,7 @@ func (h *EventHandler) HandleFlightoperationCompletedEvent(
 		return err
 	}
 
-	glog.Infof("RECEIVE , Event: %s, Message: %s", FlightoperationCompletedEventExchangeName, eventPb.String())
+	glog.Infof("RECEIVE , Event: %s, Message: %s", FlightoperationCompletedEventQueueName, eventPb.String())
 
 	requestDpo := completeRequestDpoHolder{event: &eventPb}
 	if ret := h.app.Services.OperateAction.CompleteAction(&requestDpo); ret != nil {
@@ -82,7 +82,7 @@ func (h *EventHandler) HandleTelemetryUpdatedEvent(
 		return err
 	}
 
-	glog.Infof("RECEIVE , Event: %s, Message: %s", TelemetryUpdatedEventExchangeName, eventPb.String())
+	glog.Infof("RECEIVE , Event: %s, Message: %s", TelemetryUpdatedEventQueueName, eventPb.String())
 
 	requestDpo := pushTelemetryRequestDpoHolder{event: &eventPb}
 	if ret := h.app.Services.OperateAction.PushTelemetry(&requestDpo); ret != nil {

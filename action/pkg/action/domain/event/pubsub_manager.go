@@ -5,7 +5,7 @@ import "context"
 // PubSubManager .
 type PubSubManager interface {
 	GetPublisher() (Publisher, ChannelClose, error)
-	SetConsumer(ctx context.Context, exchangeName string, handler Handler) error
+	SetConsumer(ctx context.Context, exchangeName, queueName string, handler Handler) error
 }
 
 // ChannelClose .
