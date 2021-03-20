@@ -12,6 +12,8 @@ import (
 const (
 	// FlightoperationCompletedEventExchangeName .
 	FlightoperationCompletedEventExchangeName = "flightoperation.flightoperation_completed_event"
+	// FlightoperationCompletedEventQueueName .
+	FlightoperationCompletedEventQueueName = "flightreport.flightoperation_completed_event"
 )
 
 // EventHandler .
@@ -34,7 +36,7 @@ func (h *EventHandler) HandleFlightoperationCompletedEvent(
 		return err
 	}
 
-	glog.Infof("RECEIVE , Event: %s, Message: %s", FlightoperationCompletedEventExchangeName, eventPb.String())
+	glog.Infof("RECEIVE , Event: %s, Message: %s", FlightoperationCompletedEventQueueName, eventPb.String())
 
 	requestDpo := flightoperationIDRequestDpoHolder{id: eventPb.GetFlightoperationId()}
 	if ret := h.app.Services.ManageFlightreport.CreateFlightreport(&requestDpo); ret != nil {

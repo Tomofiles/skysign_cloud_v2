@@ -27,8 +27,8 @@ public class CommunicationEventHandlerTests {
     
     private static final CommunicationId DEFAULT_COMMUNICATION_ID = new CommunicationId(UUID.randomUUID().toString());
     private static final String DEFAULT_VERSION = UUID.randomUUID().toString();
-    private static final String EXCHANGE_NAME_GAVE_EVENT = "exchange_name_gave_event";
-    private static final String EXCHANGE_NAME_REMOVED_EVENT = "exchange_name_removed_event";
+    private static final String QUEUE_NAME_GAVE_EVENT = "queue_name_gave_event";
+    private static final String QUEUE_NAME_REMOVED_EVENT = "queue_name_removed_event";
 
     @Mock
     private CommunicationRepository repository;
@@ -43,8 +43,8 @@ public class CommunicationEventHandlerTests {
         initMocks(this);
 
         this.eventHandler = new CommunicationEventHandler(this.service);
-        this.eventHandler.setEXCHANGE_NAME_GAVE_EVENT(EXCHANGE_NAME_GAVE_EVENT);
-        this.eventHandler.setEXCHANGE_NAME_REMOVED_EVENT(EXCHANGE_NAME_REMOVED_EVENT);
+        this.eventHandler.setQUEUE_NAME_GAVE_EVENT(QUEUE_NAME_GAVE_EVENT);
+        this.eventHandler.setQUEUE_NAME_REMOVED_EVENT(QUEUE_NAME_REMOVED_EVENT);
     }
 
     /**

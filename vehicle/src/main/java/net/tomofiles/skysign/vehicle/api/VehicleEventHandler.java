@@ -23,19 +23,19 @@ public class VehicleEventHandler {
     
     private final ManageVehicleService manageVehicleService;
 
-    @Value("${skysign.event.flightplan.vehicle_copied_when_flightplan_copied_event}")
+    @Value("${skysign.event.queue.vehicle_copied_when_flightplan_copied_event}")
     @Setter
-    private String EXCHANGE_NAME_COPIED_EVENT;
+    private String QUEUE_NAME_COPIED_EVENT;
 
     @RabbitListener(
         bindings = @QueueBinding(
-            value = @Queue(value = "${skysign.event.flightplan.vehicle_copied_when_flightplan_copied_event}", durable = "false", exclusive = "false", autoDelete = "true"),
-            exchange = @Exchange(value = "${skysign.event.flightplan.vehicle_copied_when_flightplan_copied_event}", type = "fanout", durable = "false", autoDelete = "true")
+            value = @Queue(value = "${skysign.event.queue.vehicle_copied_when_flightplan_copied_event}", durable = "false", exclusive = "false", autoDelete = "true"),
+            exchange = @Exchange(value = "${skysign.event.exchange.vehicle_copied_when_flightplan_copied_event}", type = "fanout", durable = "false", autoDelete = "true")
         )
     )
     public void processVehicleCopiedWhenFlightplanCopiedEvent(byte[] message) throws Exception {
         VehicleCopiedWhenFlightplanCopiedEventPb eventPb = new VehicleCopiedWhenFlightplanCopiedEventPb(message);
-        logger.info("RECEIVE , Event: {}, Message: {}", EXCHANGE_NAME_COPIED_EVENT, eventPb);
+        logger.info("RECEIVE , Event: {}, Message: {}", QUEUE_NAME_COPIED_EVENT, eventPb);
         CarbonCopyVehicleRequestDpoEvent requestDpo = new CarbonCopyVehicleRequestDpoEvent(eventPb.getEvent());
         this.manageVehicleService.carbonCopyVehicle(requestDpo);
     }

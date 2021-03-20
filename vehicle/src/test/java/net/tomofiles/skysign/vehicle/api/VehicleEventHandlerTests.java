@@ -32,7 +32,7 @@ public class VehicleEventHandlerTests {
     private static final VehicleId ORIGINAL_VEHICLE_ID = new VehicleId(UUID.randomUUID().toString());
     private static final VehicleId NEW_VEHICLE_ID = new VehicleId(UUID.randomUUID().toString());
     private static final Version DEFAULT_VERSION = new Version(UUID.randomUUID().toString());
-    private static final String EXCHANGE_NAME_COPIED_EVENT = "exchange_name_copied_event";
+    private static final String QUEUE_NAME_COPIED_EVENT = "queue_name_copied_event";
     private static final Supplier<Generator> DEFAULT_GENERATOR = () -> {
         return new Generator(){
             @Override
@@ -62,7 +62,7 @@ public class VehicleEventHandlerTests {
         initMocks(this);
 
         this.eventHandler = new VehicleEventHandler(this.service);
-        this.eventHandler.setEXCHANGE_NAME_COPIED_EVENT(EXCHANGE_NAME_COPIED_EVENT);
+        this.eventHandler.setQUEUE_NAME_COPIED_EVENT(QUEUE_NAME_COPIED_EVENT);
     }
 
     /**

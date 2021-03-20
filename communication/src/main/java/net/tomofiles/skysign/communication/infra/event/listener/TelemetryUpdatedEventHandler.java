@@ -21,7 +21,7 @@ public class TelemetryUpdatedEventHandler {
     
     private final RabbitTemplate rabbitTemplate;
 
-    @Value("${skysign.event.telemetry_updated_event}")
+    @Value("${skysign.event.exchange.telemetry_updated_event}")
     @Setter
     private String EXCHANGE_NAME;
 

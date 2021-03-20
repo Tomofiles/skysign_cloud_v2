@@ -31,7 +31,7 @@ public class MissionEventHandlerTests {
     private static final MissionId ORIGINAL_MISSION_ID = new MissionId(UUID.randomUUID().toString());
     private static final MissionId NEW_MISSION_ID = new MissionId(UUID.randomUUID().toString());
     private static final Version DEFAULT_VERSION = new Version(UUID.randomUUID().toString());
-    private static final String EXCHANGE_NAME_COPIED_EVENT = "exchange_name_copied_event";
+    private static final String QUEUE_NAME_COPIED_EVENT = "queue_name_copied_event";
     private static final Supplier<Generator> DEFAULT_GENERATOR = () -> {
         return new Generator(){
             @Override
@@ -58,7 +58,7 @@ public class MissionEventHandlerTests {
         initMocks(this);
 
         this.eventHandler = new MissionEventHandler(this.service);
-        this.eventHandler.setEXCHANGE_NAME_COPIED_EVENT(EXCHANGE_NAME_COPIED_EVENT);
+        this.eventHandler.setQUEUE_NAME_COPIED_EVENT(QUEUE_NAME_COPIED_EVENT);
     }
 
     /**

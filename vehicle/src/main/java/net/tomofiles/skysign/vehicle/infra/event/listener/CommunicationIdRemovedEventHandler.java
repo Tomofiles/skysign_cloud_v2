@@ -21,7 +21,7 @@ public class CommunicationIdRemovedEventHandler {
     
     private final RabbitTemplate rabbitTemplate;
 
-    @Value("${skysign.event.communication_id_removed_event}")
+    @Value("${skysign.event.exchange.communication_id_removed_event}")
     @Setter
     private String EXCHANGE_NAME;
 

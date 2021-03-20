@@ -211,7 +211,7 @@ func (psm *pubSubManagerMock) GetPublisher() (event.Publisher, event.ChannelClos
 	return pub, close, ret.Error(2)
 }
 
-func (psm *pubSubManagerMock) SetConsumer(ctx context.Context, exchangeName string, handler event.Handler) error {
+func (psm *pubSubManagerMock) SetConsumer(ctx context.Context, exchangeName, queueName string, handler event.Handler) error {
 	return nil
 }
 

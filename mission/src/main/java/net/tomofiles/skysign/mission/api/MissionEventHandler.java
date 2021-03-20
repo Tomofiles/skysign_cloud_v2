@@ -23,19 +23,19 @@ public class MissionEventHandler {
     
     private final ManageMissionService manageMissionService;
 
-    @Value("${skysign.event.flightplan.mission_copied_when_flightplan_copied_event}")
+    @Value("${skysign.event.queue.mission_copied_when_flightplan_copied_event}")
     @Setter
-    private String EXCHANGE_NAME_COPIED_EVENT;
+    private String QUEUE_NAME_COPIED_EVENT;
 
     @RabbitListener(
         bindings = @QueueBinding(
-            value = @Queue(value = "${skysign.event.flightplan.mission_copied_when_flightplan_copied_event}", durable = "false", exclusive = "false", autoDelete = "true"),
-            exchange = @Exchange(value = "${skysign.event.flightplan.mission_copied_when_flightplan_copied_event}", type = "fanout", durable = "false", autoDelete = "true")
+            value = @Queue(value = "${skysign.event.queue.mission_copied_when_flightplan_copied_event}", durable = "false", exclusive = "false", autoDelete = "true"),
+            exchange = @Exchange(value = "${skysign.event.exchange.mission_copied_when_flightplan_copied_event}", type = "fanout", durable = "false", autoDelete = "true")
         )
     )
     public void processMissionCopiedWhenFlightplanCopiedEvent(byte[] message) throws Exception {
         MissionCopiedWhenFlightplanCopiedEventPb eventPb = new MissionCopiedWhenFlightplanCopiedEventPb(message);
-        logger.info("RECEIVE , Event: {}, Message: {}", EXCHANGE_NAME_COPIED_EVENT, eventPb);
+        logger.info("RECEIVE , Event: {}, Message: {}", QUEUE_NAME_COPIED_EVENT, eventPb);
         CarbonCopyMissionRequestDpoEvent requestDpo = new CarbonCopyMissionRequestDpoEvent(eventPb.getEvent());
         this.manageMissionService.carbonCopyMission(requestDpo);
     }

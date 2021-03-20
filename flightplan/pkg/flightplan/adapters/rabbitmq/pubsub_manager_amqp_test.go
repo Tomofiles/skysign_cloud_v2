@@ -46,6 +46,7 @@ func TestSetConsumer(t *testing.T) {
 	ctx := context.Background()
 
 	excName := "exchange-name"
+	queName := "queue-name"
 	msg := []byte("receive-message")
 	var msgResult []byte
 
@@ -61,6 +62,7 @@ func TestSetConsumer(t *testing.T) {
 	err := psm.SetConsumer(
 		ctx,
 		excName,
+		queName,
 		func(b []byte) {
 			msgResult = b
 		},
@@ -79,6 +81,7 @@ func TestChannelCloseWhenMessageChClose(t *testing.T) {
 	ctx := context.Background()
 
 	excName := "exchange-name"
+	queName := "queue-name"
 	var msgResult []byte
 
 	var wg sync.WaitGroup
@@ -99,6 +102,7 @@ func TestChannelCloseWhenMessageChClose(t *testing.T) {
 	err := psm.SetConsumer(
 		ctx,
 		excName,
+		queName,
 		func(b []byte) {
 			msgResult = b
 		},
@@ -119,6 +123,7 @@ func TestChannelCloseWhenContextCancel(t *testing.T) {
 	ctx, cancel := context.WithCancel(context.Background())
 
 	excName := "exchange-name"
+	queName := "queue-name"
 	var msgResult []byte
 
 	var wg sync.WaitGroup
@@ -139,6 +144,7 @@ func TestChannelCloseWhenContextCancel(t *testing.T) {
 	err := psm.SetConsumer(
 		ctx,
 		excName,
+		queName,
 		func(b []byte) {
 			msgResult = b
 		},
@@ -159,6 +165,7 @@ func TestFanoutExchangeDeclareErrorWhenSetConsumer(t *testing.T) {
 	ctx := context.Background()
 
 	excName := "exchange-name"
+	queName := "queue-name"
 	var msgResult []byte
 	errSC := errors.New("set consumer error")
 
@@ -174,6 +181,7 @@ func TestFanoutExchangeDeclareErrorWhenSetConsumer(t *testing.T) {
 	err := psm.SetConsumer(
 		ctx,
 		excName,
+		queName,
 		func(b []byte) {
 			msgResult = b
 		},
@@ -190,6 +198,7 @@ func TestQueueDeclareAndBindErrorWhenSetConsumer(t *testing.T) {
 	ctx := context.Background()
 
 	excName := "exchange-name"
+	queName := "queue-name"
 	var msgResult []byte
 	errSC := errors.New("set consumer error")
 
@@ -205,6 +214,7 @@ func TestQueueDeclareAndBindErrorWhenSetConsumer(t *testing.T) {
 	err := psm.SetConsumer(
 		ctx,
 		excName,
+		queName,
 		func(b []byte) {
 			msgResult = b
 		},
@@ -221,6 +231,7 @@ func TestConsumeErrorWhenSetConsumer(t *testing.T) {
 	ctx := context.Background()
 
 	excName := "exchange-name"
+	queName := "queue-name"
 	var msgResult []byte
 	errSC := errors.New("set consumer error")
 
@@ -235,6 +246,7 @@ func TestConsumeErrorWhenSetConsumer(t *testing.T) {
 	err := psm.SetConsumer(
 		ctx,
 		excName,
+		queName,
 		func(b []byte) {
 			msgResult = b
 		},
