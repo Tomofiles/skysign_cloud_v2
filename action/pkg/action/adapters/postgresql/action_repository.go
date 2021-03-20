@@ -60,7 +60,7 @@ func (r *ActionRepository) GetAllActiveByFlightplanID(
 
 	var actionRecords []*Action
 
-	if err := txGorm.Where("flightplan_id = ?", string(flightplanID)).Find(&actionRecords).Error; err != nil {
+	if err := txGorm.Where("flightplan_id = ? AND is_completed = false", string(flightplanID)).Find(&actionRecords).Error; err != nil {
 		return nil, err
 	}
 
@@ -93,7 +93,7 @@ func (r *ActionRepository) GetActiveByCommunicationID(
 	actionRecord := Action{}
 	var trajectoryPointRecords []*TrajectoryPoint
 
-	if err := txGorm.Limit(1).Find(&actionRecord, "communication_id = ?", string(communicationID)).Error; err != nil {
+	if err := txGorm.Limit(1).Find(&actionRecord, "communication_id = ? AND is_completed = false", string(communicationID)).Error; err != nil {
 		return nil, err
 	}
 	if actionRecord.ID == "" {

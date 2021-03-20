@@ -132,7 +132,7 @@ func TestActionRepositoryGetSingleWhenGetAllActiveByFlightplanID(t *testing.T) {
 
 	mock.
 		ExpectQuery(
-			regexp.QuoteMeta(`SELECT * FROM "actions" WHERE flightplan_id = $1`)).
+			regexp.QuoteMeta(`SELECT * FROM "actions" WHERE flightplan_id = $1 AND is_completed = false`)).
 		WithArgs(DefaultActionFlightplanID).
 		WillReturnRows(
 			sqlmock.NewRows([]string{"id", "communication_id", "flightplan_id", "is_completed"}).
@@ -226,7 +226,7 @@ func TestActionRepositoryGetMultipleWhenGetAllActiveByFlightplanID(t *testing.T)
 
 	mock.
 		ExpectQuery(
-			regexp.QuoteMeta(`SELECT * FROM "actions" WHERE flightplan_id = $1`)).
+			regexp.QuoteMeta(`SELECT * FROM "actions" WHERE flightplan_id = $1 AND is_completed = false`)).
 		WithArgs(DefaultActionFlightplanID).
 		WillReturnRows(
 			sqlmock.NewRows([]string{"id", "communication_id", "flightplan_id", "is_completed"}).
@@ -431,7 +431,7 @@ func TestActionRepositoryGetNoneWhenGetAllActiveByFlightplanID(t *testing.T) {
 
 	mock.
 		ExpectQuery(
-			regexp.QuoteMeta(`SELECT * FROM "actions" WHERE flightplan_id = $1`)).
+			regexp.QuoteMeta(`SELECT * FROM "actions" WHERE flightplan_id = $1 AND is_completed = false`)).
 		WithArgs(DefaultActionFlightplanID).
 		WillReturnRows(
 			sqlmock.NewRows([]string{"id", "communication_id", "flightplan_id", "is_completed"}),
@@ -458,7 +458,7 @@ func TestActionRepositoryGetActiveByCommunicationID(t *testing.T) {
 
 	mock.
 		ExpectQuery(
-			regexp.QuoteMeta(`SELECT * FROM "actions" WHERE communication_id = $1`)).
+			regexp.QuoteMeta(`SELECT * FROM "actions" WHERE communication_id = $1 AND is_completed = false`)).
 		WithArgs(DefaultActionCommunicationID).
 		WillReturnRows(
 			sqlmock.NewRows([]string{"id", "communication_id", "flightplan_id", "is_completed"}).
@@ -545,7 +545,7 @@ func TestActionRepositoryNotFoundWhenGetActiveByCommunicationID(t *testing.T) {
 
 	mock.
 		ExpectQuery(
-			regexp.QuoteMeta(`SELECT * FROM "actions" WHERE communication_id = $1`)).
+			regexp.QuoteMeta(`SELECT * FROM "actions" WHERE communication_id = $1 AND is_completed = false`)).
 		WithArgs(DefaultActionCommunicationID).
 		WillReturnRows(
 			sqlmock.NewRows([]string{"id", "communication_id", "flightplan_id", "is_completed"}),
