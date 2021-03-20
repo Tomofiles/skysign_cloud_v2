@@ -53,6 +53,7 @@ func run() error {
 	psm.SetConsumer(
 		ctx,
 		ports.FlightoperationCompletedEventExchangeName,
+		ports.FlightoperationCompletedEventQueueName,
 		func(event []byte) {
 			if err := evt.HandleFlightoperationCompletedEvent(ctx, event); err != nil {
 				glog.Error(err)
