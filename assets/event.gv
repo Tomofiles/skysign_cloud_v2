@@ -7,33 +7,33 @@ digraph G {
     VehicleExchange1 [label="- Exchange -\n<vehicle>\ncommunication_id gave event", shape=Box];
     VehicleExchange2 [label="- Exchange -\n<vehicle>\ncommunication_id removed event", shape=Box];
     VehicleExchange3 [label="- Exchange -\n<vehicle>\ncopied vehicle created event", shape=Box];
-    VehicleQueue1 [label="- Queue -\n<flightplan>\nvehicle copied when flightplan copied event", shape=cylinder];
+    VehicleQueue1 [label="- Queue -\n<vehicle>\nvehicle copied when flightplan copied event", shape=cylinder];
     
     Communication [label="Communication"]
     CommunicationExchange1 [label="- Exchange -\n<communication>\ntelemetry updated event", shape=Box];
-    CommunicationQueue1 [label="- Queue -\n<vehicle>\ncommunication_id gave event", shape=cylinder];
-    CommunicationQueue2 [label="- Queue -\n<vehicle>\ncommunication_id removed event", shape=cylinder];
+    CommunicationQueue1 [label="- Queue -\n<communication>\ncommunication_id gave event", shape=cylinder];
+    CommunicationQueue2 [label="- Queue -\n<communication>\ncommunication_id removed event", shape=cylinder];
     
     Action [label="Action"]
-    ActionQueue1 [label="- Queue -\n<vehicle>\ncopied vehicle created event", shape=cylinder];
-    ActionQueue2 [label="- Queue -\n<communication>\ntelemetry updated event", shape=cylinder];
-    ActionQueue3 [label="- Queue -\n<flightoperation>\nflightoperation completed event", shape=cylinder];
+    ActionQueue1 [label="- Queue -\n<action>\ncopied vehicle created event", shape=cylinder];
+    ActionQueue2 [label="- Queue -\n<action>\ntelemetry updated event", shape=cylinder];
+    ActionQueue3 [label="- Queue -\n<action>\nflightoperation completed event", shape=cylinder];
     
     Mission [label="Mission"]
-    MissionQueue1 [label="- Queue -\n<flightplan>\nmission copied when flightplan copied event", shape=cylinder];
+    MissionQueue1 [label="- Queue -\n<mission>\nmission copied when flightplan copied event", shape=cylinder];
     
     Flightplan [label="Flightplan"]
     FlightplanExchange1 [label="- Exchange -\n<flightplan>\nflightplan created event", shape=Box];
     FlightplanExchange2 [label="- Exchange -\n<flightplan>\nflightplan deleted event", shape=Box];
     FlightplanExchange3 [label="- Exchange -\n<flightplan>\nflightplan copied event", shape=Box];
-    FlightplanQueue1 [label="- Queue -\n<flightoperation>\nflightplan copied when flightoperation created event", shape=cylinder];
+    FlightplanQueue1 [label="- Queue -\n<flightplan>\nflightplan copied when flightoperation created event", shape=cylinder];
 
     Fleet [label="Fleet"]
-    FleetExchange1 [label="- Exchange -\n<flightplan>\nvehicle copied when flightplan copied event", shape=Box];
-    FleetExchange2 [label="- Exchange -\n<flightplan>\nmission copied when flightplan copied event", shape=Box];
-    FleetQueue1 [label="- Queue -\n<flightplan>\nflightplan created event", shape=cylinder];
-    FleetQueue2 [label="- Queue -\n<flightplan>\nflightplan deleted event", shape=cylinder];
-    FleetQueue3 [label="- Queue -\n<flightplan>\nflightplan copied event", shape=cylinder];
+    FleetExchange1 [label="- Exchange -\n<fleet>\nvehicle copied when flightplan copied event", shape=Box];
+    FleetExchange2 [label="- Exchange -\n<fleet>\nmission copied when flightplan copied event", shape=Box];
+    FleetQueue1 [label="- Queue -\n<fleet>\nflightplan created event", shape=cylinder];
+    FleetQueue2 [label="- Queue -\n<fleet>\nflightplan deleted event", shape=cylinder];
+    FleetQueue3 [label="- Queue -\n<fleet>\nflightplan copied event", shape=cylinder];
     
     Flightoperation [label="Flightoperation"]
     FlightoperationExchange1 [label="- Exchange -\n<flightoperation>\nflightoperation created event", shape=Box];
@@ -41,7 +41,7 @@ digraph G {
     FlightoperationExchange3 [label="- Exchange -\n<flightoperation>\nflightplan copied when flightoperation created event", shape=Box];
     
     Flightreport [label="Flightreport"]
-    FlightreportQueue1 [label="- Queue -\n<flightoperation>\nflightoperation completed event", shape=cylinder];
+    FlightreportQueue1 [label="- Queue -\n<flightreport>\nflightoperation completed event", shape=cylinder];
     
     Vehicle -> VehicleExchange1;
     Vehicle -> VehicleExchange2;
