@@ -21,7 +21,7 @@ public class CommunicationIdGaveEventHandler {
     
     private final RabbitTemplate rabbitTemplate;
 
-    @Value("${skysign.event.communication_id_gave_event}")
+    @Value("${skysign.event.exchange.communication_id_gave_event}")
     @Setter
     private String EXCHANGE_NAME;
 

@@ -21,7 +21,7 @@ public class CopiedVehicleCreatedEventHandler {
     
     private final RabbitTemplate rabbitTemplate;
 
-    @Value("${skysign.event.copied_vehicle_created_event}")
+    @Value("${skysign.event.exchange.copied_vehicle_created_event}")
     @Setter
     private String EXCHANGE_NAME;
 
