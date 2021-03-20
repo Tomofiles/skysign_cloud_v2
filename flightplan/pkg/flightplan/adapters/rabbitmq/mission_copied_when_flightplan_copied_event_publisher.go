@@ -8,7 +8,7 @@ import (
 	"google.golang.org/protobuf/proto"
 )
 
-const missionCopiedWhenFlightplanCopiedEventExchangeName = "flightplan.mission_copied_when_flightplan_copied_event"
+const missionCopiedWhenFlightplanCopiedEventExchangeName = "fleet.mission_copied_when_flightplan_copied_event"
 
 // PublishMissionCopiedWhenFlightplanCopiedEvent .
 func PublishMissionCopiedWhenFlightplanCopiedEvent(

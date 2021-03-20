@@ -12,12 +12,20 @@ import (
 const (
 	// FlightplanCreatedEventExchangeName .
 	FlightplanCreatedEventExchangeName = "flightplan.flightplan_created_event"
+	// FlightplanCreatedEventQueueName .
+	FlightplanCreatedEventQueueName = "fleet.flightplan_created_event"
 	// FlightplanDeletedEventExchangeName .
 	FlightplanDeletedEventExchangeName = "flightplan.flightplan_deleted_event"
+	// FlightplanDeletedEventQueueName .
+	FlightplanDeletedEventQueueName = "fleet.flightplan_deleted_event"
 	// FlightplanCopiedEventExchangeName .
 	FlightplanCopiedEventExchangeName = "flightplan.flightplan_copied_event"
+	// FlightplanCopiedEventQueueName .
+	FlightplanCopiedEventQueueName = "fleet.flightplan_copied_event"
 	// FlightplanCopiedWhenFlightoperationCreatedEventExchangeName .
 	FlightplanCopiedWhenFlightoperationCreatedEventExchangeName = "flightoperation.flightplan_copied_when_flightoperation_created_event"
+	// FlightplanCopiedWhenFlightoperationCreatedEventQueueName .
+	FlightplanCopiedWhenFlightoperationCreatedEventQueueName = "flightplan.flightplan_copied_when_flightoperation_created_event"
 )
 
 // EventHandler .
@@ -40,7 +48,7 @@ func (h *EventHandler) HandleCreatedEvent(
 		return err
 	}
 
-	glog.Infof("RECEIVE , Event: %s, Message: %s", FlightplanCreatedEventExchangeName, eventPb.String())
+	glog.Infof("RECEIVE , Event: %s, Message: %s", FlightplanCreatedEventQueueName, eventPb.String())
 
 	requestDpo := flightplanIDRequestDpoHolder{id: eventPb.GetFlightplanId()}
 	if ret := h.app.Services.ManageFleet.CreateFleet(&requestDpo); ret != nil {
@@ -59,7 +67,7 @@ func (h *EventHandler) HandleDeletedEvent(
 		return err
 	}
 
-	glog.Infof("RECEIVE , Event: %s, Message: %s", FlightplanDeletedEventExchangeName, eventPb.String())
+	glog.Infof("RECEIVE , Event: %s, Message: %s", FlightplanDeletedEventQueueName, eventPb.String())
 
 	requestDpo := flightplanIDRequestDpoHolder{id: eventPb.GetFlightplanId()}
 	if ret := h.app.Services.ManageFleet.DeleteFleet(&requestDpo); ret != nil {
@@ -78,7 +86,7 @@ func (h *EventHandler) HandleCopiedEvent(
 		return err
 	}
 
-	glog.Infof("RECEIVE , Event: %s, Message: %s", FlightplanCopiedEventExchangeName, eventPb.String())
+	glog.Infof("RECEIVE , Event: %s, Message: %s", FlightplanCopiedEventQueueName, eventPb.String())
 
 	requestDpo := copyRequestDpoHolder{
 		originalID: eventPb.GetOriginalFlightplanId(),
@@ -100,7 +108,7 @@ func (h *EventHandler) HandleCopiedWhenFlightoperationCreatedEvent(
 		return err
 	}
 
-	glog.Infof("RECEIVE , Event: %s, Message: %s", FlightplanCopiedWhenFlightoperationCreatedEventExchangeName, eventPb.String())
+	glog.Infof("RECEIVE , Event: %s, Message: %s", FlightplanCopiedWhenFlightoperationCreatedEventQueueName, eventPb.String())
 
 	requestDpo := copyRequestDpoHolder{
 		originalID: eventPb.GetOriginalFlightplanId(),

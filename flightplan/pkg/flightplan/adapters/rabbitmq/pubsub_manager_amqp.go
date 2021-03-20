@@ -28,7 +28,7 @@ func (psm *PubSubManager) GetPublisher() (event.Publisher, event.ChannelClose, e
 }
 
 // SetConsumer .
-func (psm *PubSubManager) SetConsumer(ctx context.Context, exchangeName string, handler event.Handler) error {
+func (psm *PubSubManager) SetConsumer(ctx context.Context, exchangeName, queueName string, handler event.Handler) error {
 	ch, close, err := getChannel(psm.conn)
 	if err != nil {
 		return err
@@ -40,8 +40,6 @@ func (psm *PubSubManager) SetConsumer(ctx context.Context, exchangeName string, 
 		close()
 		return err
 	}
-
-	var queueName = exchangeName
 
 	if err = ch.QueueDeclareAndBind(
 		exchangeName,
