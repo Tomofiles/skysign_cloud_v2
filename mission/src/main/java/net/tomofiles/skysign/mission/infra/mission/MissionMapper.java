@@ -47,7 +47,7 @@ public interface MissionMapper {
     @Update("UPDATE mission SET "
             + "name = #{name}, "
             + "takeoff_point_ground_height_wgs84_ellipsoid_m = #{takeoffPointGroundHeightWGS84EllipsoidM}, "
-            + "is_carbon_copy = #{is_carbon_copy}, "
+            + "is_carbon_copy = #{isCarbonCopy}, "
             + "version = #{newVersion} "
             + "WHERE id = #{id} AND version = #{version}")
     void update(MissionRecord mission);
