@@ -91,15 +91,22 @@ public class Communication {
     }
 
     public CommandId pushCommand(CommandType commandType) {
-        CommandId id = this.generator.newCommandId();
-        LocalDateTime time = this.generator.newTime();
-        this.commands.add(new Command(id, commandType, time));
-        return id;
+        if (ArmCommandPushPolicy.isFollow(commandType, this)) {
+            this.pushCommandDo(CommandType.ARM);
+        }
+        return this.pushCommandDo(commandType);
     }
 
     public CommandId pushUploadMission(MissionId missionId) {
-        CommandId id = this.pushCommand(CommandType.UPLOAD);
+        CommandId id = this.pushCommandDo(CommandType.UPLOAD);
         this.uploadMissions.add(new UploadMission(id, missionId));
+        return id;
+    }
+
+    CommandId pushCommandDo(CommandType commandType) {
+        CommandId id = this.generator.newCommandId();
+        LocalDateTime time = this.generator.newTime();
+        this.commands.add(new Command(id, commandType, time));
         return id;
     }
 
