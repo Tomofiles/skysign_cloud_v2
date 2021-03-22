@@ -1,9 +1,13 @@
 # Skysign Cloud (version 2)
 
-Skysignは、ウェブブラウザから簡潔なUIで、ドローンの飛行制御・監視が行えるプラットフォームです。  
+Skysignは、Webブラウザから簡潔なUIで、ドローンの飛行制御・監視が行えるプラットフォームです。  
 このリポジトリは、[Skysign Cloud β版](https://github.com/Tomofiles/skysign_cloud)と同等の機能を、
 新しいアーキテクチャで刷新したものです。
 
+Skysignは、ドローンをインターネットに接続し、遠隔地からでもドローンのフライトを操作することができ、  
+飛行の計画や実績の作成および管理を行うことができる、Webサービス・プラットフォームです。
+
+## version 2の狙い
 version 2の狙いは、β版をスケールしていく際に発覚した、いくつかの課題を解消することです。
 - websocket、server-sent eventsと、コンテナ系マネージドサービスとの相性の悪さ
 - websocket、server-sent eventsによる、スケールアウト実現の難化
@@ -21,7 +25,10 @@ OSSコミュニティです。
 
 ## コンセプト
 Skysignが提供する各種コンポーネントと、コンポーネント間のコミュニケーションの概要については、
-[こちら](concepts.md)をご覧ください。
+[こちら](./contents/concepts.md)をご覧ください。
+
+また、DDD(ドメイン駆動設計)による、ドローン領域のドメイン・モデルの構築に関する、  
+技術的な説明とプラクティスについては、[こちら](./contents/domain_models.md)に公開しています。
 
 ## アーキテクチャ概要
 ### Overview
@@ -54,11 +61,11 @@ gRPCにて提供されるビジネスロジックと中継するサーバーコ�
 [React](https://ja.reactjs.org/)をベース、[Material-UI](https://material-ui.com/)をビュー、
 [Cesium](https://cesium.com/cesiumjs/)を地図エンジンに利用し、直感的なUIを構築して提供します。
 
-### Mission/Communication/Flightplan backend
+### Business backend
 Skysignが提供するビジネスロジックおよびエンティティを提供するコンポーネント。
 [Spring Boot](https://spring.io/projects/spring-boot)をベースに、
 DDD(ドメイン駆動設計)を採用したマイクロサービス・アーキテクチャを目指しています。  
-現在、段階的にJavaからGolangに移行中（現在、Flightplanのみ）。
+現在、段階的にJavaからGolangに移行中。
 
 ### PostgreSQL (DB)
 ビジネスロジックを支えるエンティティを格納するデータベース。
