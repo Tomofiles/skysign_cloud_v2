@@ -12,7 +12,7 @@ Skysignの`Cloud`のBackendを構成する各種コンポーネントは、水�
 期待しています。
 
 ## 目次
-[【導入編】ドローンというビジネスでソフトウェアが何を解決するのか](./domain_models/01_introduction.md)
+[【導入編】ドローン・ソフトウェアが解決するもの](./domain_models/01_introduction.md)
 
 [【本編1】ドローンの機体との遠隔コミュニケーション](./domain_models/02_main_paper_1.md)
 
