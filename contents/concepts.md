@@ -69,11 +69,11 @@ Skysignでは、ポーリングでコマンドをクラウドに問い合わせ�
 以下のシーケンス図は、ユーザーのビークル・エンティティの作成、および、コマンドの発行と、
 ドローンのコマンドの発見と同期を、図示したものです。
 
-![](assets/generated/commands_and_telemetry.png)
+![](../assets/generated/commands_and_telemetry.png)
 
 また、ユーザーとドローン間のミッションの転送に関するシーケンスも、以下に示します。
 
-![](assets/generated/commands_and_mission.png)
+![](../assets/generated/commands_and_mission.png)
 
 ### 課題
 現状、発見と同期のコンセプトは有効ではありますが、問題を含んでいます。
