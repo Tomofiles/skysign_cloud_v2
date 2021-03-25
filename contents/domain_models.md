@@ -18,7 +18,7 @@ Skysignの`Cloud`のBackendを構成する各種コンポーネントは、水�
 
 [【本編2】ウェイポイント飛行というドローンの重要任務](./domain_models/03_main_paper_2.md)
 
-[【本編3】飛行の計画とドメイン間の依存関係](./domain_models/04_main_paper_3.md)
+[【本編3】飛行の計画とドメイン間の参照関係](./domain_models/04_main_paper_3.md)
 
 [【本編4】飛行の実行と依存リソースのカーボンコピー](./domain_models/05_main_paper_4.md)
 
