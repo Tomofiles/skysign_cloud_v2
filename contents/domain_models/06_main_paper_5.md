@@ -9,9 +9,9 @@
 Skysignでは`トラジェクトリー`と呼ぶ（航空管制用語の軌道ベース運航から流用）
 
 以下の画像は、オープンソースGCSのQGCのスクリーンショット（公式より転載）で、
-赤い先が飛行軌跡を表すトラジェクトリーにあたる。
+赤い線が飛行軌跡を表すトラジェクトリーにあたる。
 
-![](https://mavsdk.mavlink.io/develop/assets/examples/fly_mission/fly_mission_example_qgc.jpg)
+![qgc-images](https://mavsdk.mavlink.io/develop/assets/examples/fly_mission/fly_mission_example_qgc.jpg)
 
 ## どのコンテキスト境界の役割？
 飛行実績は、オペレーション中のユーザーやドローンの行動の履歴のようなもので、

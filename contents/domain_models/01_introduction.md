@@ -23,7 +23,7 @@ GCSは、パイロットがドローンの状態を把握するためにも使�
 パイロットからドローンに向けて、飛行の指示を送信することもできます。
 
 以下は、オープンソースのGCSの一つである[QGC](http://qgroundcontrol.com/)の
-スクリーンショットです。
+スクリーンショット（公式より転載）です。
 ![qgc-images](https://docs.qgroundcontrol.com/assets/quickstart/ConnectedVehicle.jpg)
 
 画像中央やや右よりに、赤い三角形が見えますが、これがドローンの現在位置です。  
