@@ -38,7 +38,7 @@
 集約ルートとなる飛行オペレーション・エンティティ（Flightoperation）は、
 下図のように飛行計画・エンティティを参照するだけのエンティティです。
 
-![domain_models_flightoperation](./images/domain_models_flightoperation.png)
+![domain_models_flightoperation](https://user-images.githubusercontent.com/27773127/113295219-e2580800-9332-11eb-9edf-6664e2e981b7.png)
 
 このままのモデリングでは、前述の通り、飛行オペレーションの状態は、
 **飛行計画の変更の影響を大きく受けて**しまいます。
@@ -54,7 +54,7 @@ Skysignでは、後者のイミュータブルなリソースの概念を採用�
 飛行オペレーションおよび飛行計画とその依存リソースに、このルールを適用したイメージを、
 以下の図に表現しました。
 
-![domain_models_flightoperation-resource-copy](./images/domain_models_flightoperation-resource-copy.png)
+![domain_models_flightoperation-resource-copy](https://user-images.githubusercontent.com/27773127/113295264-f26fe780-9332-11eb-93c5-06b7c16632d1.png)
 
 飛行計画を実行する際に、飛行オペレーションのリソースを作成します。  
 その際、対象となる飛行計画を指定しますが、直接参照させず、**すべての依存リソースの**
@@ -71,7 +71,7 @@ Skysignでは、後者のイミュータブルなリソースの概念を採用�
 コピーおよび識別子の採番は、以下の図のように、ドメインイベントの送受信で、
 関連するコンテキスト境界内外に伝播していき、非同期でコピーをしていきます。
 
-![domain_models_flightoperation-and-saga](./images/domain_models_flightoperation-and-saga.png)
+![domain_models_flightoperation-and-saga](https://user-images.githubusercontent.com/27773127/113295302-0287c700-9333-11eb-8c7d-66f21058b27f.png)
 
 これは、コンテキスト境界の統合のパターンとして紹介されている、**「Sagaパターン」**
 という考え方を取り入れたものです。

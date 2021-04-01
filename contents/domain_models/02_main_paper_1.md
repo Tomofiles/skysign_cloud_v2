@@ -23,7 +23,7 @@ Skysignのコア・ドメインとなりそうです。
 コマンドとテレメトリー、ドローン、ユーザー（パイロット）の関係を図示すると、
 以下のようになります。
 
-![domain_models_command-and-telemetry](./images/domain_models_command-and-telemetry.png)
+![domain_models_command-and-telemetry](https://user-images.githubusercontent.com/27773127/113294315-cacc4f80-9331-11eb-9d04-4cbf9eef0fa7.png)
 
 ドローンの機体（Vehicle）を、識別と追跡が可能なエンティティとして設け、
 機体を集約ルートとして、テレメトリーとコマンドを集約に含めます。
@@ -57,7 +57,7 @@ Skysignのコア・ドメインとなりそうです。
 同一エンティティを、異なるロック方法でデータ整合性を担保するのは困難であり、
 どちらかのロック方式に統一しなければならないでしょう。  
 
-![domain_models_lock-conflict](./images/domain_models_lock-conflict.png)
+![domain_models_lock-conflict](https://user-images.githubusercontent.com/27773127/113294391-e0417980-9331-11eb-8854-4acb1f283b6a.png)
 
 ## アイデンティティとステートを分離するというプラクティス
 この問題に対処するためには、集約ルートを分割する必要があります。
@@ -66,7 +66,7 @@ Skysignのコア・ドメインとなりそうです。
 追加したのは、コミュニケーション・エンティティ（Communication）です。
 以下の図は、集約ルートが機体とコミュニケーションに分割されたことを表しています。
 
-![domain_models_devision-aggregate-root](./images/domain_models_devision-aggregate-root.png)
+![domain_models_devision-aggregate-root](https://user-images.githubusercontent.com/27773127/113294438-f3544980-9331-11eb-9a43-e9dad66517eb.png)
 
 コミュニケーション・エンティティは、ドローンとの通信を抽象化したもので、
 コマンドの送受信、テレメトリーの送受信など、**ドローンとの意思疎通を管理**する

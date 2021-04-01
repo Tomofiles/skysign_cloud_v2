@@ -16,7 +16,7 @@ Skysignでは、ウェイポイント・ミッションのみ対応している�
 ユーザーが作成したミッションを、ドローンがフライトコントローラーに書き込むために
 クラウドから取得する図を以下に示します。
 
-![domain_models_mission](./images/domain_models_mission.png)
+![domain_models_mission](https://user-images.githubusercontent.com/27773127/113294547-1252db80-9332-11eb-97ee-5bea0b887921.png)
 
 ミッション・エンティティ（Mission）を集約ルートとすることで、
 ユーザーとドローンはお互いに識別子だけ知っていれば、
@@ -28,7 +28,7 @@ Skysignでは、ウェイポイント・ミッションのみ対応している�
 それを考えるにあたり、ユーザーがドローンにコマンドをデリバリーするシーケンスを、
 いま一度確認してみましょう。
 
-![domain_models_command-delivery](./images/domain_models_command-delivery.png)
+![domain_models_command-delivery](https://user-images.githubusercontent.com/27773127/113294601-28f93280-9332-11eb-893c-86aeb9d45ebc.png)
 
 ユーザーからドローンへのコマンドのデリバリーは、コミュニケーション・エンティティの
 役割になります。  
@@ -53,7 +53,7 @@ Skysignでは、ウェイポイント・ミッションのみ対応している�
 ドメイン・モデルとして、少し**凝集度が低い**モデルとなる気がします。  
 （状況によっては、これでも問題ない可能性はありますね）
 
-![domain_models_mission-delivery-1](./images/domain_models_mission-delivery-1.png)
+![domain_models_mission-delivery-1](https://user-images.githubusercontent.com/27773127/113294668-43331080-9332-11eb-8210-3caa1d44341c.png)
 
 そこで、Skysignではコミュニケーション・エンティティに、**UploadMission**という、
 新しいモデルを追加しました。  
@@ -61,7 +61,7 @@ Skysignでは、ウェイポイント・ミッションのみ対応している�
 これにより、Uploadというコマンド区分の場合のみ存在するミッションの識別子を、
 **コマンドの関心事から分離**でき、それぞれのオブジェクトの凝集度が上がります。
 
-![domain_models_mission-delivery-2](./images/domain_models_mission-delivery-2.png)
+![domain_models_mission-delivery-2](https://user-images.githubusercontent.com/27773127/113294720-547c1d00-9332-11eb-991b-64205730e286.png)
 
 ドローン側から見ると、
 1. テレメトリーをクラウドに送信

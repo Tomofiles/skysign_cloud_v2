@@ -6,7 +6,7 @@ Skysignを理解するためには、まずはドローンとその周辺状況�
 
 ## ドローンと地上局(GCS)
 ドローンの簡単な構成図を以下に示します。
-![drone-component-basic](./images/drone-component-basic.png)
+![drone-component-basic](https://user-images.githubusercontent.com/27773127/113294045-7f19a600-9331-11eb-9ac8-16ac7691b376.png)
 
 ドローンは、基本的には、プロポと呼ばれるコントローラーで操縦します。  
 ドローン本体には、フライトコントローラーと呼ばれる、いわゆるドローンの頭脳にあたる機器が
@@ -38,7 +38,7 @@ QGCのスクリーンショットには、数字付きのオレンジ色のポ�
 ウェイポイント・ミッションは、以下の図のように、GCSで飛行経路を作成し、
 無線でフライトコントローラーに転送し、ドローンに自動飛行を指示します。
 
-![drone-component-mission](./images/drone-component-mission.png)
+![drone-component-mission](https://user-images.githubusercontent.com/27773127/113294128-93f63980-9331-11eb-8555-588d28687bef.png)
 
 ミッションは、ドローンにあらかじめ組み込まれた機能であり、例えばDJI製品の機体では、
 機種によって以下のように、複数の種類のミッションが提供されています。
@@ -74,7 +74,7 @@ QGCのスクリーンショットには、数字付きのオレンジ色のポ�
 ドローンの機体上にRaspberry Piのようなシングルボードコンピュータを搭載して、
 RPiがフライトコントローラーと、クラウドの間を中継する構成です。
 
-![drone-component-iod](./images/drone-component-iod.png)
+![drone-component-iod](https://user-images.githubusercontent.com/27773127/113294206-a7a1a000-9331-11eb-920a-b96cceb0aac7.png)
 
 よりセンサー類に近いところで、ある程度インテリジェントな処理を行い、
 クラウドとの連携を効率的に処理する点で、

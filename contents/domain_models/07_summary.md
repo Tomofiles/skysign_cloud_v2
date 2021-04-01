@@ -30,7 +30,7 @@ Web上で簡単にドローンにアクセスできるようになるために�
 この緩やかなまとまりを元に、それぞれの集約の間に境界を引いてみると、
 以下の図のようになりました。
 
-![](./images/domain_models_bounded-context.png)
+![domain_models_bounded-context](https://user-images.githubusercontent.com/27773127/113295633-6ad6a880-9333-11eb-8ede-67b1e74a8872.png)
 
 この4つの境界付けられたコンテキストは、それぞれSkysignの業務ドメインに対応します。
 
