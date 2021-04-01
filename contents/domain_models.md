@@ -24,4 +24,4 @@ Skysignの**Cloud**のBackendを構成する各種コンポーネントは、水
 
 [【本編5】飛行の実績と非同期的な飛行データの記録](./domain_models/06_main_paper_5.md)
 
-[【まとめ編】境界付けられたコンテキストとドメインイベント](./domain_models/07_summary.md)
+[【まとめ編】境界付けられたコンテキストと統合](./domain_models/07_summary.md)
