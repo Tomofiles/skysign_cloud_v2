@@ -1,4 +1,4 @@
-import { Cartesian3, Transforms, Matrix3, Matrix4, Quaternion, Math as CesiumMath } from "cesium";
+import { Cartesian3, Transforms, Matrix3, Matrix4, Quaternion, Math as CesiumMath, HeadingPitchRoll } from "cesium";
 
 export const convertDroneData = (vehicleID, telemetry) => {
   // 地球固定座標での回転を計算
@@ -23,6 +23,8 @@ export const convertDroneData = (vehicleID, telemetry) => {
   // 回転を掛け合わせる
   let quat = Quaternion.multiply(base, quatlocalaft, new Quaternion());
 
+  let hpr = HeadingPitchRoll.fromQuaternion(quatlocal);
+
   let entityID = "drone_" + vehicleID;
 
   let data = {
@@ -39,6 +41,8 @@ export const convertDroneData = (vehicleID, telemetry) => {
       quat.w
     ),
     armed: telemetry.armed,
+    heading: hpr.heading,
+    alignedAxis: Cartesian3.UNIT_Z,
     properties: {
       vehicleID: vehicleID
     }
