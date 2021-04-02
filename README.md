@@ -21,7 +21,7 @@ OSSコミュニティです。
 
 ## デモ
 ![demo mission](contents/readme/mission.gif)
-![demo flight](https://user-images.githubusercontent.com/27773127/90533845-00ae3080-e1b4-11ea-9701-3b436216b68d.gif)
+![demo flight](contents/readme/flight.gif)
 
 ## コンセプト
 Skysignが提供する各種コンポーネントと、コンポーネント間のコミュニケーションの概要については、
