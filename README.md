@@ -20,7 +20,7 @@ OSSコミュニティです。
 （なお、当プロジェクトおよびTomofilesは、InterUSSと一切の関係はありません。）
 
 ## デモ
-![demo mission](https://user-images.githubusercontent.com/27773127/90534796-1e2fca00-e1b5-11ea-838e-cff3671bd1f7.gif)
+![demo mission](contents/readme/mission.gif)
 ![demo flight](https://user-images.githubusercontent.com/27773127/90533845-00ae3080-e1b4-11ea-9701-3b436216b68d.gif)
 
 ## コンセプト
