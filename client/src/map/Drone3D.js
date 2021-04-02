@@ -4,7 +4,7 @@ import { Entity, ModelGraphics } from 'resium';
 
 import { convertDroneData } from './CesiumHelper';
 
-const Drone = (props) => {
+const Drone3D = (props) => {
   const [ data, setData ] = useState({});
 
   useEffect(() => {
@@ -26,4 +26,4 @@ const Drone = (props) => {
   );
 }
   
-export default Drone;
+export default Drone3D;
