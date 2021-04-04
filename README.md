@@ -1,9 +1,13 @@
 # Skysign Cloud (version 2)
 
-Skysignは、ウェブブラウザから簡潔なUIで、ドローンの飛行制御・監視が行えるプラットフォームです。  
+Skysignは、Webブラウザから簡潔なUIで、ドローンの飛行制御・監視が行えるプラットフォームです。  
 このリポジトリは、[Skysign Cloud β版](https://github.com/Tomofiles/skysign_cloud)と同等の機能を、
 新しいアーキテクチャで刷新したものです。
 
+Skysignは、ドローンをインターネットに接続し、遠隔地からでもドローンのフライトを操作することができ、  
+飛行の計画や実績の作成および管理を行うことができる、Webサービス・プラットフォームです。
+
+## version 2の狙い
 version 2の狙いは、β版をスケールしていく際に発覚した、いくつかの課題を解消することです。
 - websocket、server-sent eventsと、コンテナ系マネージドサービスとの相性の悪さ
 - websocket、server-sent eventsによる、スケールアウト実現の難化
@@ -16,16 +20,20 @@ OSSコミュニティです。
 （なお、当プロジェクトおよびTomofilesは、InterUSSと一切の関係はありません。）
 
 ## デモ
-![demo mission](https://user-images.githubusercontent.com/27773127/90534796-1e2fca00-e1b5-11ea-838e-cff3671bd1f7.gif)
-![demo flight](https://user-images.githubusercontent.com/27773127/90533845-00ae3080-e1b4-11ea-9701-3b436216b68d.gif)
+![demo mission](https://user-images.githubusercontent.com/27773127/113500584-047f9f00-955a-11eb-9cf3-53edd30ffa33.gif)
+
+![demo flight](https://user-images.githubusercontent.com/27773127/113500972-1747a300-955d-11eb-9c02-4af7e2c267ce.gif)
 
 ## コンセプト
 Skysignが提供する各種コンポーネントと、コンポーネント間のコミュニケーションの概要については、
-[こちら](concepts.md)をご覧ください。
+[こちら](./contents/concepts.md)をご覧ください。
+
+また、DDD(ドメイン駆動設計)による、ドローン領域のドメイン・モデルの構築に関する
+解説とプラクティスについては、[こちら](./contents/domain_models.md)に公開しています。
 
 ## アーキテクチャ概要
 ### Overview
-![Simplified architecture diagram](assets/generated/simple_architecture.png)
+![simple_architecture](https://user-images.githubusercontent.com/27773127/113296134-0f58ea80-9334-11eb-9e7d-2c52e2193419.png)
 
 Skysignは、大きく分けて`Cloud`と`Edge`の2つのコンポーネントから構成されます。
 
@@ -54,11 +62,11 @@ gRPCにて提供されるビジネスロジックと中継するサーバーコ�
 [React](https://ja.reactjs.org/)をベース、[Material-UI](https://material-ui.com/)をビュー、
 [Cesium](https://cesium.com/cesiumjs/)を地図エンジンに利用し、直感的なUIを構築して提供します。
 
-### Mission/Communication/Flightplan backend
+### Business backend
 Skysignが提供するビジネスロジックおよびエンティティを提供するコンポーネント。
 [Spring Boot](https://spring.io/projects/spring-boot)をベースに、
 DDD(ドメイン駆動設計)を採用したマイクロサービス・アーキテクチャを目指しています。  
-現在、段階的にJavaからGolangに移行中（現在、Flightplanのみ）。
+現在、段階的にJavaからGolangに移行中。
 
 ### PostgreSQL (DB)
 ビジネスロジックを支えるエンティティを格納するデータベース。
