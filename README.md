@@ -20,8 +20,9 @@ OSSコミュニティです。
 （なお、当プロジェクトおよびTomofilesは、InterUSSと一切の関係はありません。）
 
 ## デモ
-![demo mission](contents/readme/mission.gif)
-![demo flight](contents/readme/flight.gif)
+![demo mission](https://user-images.githubusercontent.com/27773127/113500584-047f9f00-955a-11eb-9cf3-53edd30ffa33.gif)
+
+![demo flight](https://user-images.githubusercontent.com/27773127/113500972-1747a300-955d-11eb-9c02-4af7e2c267ce.gif)
 
 ## コンセプト
 Skysignが提供する各種コンポーネントと、コンポーネント間のコミュニケーションの概要については、
