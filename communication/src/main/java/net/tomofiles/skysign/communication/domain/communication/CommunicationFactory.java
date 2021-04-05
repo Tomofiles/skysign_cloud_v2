@@ -5,12 +5,12 @@ import java.util.stream.Collectors;
 import net.tomofiles.skysign.communication.domain.communication.component.CommandComponentDto;
 import net.tomofiles.skysign.communication.domain.communication.component.CommunicationComponentDto;
 import net.tomofiles.skysign.communication.domain.communication.component.TelemetryComponentDto;
-import net.tomofiles.skysign.communication.domain.vehicle.VehicleId;
+import net.tomofiles.skysign.communication.domain.communication.component.UploadMissionComponentDto;
 
 public class CommunicationFactory {
 
-    public static Communication newInstance(CommunicationId communicationId, VehicleId vehicleId, Generator generator) {
-        Communication communication = new Communication(communicationId, vehicleId, generator);
+    public static Communication newInstance(CommunicationId communicationId, Generator generator) {
+        Communication communication = new Communication(communicationId, generator);
         communication.setTelemetry(Telemetry.newInstance());
         return communication;
     }
@@ -18,11 +18,8 @@ public class CommunicationFactory {
     public static Communication assembleFrom(CommunicationComponentDto componentDto, Generator generator) {
         Communication communication = new Communication(
                 new CommunicationId(componentDto.getId()),
-                new VehicleId(componentDto.getVehicleId()),
                 generator
         );
-        communication.setControlled(componentDto.isControlled());
-        communication.setMissionId(new MissionId(componentDto.getMissionId()));
         communication.setTelemetry(Telemetry.newInstance()
                 .setPosition(
                         componentDto.getTelemetry().getLatitude(),
@@ -48,15 +45,21 @@ public class CommunicationFactory {
                         })
                         .collect(Collectors.toList())
         );
+        communication.getUploadMissions().addAll(
+                componentDto.getUploadMissions().stream()
+                        .map(um -> {
+                                return new UploadMission(
+                                    new CommandId(um.getId()),
+                                    new MissionId(um.getMissionId()));
+                        })
+                        .collect(Collectors.toList())
+        );
         return communication;
     }
 
     public static CommunicationComponentDto takeApart(Communication communication) {
         return  new CommunicationComponentDto(
                 communication.getId().getId(),
-                communication.getVehicleId().getId(),
-                communication.isControlled(),
-                communication.getMissionId() == null ? null : communication.getMissionId().getId(),
                 new TelemetryComponentDto(
                         communication.getTelemetry().getPosition().getLatitude(),
                         communication.getTelemetry().getPosition().getLongitude(),
@@ -74,6 +77,12 @@ public class CommunicationFactory {
                             c.getId().getId(),
                             c.getType().toString(),
                             c.getTime()
+                        ))
+                        .collect(Collectors.toList()),
+                communication.getUploadMissions().stream()
+                        .map(um -> new UploadMissionComponentDto(
+                            um.getId().getId(),
+                            um.getMissionId().getId()
                         ))
                         .collect(Collectors.toList()));
     }

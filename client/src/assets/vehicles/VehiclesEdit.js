@@ -2,18 +2,18 @@ import React, { useEffect, useState } from 'react';
 
 import {
   Typography,
-  ExpansionPanelDetails,
-  ExpansionPanelActions,
   Button,
   TextField,
   Grid,
   Box,
+  Paper,
+  Divider,
 } from '@material-ui/core';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import { grey } from '@material-ui/core/colors';
 import { useForm, Controller } from 'react-hook-form';
 
-import { getVehicle, updateVehicle, deleteVehicle } from './VehicleUtils'
+import { getVehicle, updateVehicle } from './VehicleUtils'
 
 const VehiclesEdit = (props) => {
   const [ id, setId ] = useState("");
@@ -26,9 +26,9 @@ const VehiclesEdit = (props) => {
         setValue("name", data.name);
         setValue("commId", data.commId);
       })
-  }, [props.id, setValue])
+  }, [ props.id, setValue ])
 
-  const onClickCancel = (id) => {
+  const onClickCancel = () => {
     props.openDetail(id);
   }
 
@@ -39,73 +39,76 @@ const VehiclesEdit = (props) => {
       });
   }
 
-  const onClickDelete = (id) => {
-    deleteVehicle(id)
-      .then(data => {
-        props.openList();
-      })
-  }
-
   const onClickReturn = () => {
-    props.openList();  
+    props.openDetail(id);
   }
 
   return (
-    <div>
+    <div className={props.classes.funcPanel}>
       <form onSubmit={handleSubmit(onClickSave)}>
-        <ExpansionPanelDetails>
-          <Grid container className={props.classes.textLabel}>
-            <Grid item xs={12}>
-              <Button onClick={onClickReturn}>
-                <ChevronLeftIcon style={{ color: grey[50] }} />
+        <Box>
+          <Button onClick={onClickReturn}>
+            <ChevronLeftIcon style={{ color: grey[50] }} />
+          </Button>
+          <Box p={2} style={{display: 'flex'}}>
+            <Typography>Edit Vehicle</Typography>
+          </Box>
+        </Box>
+        <Box pb={2}>
+          <Paper className={props.classes.funcPanelEdit}>
+            <Box p={3}>
+              <Grid container className={props.classes.textLabel}>
+                <Grid item xs={12}>
+                  <Typography>Vehicle settings</Typography>
+                  <Divider/>
+                </Grid>
+                <Grid item xs={12}>
+                  <Box className={props.classes.textInput}
+                      p={1} m={1} borderRadius={7} >
+                    <Controller
+                      as={TextField}
+                      label="Name"
+                      name="name"
+                      control={control}
+                      defaultValue=""
+                      fullWidth />
+                  </Box>
+                </Grid>
+                <Grid item xs={12}>
+                  <Box className={props.classes.textInput}
+                      p={1} m={1} borderRadius={7} >
+                    <Controller
+                      as={TextField}
+                      label="Communication ID"
+                      name="commId"
+                      control={control}
+                      defaultValue=""
+                      fullWidth />
+                  </Box>
+                </Grid>
+              </Grid>
+              <Divider/>
+            </Box>
+          </Paper>
+        </Box>
+        <Box>
+          <Box style={{display: 'flex', justifyContent: 'flex-end'}}>
+            <Box px={1}>
+              <Button
+                  className={props.classes.funcButton}
+                  onClick={onClickCancel}>
+                Cancel
               </Button>
-            </Grid>
-            <Grid item xs={12}>
-              <Typography>Edit Vehicle</Typography>
-            </Grid>
-            <Grid item xs={12}>
-              <Box className={props.classes.textInput}
-                  p={1} m={1} borderRadius={7} >
-                <Controller
-                  as={TextField}
-                  label="Name"
-                  name="name"
-                  control={control}
-                  defaultValue=""
-                  fullWidth />
-              </Box>
-            </Grid>
-            <Grid item xs={12}>
-              <Box className={props.classes.textInput}
-                  p={1} m={1} borderRadius={7} >
-                <Controller
-                  as={TextField}
-                  label="Communication ID"
-                  name="commId"
-                  control={control}
-                  defaultValue=""
-                  fullWidth />
-              </Box>
-            </Grid>
-          </Grid>
-        </ExpansionPanelDetails>
-        <ExpansionPanelActions >
-          <Button
-              className={props.classes.funcButton}
-              onClick={() => onClickCancel(id)}>
-            Cancel
-          </Button>
-          <Button 
-              className={props.classes.funcButton}
-              onClick={() => onClickDelete(id)}>
-            Delete
-          </Button>
-          <Button
-              className={props.classes.funcButton}
-              type="submit" >
-            Save
-          </Button>
-        </ExpansionPanelActions>
+            </Box>
+            <Box px={1}>
+              <Button
+                  className={props.classes.funcButton}
+                  type="submit" >
+                Save
+              </Button>
+            </Box>
+          </Box>
+        </Box>
       </form>
     </div>
   );

@@ -4,8 +4,6 @@ import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 
-import net.tomofiles.skysign.communication.domain.vehicle.VehicleId;
-
 public class CommunicationObjectMother {
     
     /**
@@ -13,13 +11,8 @@ public class CommunicationObjectMother {
      */
     public static Communication newNormalCommunication(
             CommunicationId communicationId,
-            VehicleId vehicleId,
-            boolean controlled,
-            MissionId missionId,
             Generator generator) {
-        Communication communication = CommunicationFactory.newInstance(communicationId, vehicleId, generator);
-        communication.setControlled(controlled);
-        communication.setMissionId(missionId);
+        Communication communication = CommunicationFactory.newInstance(communicationId, generator);
         communication.setTelemetry(newNormalTelemetry());
         return communication;
     }
@@ -29,14 +22,12 @@ public class CommunicationObjectMother {
      */
     public static Communication newSingleCommandCommunication(
             CommunicationId communicationId,
-            VehicleId vehicleId,
-            boolean controlled,
-            MissionId missionId,
-            Generator generator) {
-        Communication communication = CommunicationFactory.newInstance(communicationId, vehicleId, generator);
-        communication.setControlled(controlled);
-        communication.setMissionId(missionId);
-        communication.getCommands().addAll(newSingleCommands(generator, CommandType.ARM));
+            Generator generator,
+            Generator generatorCommand,
+            Generator generatorUploadMission) {
+        Communication communication = CommunicationFactory.newInstance(communicationId, generator);
+        communication.getCommands().addAll(newSingleCommands(generatorCommand, CommandType.ARM));
+        communication.getUploadMissions().addAll(newSingleUploadMissions(generatorUploadMission));
         communication.setTelemetry(newNormalTelemetry());
         return communication;
     }
@@ -46,14 +37,12 @@ public class CommunicationObjectMother {
      */
     public static Communication newSeveralCommandsCommunication(
             CommunicationId communicationId,
-            VehicleId vehicleId,
-            boolean controlled,
-            MissionId missionId,
-            Generator generator) {
-        Communication communication = CommunicationFactory.newInstance(communicationId, vehicleId, generator);
-        communication.setControlled(controlled);
-        communication.setMissionId(missionId);
-        communication.getCommands().addAll(newSeveralCommands(generator));
+            Generator generator,
+            Generator generatorCommand,
+            Generator generatorUploadMission) {
+        Communication communication = CommunicationFactory.newInstance(communicationId, generator);
+        communication.getCommands().addAll(newSeveralCommands(generatorCommand));
+        communication.getUploadMissions().addAll(newSeveralUploadMissions(generatorUploadMission));
         communication.setTelemetry(newNormalTelemetry());
         return communication;
     }
@@ -109,6 +98,33 @@ public class CommunicationObjectMother {
                     generator.newCommandId(),
                     CommandType.UPLOAD,
                     generator.newTime()),
+        });
+    }
+
+    /**
+     * 1件のテスト用UploadMissionオブジェクトのリストを生成する。
+     */
+    public static List<UploadMission> newSingleUploadMissions(Generator generator) {
+        CommandId id = generator.newCommandId();
+        return Arrays.asList(new UploadMission[] {
+            new UploadMission(id, new MissionId("MISSION_ID_SAMPLE_1"))
+        });
+    }
+
+    /**
+     * 複数件のテスト用UploadMissionオブジェクトのリストを生成する。
+     */
+    public static List<UploadMission> newSeveralUploadMissions(Generator generator) {
+        return Arrays.asList(new UploadMission[] {
+            new UploadMission(
+                    generator.newCommandId(),
+                    new MissionId("MISSION_ID_SAMPLE_1")),
+            new UploadMission(
+                    generator.newCommandId(),
+                    new MissionId("MISSION_ID_SAMPLE_2")),
+            new UploadMission(
+                    generator.newCommandId(),
+                    new MissionId("MISSION_ID_SAMPLE_3")),
         });
     }
 }

@@ -1,18 +1,26 @@
 import React, { useContext } from 'react';
-import { AppContext } from '../context/Context';
 
-import Drone from './Drone';
+import { SceneMode } from 'cesium';
+
+import { AppContext } from '../context/Context';
+import Drone3D from './Drone3D';
+import Drone2D from './Drone2D';
 
 const Drones = () => {
-  const { stagingRows } = useContext(AppContext);
+  const { mapMode, telemetries } = useContext(AppContext);
 
   return (
-    <div>
-      {stagingRows.map(data => (
-        data.isControlled &&
-          <Drone key={data.id} data={data} />
-      ))}
-    </div>
+    <>
+      {mapMode === SceneMode.SCENE2D ? (
+        telemetries.map(telemetry => (
+          <Drone2D key={telemetry.id} telemetry={telemetry} />
+        ))
+      ) : (
+        telemetries.map(telemetry => (
+          <Drone3D key={telemetry.id} telemetry={telemetry} />
+        ))
+      )}
+    </>
   );
 }
 

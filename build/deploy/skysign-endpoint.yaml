@@ -17,13 +17,29 @@ spec:
         backend:
           serviceName: skysign-vehicle-gateway
           servicePort: 6000
+      - path: /api/v1/communications*
+        backend:
+          serviceName: skysign-communication-gateway
+          servicePort: 6000
+      - path: /api/v1/actions*
+        backend:
+          serviceName: skysign-action-gateway
+          servicePort: 6000
       - path: /api/v1/missions*
         backend:
           serviceName: skysign-mission-gateway
           servicePort: 6000
-      - path: /api/v1/communications*
+      - path: /api/v1/flightplans*
         backend:
-          serviceName: skysign-communication-gateway
+          serviceName: skysign-flightplan-gateway
+          servicePort: 6000
+      - path: /api/v1/flightoperations*
+        backend:
+          serviceName: skysign-flightoperation-gateway
+          servicePort: 6000
+      - path: /api/v1/flightreports*
+        backend:
+          serviceName: skysign-flightreport-gateway
           servicePort: 6000
       - path: /api/v1/helper*
         backend:

@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 import net.tomofiles.skysign.communication.event.Event;
 import net.tomofiles.skysign.communication.event.Publisher;
 
-@Component
+@Component("communication-publisher-impl")
 public class PublisherImpl implements ApplicationEventPublisherAware, Publisher {
 
     private ApplicationEventPublisher publisher;

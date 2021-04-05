@@ -193,9 +193,17 @@ func local_request_CommunicationEdgeService_PullCommand_0(ctx context.Context, m
 
 }
 
-func request_CommunicationEdgeService_GetCommunication_0(ctx context.Context, marshaler runtime.Marshaler, client CommunicationEdgeServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq GetCommunicationRequest
+func request_CommunicationEdgeService_PullUploadMission_0(ctx context.Context, marshaler runtime.Marshaler, client CommunicationEdgeServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var protoReq PullUploadMissionRequest
 	var metadata runtime.ServerMetadata
+
+	newReader, berr := utilities.IOReaderFactory(req.Body)
+	if berr != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", berr)
+	}
+	if err := marshaler.NewDecoder(newReader()).Decode(&protoReq); err != nil && err != io.EOF {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
 
 	var (
 		val string
@@ -215,14 +223,33 @@ func request_CommunicationEdgeService_GetCommunication_0(ctx context.Context, ma
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "id", err)
 	}
 
-	msg, err := client.GetCommunication(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
+	val, ok = pathParams["commandId"]
+	if !ok {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "commandId")
+	}
+
+	protoReq.CommandId, err = runtime.String(val)
+
+	if err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "commandId", err)
+	}
+
+	msg, err := client.PullUploadMission(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
 
 }
 
-func local_request_CommunicationEdgeService_GetCommunication_0(ctx context.Context, marshaler runtime.Marshaler, server CommunicationEdgeServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq GetCommunicationRequest
+func local_request_CommunicationEdgeService_PullUploadMission_0(ctx context.Context, marshaler runtime.Marshaler, server CommunicationEdgeServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var protoReq PullUploadMissionRequest
 	var metadata runtime.ServerMetadata
+
+	newReader, berr := utilities.IOReaderFactory(req.Body)
+	if berr != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", berr)
+	}
+	if err := marshaler.NewDecoder(newReader()).Decode(&protoReq); err != nil && err != io.EOF {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
 
 	var (
 		val string
@@ -242,7 +269,18 @@ func local_request_CommunicationEdgeService_GetCommunication_0(ctx context.Conte
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "id", err)
 	}
 
-	msg, err := server.GetCommunication(ctx, &protoReq)
+	val, ok = pathParams["commandId"]
+	if !ok {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "commandId")
+	}
+
+	protoReq.CommandId, err = runtime.String(val)
+
+	if err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "commandId", err)
+	}
+
+	msg, err := server.PullUploadMission(ctx, &protoReq)
 	return msg, metadata, err
 
 }
@@ -293,7 +331,7 @@ func RegisterCommunicationEdgeServiceHandlerServer(ctx context.Context, mux *run
 
 	})
 
-	mux.Handle("GET", pattern_CommunicationEdgeService_GetCommunication_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("POST", pattern_CommunicationEdgeService_PullUploadMission_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
@@ -302,14 +340,14 @@ func RegisterCommunicationEdgeServiceHandlerServer(ctx context.Context, mux *run
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_CommunicationEdgeService_GetCommunication_0(rctx, inboundMarshaler, server, req, pathParams)
+		resp, md, err := local_request_CommunicationEdgeService_PullUploadMission_0(rctx, inboundMarshaler, server, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
 
-		forward_CommunicationEdgeService_GetCommunication_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_CommunicationEdgeService_PullUploadMission_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
@@ -394,7 +432,7 @@ func RegisterCommunicationEdgeServiceHandlerClient(ctx context.Context, mux *run
 
 	})
 
-	mux.Handle("GET", pattern_CommunicationEdgeService_GetCommunication_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("POST", pattern_CommunicationEdgeService_PullUploadMission_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
@@ -403,14 +441,14 @@ func RegisterCommunicationEdgeServiceHandlerClient(ctx context.Context, mux *run
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_CommunicationEdgeService_GetCommunication_0(rctx, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_CommunicationEdgeService_PullUploadMission_0(rctx, inboundMarshaler, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
 
-		forward_CommunicationEdgeService_GetCommunication_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_CommunicationEdgeService_PullUploadMission_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
@@ -422,7 +460,7 @@ var (
 
 	pattern_CommunicationEdgeService_PullCommand_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3, 2, 4, 1, 0, 4, 1, 5, 5}, []string{"api", "v1", "communications", "id", "commands", "commandId"}, "", runtime.AssumeColonVerbOpt(true)))
 
-	pattern_CommunicationEdgeService_GetCommunication_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3}, []string{"api", "v1", "communications", "id"}, "", runtime.AssumeColonVerbOpt(true)))
+	pattern_CommunicationEdgeService_PullUploadMission_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3, 2, 4, 1, 0, 4, 1, 5, 5}, []string{"api", "v1", "communications", "id", "uploadmissions", "commandId"}, "", runtime.AssumeColonVerbOpt(true)))
 )
 
 var (
@@ -430,5 +468,5 @@ var (
 
 	forward_CommunicationEdgeService_PullCommand_0 = runtime.ForwardResponseMessage
 
-	forward_CommunicationEdgeService_GetCommunication_0 = runtime.ForwardResponseMessage
+	forward_CommunicationEdgeService_PullUploadMission_0 = runtime.ForwardResponseMessage
 )

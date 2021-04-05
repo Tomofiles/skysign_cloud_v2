@@ -10,12 +10,12 @@ import (
 )
 
 // PullMission .
-func PullMission(cloud string, vehicleID string) (*edge.Mission, error) {
+func PullMission(cloud string, vehicleID string, commandID string) (*edge.Mission, error) {
 	log.Printf("Send CLOUD Communication data=%s\n", "{}")
 
 	req, err := http.NewRequest(
-		"GET",
-		"http://"+cloud+"/api/v1/communications/"+vehicleID,
+		"POST",
+		cloud+"/api/v1/communications/"+vehicleID+"/uploadmissions/"+commandID,
 		strings.NewReader("{}"),
 	)
 	if err != nil {
@@ -50,7 +50,7 @@ func PullMission(cloud string, vehicleID string) (*edge.Mission, error) {
 
 	req, err = http.NewRequest(
 		"GET",
-		"http://"+cloud+"/api/v1/missions/"+communication.MissionID,
+		cloud+"/api/v1/missions/"+communication.MissionID,
 		strings.NewReader("{}"),
 	)
 	if err != nil {

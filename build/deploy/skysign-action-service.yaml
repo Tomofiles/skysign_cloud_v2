@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: skysign-action-service
+  labels:
+    run: skysign-action-service
+spec:
+  clusterIP: None
+  ports:
+  - port: 5001
+    protocol: TCP
+  selector:
+    run: skysign-action-service-backend

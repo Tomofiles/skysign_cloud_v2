@@ -11,7 +11,8 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import net.tomofiles.skysign.communication.domain.vehicle.VehicleId;
+import net.tomofiles.skysign.communication.event.EmptyPublisher;
+import net.tomofiles.skysign.communication.event.Publisher;
 
 @EqualsAndHashCode(of = {"id"})
 @ToString
@@ -21,17 +22,6 @@ public class Communication {
 
     private final Generator generator;
 
-    @Getter
-    private final VehicleId vehicleId;
-
-    @Getter
-    @Setter(value = AccessLevel.PACKAGE)
-    private boolean controlled = false;
-
-    @Getter
-    @Setter(value = AccessLevel.PACKAGE)
-    private MissionId missionId = null;
-
     @Getter(value = AccessLevel.PACKAGE)
     @Setter(value = AccessLevel.PACKAGE)
     private Telemetry telemetry = null;
@@ -39,10 +29,16 @@ public class Communication {
     @Getter(value = AccessLevel.PACKAGE)
     private final List<Command> commands;
 
-    Communication(CommunicationId id, VehicleId vehicleId, Generator generator) {
+    @Getter(value = AccessLevel.PACKAGE)
+    private final List<UploadMission> uploadMissions;
+
+    @Setter
+    private Publisher publisher = new EmptyPublisher();
+    
+    Communication(CommunicationId id, Generator generator) {
         this.id = id;
-        this.vehicleId = vehicleId;
         this.commands = new ArrayList<>();
+        this.uploadMissions = new ArrayList<>();
 
         this.generator = generator;
     }
@@ -62,6 +58,13 @@ public class Communication {
                         snapshot.getY(),
                         snapshot.getZ(),
                         snapshot.getW());
+
+        this.publisher.publish(
+            new TelemetryUpdatedEvent(
+                this.id,
+                snapshot
+            )
+        );
     }
 
     public TelemetrySnapshot pullTelemetry() {
@@ -87,23 +90,20 @@ public class Communication {
                 .collect(Collectors.toList());
     }
 
-    public void staging(MissionId missionId) {
-        this.missionId = missionId;
-    }
-
-    public void cancel() {
-        this.missionId = null;
-    }
-
-    public void control() {
-        this.controlled = true;
-    }
-
-    public void uncontrol() {
-        this.controlled = false;
-    }
-
     public CommandId pushCommand(CommandType commandType) {
+        if (ArmCommandPushPolicy.isFollow(commandType, this)) {
+            this.pushCommandDo(CommandType.ARM);
+        }
+        return this.pushCommandDo(commandType);
+    }
+
+    public CommandId pushUploadMission(MissionId missionId) {
+        CommandId id = this.pushCommandDo(CommandType.UPLOAD);
+        this.uploadMissions.add(new UploadMission(id, missionId));
+        return id;
+    }
+
+    CommandId pushCommandDo(CommandType commandType) {
         CommandId id = this.generator.newCommandId();
         LocalDateTime time = this.generator.newTime();
         this.commands.add(new Command(id, commandType, time));
@@ -120,5 +120,17 @@ public class Communication {
         }
         this.commands.remove(command);
         return command.getType();
+    }
+
+    public MissionId pullUploadMissionById(CommandId id) {
+        UploadMission uploadMission = this.uploadMissions.stream()
+                .filter(UploadMission.empty(id)::equals)
+                .findAny()
+                .orElse(null);
+        if (uploadMission == null) {
+            return null;
+        }
+        this.uploadMissions.remove(uploadMission);
+        return uploadMission.getMissionId();
     }
 }

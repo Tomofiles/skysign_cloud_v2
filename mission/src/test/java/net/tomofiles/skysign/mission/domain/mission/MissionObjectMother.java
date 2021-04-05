@@ -6,7 +6,17 @@ public class MissionObjectMother {
      * 1件のNavigationを持つテスト用Missionエンティティを生成する。
      */
     public static Mission newSingleNavigationMission(MissionId missionId, Version version, Generator generator) {
-        Mission mission = new Mission(missionId, version, generator);
+        Mission mission = Mission.newOriginal(missionId, version, generator);
+        mission.setMissionName("mission name");
+        mission.setNavigation(newSingleNavigation());
+        return mission;
+    }
+
+    /**
+     * 1件のNavigationを持つカーボンコピーされたテスト用Missionエンティティを生成する。
+     */
+    public static Mission newSingleNavigationCarbonCopiedMission(MissionId missionId, Version version, Generator generator) {
+        Mission mission = Mission.newCarbonCopy(missionId, version, generator);
         mission.setMissionName("mission name");
         mission.setNavigation(newSingleNavigation());
         return mission;
@@ -16,7 +26,17 @@ public class MissionObjectMother {
      * 複数件のNavigationを持つテスト用Missionエンティティを生成する。
      */
     public static Mission newSeveralNavigationMission(MissionId missionId, Version version, Generator generator) {
-        Mission mission = new Mission(missionId, version, generator);
+        Mission mission = Mission.newOriginal(missionId, version, generator);
+        mission.setMissionName("mission name");
+        mission.setNavigation(newSeveralNavigation());
+        return mission;
+    }
+
+    /**
+     * 複数件のNavigationを持つカーボンコピーされたテスト用Missionエンティティを生成する。
+     */
+    public static Mission newSeveralNavigationCarbonCopiedMission(MissionId missionId, Version version, Generator generator) {
+        Mission mission = Mission.newCarbonCopy(missionId, version, generator);
         mission.setMissionName("mission name");
         mission.setNavigation(newSeveralNavigation());
         return mission;

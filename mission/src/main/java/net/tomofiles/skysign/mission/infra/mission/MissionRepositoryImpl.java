@@ -43,6 +43,7 @@ public class MissionRepositoryImpl implements MissionRepository {
 
         missionRecord.setName(missionDto.getName());
         missionRecord.setTakeoffPointGroundHeightWGS84EllipsoidM(missionDto.getTakeoffPointGroundHeightWGS84M());
+        missionRecord.setCarbonCopy(missionDto.isCarbonCopy());
         missionRecord.setVersion(missionDto.getVersion());
         missionRecord.setNewVersion(missionDto.getNewVersion());
 
@@ -85,6 +86,7 @@ public class MissionRepositoryImpl implements MissionRepository {
                         id.getId(),
                         missionRecord.getName(),
                         missionRecord.getTakeoffPointGroundHeightWGS84EllipsoidM(),
+                        missionRecord.isCarbonCopy(),
                         missionRecord.getVersion(),
                         missionRecord.getNewVersion(),
                         waypointRecords.stream()
@@ -122,6 +124,50 @@ public class MissionRepositoryImpl implements MissionRepository {
                             missionRecord.getId(),
                             missionRecord.getName(),
                             missionRecord.getTakeoffPointGroundHeightWGS84EllipsoidM(),
+                            missionRecord.isCarbonCopy(),
+                            missionRecord.getVersion(),
+                            missionRecord.getNewVersion(),
+                            waypointRecords.stream()
+                                    .sorted(Comparator.comparing(WaypointRecord::getOrder))
+                                    .map(waypoint -> {
+                                        return new WaypointComponentDto(
+                                            waypoint.getOrder(),
+                                            waypoint.getLatitude(),
+                                            waypoint.getLongitude(),
+                                            waypoint.getHeightWGS84EllipsoidM(),
+                                            waypoint.getSpeedMS()
+                                        );
+                                    })
+                                    .collect(Collectors.toList())
+                    ),
+                    this.generator
+            );
+
+            missions.add(mission);
+        }
+
+        return missions;
+    }
+
+    @Override
+    public List<Mission> getAllOriginal() {
+        List<MissionRecord> missionRecords = this.missionMapper.findAllOriginal();
+
+        if (missionRecords.isEmpty()) {
+            return Collections.emptyList();
+        }
+
+        List<Mission> missions = new ArrayList<>();
+        for (MissionRecord missionRecord : missionRecords) {
+
+            List<WaypointRecord> waypointRecords = this.waypointMapper.find(missionRecord.getId());
+
+            Mission mission = MissionFactory.assembleFrom(
+                    new MissionComponentDto(
+                            missionRecord.getId(),
+                            missionRecord.getName(),
+                            missionRecord.getTakeoffPointGroundHeightWGS84EllipsoidM(),
+                            missionRecord.isCarbonCopy(),
                             missionRecord.getVersion(),
                             missionRecord.getNewVersion(),
                             waypointRecords.stream()

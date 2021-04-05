@@ -9,10 +9,12 @@ import net.tomofiles.skysign.communication.domain.communication.CommandId;
 import net.tomofiles.skysign.communication.domain.communication.CommandType;
 import net.tomofiles.skysign.communication.domain.communication.Communication;
 import net.tomofiles.skysign.communication.domain.communication.CommunicationRepository;
-import net.tomofiles.skysign.communication.service.dpo.GetCommunicationRequestDpo;
-import net.tomofiles.skysign.communication.service.dpo.GetCommunicationResponseDpo;
+import net.tomofiles.skysign.communication.domain.communication.MissionId;
+import net.tomofiles.skysign.communication.event.Publisher;
 import net.tomofiles.skysign.communication.service.dpo.PullCommandRequestDpo;
 import net.tomofiles.skysign.communication.service.dpo.PullCommandResponseDpo;
+import net.tomofiles.skysign.communication.service.dpo.PullUploadMissionRequestDpo;
+import net.tomofiles.skysign.communication.service.dpo.PullUploadMissionResponseDpo;
 import net.tomofiles.skysign.communication.service.dpo.PushTelemetryRequestDpo;
 import net.tomofiles.skysign.communication.service.dpo.PushTelemetryResponseDpo;
 
@@ -20,6 +22,7 @@ import net.tomofiles.skysign.communication.service.dpo.PushTelemetryResponseDpo;
 @AllArgsConstructor
 public class CommunicateEdgeService {
 
+    private final Publisher publisher;
     private final CommunicationRepository communicationRepository;
 
     @Transactional
@@ -32,6 +35,7 @@ public class CommunicateEdgeService {
 
         responseDpo.setCommunication(communication);
 
+        communication.setPublisher(this.publisher);
         communication.pushTelemetry(requestDpo.getTelemetry());
         
         List<CommandId> commandIds = communication.getCommandIds();
@@ -63,9 +67,23 @@ public class CommunicateEdgeService {
     }
 
     @Transactional
-    public void getCommunication(GetCommunicationRequestDpo requestDpo, GetCommunicationResponseDpo responseDpo) {
+    public void pullUploadMission(PullUploadMissionRequestDpo requestDpo, PullUploadMissionResponseDpo responseDpo) {
         Communication communication = this.communicationRepository.getById(requestDpo.getCommId());
 
+        if (communication == null) {
+            return;
+        }
+
         responseDpo.setCommunication(communication);
+
+        MissionId missionId = communication.pullUploadMissionById(requestDpo.getCommandId());
+        
+        if (missionId == null) {
+            return;
+        }
+
+        this.communicationRepository.save(communication);
+
+        responseDpo.setMissionId(missionId);
     }
 }

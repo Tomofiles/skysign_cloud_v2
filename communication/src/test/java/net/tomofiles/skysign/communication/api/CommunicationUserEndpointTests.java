@@ -7,7 +7,6 @@ import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
 import java.time.LocalDateTime;
-import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 import java.util.function.Supplier;
@@ -29,36 +28,25 @@ import net.tomofiles.skysign.communication.domain.communication.CommunicationRep
 import net.tomofiles.skysign.communication.domain.communication.Generator;
 import net.tomofiles.skysign.communication.domain.communication.MissionId;
 import net.tomofiles.skysign.communication.domain.communication.component.CommunicationComponentDto;
-import net.tomofiles.skysign.communication.domain.vehicle.VehicleId;
 import net.tomofiles.skysign.communication.service.CommunicationUserService;
-import proto.skysign.CancelRequest;
-import proto.skysign.CancelResponse;
-import proto.skysign.ControlRequest;
-import proto.skysign.ControlResponse;
 import proto.skysign.common.CommandType;
-import proto.skysign.common.Empty;
-import proto.skysign.ListCommunicationsResponses;
 import proto.skysign.PullTelemetryRequest;
 import proto.skysign.PullTelemetryResponse;
 import proto.skysign.PushCommandRequest;
 import proto.skysign.PushCommandResponse;
-import proto.skysign.StagingRequest;
-import proto.skysign.StagingResponse;
-import proto.skysign.UncontrolRequest;
-import proto.skysign.UncontrolResponse;
+import proto.skysign.PushUploadMissionRequest;
+import proto.skysign.PushUploadMissionResponse;
 
-import static net.tomofiles.skysign.communication.api.GrpcObjectMother.newNormalCommunicationGrpc;
 import static net.tomofiles.skysign.communication.api.GrpcObjectMother.newNormalPullTelemetryResponseGrpc;
 import static net.tomofiles.skysign.communication.domain.communication.CommunicationObjectMother.newNormalCommunication;
 import static net.tomofiles.skysign.communication.domain.communication.ComponentDtoObjectMother.newSingleCommandComponentDto;
+import static net.tomofiles.skysign.communication.domain.communication.ComponentDtoObjectMother.newSingleUploadMissionComponentDto;
 
 public class CommunicationUserEndpointTests {
     
     private static final CommunicationId DEFAULT_COMMUNICATION_ID = new CommunicationId(UUID.randomUUID().toString());
     private static final CommandId DEFAULT_COMMAND_ID = new CommandId(UUID.randomUUID().toString());
     private static final String DEFAULT_COMMAND_TYPE = "ARM";
-    private static final VehicleId DEFAULT_VEHICLE_ID = new VehicleId(UUID.randomUUID().toString());
-    private static final boolean DEFAULT_CONTROLLED = true;
     private static final MissionId DEFAULT_MISSION_ID = new MissionId(UUID.randomUUID().toString());
     private static final LocalDateTime DEFAULT_COMMAND_TIME = LocalDateTime.of(2020, 1, 1, 0, 0, 0);
     private static final Supplier<Generator> DEFAULT_GENERATOR = () -> {
@@ -90,148 +78,6 @@ public class CommunicationUserEndpointTests {
     }
 
     /**
-     * ユーザーは、全件取得APIを実行し、すべてのCommunicationをリスト形式で取得できる。
-     */
-    @Test
-    public void listCommunicationsApi() {
-        when(this.repository.getAll())
-                .thenReturn(Arrays.asList(new Communication[] {
-                        newNormalCommunication(
-                                DEFAULT_COMMUNICATION_ID,
-                                DEFAULT_VEHICLE_ID,
-                                DEFAULT_CONTROLLED,
-                                DEFAULT_MISSION_ID,
-                                DEFAULT_GENERATOR.get()),
-                        newNormalCommunication(
-                                DEFAULT_COMMUNICATION_ID,
-                                DEFAULT_VEHICLE_ID,
-                                DEFAULT_CONTROLLED,
-                                DEFAULT_MISSION_ID,
-                                DEFAULT_GENERATOR.get()),
-                        newNormalCommunication(
-                                DEFAULT_COMMUNICATION_ID,
-                                DEFAULT_VEHICLE_ID,
-                                DEFAULT_CONTROLLED,
-                                DEFAULT_MISSION_ID,
-                                DEFAULT_GENERATOR.get())
-                }));
-
-        Empty request = Empty.newBuilder().build();
-        StreamRecorder<ListCommunicationsResponses> responseObserver = StreamRecorder.create();
-        this.endpoint.listCommunications(request, responseObserver);
-
-        assertThat(responseObserver.getError()).isNull();
-        List<ListCommunicationsResponses> results = responseObserver.getValues();
-        assertThat(results).hasSize(1);
-        ListCommunicationsResponses response = results.get(0);
-        assertThat(response).isEqualTo(ListCommunicationsResponses.newBuilder()
-                .addCommunications(newNormalCommunicationGrpc(
-                        DEFAULT_COMMUNICATION_ID,
-                        DEFAULT_VEHICLE_ID,
-                        DEFAULT_CONTROLLED,
-                        DEFAULT_MISSION_ID))
-                .addCommunications(newNormalCommunicationGrpc(
-                        DEFAULT_COMMUNICATION_ID,
-                        DEFAULT_VEHICLE_ID,
-                        DEFAULT_CONTROLLED,
-                        DEFAULT_MISSION_ID))
-                .addCommunications(newNormalCommunicationGrpc(
-                        DEFAULT_COMMUNICATION_ID,
-                        DEFAULT_VEHICLE_ID,
-                        DEFAULT_CONTROLLED,
-                        DEFAULT_MISSION_ID))
-                .build());
-    }
-
-    /**
-     * ユーザーは、全件取得APIを実行し、すべてのCommunicationをリスト形式で取得できる。<br>
-     * Communicationはすべて未ステージングであり、MissionIdが空であること。
-     */
-    @Test
-    public void listCommunicationsNotStagingApi() {
-        when(this.repository.getAll())
-                .thenReturn(Arrays.asList(new Communication[] {
-                        newNormalCommunication(
-                                DEFAULT_COMMUNICATION_ID,
-                                DEFAULT_VEHICLE_ID,
-                                DEFAULT_CONTROLLED,
-                                null,
-                                DEFAULT_GENERATOR.get()),
-                        newNormalCommunication(
-                                DEFAULT_COMMUNICATION_ID,
-                                DEFAULT_VEHICLE_ID,
-                                DEFAULT_CONTROLLED,
-                                null,
-                                DEFAULT_GENERATOR.get()),
-                        newNormalCommunication(
-                                DEFAULT_COMMUNICATION_ID,
-                                DEFAULT_VEHICLE_ID,
-                                DEFAULT_CONTROLLED,
-                                null,
-                                DEFAULT_GENERATOR.get())
-                }));
-
-        Empty request = Empty.newBuilder().build();
-        StreamRecorder<ListCommunicationsResponses> responseObserver = StreamRecorder.create();
-        this.endpoint.listCommunications(request, responseObserver);
-
-        assertThat(responseObserver.getError()).isNull();
-        List<ListCommunicationsResponses> results = responseObserver.getValues();
-        assertThat(results).hasSize(1);
-        ListCommunicationsResponses response = results.get(0);
-        assertThat(response).isEqualTo(ListCommunicationsResponses.newBuilder()
-                .addCommunications(newNormalCommunicationGrpc(
-                        DEFAULT_COMMUNICATION_ID,
-                        DEFAULT_VEHICLE_ID,
-                        DEFAULT_CONTROLLED,
-                        null))
-                .addCommunications(newNormalCommunicationGrpc(
-                        DEFAULT_COMMUNICATION_ID,
-                        DEFAULT_VEHICLE_ID,
-                        DEFAULT_CONTROLLED,
-                        null))
-                .addCommunications(newNormalCommunicationGrpc(
-                        DEFAULT_COMMUNICATION_ID,
-                        DEFAULT_VEHICLE_ID,
-                        DEFAULT_CONTROLLED,
-                        null))
-                .build());
-    }
-
-    /**
-     * ユーザーは、全件取得APIを実行し、未存在により空のリストを取得できる。
-     */
-    @Test
-    public void listCommunicationsApiNotFoundError() {
-        Empty request = Empty.newBuilder().build();
-        StreamRecorder<ListCommunicationsResponses> responseObserver = StreamRecorder.create();
-        this.endpoint.listCommunications(request, responseObserver);
-
-        assertThat(responseObserver.getError()).isNull();
-        List<ListCommunicationsResponses> results = responseObserver.getValues();
-        assertThat(results).hasSize(1);
-        ListCommunicationsResponses response = results.get(0);
-        assertThat(response).isEqualTo(ListCommunicationsResponses.newBuilder().build());
-    }
-
-    /**
-     * ユーザーは、全件取得APIを実行し、DBエラーのよりINTERNALエラーを検出できる。
-     */
-    @Test
-    public void listCommunicationsApiInternalError() {
-        when(this.repository.getAll()).thenThrow(new IllegalStateException());
-
-        Empty request = Empty.newBuilder().build();
-        StreamRecorder<ListCommunicationsResponses> responseObserver = StreamRecorder.create();
-        this.endpoint.listCommunications(request, responseObserver);
-
-        assertThat(responseObserver.getError()).isNotNull();
-        assertThat(responseObserver.getError()).isInstanceOf(StatusRuntimeException.class);
-        assertThat(((StatusRuntimeException)responseObserver.getError()).getStatus().getCode())
-                .isEqualTo(Status.INTERNAL.getCode());
-    }
-
-    /**
      * ユーザーは、飛行コマンド送信APIを実行し、対象のCommunicationにコマンドを送信できる。
      */
     @Test
@@ -239,9 +85,6 @@ public class CommunicationUserEndpointTests {
         when(this.repository.getById(DEFAULT_COMMUNICATION_ID))
                 .thenReturn(newNormalCommunication(
                         DEFAULT_COMMUNICATION_ID,
-                        DEFAULT_VEHICLE_ID,
-                        DEFAULT_CONTROLLED,
-                        DEFAULT_MISSION_ID,
                         DEFAULT_GENERATOR.get()));
 
         PushCommandRequest request = PushCommandRequest.newBuilder()
@@ -257,7 +100,9 @@ public class CommunicationUserEndpointTests {
         CommunicationComponentDto dto = CommunicationFactory.takeApart(commCaptor.getValue());
         assertThat(dto.getCommands()).hasSize(1);
         assertThat(dto.getCommands().get(0))
-                .isEqualTo(newSingleCommandComponentDto(DEFAULT_GENERATOR.get()));
+                .isEqualTo(newSingleCommandComponentDto(DEFAULT_GENERATOR.get(),
+                        net.tomofiles.skysign.communication.domain.communication.CommandType.valueOf(DEFAULT_COMMAND_TYPE)
+                ));
 
         assertThat(responseObserver.getError()).isNull();
         List<PushCommandResponse> results = responseObserver.getValues();
@@ -266,6 +111,7 @@ public class CommunicationUserEndpointTests {
         assertThat(response).isEqualTo(PushCommandResponse.newBuilder()
                 .setId(DEFAULT_COMMUNICATION_ID.getId())
                 .setType(CommandType.valueOf(DEFAULT_COMMAND_TYPE))
+                .setCommandId(DEFAULT_COMMAND_ID.getId())
                 .build());
     }
 
@@ -308,6 +154,84 @@ public class CommunicationUserEndpointTests {
     }
 
     /**
+     * ユーザーは、ミッションアップロード送信APIを実行し、対象のCommunicationにコマンドを送信できる。
+     */
+    @Test
+    public void pushUploadMissionApi() {
+        when(this.repository.getById(DEFAULT_COMMUNICATION_ID))
+                .thenReturn(newNormalCommunication(
+                        DEFAULT_COMMUNICATION_ID,
+                        DEFAULT_GENERATOR.get()));
+
+        PushUploadMissionRequest request = PushUploadMissionRequest.newBuilder()
+                .setId(DEFAULT_COMMUNICATION_ID.getId())
+                .setMissionId(DEFAULT_MISSION_ID.getId())
+                .build();
+        StreamRecorder<PushUploadMissionResponse> responseObserver = StreamRecorder.create();
+        this.endpoint.pushUploadMission(request, responseObserver);
+
+        ArgumentCaptor<Communication> commCaptor = ArgumentCaptor.forClass(Communication.class);
+        verify(this.repository, times(1)).save(commCaptor.capture());
+
+        CommunicationComponentDto dto = CommunicationFactory.takeApart(commCaptor.getValue());
+        assertThat(dto.getCommands()).hasSize(1);
+        assertThat(dto.getCommands().get(0))
+                .isEqualTo(newSingleCommandComponentDto(DEFAULT_GENERATOR.get(),
+                        net.tomofiles.skysign.communication.domain.communication.CommandType.UPLOAD));
+        assertThat(dto.getUploadMissions()).hasSize(1);
+        assertThat(dto.getUploadMissions().get(0))
+                .isEqualTo(newSingleUploadMissionComponentDto(DEFAULT_GENERATOR.get(), DEFAULT_MISSION_ID));
+
+        assertThat(responseObserver.getError()).isNull();
+        List<PushUploadMissionResponse> results = responseObserver.getValues();
+        assertThat(results).hasSize(1);
+        PushUploadMissionResponse response = results.get(0);
+        assertThat(response).isEqualTo(PushUploadMissionResponse.newBuilder()
+                .setId(DEFAULT_COMMUNICATION_ID.getId())
+                .setMissionId(DEFAULT_MISSION_ID.getId())
+                .setCommandId(DEFAULT_COMMAND_ID.getId())
+                .build());
+    }
+
+    /**
+     * ユーザーは、ミッションアップロード送信APIを実行し、未存在のID指定によりNOT_FOUNDエラーを検出できる。
+     */
+    @Test
+    public void pushUploadMissionApiNotFoundError() {
+        PushUploadMissionRequest request = PushUploadMissionRequest.newBuilder()
+                .setId(DEFAULT_COMMUNICATION_ID.getId())
+                .setMissionId(DEFAULT_MISSION_ID.getId())
+                .build();
+        StreamRecorder<PushUploadMissionResponse> responseObserver = StreamRecorder.create();
+        this.endpoint.pushUploadMission(request, responseObserver);
+
+        assertThat(responseObserver.getError()).isNotNull();
+        assertThat(responseObserver.getError()).isInstanceOf(StatusRuntimeException.class);
+        assertThat(((StatusRuntimeException)responseObserver.getError()).getStatus().getCode())
+                .isEqualTo(Status.NOT_FOUND.getCode());
+    }
+
+    /**
+     * ユーザーは、ミッションアップロード送信APIを実行し、DBエラーのよりINTERNALエラーを検出できる。
+     */
+    @Test
+    public void pushUploadMissionApiInternalError() {
+        when(this.repository.getById(DEFAULT_COMMUNICATION_ID)).thenThrow(new IllegalStateException());
+
+        PushUploadMissionRequest request = PushUploadMissionRequest.newBuilder()
+                .setId(DEFAULT_COMMUNICATION_ID.getId())
+                .setMissionId(DEFAULT_MISSION_ID.getId())
+                .build();
+        StreamRecorder<PushUploadMissionResponse> responseObserver = StreamRecorder.create();
+        this.endpoint.pushUploadMission(request, responseObserver);
+
+        assertThat(responseObserver.getError()).isNotNull();
+        assertThat(responseObserver.getError()).isInstanceOf(StatusRuntimeException.class);
+        assertThat(((StatusRuntimeException)responseObserver.getError()).getStatus().getCode())
+                .isEqualTo(Status.INTERNAL.getCode());
+    }
+
+    /**
      * ユーザーは、テレメトリー受信APIを実行し、対象のCommunicationからテレメトリーを受信できる。
      */
     @Test
@@ -315,9 +239,6 @@ public class CommunicationUserEndpointTests {
         when(this.repository.getById(DEFAULT_COMMUNICATION_ID))
                 .thenReturn(newNormalCommunication(
                         DEFAULT_COMMUNICATION_ID,
-                        DEFAULT_VEHICLE_ID,
-                        DEFAULT_CONTROLLED,
-                        DEFAULT_MISSION_ID,
                         DEFAULT_GENERATOR.get()));
 
         PullTelemetryRequest request = PullTelemetryRequest.newBuilder()
@@ -362,287 +283,6 @@ public class CommunicationUserEndpointTests {
                 .build();
         StreamRecorder<PullTelemetryResponse> responseObserver = StreamRecorder.create();
         this.endpoint.pullTelemetry(request, responseObserver);
-
-        assertThat(responseObserver.getError()).isNotNull();
-        assertThat(responseObserver.getError()).isInstanceOf(StatusRuntimeException.class);
-        assertThat(((StatusRuntimeException)responseObserver.getError()).getStatus().getCode())
-                .isEqualTo(Status.INTERNAL.getCode());
-    }
-
-    /**
-     * ユーザーは、ステージングAPIを実行し、対象のCommunicationにMissionIdを紐付ける。
-     */
-    @Test
-    public void stagingApi() {
-        MissionId newMissionId = new MissionId("new mission id");
-        when(this.repository.getById(DEFAULT_COMMUNICATION_ID))
-                .thenReturn(newNormalCommunication(
-                        DEFAULT_COMMUNICATION_ID,
-                        DEFAULT_VEHICLE_ID,
-                        DEFAULT_CONTROLLED,
-                        DEFAULT_MISSION_ID,
-                        DEFAULT_GENERATOR.get()));
-
-        StagingRequest request = StagingRequest.newBuilder()
-                .setId(DEFAULT_COMMUNICATION_ID.getId())
-                .setMissionId(newMissionId.getId())
-                .build();
-        StreamRecorder<StagingResponse> responseObserver = StreamRecorder.create();
-        this.endpoint.staging(request, responseObserver);
-
-        ArgumentCaptor<Communication> commCaptor = ArgumentCaptor.forClass(Communication.class);
-        verify(this.repository, times(1)).save(commCaptor.capture());
-
-        assertThat(commCaptor.getValue().getMissionId()).isEqualTo(newMissionId);
-
-        assertThat(responseObserver.getError()).isNull();
-        List<StagingResponse> results = responseObserver.getValues();
-        assertThat(results).hasSize(1);
-        StagingResponse response = results.get(0);
-        assertThat(response).isEqualTo(StagingResponse.newBuilder()
-                .setId(DEFAULT_COMMUNICATION_ID.getId())
-                .setMissionId(newMissionId.getId())
-                .build());
-    }
-
-    /**
-     * ユーザーは、ステージングAPIを実行し、未存在のID指定によりNOT_FOUNDエラーを検出できる。
-     */
-    @Test
-    public void stagingApiNotFoundError() {
-        StagingRequest request = StagingRequest.newBuilder()
-                .setId(DEFAULT_COMMUNICATION_ID.getId())
-                .setMissionId(DEFAULT_MISSION_ID.getId())
-                .build();
-        StreamRecorder<StagingResponse> responseObserver = StreamRecorder.create();
-        this.endpoint.staging(request, responseObserver);
-
-        assertThat(responseObserver.getError()).isNotNull();
-        assertThat(responseObserver.getError()).isInstanceOf(StatusRuntimeException.class);
-        assertThat(((StatusRuntimeException)responseObserver.getError()).getStatus().getCode())
-                .isEqualTo(Status.NOT_FOUND.getCode());
-    }
-
-    /**
-     * ユーザーは、ステージングAPIを実行し、DBエラーのよりINTERNALエラーを検出できる。
-     */
-    @Test
-    public void stagingApiInternalError() {
-        when(this.repository.getById(DEFAULT_COMMUNICATION_ID)).thenThrow(new IllegalStateException());
-
-        StagingRequest request = StagingRequest.newBuilder()
-                .setId(DEFAULT_COMMUNICATION_ID.getId())
-                .setMissionId(DEFAULT_MISSION_ID.getId())
-                .build();
-        StreamRecorder<StagingResponse> responseObserver = StreamRecorder.create();
-        this.endpoint.staging(request, responseObserver);
-
-        assertThat(responseObserver.getError()).isNotNull();
-        assertThat(responseObserver.getError()).isInstanceOf(StatusRuntimeException.class);
-        assertThat(((StatusRuntimeException)responseObserver.getError()).getStatus().getCode())
-                .isEqualTo(Status.INTERNAL.getCode());
-    }
-
-    /**
-     * ユーザーは、キャンセルAPIを実行し、対象のCommunicationのMissionIdの紐付けを解除する。
-     */
-    @Test
-    public void cancelApi() {
-        when(this.repository.getById(DEFAULT_COMMUNICATION_ID))
-                .thenReturn(newNormalCommunication(
-                        DEFAULT_COMMUNICATION_ID,
-                        DEFAULT_VEHICLE_ID,
-                        DEFAULT_CONTROLLED,
-                        DEFAULT_MISSION_ID,
-                        DEFAULT_GENERATOR.get()));
-
-        CancelRequest request = CancelRequest.newBuilder()
-                .setId(DEFAULT_COMMUNICATION_ID.getId())
-                .build();
-        StreamRecorder<CancelResponse> responseObserver = StreamRecorder.create();
-        this.endpoint.cancel(request, responseObserver);
-
-        ArgumentCaptor<Communication> commCaptor = ArgumentCaptor.forClass(Communication.class);
-        verify(this.repository, times(1)).save(commCaptor.capture());
-
-        assertThat(commCaptor.getValue().getMissionId()).isNull();
-
-        assertThat(responseObserver.getError()).isNull();
-        List<CancelResponse> results = responseObserver.getValues();
-        assertThat(results).hasSize(1);
-        CancelResponse response = results.get(0);
-        assertThat(response).isEqualTo(CancelResponse.newBuilder()
-                .setId(DEFAULT_COMMUNICATION_ID.getId())
-                .build());
-    }
-
-    /**
-     * ユーザーは、キャンセルAPIを実行し、未存在のID指定によりNOT_FOUNDエラーを検出できる。
-     */
-    @Test
-    public void cancelApiNotFoundError() {
-        CancelRequest request = CancelRequest.newBuilder()
-                .setId(DEFAULT_COMMUNICATION_ID.getId())
-                .build();
-        StreamRecorder<CancelResponse> responseObserver = StreamRecorder.create();
-        this.endpoint.cancel(request, responseObserver);
-
-        assertThat(responseObserver.getError()).isNotNull();
-        assertThat(responseObserver.getError()).isInstanceOf(StatusRuntimeException.class);
-        assertThat(((StatusRuntimeException)responseObserver.getError()).getStatus().getCode())
-                .isEqualTo(Status.NOT_FOUND.getCode());
-    }
-
-    /**
-     * ユーザーは、キャンセルAPIを実行し、DBエラーのよりINTERNALエラーを検出できる。
-     */
-    @Test
-    public void cancelApiInternalError() {
-        when(this.repository.getById(DEFAULT_COMMUNICATION_ID)).thenThrow(new IllegalStateException());
-
-        CancelRequest request = CancelRequest.newBuilder()
-                .setId(DEFAULT_COMMUNICATION_ID.getId())
-                .build();
-        StreamRecorder<CancelResponse> responseObserver = StreamRecorder.create();
-        this.endpoint.cancel(request, responseObserver);
-
-        assertThat(responseObserver.getError()).isNotNull();
-        assertThat(responseObserver.getError()).isInstanceOf(StatusRuntimeException.class);
-        assertThat(((StatusRuntimeException)responseObserver.getError()).getStatus().getCode())
-                .isEqualTo(Status.INTERNAL.getCode());
-    }
-
-    /**
-     * ユーザーは、管制状態APIを実行し、対象のCommunicationの状態をcontrolledに変更する。
-     */
-    @Test
-    public void controlApi() {
-        when(this.repository.getById(DEFAULT_COMMUNICATION_ID))
-                .thenReturn(newNormalCommunication(
-                        DEFAULT_COMMUNICATION_ID,
-                        DEFAULT_VEHICLE_ID,
-                        DEFAULT_CONTROLLED,
-                        DEFAULT_MISSION_ID,
-                        DEFAULT_GENERATOR.get()));
-
-        ControlRequest request = ControlRequest.newBuilder()
-                .setId(DEFAULT_COMMUNICATION_ID.getId())
-                .build();
-        StreamRecorder<ControlResponse> responseObserver = StreamRecorder.create();
-        this.endpoint.control(request, responseObserver);
-
-        ArgumentCaptor<Communication> commCaptor = ArgumentCaptor.forClass(Communication.class);
-        verify(this.repository, times(1)).save(commCaptor.capture());
-
-        assertThat(commCaptor.getValue().isControlled()).isTrue();
-
-        assertThat(responseObserver.getError()).isNull();
-        List<ControlResponse> results = responseObserver.getValues();
-        assertThat(results).hasSize(1);
-        ControlResponse response = results.get(0);
-        assertThat(response).isEqualTo(ControlResponse.newBuilder()
-                .setId(DEFAULT_COMMUNICATION_ID.getId())
-                .build());
-    }
-
-    /**
-     * ユーザーは、管制状態APIを実行し、未存在のID指定によりNOT_FOUNDエラーを検出できる。
-     */
-    @Test
-    public void controlApiNotFoundError() {
-        ControlRequest request = ControlRequest.newBuilder()
-                .setId(DEFAULT_COMMUNICATION_ID.getId())
-                .build();
-        StreamRecorder<ControlResponse> responseObserver = StreamRecorder.create();
-        this.endpoint.control(request, responseObserver);
-
-        assertThat(responseObserver.getError()).isNotNull();
-        assertThat(responseObserver.getError()).isInstanceOf(StatusRuntimeException.class);
-        assertThat(((StatusRuntimeException)responseObserver.getError()).getStatus().getCode())
-                .isEqualTo(Status.NOT_FOUND.getCode());
-    }
-
-    /**
-     * ユーザーは、管制状態APIを実行し、DBエラーのよりINTERNALエラーを検出できる。
-     */
-    @Test
-    public void controlApiInternalError() {
-        when(this.repository.getById(DEFAULT_COMMUNICATION_ID)).thenThrow(new IllegalStateException());
-
-        ControlRequest request = ControlRequest.newBuilder()
-                .setId(DEFAULT_COMMUNICATION_ID.getId())
-                .build();
-        StreamRecorder<ControlResponse> responseObserver = StreamRecorder.create();
-        this.endpoint.control(request, responseObserver);
-
-        assertThat(responseObserver.getError()).isNotNull();
-        assertThat(responseObserver.getError()).isInstanceOf(StatusRuntimeException.class);
-        assertThat(((StatusRuntimeException)responseObserver.getError()).getStatus().getCode())
-                .isEqualTo(Status.INTERNAL.getCode());
-    }
-
-    /**
-     * ユーザーは、非管制状態APIを実行し、対象のCommunicationの状態をuncontrolledに変更する。
-     */
-    @Test
-    public void uncontrolApi() {
-        when(this.repository.getById(DEFAULT_COMMUNICATION_ID))
-                .thenReturn(newNormalCommunication(
-                        DEFAULT_COMMUNICATION_ID,
-                        DEFAULT_VEHICLE_ID,
-                        DEFAULT_CONTROLLED,
-                        DEFAULT_MISSION_ID,
-                        DEFAULT_GENERATOR.get()));
-
-        UncontrolRequest request = UncontrolRequest.newBuilder()
-                .setId(DEFAULT_COMMUNICATION_ID.getId())
-                .build();
-        StreamRecorder<UncontrolResponse> responseObserver = StreamRecorder.create();
-        this.endpoint.uncontrol(request, responseObserver);
-
-        ArgumentCaptor<Communication> commCaptor = ArgumentCaptor.forClass(Communication.class);
-        verify(this.repository, times(1)).save(commCaptor.capture());
-
-        assertThat(commCaptor.getValue().isControlled()).isFalse();
-
-        assertThat(responseObserver.getError()).isNull();
-        List<UncontrolResponse> results = responseObserver.getValues();
-        assertThat(results).hasSize(1);
-        UncontrolResponse response = results.get(0);
-        assertThat(response).isEqualTo(UncontrolResponse.newBuilder()
-                .setId(DEFAULT_COMMUNICATION_ID.getId())
-                .build());
-    }
-
-    /**
-     * ユーザーは、非管制状態APIを実行し、未存在のID指定によりNOT_FOUNDエラーを検出できる。
-     */
-    @Test
-    public void uncontrolApiNotFoundError() {
-        UncontrolRequest request = UncontrolRequest.newBuilder()
-                .setId(DEFAULT_COMMUNICATION_ID.getId())
-                .build();
-        StreamRecorder<UncontrolResponse> responseObserver = StreamRecorder.create();
-        this.endpoint.uncontrol(request, responseObserver);
-
-        assertThat(responseObserver.getError()).isNotNull();
-        assertThat(responseObserver.getError()).isInstanceOf(StatusRuntimeException.class);
-        assertThat(((StatusRuntimeException)responseObserver.getError()).getStatus().getCode())
-                .isEqualTo(Status.NOT_FOUND.getCode());
-    }
-
-    /**
-     * ユーザーは、非管制状態APIを実行し、DBエラーのよりINTERNALエラーを検出できる。
-     */
-    @Test
-    public void uncontrolApiInternalError() {
-        when(this.repository.getById(DEFAULT_COMMUNICATION_ID)).thenThrow(new IllegalStateException());
-
-        UncontrolRequest request = UncontrolRequest.newBuilder()
-                .setId(DEFAULT_COMMUNICATION_ID.getId())
-                .build();
-        StreamRecorder<UncontrolResponse> responseObserver = StreamRecorder.create();
-        this.endpoint.uncontrol(request, responseObserver);
 
         assertThat(responseObserver.getError()).isNotNull();
         assertThat(responseObserver.getError()).isInstanceOf(StatusRuntimeException.class);

@@ -6,10 +6,13 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import lombok.AllArgsConstructor;
+import net.tomofiles.skysign.mission.domain.mission.CarbonCopyMissionService;
+import net.tomofiles.skysign.mission.domain.mission.DeleteMissionService;
 import net.tomofiles.skysign.mission.domain.mission.Generator;
 import net.tomofiles.skysign.mission.domain.mission.Mission;
 import net.tomofiles.skysign.mission.domain.mission.MissionFactory;
 import net.tomofiles.skysign.mission.domain.mission.MissionRepository;
+import net.tomofiles.skysign.mission.service.dpo.CarbonCopyMissionRequestDpo;
 import net.tomofiles.skysign.mission.service.dpo.CreateMissionRequestDpo;
 import net.tomofiles.skysign.mission.service.dpo.CreateMissionResponseDpo;
 import net.tomofiles.skysign.mission.service.dpo.DeleteMissionRequestDpo;
@@ -29,7 +32,7 @@ public class ManageMissionService {
 
     @Transactional
     public void listMissions(ListMissionsResponsesDpo responsesDpo) {
-        List<Mission> missions = this.missionRepository.getAll();
+        List<Mission> missions = this.missionRepository.getAllOriginal();
 
         responsesDpo.setMissions(missions);
     }
@@ -71,14 +74,19 @@ public class ManageMissionService {
 
     @Transactional
     public void deleteMission(DeleteMissionRequestDpo requestDpo, DeleteMissionResponseDpo responseDpo) {
-        Mission mission = missionRepository.getById(requestDpo.getMissionId());
-
-        if (mission == null) {
-            return;
-        }
-
-        this.missionRepository.remove(requestDpo.getMissionId(), mission.getVersion());
+        Mission mission = this.missionRepository.getById(requestDpo.getMissionId());
+        
+        DeleteMissionService.delete(this.missionRepository, mission);
 
         responseDpo.setMission(mission);
+    }
+
+    @Transactional
+    public void carbonCopyMission(CarbonCopyMissionRequestDpo requestDpo) {
+        CarbonCopyMissionService.copy(
+            this.generator, 
+            this.missionRepository, 
+            requestDpo.getOriginalId(), 
+            requestDpo.getNewId());
     }
 }

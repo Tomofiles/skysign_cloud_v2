@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: skysign-flightoperation-service
+  labels:
+    run: skysign-flightoperation-service
+spec:
+  clusterIP: None
+  ports:
+  - port: 5001
+    protocol: TCP
+  selector:
+    run: skysign-flightoperation-service-backend

@@ -9,7 +9,4 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class CommunicationRecord {
     private String id;
-    private String vehicleId;
-    private boolean controlled;
-    private String missionId;
 }

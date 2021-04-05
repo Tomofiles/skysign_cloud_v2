@@ -8,7 +8,6 @@ spec:
   type: NodePort
   ports:
   - port: 6000
-    nodePort: 30038
     protocol: TCP
   selector:
     run: skysign-communication-gateway-backend

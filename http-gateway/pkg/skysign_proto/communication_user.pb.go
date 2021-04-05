@@ -30,53 +30,6 @@ const (
 // of the legacy proto package is being used.
 const _ = proto.ProtoPackageIsVersion4
 
-type ListCommunicationsResponses struct {
-	state         protoimpl.MessageState
-	sizeCache     protoimpl.SizeCache
-	unknownFields protoimpl.UnknownFields
-
-	Communications []*Communication `protobuf:"bytes,1,rep,name=communications,proto3" json:"communications,omitempty"`
-}
-
-func (x *ListCommunicationsResponses) Reset() {
-	*x = ListCommunicationsResponses{}
-	if protoimpl.UnsafeEnabled {
-		mi := &file_communication_user_proto_msgTypes[0]
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		ms.StoreMessageInfo(mi)
-	}
-}
-
-func (x *ListCommunicationsResponses) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*ListCommunicationsResponses) ProtoMessage() {}
-
-func (x *ListCommunicationsResponses) ProtoReflect() protoreflect.Message {
-	mi := &file_communication_user_proto_msgTypes[0]
-	if protoimpl.UnsafeEnabled && x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use ListCommunicationsResponses.ProtoReflect.Descriptor instead.
-func (*ListCommunicationsResponses) Descriptor() ([]byte, []int) {
-	return file_communication_user_proto_rawDescGZIP(), []int{0}
-}
-
-func (x *ListCommunicationsResponses) GetCommunications() []*Communication {
-	if x != nil {
-		return x.Communications
-	}
-	return nil
-}
-
 type PushCommandRequest struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -89,7 +42,7 @@ type PushCommandRequest struct {
 func (x *PushCommandRequest) Reset() {
 	*x = PushCommandRequest{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_communication_user_proto_msgTypes[1]
+		mi := &file_communication_user_proto_msgTypes[0]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -102,7 +55,7 @@ func (x *PushCommandRequest) String() string {
 func (*PushCommandRequest) ProtoMessage() {}
 
 func (x *PushCommandRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_communication_user_proto_msgTypes[1]
+	mi := &file_communication_user_proto_msgTypes[0]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -115,7 +68,7 @@ func (x *PushCommandRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use PushCommandRequest.ProtoReflect.Descriptor instead.
 func (*PushCommandRequest) Descriptor() ([]byte, []int) {
-	return file_communication_user_proto_rawDescGZIP(), []int{1}
+	return file_communication_user_proto_rawDescGZIP(), []int{0}
 }
 
 func (x *PushCommandRequest) GetId() string {
@@ -137,14 +90,15 @@ type PushCommandResponse struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Id   string      `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
-	Type CommandType `protobuf:"varint,2,opt,name=type,proto3,enum=skysign_proto.CommandType" json:"type,omitempty"`
+	Id        string      `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	Type      CommandType `protobuf:"varint,2,opt,name=type,proto3,enum=skysign_proto.CommandType" json:"type,omitempty"`
+	CommandId string      `protobuf:"bytes,3,opt,name=commandId,proto3" json:"commandId,omitempty"`
 }
 
 func (x *PushCommandResponse) Reset() {
 	*x = PushCommandResponse{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_communication_user_proto_msgTypes[2]
+		mi := &file_communication_user_proto_msgTypes[1]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -157,7 +111,7 @@ func (x *PushCommandResponse) String() string {
 func (*PushCommandResponse) ProtoMessage() {}
 
 func (x *PushCommandResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_communication_user_proto_msgTypes[2]
+	mi := &file_communication_user_proto_msgTypes[1]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -170,7 +124,7 @@ func (x *PushCommandResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use PushCommandResponse.ProtoReflect.Descriptor instead.
 func (*PushCommandResponse) Descriptor() ([]byte, []int) {
-	return file_communication_user_proto_rawDescGZIP(), []int{2}
+	return file_communication_user_proto_rawDescGZIP(), []int{1}
 }
 
 func (x *PushCommandResponse) GetId() string {
@@ -187,6 +141,131 @@ func (x *PushCommandResponse) GetType() CommandType {
 	return CommandType_ARM
 }
 
+func (x *PushCommandResponse) GetCommandId() string {
+	if x != nil {
+		return x.CommandId
+	}
+	return ""
+}
+
+type PushUploadMissionRequest struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Id        string `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	MissionId string `protobuf:"bytes,2,opt,name=missionId,proto3" json:"missionId,omitempty"`
+}
+
+func (x *PushUploadMissionRequest) Reset() {
+	*x = PushUploadMissionRequest{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_communication_user_proto_msgTypes[2]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *PushUploadMissionRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*PushUploadMissionRequest) ProtoMessage() {}
+
+func (x *PushUploadMissionRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_communication_user_proto_msgTypes[2]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use PushUploadMissionRequest.ProtoReflect.Descriptor instead.
+func (*PushUploadMissionRequest) Descriptor() ([]byte, []int) {
+	return file_communication_user_proto_rawDescGZIP(), []int{2}
+}
+
+func (x *PushUploadMissionRequest) GetId() string {
+	if x != nil {
+		return x.Id
+	}
+	return ""
+}
+
+func (x *PushUploadMissionRequest) GetMissionId() string {
+	if x != nil {
+		return x.MissionId
+	}
+	return ""
+}
+
+type PushUploadMissionResponse struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Id        string `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	MissionId string `protobuf:"bytes,2,opt,name=missionId,proto3" json:"missionId,omitempty"`
+	CommandId string `protobuf:"bytes,3,opt,name=commandId,proto3" json:"commandId,omitempty"`
+}
+
+func (x *PushUploadMissionResponse) Reset() {
+	*x = PushUploadMissionResponse{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_communication_user_proto_msgTypes[3]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *PushUploadMissionResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*PushUploadMissionResponse) ProtoMessage() {}
+
+func (x *PushUploadMissionResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_communication_user_proto_msgTypes[3]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use PushUploadMissionResponse.ProtoReflect.Descriptor instead.
+func (*PushUploadMissionResponse) Descriptor() ([]byte, []int) {
+	return file_communication_user_proto_rawDescGZIP(), []int{3}
+}
+
+func (x *PushUploadMissionResponse) GetId() string {
+	if x != nil {
+		return x.Id
+	}
+	return ""
+}
+
+func (x *PushUploadMissionResponse) GetMissionId() string {
+	if x != nil {
+		return x.MissionId
+	}
+	return ""
+}
+
+func (x *PushUploadMissionResponse) GetCommandId() string {
+	if x != nil {
+		return x.CommandId
+	}
+	return ""
+}
+
 type PullTelemetryRequest struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -198,7 +277,7 @@ type PullTelemetryRequest struct {
 func (x *PullTelemetryRequest) Reset() {
 	*x = PullTelemetryRequest{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_communication_user_proto_msgTypes[3]
+		mi := &file_communication_user_proto_msgTypes[4]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -211,7 +290,7 @@ func (x *PullTelemetryRequest) String() string {
 func (*PullTelemetryRequest) ProtoMessage() {}
 
 func (x *PullTelemetryRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_communication_user_proto_msgTypes[3]
+	mi := &file_communication_user_proto_msgTypes[4]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -224,7 +303,7 @@ func (x *PullTelemetryRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use PullTelemetryRequest.ProtoReflect.Descriptor instead.
 func (*PullTelemetryRequest) Descriptor() ([]byte, []int) {
-	return file_communication_user_proto_rawDescGZIP(), []int{3}
+	return file_communication_user_proto_rawDescGZIP(), []int{4}
 }
 
 func (x *PullTelemetryRequest) GetId() string {
@@ -246,7 +325,7 @@ type PullTelemetryResponse struct {
 func (x *PullTelemetryResponse) Reset() {
 	*x = PullTelemetryResponse{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_communication_user_proto_msgTypes[4]
+		mi := &file_communication_user_proto_msgTypes[5]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -259,7 +338,7 @@ func (x *PullTelemetryResponse) String() string {
 func (*PullTelemetryResponse) ProtoMessage() {}
 
 func (x *PullTelemetryResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_communication_user_proto_msgTypes[4]
+	mi := &file_communication_user_proto_msgTypes[5]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -272,7 +351,7 @@ func (x *PullTelemetryResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use PullTelemetryResponse.ProtoReflect.Descriptor instead.
 func (*PullTelemetryResponse) Descriptor() ([]byte, []int) {
-	return file_communication_user_proto_rawDescGZIP(), []int{4}
+	return file_communication_user_proto_rawDescGZIP(), []int{5}
 }
 
 func (x *PullTelemetryResponse) GetId() string {
@@ -289,398 +368,6 @@ func (x *PullTelemetryResponse) GetTelemetry() *Telemetry {
 	return nil
 }
 
-type StagingRequest struct {
-	state         protoimpl.MessageState
-	sizeCache     protoimpl.SizeCache
-	unknownFields protoimpl.UnknownFields
-
-	Id        string `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
-	MissionId string `protobuf:"bytes,2,opt,name=missionId,proto3" json:"missionId,omitempty"`
-}
-
-func (x *StagingRequest) Reset() {
-	*x = StagingRequest{}
-	if protoimpl.UnsafeEnabled {
-		mi := &file_communication_user_proto_msgTypes[5]
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		ms.StoreMessageInfo(mi)
-	}
-}
-
-func (x *StagingRequest) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*StagingRequest) ProtoMessage() {}
-
-func (x *StagingRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_communication_user_proto_msgTypes[5]
-	if protoimpl.UnsafeEnabled && x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use StagingRequest.ProtoReflect.Descriptor instead.
-func (*StagingRequest) Descriptor() ([]byte, []int) {
-	return file_communication_user_proto_rawDescGZIP(), []int{5}
-}
-
-func (x *StagingRequest) GetId() string {
-	if x != nil {
-		return x.Id
-	}
-	return ""
-}
-
-func (x *StagingRequest) GetMissionId() string {
-	if x != nil {
-		return x.MissionId
-	}
-	return ""
-}
-
-type StagingResponse struct {
-	state         protoimpl.MessageState
-	sizeCache     protoimpl.SizeCache
-	unknownFields protoimpl.UnknownFields
-
-	Id        string `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
-	MissionId string `protobuf:"bytes,2,opt,name=missionId,proto3" json:"missionId,omitempty"`
-}
-
-func (x *StagingResponse) Reset() {
-	*x = StagingResponse{}
-	if protoimpl.UnsafeEnabled {
-		mi := &file_communication_user_proto_msgTypes[6]
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		ms.StoreMessageInfo(mi)
-	}
-}
-
-func (x *StagingResponse) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*StagingResponse) ProtoMessage() {}
-
-func (x *StagingResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_communication_user_proto_msgTypes[6]
-	if protoimpl.UnsafeEnabled && x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use StagingResponse.ProtoReflect.Descriptor instead.
-func (*StagingResponse) Descriptor() ([]byte, []int) {
-	return file_communication_user_proto_rawDescGZIP(), []int{6}
-}
-
-func (x *StagingResponse) GetId() string {
-	if x != nil {
-		return x.Id
-	}
-	return ""
-}
-
-func (x *StagingResponse) GetMissionId() string {
-	if x != nil {
-		return x.MissionId
-	}
-	return ""
-}
-
-type CancelRequest struct {
-	state         protoimpl.MessageState
-	sizeCache     protoimpl.SizeCache
-	unknownFields protoimpl.UnknownFields
-
-	Id string `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
-}
-
-func (x *CancelRequest) Reset() {
-	*x = CancelRequest{}
-	if protoimpl.UnsafeEnabled {
-		mi := &file_communication_user_proto_msgTypes[7]
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		ms.StoreMessageInfo(mi)
-	}
-}
-
-func (x *CancelRequest) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*CancelRequest) ProtoMessage() {}
-
-func (x *CancelRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_communication_user_proto_msgTypes[7]
-	if protoimpl.UnsafeEnabled && x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use CancelRequest.ProtoReflect.Descriptor instead.
-func (*CancelRequest) Descriptor() ([]byte, []int) {
-	return file_communication_user_proto_rawDescGZIP(), []int{7}
-}
-
-func (x *CancelRequest) GetId() string {
-	if x != nil {
-		return x.Id
-	}
-	return ""
-}
-
-type CancelResponse struct {
-	state         protoimpl.MessageState
-	sizeCache     protoimpl.SizeCache
-	unknownFields protoimpl.UnknownFields
-
-	Id string `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
-}
-
-func (x *CancelResponse) Reset() {
-	*x = CancelResponse{}
-	if protoimpl.UnsafeEnabled {
-		mi := &file_communication_user_proto_msgTypes[8]
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		ms.StoreMessageInfo(mi)
-	}
-}
-
-func (x *CancelResponse) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*CancelResponse) ProtoMessage() {}
-
-func (x *CancelResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_communication_user_proto_msgTypes[8]
-	if protoimpl.UnsafeEnabled && x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use CancelResponse.ProtoReflect.Descriptor instead.
-func (*CancelResponse) Descriptor() ([]byte, []int) {
-	return file_communication_user_proto_rawDescGZIP(), []int{8}
-}
-
-func (x *CancelResponse) GetId() string {
-	if x != nil {
-		return x.Id
-	}
-	return ""
-}
-
-type ControlRequest struct {
-	state         protoimpl.MessageState
-	sizeCache     protoimpl.SizeCache
-	unknownFields protoimpl.UnknownFields
-
-	Id string `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
-}
-
-func (x *ControlRequest) Reset() {
-	*x = ControlRequest{}
-	if protoimpl.UnsafeEnabled {
-		mi := &file_communication_user_proto_msgTypes[9]
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		ms.StoreMessageInfo(mi)
-	}
-}
-
-func (x *ControlRequest) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*ControlRequest) ProtoMessage() {}
-
-func (x *ControlRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_communication_user_proto_msgTypes[9]
-	if protoimpl.UnsafeEnabled && x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use ControlRequest.ProtoReflect.Descriptor instead.
-func (*ControlRequest) Descriptor() ([]byte, []int) {
-	return file_communication_user_proto_rawDescGZIP(), []int{9}
-}
-
-func (x *ControlRequest) GetId() string {
-	if x != nil {
-		return x.Id
-	}
-	return ""
-}
-
-type ControlResponse struct {
-	state         protoimpl.MessageState
-	sizeCache     protoimpl.SizeCache
-	unknownFields protoimpl.UnknownFields
-
-	Id string `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
-}
-
-func (x *ControlResponse) Reset() {
-	*x = ControlResponse{}
-	if protoimpl.UnsafeEnabled {
-		mi := &file_communication_user_proto_msgTypes[10]
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		ms.StoreMessageInfo(mi)
-	}
-}
-
-func (x *ControlResponse) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*ControlResponse) ProtoMessage() {}
-
-func (x *ControlResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_communication_user_proto_msgTypes[10]
-	if protoimpl.UnsafeEnabled && x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use ControlResponse.ProtoReflect.Descriptor instead.
-func (*ControlResponse) Descriptor() ([]byte, []int) {
-	return file_communication_user_proto_rawDescGZIP(), []int{10}
-}
-
-func (x *ControlResponse) GetId() string {
-	if x != nil {
-		return x.Id
-	}
-	return ""
-}
-
-type UncontrolRequest struct {
-	state         protoimpl.MessageState
-	sizeCache     protoimpl.SizeCache
-	unknownFields protoimpl.UnknownFields
-
-	Id string `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
-}
-
-func (x *UncontrolRequest) Reset() {
-	*x = UncontrolRequest{}
-	if protoimpl.UnsafeEnabled {
-		mi := &file_communication_user_proto_msgTypes[11]
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		ms.StoreMessageInfo(mi)
-	}
-}
-
-func (x *UncontrolRequest) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*UncontrolRequest) ProtoMessage() {}
-
-func (x *UncontrolRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_communication_user_proto_msgTypes[11]
-	if protoimpl.UnsafeEnabled && x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use UncontrolRequest.ProtoReflect.Descriptor instead.
-func (*UncontrolRequest) Descriptor() ([]byte, []int) {
-	return file_communication_user_proto_rawDescGZIP(), []int{11}
-}
-
-func (x *UncontrolRequest) GetId() string {
-	if x != nil {
-		return x.Id
-	}
-	return ""
-}
-
-type UncontrolResponse struct {
-	state         protoimpl.MessageState
-	sizeCache     protoimpl.SizeCache
-	unknownFields protoimpl.UnknownFields
-
-	Id string `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
-}
-
-func (x *UncontrolResponse) Reset() {
-	*x = UncontrolResponse{}
-	if protoimpl.UnsafeEnabled {
-		mi := &file_communication_user_proto_msgTypes[12]
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		ms.StoreMessageInfo(mi)
-	}
-}
-
-func (x *UncontrolResponse) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*UncontrolResponse) ProtoMessage() {}
-
-func (x *UncontrolResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_communication_user_proto_msgTypes[12]
-	if protoimpl.UnsafeEnabled && x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use UncontrolResponse.ProtoReflect.Descriptor instead.
-func (*UncontrolResponse) Descriptor() ([]byte, []int) {
-	return file_communication_user_proto_rawDescGZIP(), []int{12}
-}
-
-func (x *UncontrolResponse) GetId() string {
-	if x != nil {
-		return x.Id
-	}
-	return ""
-}
-
 var File_communication_user_proto protoreflect.FileDescriptor
 
 var file_communication_user_proto_rawDesc = []byte{
@@ -689,114 +376,71 @@ var file_communication_user_proto_rawDesc = []byte{
 	0x69, 0x67, 0x6e, 0x5f, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x1a, 0x1c, 0x67, 0x6f, 0x6f, 0x67, 0x6c,
 	0x65, 0x2f, 0x61, 0x70, 0x69, 0x2f, 0x61, 0x6e, 0x6e, 0x6f, 0x74, 0x61, 0x74, 0x69, 0x6f, 0x6e,
 	0x73, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x1a, 0x0c, 0x63, 0x6f, 0x6d, 0x6d, 0x6f, 0x6e, 0x2e,
-	0x70, 0x72, 0x6f, 0x74, 0x6f, 0x22, 0x63, 0x0a, 0x1b, 0x4c, 0x69, 0x73, 0x74, 0x43, 0x6f, 0x6d,
-	0x6d, 0x75, 0x6e, 0x69, 0x63, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x52, 0x65, 0x73, 0x70, 0x6f,
-	0x6e, 0x73, 0x65, 0x73, 0x12, 0x44, 0x0a, 0x0e, 0x63, 0x6f, 0x6d, 0x6d, 0x75, 0x6e, 0x69, 0x63,
-	0x61, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x18, 0x01, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x1c, 0x2e, 0x73,
-	0x6b, 0x79, 0x73, 0x69, 0x67, 0x6e, 0x5f, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2e, 0x43, 0x6f, 0x6d,
-	0x6d, 0x75, 0x6e, 0x69, 0x63, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x52, 0x0e, 0x63, 0x6f, 0x6d, 0x6d,
-	0x75, 0x6e, 0x69, 0x63, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x22, 0x54, 0x0a, 0x12, 0x50, 0x75,
-	0x73, 0x68, 0x43, 0x6f, 0x6d, 0x6d, 0x61, 0x6e, 0x64, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74,
-	0x12, 0x0e, 0x0a, 0x02, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x02, 0x69, 0x64,
-	0x12, 0x2e, 0x0a, 0x04, 0x74, 0x79, 0x70, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x0e, 0x32, 0x1a,
-	0x2e, 0x73, 0x6b, 0x79, 0x73, 0x69, 0x67, 0x6e, 0x5f, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2e, 0x43,
-	0x6f, 0x6d, 0x6d, 0x61, 0x6e, 0x64, 0x54, 0x79, 0x70, 0x65, 0x52, 0x04, 0x74, 0x79, 0x70, 0x65,
-	0x22, 0x55, 0x0a, 0x13, 0x50, 0x75, 0x73, 0x68, 0x43, 0x6f, 0x6d, 0x6d, 0x61, 0x6e, 0x64, 0x52,
-	0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x0e, 0x0a, 0x02, 0x69, 0x64, 0x18, 0x01, 0x20,
-	0x01, 0x28, 0x09, 0x52, 0x02, 0x69, 0x64, 0x12, 0x2e, 0x0a, 0x04, 0x74, 0x79, 0x70, 0x65, 0x18,
-	0x02, 0x20, 0x01, 0x28, 0x0e, 0x32, 0x1a, 0x2e, 0x73, 0x6b, 0x79, 0x73, 0x69, 0x67, 0x6e, 0x5f,
-	0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2e, 0x43, 0x6f, 0x6d, 0x6d, 0x61, 0x6e, 0x64, 0x54, 0x79, 0x70,
-	0x65, 0x52, 0x04, 0x74, 0x79, 0x70, 0x65, 0x22, 0x26, 0x0a, 0x14, 0x50, 0x75, 0x6c, 0x6c, 0x54,
-	0x65, 0x6c, 0x65, 0x6d, 0x65, 0x74, 0x72, 0x79, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12,
-	0x0e, 0x0a, 0x02, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x02, 0x69, 0x64, 0x22,
-	0x5f, 0x0a, 0x15, 0x50, 0x75, 0x6c, 0x6c, 0x54, 0x65, 0x6c, 0x65, 0x6d, 0x65, 0x74, 0x72, 0x79,
-	0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x0e, 0x0a, 0x02, 0x69, 0x64, 0x18, 0x01,
-	0x20, 0x01, 0x28, 0x09, 0x52, 0x02, 0x69, 0x64, 0x12, 0x36, 0x0a, 0x09, 0x74, 0x65, 0x6c, 0x65,
-	0x6d, 0x65, 0x74, 0x72, 0x79, 0x18, 0x02, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x18, 0x2e, 0x73, 0x6b,
-	0x79, 0x73, 0x69, 0x67, 0x6e, 0x5f, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2e, 0x54, 0x65, 0x6c, 0x65,
-	0x6d, 0x65, 0x74, 0x72, 0x79, 0x52, 0x09, 0x74, 0x65, 0x6c, 0x65, 0x6d, 0x65, 0x74, 0x72, 0x79,
-	0x22, 0x3e, 0x0a, 0x0e, 0x53, 0x74, 0x61, 0x67, 0x69, 0x6e, 0x67, 0x52, 0x65, 0x71, 0x75, 0x65,
-	0x73, 0x74, 0x12, 0x0e, 0x0a, 0x02, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x02,
-	0x69, 0x64, 0x12, 0x1c, 0x0a, 0x09, 0x6d, 0x69, 0x73, 0x73, 0x69, 0x6f, 0x6e, 0x49, 0x64, 0x18,
-	0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x09, 0x6d, 0x69, 0x73, 0x73, 0x69, 0x6f, 0x6e, 0x49, 0x64,
-	0x22, 0x3f, 0x0a, 0x0f, 0x53, 0x74, 0x61, 0x67, 0x69, 0x6e, 0x67, 0x52, 0x65, 0x73, 0x70, 0x6f,
-	0x6e, 0x73, 0x65, 0x12, 0x0e, 0x0a, 0x02, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52,
-	0x02, 0x69, 0x64, 0x12, 0x1c, 0x0a, 0x09, 0x6d, 0x69, 0x73, 0x73, 0x69, 0x6f, 0x6e, 0x49, 0x64,
-	0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x09, 0x6d, 0x69, 0x73, 0x73, 0x69, 0x6f, 0x6e, 0x49,
-	0x64, 0x22, 0x1f, 0x0a, 0x0d, 0x43, 0x61, 0x6e, 0x63, 0x65, 0x6c, 0x52, 0x65, 0x71, 0x75, 0x65,
-	0x73, 0x74, 0x12, 0x0e, 0x0a, 0x02, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x02,
-	0x69, 0x64, 0x22, 0x20, 0x0a, 0x0e, 0x43, 0x61, 0x6e, 0x63, 0x65, 0x6c, 0x52, 0x65, 0x73, 0x70,
-	0x6f, 0x6e, 0x73, 0x65, 0x12, 0x0e, 0x0a, 0x02, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09,
-	0x52, 0x02, 0x69, 0x64, 0x22, 0x20, 0x0a, 0x0e, 0x43, 0x6f, 0x6e, 0x74, 0x72, 0x6f, 0x6c, 0x52,
-	0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x0e, 0x0a, 0x02, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01,
-	0x28, 0x09, 0x52, 0x02, 0x69, 0x64, 0x22, 0x21, 0x0a, 0x0f, 0x43, 0x6f, 0x6e, 0x74, 0x72, 0x6f,
-	0x6c, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x0e, 0x0a, 0x02, 0x69, 0x64, 0x18,
-	0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x02, 0x69, 0x64, 0x22, 0x22, 0x0a, 0x10, 0x55, 0x6e, 0x63,
-	0x6f, 0x6e, 0x74, 0x72, 0x6f, 0x6c, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x0e, 0x0a,
-	0x02, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x02, 0x69, 0x64, 0x22, 0x23, 0x0a,
-	0x11, 0x55, 0x6e, 0x63, 0x6f, 0x6e, 0x74, 0x72, 0x6f, 0x6c, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e,
+	0x70, 0x72, 0x6f, 0x74, 0x6f, 0x22, 0x54, 0x0a, 0x12, 0x50, 0x75, 0x73, 0x68, 0x43, 0x6f, 0x6d,
+	0x6d, 0x61, 0x6e, 0x64, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x0e, 0x0a, 0x02, 0x69,
+	0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x02, 0x69, 0x64, 0x12, 0x2e, 0x0a, 0x04, 0x74,
+	0x79, 0x70, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x0e, 0x32, 0x1a, 0x2e, 0x73, 0x6b, 0x79, 0x73,
+	0x69, 0x67, 0x6e, 0x5f, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2e, 0x43, 0x6f, 0x6d, 0x6d, 0x61, 0x6e,
+	0x64, 0x54, 0x79, 0x70, 0x65, 0x52, 0x04, 0x74, 0x79, 0x70, 0x65, 0x22, 0x73, 0x0a, 0x13, 0x50,
+	0x75, 0x73, 0x68, 0x43, 0x6f, 0x6d, 0x6d, 0x61, 0x6e, 0x64, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e,
 	0x73, 0x65, 0x12, 0x0e, 0x0a, 0x02, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x02,
-	0x69, 0x64, 0x32, 0x93, 0x07, 0x0a, 0x18, 0x43, 0x6f, 0x6d, 0x6d, 0x75, 0x6e, 0x69, 0x63, 0x61,
-	0x74, 0x69, 0x6f, 0x6e, 0x55, 0x73, 0x65, 0x72, 0x53, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x12,
-	0x76, 0x0a, 0x12, 0x4c, 0x69, 0x73, 0x74, 0x43, 0x6f, 0x6d, 0x6d, 0x75, 0x6e, 0x69, 0x63, 0x61,
-	0x74, 0x69, 0x6f, 0x6e, 0x73, 0x12, 0x14, 0x2e, 0x73, 0x6b, 0x79, 0x73, 0x69, 0x67, 0x6e, 0x5f,
-	0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2e, 0x45, 0x6d, 0x70, 0x74, 0x79, 0x1a, 0x2a, 0x2e, 0x73, 0x6b,
-	0x79, 0x73, 0x69, 0x67, 0x6e, 0x5f, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2e, 0x4c, 0x69, 0x73, 0x74,
-	0x43, 0x6f, 0x6d, 0x6d, 0x75, 0x6e, 0x69, 0x63, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x52, 0x65,
-	0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x73, 0x22, 0x1e, 0x82, 0xd3, 0xe4, 0x93, 0x02, 0x18, 0x12,
-	0x16, 0x2f, 0x61, 0x70, 0x69, 0x2f, 0x76, 0x31, 0x2f, 0x63, 0x6f, 0x6d, 0x6d, 0x75, 0x6e, 0x69,
-	0x63, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x12, 0x85, 0x01, 0x0a, 0x0b, 0x50, 0x75, 0x73, 0x68,
-	0x43, 0x6f, 0x6d, 0x6d, 0x61, 0x6e, 0x64, 0x12, 0x21, 0x2e, 0x73, 0x6b, 0x79, 0x73, 0x69, 0x67,
-	0x6e, 0x5f, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2e, 0x50, 0x75, 0x73, 0x68, 0x43, 0x6f, 0x6d, 0x6d,
-	0x61, 0x6e, 0x64, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x22, 0x2e, 0x73, 0x6b, 0x79,
-	0x73, 0x69, 0x67, 0x6e, 0x5f, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2e, 0x50, 0x75, 0x73, 0x68, 0x43,
-	0x6f, 0x6d, 0x6d, 0x61, 0x6e, 0x64, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x2f,
-	0x82, 0xd3, 0xe4, 0x93, 0x02, 0x29, 0x22, 0x24, 0x2f, 0x61, 0x70, 0x69, 0x2f, 0x76, 0x31, 0x2f,
+	0x69, 0x64, 0x12, 0x2e, 0x0a, 0x04, 0x74, 0x79, 0x70, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x0e,
+	0x32, 0x1a, 0x2e, 0x73, 0x6b, 0x79, 0x73, 0x69, 0x67, 0x6e, 0x5f, 0x70, 0x72, 0x6f, 0x74, 0x6f,
+	0x2e, 0x43, 0x6f, 0x6d, 0x6d, 0x61, 0x6e, 0x64, 0x54, 0x79, 0x70, 0x65, 0x52, 0x04, 0x74, 0x79,
+	0x70, 0x65, 0x12, 0x1c, 0x0a, 0x09, 0x63, 0x6f, 0x6d, 0x6d, 0x61, 0x6e, 0x64, 0x49, 0x64, 0x18,
+	0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x09, 0x63, 0x6f, 0x6d, 0x6d, 0x61, 0x6e, 0x64, 0x49, 0x64,
+	0x22, 0x48, 0x0a, 0x18, 0x50, 0x75, 0x73, 0x68, 0x55, 0x70, 0x6c, 0x6f, 0x61, 0x64, 0x4d, 0x69,
+	0x73, 0x73, 0x69, 0x6f, 0x6e, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x0e, 0x0a, 0x02,
+	0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x02, 0x69, 0x64, 0x12, 0x1c, 0x0a, 0x09,
+	0x6d, 0x69, 0x73, 0x73, 0x69, 0x6f, 0x6e, 0x49, 0x64, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52,
+	0x09, 0x6d, 0x69, 0x73, 0x73, 0x69, 0x6f, 0x6e, 0x49, 0x64, 0x22, 0x67, 0x0a, 0x19, 0x50, 0x75,
+	0x73, 0x68, 0x55, 0x70, 0x6c, 0x6f, 0x61, 0x64, 0x4d, 0x69, 0x73, 0x73, 0x69, 0x6f, 0x6e, 0x52,
+	0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x0e, 0x0a, 0x02, 0x69, 0x64, 0x18, 0x01, 0x20,
+	0x01, 0x28, 0x09, 0x52, 0x02, 0x69, 0x64, 0x12, 0x1c, 0x0a, 0x09, 0x6d, 0x69, 0x73, 0x73, 0x69,
+	0x6f, 0x6e, 0x49, 0x64, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x09, 0x6d, 0x69, 0x73, 0x73,
+	0x69, 0x6f, 0x6e, 0x49, 0x64, 0x12, 0x1c, 0x0a, 0x09, 0x63, 0x6f, 0x6d, 0x6d, 0x61, 0x6e, 0x64,
+	0x49, 0x64, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x09, 0x63, 0x6f, 0x6d, 0x6d, 0x61, 0x6e,
+	0x64, 0x49, 0x64, 0x22, 0x26, 0x0a, 0x14, 0x50, 0x75, 0x6c, 0x6c, 0x54, 0x65, 0x6c, 0x65, 0x6d,
+	0x65, 0x74, 0x72, 0x79, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x0e, 0x0a, 0x02, 0x69,
+	0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x02, 0x69, 0x64, 0x22, 0x5f, 0x0a, 0x15, 0x50,
+	0x75, 0x6c, 0x6c, 0x54, 0x65, 0x6c, 0x65, 0x6d, 0x65, 0x74, 0x72, 0x79, 0x52, 0x65, 0x73, 0x70,
+	0x6f, 0x6e, 0x73, 0x65, 0x12, 0x0e, 0x0a, 0x02, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09,
+	0x52, 0x02, 0x69, 0x64, 0x12, 0x36, 0x0a, 0x09, 0x74, 0x65, 0x6c, 0x65, 0x6d, 0x65, 0x74, 0x72,
+	0x79, 0x18, 0x02, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x18, 0x2e, 0x73, 0x6b, 0x79, 0x73, 0x69, 0x67,
+	0x6e, 0x5f, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2e, 0x54, 0x65, 0x6c, 0x65, 0x6d, 0x65, 0x74, 0x72,
+	0x79, 0x52, 0x09, 0x74, 0x65, 0x6c, 0x65, 0x6d, 0x65, 0x74, 0x72, 0x79, 0x32, 0xce, 0x03, 0x0a,
+	0x18, 0x43, 0x6f, 0x6d, 0x6d, 0x75, 0x6e, 0x69, 0x63, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x55, 0x73,
+	0x65, 0x72, 0x53, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x12, 0x85, 0x01, 0x0a, 0x0b, 0x50, 0x75,
+	0x73, 0x68, 0x43, 0x6f, 0x6d, 0x6d, 0x61, 0x6e, 0x64, 0x12, 0x21, 0x2e, 0x73, 0x6b, 0x79, 0x73,
+	0x69, 0x67, 0x6e, 0x5f, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2e, 0x50, 0x75, 0x73, 0x68, 0x43, 0x6f,
+	0x6d, 0x6d, 0x61, 0x6e, 0x64, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x22, 0x2e, 0x73,
+	0x6b, 0x79, 0x73, 0x69, 0x67, 0x6e, 0x5f, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2e, 0x50, 0x75, 0x73,
+	0x68, 0x43, 0x6f, 0x6d, 0x6d, 0x61, 0x6e, 0x64, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65,
+	0x22, 0x2f, 0x82, 0xd3, 0xe4, 0x93, 0x02, 0x29, 0x22, 0x24, 0x2f, 0x61, 0x70, 0x69, 0x2f, 0x76,
+	0x31, 0x2f, 0x63, 0x6f, 0x6d, 0x6d, 0x75, 0x6e, 0x69, 0x63, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x73,
+	0x2f, 0x7b, 0x69, 0x64, 0x7d, 0x2f, 0x63, 0x6f, 0x6d, 0x6d, 0x61, 0x6e, 0x64, 0x73, 0x3a, 0x01,
+	0x2a, 0x12, 0x9d, 0x01, 0x0a, 0x11, 0x50, 0x75, 0x73, 0x68, 0x55, 0x70, 0x6c, 0x6f, 0x61, 0x64,
+	0x4d, 0x69, 0x73, 0x73, 0x69, 0x6f, 0x6e, 0x12, 0x27, 0x2e, 0x73, 0x6b, 0x79, 0x73, 0x69, 0x67,
+	0x6e, 0x5f, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2e, 0x50, 0x75, 0x73, 0x68, 0x55, 0x70, 0x6c, 0x6f,
+	0x61, 0x64, 0x4d, 0x69, 0x73, 0x73, 0x69, 0x6f, 0x6e, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74,
+	0x1a, 0x28, 0x2e, 0x73, 0x6b, 0x79, 0x73, 0x69, 0x67, 0x6e, 0x5f, 0x70, 0x72, 0x6f, 0x74, 0x6f,
+	0x2e, 0x50, 0x75, 0x73, 0x68, 0x55, 0x70, 0x6c, 0x6f, 0x61, 0x64, 0x4d, 0x69, 0x73, 0x73, 0x69,
+	0x6f, 0x6e, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x35, 0x82, 0xd3, 0xe4, 0x93,
+	0x02, 0x2f, 0x22, 0x2a, 0x2f, 0x61, 0x70, 0x69, 0x2f, 0x76, 0x31, 0x2f, 0x63, 0x6f, 0x6d, 0x6d,
+	0x75, 0x6e, 0x69, 0x63, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x2f, 0x7b, 0x69, 0x64, 0x7d, 0x2f,
+	0x75, 0x70, 0x6c, 0x6f, 0x61, 0x64, 0x6d, 0x69, 0x73, 0x73, 0x69, 0x6f, 0x6e, 0x73, 0x3a, 0x01,
+	0x2a, 0x12, 0x89, 0x01, 0x0a, 0x0d, 0x50, 0x75, 0x6c, 0x6c, 0x54, 0x65, 0x6c, 0x65, 0x6d, 0x65,
+	0x74, 0x72, 0x79, 0x12, 0x23, 0x2e, 0x73, 0x6b, 0x79, 0x73, 0x69, 0x67, 0x6e, 0x5f, 0x70, 0x72,
+	0x6f, 0x74, 0x6f, 0x2e, 0x50, 0x75, 0x6c, 0x6c, 0x54, 0x65, 0x6c, 0x65, 0x6d, 0x65, 0x74, 0x72,
+	0x79, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x24, 0x2e, 0x73, 0x6b, 0x79, 0x73, 0x69,
+	0x67, 0x6e, 0x5f, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2e, 0x50, 0x75, 0x6c, 0x6c, 0x54, 0x65, 0x6c,
+	0x65, 0x6d, 0x65, 0x74, 0x72, 0x79, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x2d,
+	0x82, 0xd3, 0xe4, 0x93, 0x02, 0x27, 0x12, 0x25, 0x2f, 0x61, 0x70, 0x69, 0x2f, 0x76, 0x31, 0x2f,
 	0x63, 0x6f, 0x6d, 0x6d, 0x75, 0x6e, 0x69, 0x63, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x2f, 0x7b,
-	0x69, 0x64, 0x7d, 0x2f, 0x63, 0x6f, 0x6d, 0x6d, 0x61, 0x6e, 0x64, 0x73, 0x3a, 0x01, 0x2a, 0x12,
-	0x89, 0x01, 0x0a, 0x0d, 0x50, 0x75, 0x6c, 0x6c, 0x54, 0x65, 0x6c, 0x65, 0x6d, 0x65, 0x74, 0x72,
-	0x79, 0x12, 0x23, 0x2e, 0x73, 0x6b, 0x79, 0x73, 0x69, 0x67, 0x6e, 0x5f, 0x70, 0x72, 0x6f, 0x74,
-	0x6f, 0x2e, 0x50, 0x75, 0x6c, 0x6c, 0x54, 0x65, 0x6c, 0x65, 0x6d, 0x65, 0x74, 0x72, 0x79, 0x52,
-	0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x24, 0x2e, 0x73, 0x6b, 0x79, 0x73, 0x69, 0x67, 0x6e,
-	0x5f, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2e, 0x50, 0x75, 0x6c, 0x6c, 0x54, 0x65, 0x6c, 0x65, 0x6d,
-	0x65, 0x74, 0x72, 0x79, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x2d, 0x82, 0xd3,
-	0xe4, 0x93, 0x02, 0x27, 0x12, 0x25, 0x2f, 0x61, 0x70, 0x69, 0x2f, 0x76, 0x31, 0x2f, 0x63, 0x6f,
-	0x6d, 0x6d, 0x75, 0x6e, 0x69, 0x63, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x2f, 0x7b, 0x69, 0x64,
-	0x7d, 0x2f, 0x74, 0x65, 0x6c, 0x65, 0x6d, 0x65, 0x74, 0x72, 0x79, 0x12, 0x78, 0x0a, 0x07, 0x53,
-	0x74, 0x61, 0x67, 0x69, 0x6e, 0x67, 0x12, 0x1d, 0x2e, 0x73, 0x6b, 0x79, 0x73, 0x69, 0x67, 0x6e,
-	0x5f, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2e, 0x53, 0x74, 0x61, 0x67, 0x69, 0x6e, 0x67, 0x52, 0x65,
-	0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x1e, 0x2e, 0x73, 0x6b, 0x79, 0x73, 0x69, 0x67, 0x6e, 0x5f,
-	0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2e, 0x53, 0x74, 0x61, 0x67, 0x69, 0x6e, 0x67, 0x52, 0x65, 0x73,
-	0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x2e, 0x82, 0xd3, 0xe4, 0x93, 0x02, 0x28, 0x22, 0x23, 0x2f,
-	0x61, 0x70, 0x69, 0x2f, 0x76, 0x31, 0x2f, 0x63, 0x6f, 0x6d, 0x6d, 0x75, 0x6e, 0x69, 0x63, 0x61,
-	0x74, 0x69, 0x6f, 0x6e, 0x73, 0x2f, 0x7b, 0x69, 0x64, 0x7d, 0x2f, 0x73, 0x74, 0x61, 0x67, 0x69,
-	0x6e, 0x67, 0x3a, 0x01, 0x2a, 0x12, 0x74, 0x0a, 0x06, 0x43, 0x61, 0x6e, 0x63, 0x65, 0x6c, 0x12,
-	0x1c, 0x2e, 0x73, 0x6b, 0x79, 0x73, 0x69, 0x67, 0x6e, 0x5f, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2e,
-	0x43, 0x61, 0x6e, 0x63, 0x65, 0x6c, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x1d, 0x2e,
-	0x73, 0x6b, 0x79, 0x73, 0x69, 0x67, 0x6e, 0x5f, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2e, 0x43, 0x61,
-	0x6e, 0x63, 0x65, 0x6c, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x2d, 0x82, 0xd3,
-	0xe4, 0x93, 0x02, 0x27, 0x22, 0x22, 0x2f, 0x61, 0x70, 0x69, 0x2f, 0x76, 0x31, 0x2f, 0x63, 0x6f,
-	0x6d, 0x6d, 0x75, 0x6e, 0x69, 0x63, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x2f, 0x7b, 0x69, 0x64,
-	0x7d, 0x2f, 0x63, 0x61, 0x6e, 0x63, 0x65, 0x6c, 0x3a, 0x01, 0x2a, 0x12, 0x78, 0x0a, 0x07, 0x43,
-	0x6f, 0x6e, 0x74, 0x72, 0x6f, 0x6c, 0x12, 0x1d, 0x2e, 0x73, 0x6b, 0x79, 0x73, 0x69, 0x67, 0x6e,
-	0x5f, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2e, 0x43, 0x6f, 0x6e, 0x74, 0x72, 0x6f, 0x6c, 0x52, 0x65,
-	0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x1e, 0x2e, 0x73, 0x6b, 0x79, 0x73, 0x69, 0x67, 0x6e, 0x5f,
-	0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2e, 0x43, 0x6f, 0x6e, 0x74, 0x72, 0x6f, 0x6c, 0x52, 0x65, 0x73,
-	0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x2e, 0x82, 0xd3, 0xe4, 0x93, 0x02, 0x28, 0x22, 0x23, 0x2f,
-	0x61, 0x70, 0x69, 0x2f, 0x76, 0x31, 0x2f, 0x63, 0x6f, 0x6d, 0x6d, 0x75, 0x6e, 0x69, 0x63, 0x61,
-	0x74, 0x69, 0x6f, 0x6e, 0x73, 0x2f, 0x7b, 0x69, 0x64, 0x7d, 0x2f, 0x63, 0x6f, 0x6e, 0x74, 0x72,
-	0x6f, 0x6c, 0x3a, 0x01, 0x2a, 0x12, 0x80, 0x01, 0x0a, 0x09, 0x55, 0x6e, 0x63, 0x6f, 0x6e, 0x74,
-	0x72, 0x6f, 0x6c, 0x12, 0x1f, 0x2e, 0x73, 0x6b, 0x79, 0x73, 0x69, 0x67, 0x6e, 0x5f, 0x70, 0x72,
-	0x6f, 0x74, 0x6f, 0x2e, 0x55, 0x6e, 0x63, 0x6f, 0x6e, 0x74, 0x72, 0x6f, 0x6c, 0x52, 0x65, 0x71,
-	0x75, 0x65, 0x73, 0x74, 0x1a, 0x20, 0x2e, 0x73, 0x6b, 0x79, 0x73, 0x69, 0x67, 0x6e, 0x5f, 0x70,
-	0x72, 0x6f, 0x74, 0x6f, 0x2e, 0x55, 0x6e, 0x63, 0x6f, 0x6e, 0x74, 0x72, 0x6f, 0x6c, 0x52, 0x65,
-	0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x30, 0x82, 0xd3, 0xe4, 0x93, 0x02, 0x2a, 0x22, 0x25,
-	0x2f, 0x61, 0x70, 0x69, 0x2f, 0x76, 0x31, 0x2f, 0x63, 0x6f, 0x6d, 0x6d, 0x75, 0x6e, 0x69, 0x63,
-	0x61, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x2f, 0x7b, 0x69, 0x64, 0x7d, 0x2f, 0x75, 0x6e, 0x63, 0x6f,
-	0x6e, 0x74, 0x72, 0x6f, 0x6c, 0x3a, 0x01, 0x2a, 0x42, 0x22, 0x0a, 0x0d, 0x70, 0x72, 0x6f, 0x74,
-	0x6f, 0x2e, 0x73, 0x6b, 0x79, 0x73, 0x69, 0x67, 0x6e, 0x50, 0x01, 0x5a, 0x0f, 0x2e, 0x3b, 0x73,
-	0x6b, 0x79, 0x73, 0x69, 0x67, 0x6e, 0x5f, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x06, 0x70, 0x72,
-	0x6f, 0x74, 0x6f, 0x33,
+	0x69, 0x64, 0x7d, 0x2f, 0x74, 0x65, 0x6c, 0x65, 0x6d, 0x65, 0x74, 0x72, 0x79, 0x42, 0x22, 0x0a,
+	0x0d, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2e, 0x73, 0x6b, 0x79, 0x73, 0x69, 0x67, 0x6e, 0x50, 0x01,
+	0x5a, 0x0f, 0x2e, 0x3b, 0x73, 0x6b, 0x79, 0x73, 0x69, 0x67, 0x6e, 0x5f, 0x70, 0x72, 0x6f, 0x74,
+	0x6f, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
@@ -811,50 +455,32 @@ func file_communication_user_proto_rawDescGZIP() []byte {
 	return file_communication_user_proto_rawDescData
 }
 
-var file_communication_user_proto_msgTypes = make([]protoimpl.MessageInfo, 13)
+var file_communication_user_proto_msgTypes = make([]protoimpl.MessageInfo, 6)
 var file_communication_user_proto_goTypes = []interface{}{
-	(*ListCommunicationsResponses)(nil), // 0: skysign_proto.ListCommunicationsResponses
-	(*PushCommandRequest)(nil),          // 1: skysign_proto.PushCommandRequest
-	(*PushCommandResponse)(nil),         // 2: skysign_proto.PushCommandResponse
-	(*PullTelemetryRequest)(nil),        // 3: skysign_proto.PullTelemetryRequest
-	(*PullTelemetryResponse)(nil),       // 4: skysign_proto.PullTelemetryResponse
-	(*StagingRequest)(nil),              // 5: skysign_proto.StagingRequest
-	(*StagingResponse)(nil),             // 6: skysign_proto.StagingResponse
-	(*CancelRequest)(nil),               // 7: skysign_proto.CancelRequest
-	(*CancelResponse)(nil),              // 8: skysign_proto.CancelResponse
-	(*ControlRequest)(nil),              // 9: skysign_proto.ControlRequest
-	(*ControlResponse)(nil),             // 10: skysign_proto.ControlResponse
-	(*UncontrolRequest)(nil),            // 11: skysign_proto.UncontrolRequest
-	(*UncontrolResponse)(nil),           // 12: skysign_proto.UncontrolResponse
-	(*Communication)(nil),               // 13: skysign_proto.Communication
-	(CommandType)(0),                    // 14: skysign_proto.CommandType
-	(*Telemetry)(nil),                   // 15: skysign_proto.Telemetry
-	(*Empty)(nil),                       // 16: skysign_proto.Empty
+	(*PushCommandRequest)(nil),        // 0: skysign_proto.PushCommandRequest
+	(*PushCommandResponse)(nil),       // 1: skysign_proto.PushCommandResponse
+	(*PushUploadMissionRequest)(nil),  // 2: skysign_proto.PushUploadMissionRequest
+	(*PushUploadMissionResponse)(nil), // 3: skysign_proto.PushUploadMissionResponse
+	(*PullTelemetryRequest)(nil),      // 4: skysign_proto.PullTelemetryRequest
+	(*PullTelemetryResponse)(nil),     // 5: skysign_proto.PullTelemetryResponse
+	(CommandType)(0),                  // 6: skysign_proto.CommandType
+	(*Telemetry)(nil),                 // 7: skysign_proto.Telemetry
 }
 var file_communication_user_proto_depIdxs = []int32{
-	13, // 0: skysign_proto.ListCommunicationsResponses.communications:type_name -> skysign_proto.Communication
-	14, // 1: skysign_proto.PushCommandRequest.type:type_name -> skysign_proto.CommandType
-	14, // 2: skysign_proto.PushCommandResponse.type:type_name -> skysign_proto.CommandType
-	15, // 3: skysign_proto.PullTelemetryResponse.telemetry:type_name -> skysign_proto.Telemetry
-	16, // 4: skysign_proto.CommunicationUserService.ListCommunications:input_type -> skysign_proto.Empty
-	1,  // 5: skysign_proto.CommunicationUserService.PushCommand:input_type -> skysign_proto.PushCommandRequest
-	3,  // 6: skysign_proto.CommunicationUserService.PullTelemetry:input_type -> skysign_proto.PullTelemetryRequest
-	5,  // 7: skysign_proto.CommunicationUserService.Staging:input_type -> skysign_proto.StagingRequest
-	7,  // 8: skysign_proto.CommunicationUserService.Cancel:input_type -> skysign_proto.CancelRequest
-	9,  // 9: skysign_proto.CommunicationUserService.Control:input_type -> skysign_proto.ControlRequest
-	11, // 10: skysign_proto.CommunicationUserService.Uncontrol:input_type -> skysign_proto.UncontrolRequest
-	0,  // 11: skysign_proto.CommunicationUserService.ListCommunications:output_type -> skysign_proto.ListCommunicationsResponses
-	2,  // 12: skysign_proto.CommunicationUserService.PushCommand:output_type -> skysign_proto.PushCommandResponse
-	4,  // 13: skysign_proto.CommunicationUserService.PullTelemetry:output_type -> skysign_proto.PullTelemetryResponse
-	6,  // 14: skysign_proto.CommunicationUserService.Staging:output_type -> skysign_proto.StagingResponse
-	8,  // 15: skysign_proto.CommunicationUserService.Cancel:output_type -> skysign_proto.CancelResponse
-	10, // 16: skysign_proto.CommunicationUserService.Control:output_type -> skysign_proto.ControlResponse
-	12, // 17: skysign_proto.CommunicationUserService.Uncontrol:output_type -> skysign_proto.UncontrolResponse
-	11, // [11:18] is the sub-list for method output_type
-	4,  // [4:11] is the sub-list for method input_type
-	4,  // [4:4] is the sub-list for extension type_name
-	4,  // [4:4] is the sub-list for extension extendee
-	0,  // [0:4] is the sub-list for field type_name
+	6, // 0: skysign_proto.PushCommandRequest.type:type_name -> skysign_proto.CommandType
+	6, // 1: skysign_proto.PushCommandResponse.type:type_name -> skysign_proto.CommandType
+	7, // 2: skysign_proto.PullTelemetryResponse.telemetry:type_name -> skysign_proto.Telemetry
+	0, // 3: skysign_proto.CommunicationUserService.PushCommand:input_type -> skysign_proto.PushCommandRequest
+	2, // 4: skysign_proto.CommunicationUserService.PushUploadMission:input_type -> skysign_proto.PushUploadMissionRequest
+	4, // 5: skysign_proto.CommunicationUserService.PullTelemetry:input_type -> skysign_proto.PullTelemetryRequest
+	1, // 6: skysign_proto.CommunicationUserService.PushCommand:output_type -> skysign_proto.PushCommandResponse
+	3, // 7: skysign_proto.CommunicationUserService.PushUploadMission:output_type -> skysign_proto.PushUploadMissionResponse
+	5, // 8: skysign_proto.CommunicationUserService.PullTelemetry:output_type -> skysign_proto.PullTelemetryResponse
+	6, // [6:9] is the sub-list for method output_type
+	3, // [3:6] is the sub-list for method input_type
+	3, // [3:3] is the sub-list for extension type_name
+	3, // [3:3] is the sub-list for extension extendee
+	0, // [0:3] is the sub-list for field type_name
 }
 
 func init() { file_communication_user_proto_init() }
@@ -865,18 +491,6 @@ func file_communication_user_proto_init() {
 	file_common_proto_init()
 	if !protoimpl.UnsafeEnabled {
 		file_communication_user_proto_msgTypes[0].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*ListCommunicationsResponses); i {
-			case 0:
-				return &v.state
-			case 1:
-				return &v.sizeCache
-			case 2:
-				return &v.unknownFields
-			default:
-				return nil
-			}
-		}
-		file_communication_user_proto_msgTypes[1].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*PushCommandRequest); i {
 			case 0:
 				return &v.state
@@ -888,7 +502,7 @@ func file_communication_user_proto_init() {
 				return nil
 			}
 		}
-		file_communication_user_proto_msgTypes[2].Exporter = func(v interface{}, i int) interface{} {
+		file_communication_user_proto_msgTypes[1].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*PushCommandResponse); i {
 			case 0:
 				return &v.state
@@ -900,8 +514,20 @@ func file_communication_user_proto_init() {
 				return nil
 			}
 		}
+		file_communication_user_proto_msgTypes[2].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*PushUploadMissionRequest); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
 		file_communication_user_proto_msgTypes[3].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*PullTelemetryRequest); i {
+			switch v := v.(*PushUploadMissionResponse); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -913,7 +539,7 @@ func file_communication_user_proto_init() {
 			}
 		}
 		file_communication_user_proto_msgTypes[4].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*PullTelemetryResponse); i {
+			switch v := v.(*PullTelemetryRequest); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -925,91 +551,7 @@ func file_communication_user_proto_init() {
 			}
 		}
 		file_communication_user_proto_msgTypes[5].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*StagingRequest); i {
-			case 0:
-				return &v.state
-			case 1:
-				return &v.sizeCache
-			case 2:
-				return &v.unknownFields
-			default:
-				return nil
-			}
-		}
-		file_communication_user_proto_msgTypes[6].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*StagingResponse); i {
-			case 0:
-				return &v.state
-			case 1:
-				return &v.sizeCache
-			case 2:
-				return &v.unknownFields
-			default:
-				return nil
-			}
-		}
-		file_communication_user_proto_msgTypes[7].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*CancelRequest); i {
-			case 0:
-				return &v.state
-			case 1:
-				return &v.sizeCache
-			case 2:
-				return &v.unknownFields
-			default:
-				return nil
-			}
-		}
-		file_communication_user_proto_msgTypes[8].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*CancelResponse); i {
-			case 0:
-				return &v.state
-			case 1:
-				return &v.sizeCache
-			case 2:
-				return &v.unknownFields
-			default:
-				return nil
-			}
-		}
-		file_communication_user_proto_msgTypes[9].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*ControlRequest); i {
-			case 0:
-				return &v.state
-			case 1:
-				return &v.sizeCache
-			case 2:
-				return &v.unknownFields
-			default:
-				return nil
-			}
-		}
-		file_communication_user_proto_msgTypes[10].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*ControlResponse); i {
-			case 0:
-				return &v.state
-			case 1:
-				return &v.sizeCache
-			case 2:
-				return &v.unknownFields
-			default:
-				return nil
-			}
-		}
-		file_communication_user_proto_msgTypes[11].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*UncontrolRequest); i {
-			case 0:
-				return &v.state
-			case 1:
-				return &v.sizeCache
-			case 2:
-				return &v.unknownFields
-			default:
-				return nil
-			}
-		}
-		file_communication_user_proto_msgTypes[12].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*UncontrolResponse); i {
+			switch v := v.(*PullTelemetryResponse); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -1027,7 +569,7 @@ func file_communication_user_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_communication_user_proto_rawDesc,
 			NumEnums:      0,
-			NumMessages:   13,
+			NumMessages:   6,
 			NumExtensions: 0,
 			NumServices:   1,
 		},
@@ -1053,13 +595,9 @@ const _ = grpc.SupportPackageIsVersion6
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
 type CommunicationUserServiceClient interface {
-	ListCommunications(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*ListCommunicationsResponses, error)
 	PushCommand(ctx context.Context, in *PushCommandRequest, opts ...grpc.CallOption) (*PushCommandResponse, error)
+	PushUploadMission(ctx context.Context, in *PushUploadMissionRequest, opts ...grpc.CallOption) (*PushUploadMissionResponse, error)
 	PullTelemetry(ctx context.Context, in *PullTelemetryRequest, opts ...grpc.CallOption) (*PullTelemetryResponse, error)
-	Staging(ctx context.Context, in *StagingRequest, opts ...grpc.CallOption) (*StagingResponse, error)
-	Cancel(ctx context.Context, in *CancelRequest, opts ...grpc.CallOption) (*CancelResponse, error)
-	Control(ctx context.Context, in *ControlRequest, opts ...grpc.CallOption) (*ControlResponse, error)
-	Uncontrol(ctx context.Context, in *UncontrolRequest, opts ...grpc.CallOption) (*UncontrolResponse, error)
 }
 
 type communicationUserServiceClient struct {
@@ -1070,18 +608,18 @@ func NewCommunicationUserServiceClient(cc grpc.ClientConnInterface) Communicatio
 	return &communicationUserServiceClient{cc}
 }
 
-func (c *communicationUserServiceClient) ListCommunications(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*ListCommunicationsResponses, error) {
-	out := new(ListCommunicationsResponses)
-	err := c.cc.Invoke(ctx, "/skysign_proto.CommunicationUserService/ListCommunications", in, out, opts...)
+func (c *communicationUserServiceClient) PushCommand(ctx context.Context, in *PushCommandRequest, opts ...grpc.CallOption) (*PushCommandResponse, error) {
+	out := new(PushCommandResponse)
+	err := c.cc.Invoke(ctx, "/skysign_proto.CommunicationUserService/PushCommand", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *communicationUserServiceClient) PushCommand(ctx context.Context, in *PushCommandRequest, opts ...grpc.CallOption) (*PushCommandResponse, error) {
-	out := new(PushCommandResponse)
-	err := c.cc.Invoke(ctx, "/skysign_proto.CommunicationUserService/PushCommand", in, out, opts...)
+func (c *communicationUserServiceClient) PushUploadMission(ctx context.Context, in *PushUploadMissionRequest, opts ...grpc.CallOption) (*PushUploadMissionResponse, error) {
+	out := new(PushUploadMissionResponse)
+	err := c.cc.Invoke(ctx, "/skysign_proto.CommunicationUserService/PushUploadMission", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -1097,99 +635,29 @@ func (c *communicationUserServiceClient) PullTelemetry(ctx context.Context, in *
 	return out, nil
 }
 
-func (c *communicationUserServiceClient) Staging(ctx context.Context, in *StagingRequest, opts ...grpc.CallOption) (*StagingResponse, error) {
-	out := new(StagingResponse)
-	err := c.cc.Invoke(ctx, "/skysign_proto.CommunicationUserService/Staging", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *communicationUserServiceClient) Cancel(ctx context.Context, in *CancelRequest, opts ...grpc.CallOption) (*CancelResponse, error) {
-	out := new(CancelResponse)
-	err := c.cc.Invoke(ctx, "/skysign_proto.CommunicationUserService/Cancel", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *communicationUserServiceClient) Control(ctx context.Context, in *ControlRequest, opts ...grpc.CallOption) (*ControlResponse, error) {
-	out := new(ControlResponse)
-	err := c.cc.Invoke(ctx, "/skysign_proto.CommunicationUserService/Control", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *communicationUserServiceClient) Uncontrol(ctx context.Context, in *UncontrolRequest, opts ...grpc.CallOption) (*UncontrolResponse, error) {
-	out := new(UncontrolResponse)
-	err := c.cc.Invoke(ctx, "/skysign_proto.CommunicationUserService/Uncontrol", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
 // CommunicationUserServiceServer is the server API for CommunicationUserService service.
 type CommunicationUserServiceServer interface {
-	ListCommunications(context.Context, *Empty) (*ListCommunicationsResponses, error)
 	PushCommand(context.Context, *PushCommandRequest) (*PushCommandResponse, error)
+	PushUploadMission(context.Context, *PushUploadMissionRequest) (*PushUploadMissionResponse, error)
 	PullTelemetry(context.Context, *PullTelemetryRequest) (*PullTelemetryResponse, error)
-	Staging(context.Context, *StagingRequest) (*StagingResponse, error)
-	Cancel(context.Context, *CancelRequest) (*CancelResponse, error)
-	Control(context.Context, *ControlRequest) (*ControlResponse, error)
-	Uncontrol(context.Context, *UncontrolRequest) (*UncontrolResponse, error)
 }
 
 // UnimplementedCommunicationUserServiceServer can be embedded to have forward compatible implementations.
 type UnimplementedCommunicationUserServiceServer struct {
 }
 
-func (*UnimplementedCommunicationUserServiceServer) ListCommunications(context.Context, *Empty) (*ListCommunicationsResponses, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method ListCommunications not implemented")
-}
 func (*UnimplementedCommunicationUserServiceServer) PushCommand(context.Context, *PushCommandRequest) (*PushCommandResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method PushCommand not implemented")
+}
+func (*UnimplementedCommunicationUserServiceServer) PushUploadMission(context.Context, *PushUploadMissionRequest) (*PushUploadMissionResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method PushUploadMission not implemented")
 }
 func (*UnimplementedCommunicationUserServiceServer) PullTelemetry(context.Context, *PullTelemetryRequest) (*PullTelemetryResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method PullTelemetry not implemented")
 }
-func (*UnimplementedCommunicationUserServiceServer) Staging(context.Context, *StagingRequest) (*StagingResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method Staging not implemented")
-}
-func (*UnimplementedCommunicationUserServiceServer) Cancel(context.Context, *CancelRequest) (*CancelResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method Cancel not implemented")
-}
-func (*UnimplementedCommunicationUserServiceServer) Control(context.Context, *ControlRequest) (*ControlResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method Control not implemented")
-}
-func (*UnimplementedCommunicationUserServiceServer) Uncontrol(context.Context, *UncontrolRequest) (*UncontrolResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method Uncontrol not implemented")
-}
 
 func RegisterCommunicationUserServiceServer(s *grpc.Server, srv CommunicationUserServiceServer) {
 	s.RegisterService(&_CommunicationUserService_serviceDesc, srv)
-}
-
-func _CommunicationUserService_ListCommunications_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(Empty)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(CommunicationUserServiceServer).ListCommunications(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/skysign_proto.CommunicationUserService/ListCommunications",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(CommunicationUserServiceServer).ListCommunications(ctx, req.(*Empty))
-	}
-	return interceptor(ctx, in, info, handler)
 }
 
 func _CommunicationUserService_PushCommand_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
@@ -1206,6 +674,24 @@ func _CommunicationUserService_PushCommand_Handler(srv interface{}, ctx context.
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(CommunicationUserServiceServer).PushCommand(ctx, req.(*PushCommandRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _CommunicationUserService_PushUploadMission_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(PushUploadMissionRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(CommunicationUserServiceServer).PushUploadMission(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/skysign_proto.CommunicationUserService/PushUploadMission",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(CommunicationUserServiceServer).PushUploadMission(ctx, req.(*PushUploadMissionRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -1228,109 +714,21 @@ func _CommunicationUserService_PullTelemetry_Handler(srv interface{}, ctx contex
 	return interceptor(ctx, in, info, handler)
 }
 
-func _CommunicationUserService_Staging_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(StagingRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(CommunicationUserServiceServer).Staging(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/skysign_proto.CommunicationUserService/Staging",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(CommunicationUserServiceServer).Staging(ctx, req.(*StagingRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _CommunicationUserService_Cancel_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(CancelRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(CommunicationUserServiceServer).Cancel(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/skysign_proto.CommunicationUserService/Cancel",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(CommunicationUserServiceServer).Cancel(ctx, req.(*CancelRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _CommunicationUserService_Control_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(ControlRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(CommunicationUserServiceServer).Control(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/skysign_proto.CommunicationUserService/Control",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(CommunicationUserServiceServer).Control(ctx, req.(*ControlRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _CommunicationUserService_Uncontrol_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(UncontrolRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(CommunicationUserServiceServer).Uncontrol(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/skysign_proto.CommunicationUserService/Uncontrol",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(CommunicationUserServiceServer).Uncontrol(ctx, req.(*UncontrolRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
 var _CommunicationUserService_serviceDesc = grpc.ServiceDesc{
 	ServiceName: "skysign_proto.CommunicationUserService",
 	HandlerType: (*CommunicationUserServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "ListCommunications",
-			Handler:    _CommunicationUserService_ListCommunications_Handler,
-		},
-		{
 			MethodName: "PushCommand",
 			Handler:    _CommunicationUserService_PushCommand_Handler,
 		},
 		{
+			MethodName: "PushUploadMission",
+			Handler:    _CommunicationUserService_PushUploadMission_Handler,
+		},
+		{
 			MethodName: "PullTelemetry",
 			Handler:    _CommunicationUserService_PullTelemetry_Handler,
-		},
-		{
-			MethodName: "Staging",
-			Handler:    _CommunicationUserService_Staging_Handler,
-		},
-		{
-			MethodName: "Cancel",
-			Handler:    _CommunicationUserService_Cancel_Handler,
-		},
-		{
-			MethodName: "Control",
-			Handler:    _CommunicationUserService_Control_Handler,
-		},
-		{
-			MethodName: "Uncontrol",
-			Handler:    _CommunicationUserService_Uncontrol_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

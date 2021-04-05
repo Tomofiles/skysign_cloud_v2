@@ -10,15 +10,16 @@ option java_multiple_files = true;
 option go_package = ".;skysign_proto";
 
 service CommunicationUserService {
-    rpc ListCommunications (Empty) returns (ListCommunicationsResponses) {
-        option (google.api.http) = {
-            get: "/api/v1/communications"
-        };
-    };
-
     rpc PushCommand (PushCommandRequest) returns (PushCommandResponse) {
         option (google.api.http) = {
             post: "/api/v1/communications/{id}/commands"
+            body: "*"
+        };
+    };
+
+    rpc PushUploadMission (PushUploadMissionRequest) returns (PushUploadMissionResponse) {
+        option (google.api.http) = {
+            post: "/api/v1/communications/{id}/uploadmissions"
             body: "*"
         };
     };
@@ -28,38 +29,6 @@ service CommunicationUserService {
             get: "/api/v1/communications/{id}/telemetry"
         };
     };
-
-    rpc Staging (StagingRequest) returns (StagingResponse) {
-        option (google.api.http) = {
-            post: "/api/v1/communications/{id}/staging"
-            body: "*"
-        };
-    };
-
-    rpc Cancel (CancelRequest) returns (CancelResponse) {
-        option (google.api.http) = {
-            post: "/api/v1/communications/{id}/cancel"
-            body: "*"
-        };
-    };
-
-    rpc Control (ControlRequest) returns (ControlResponse) {
-        option (google.api.http) = {
-            post: "/api/v1/communications/{id}/control"
-            body: "*"
-        };
-    };
-
-    rpc Uncontrol (UncontrolRequest) returns (UncontrolResponse) {
-        option (google.api.http) = {
-            post: "/api/v1/communications/{id}/uncontrol"
-            body: "*"
-        };
-    };
-}
-
-message ListCommunicationsResponses {
-    repeated Communication communications = 1;
 }
 
 message PushCommandRequest {
@@ -70,6 +39,18 @@ message PushCommandRequest {
 message PushCommandResponse {
     string id = 1;
     CommandType type = 2;
+    string commandId = 3;
+}
+
+message PushUploadMissionRequest {
+    string id = 1;
+    string missionId = 2;
+}
+
+message PushUploadMissionResponse {
+    string id = 1;
+    string missionId = 2;
+    string commandId = 3;
 }
 
 message PullTelemetryRequest {
@@ -79,38 +60,4 @@ message PullTelemetryRequest {
 message PullTelemetryResponse {
     string id = 1;
     Telemetry telemetry = 2;
-}
-
-message StagingRequest {
-    string id = 1;
-    string missionId = 2;
-}
-
-message StagingResponse {
-    string id = 1;
-    string missionId = 2;
-}
-
-message CancelRequest {
-    string id = 1;
-}
-
-message CancelResponse {
-    string id = 1;
-}
-
-message ControlRequest {
-    string id = 1;
-}
-
-message ControlResponse {
-    string id = 1;
-}
-
-message UncontrolRequest {
-    string id = 1;
-}
-
-message UncontrolResponse {
-    string id = 1;
 }

@@ -1,0 +1,28 @@
+'To render with PlantUML:
+'  http://plantuml.com/plantuml
+@startuml
+participant "User Client" as UC
+participant "Mission Server\n(Mission Entity)" as MS
+participant "Communication Server\n(Communication Entity)" as CSC
+participant "Edge on Vehicle" as E
+
+UC -> MS : POST /api/v1/missions\n(body mission data)
+note left: User creates\nnew Mission
+MS -> UC : Success, new Mission\n(including mission-id)
+UC -> CSC : POST /api/v1/communications/<communication-id>/uploadmissions\n(body mission-id)
+note left: User sends\ncommand to Edge\n(relay to Communication)
+CSC -> UC : Success, sends to Edge
+E -> CSC : POST /api/v1/communications/<communication-id>/telemetry\n(body Telemetry)
+CSC -> E : Existing Command for Edge\n(including command-id)
+E -> CSC : POST /api/v1/communications/<communication-id>/commands/<command-id>
+CSC -> E : Server sends Command to Edge\n(body command-type: UPLOAD)
+note right: Edge retrieves Command from server,\nand finds command-type is UPLOAD 
+E -> CSC : GET /api/v1/communications/<communication-id>/uploadmissions/<command-id>
+CSC -> E : Associated Mission with Communication\n(including mission-id)
+note right: Edge retrieves\nassociated Mission
+E -> MS : GET /api/v1/missions/<mission-id>
+MS -> E : Success, Mission\n(including mission data)
+note right: Edge retrieves Mission\nfrom server
+E -> E : 
+note right: Edge uploads Mission to FC
+@enduml
