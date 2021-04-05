@@ -1,13 +1,13 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: skysign-flightplan
+  name: skysign-mission-service
   labels:
-    run: skysign-flightplan
+    run: skysign-mission-service
 spec:
   clusterIP: None
   ports:
   - port: 5001
     protocol: TCP
   selector:
-    run: skysign-flightplan-backend
+    run: skysign-mission-service-backend

@@ -1,21 +1,21 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: skysign-flightplan-backend
+  name: skysign-vehicle-service-backend
 spec:
   selector:
     matchLabels:
-      run: skysign-flightplan-backend
+      run: skysign-vehicle-service-backend
   replicas: 1
   template:
     metadata:
       labels:
-        run: skysign-flightplan-backend
+        run: skysign-vehicle-service-backend
     spec:
       volumes:
       - name: envoy
         configMap:
-          name: skysign-flightplan-backend-envoy
+          name: skysign-vehicle-service-backend-envoy
       containers:
       - name: envoy
         image: envoyproxy/envoy:v1.17-latest
@@ -29,28 +29,24 @@ spec:
         volumeMounts:
           - name: envoy
             mountPath: /etc/envoy
-      - name: skysign-flightplan-backend
-        image: ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com/skysign-cloud-v2:flightplan_${CIRCLE_SHA1}
-        command: ["/app/flightplan"]
-        args: ["-port", "6000"]
+      - name: skysign-vehicle-service-backend
+        image: ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com/skysign-cloud-v2:vehicle_${CIRCLE_SHA1}
+        command: ["java"]
+        args: ["-cp", "app:app/lib/*", "net.tomofiles.skysign.vehicle.VehicleApplication"]
         env:
-        - name: DB_HOST
+        - name: db.host
           value: "skysign-db"
-        - name: DB_USERNAME
+        - name: db.username
           value: "${AWS_RDS_USER_NAME}"
-        - name: DB_PASSWORD
+        - name: db.password
           value: "${AWS_RDS_PASSWORD}"
-        - name: DB_SSL_ENABLED
-          value: "enable"
-        - name: MQ_HOST
+        - name: mq.host
           value: "${AWS_AMQ_MQ_HOST}"
-        - name: MQ_PORT
+        - name: mq.port
           value: "${AWS_AMQ_PORT}"
-        - name: MQ_USERNAME
+        - name: mq.username
           value: "${AWS_AMQ_USER_NAME}"
-        - name: MQ_PASSWORD
+        - name: mq.password
           value: "${AWS_AMQ_PASSWORD}"
-        - name: MQ_SSL_ENABLED
-          value: "enable"
         ports:
         - containerPort: 5001
