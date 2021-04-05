@@ -301,35 +301,56 @@ jobs:
             cd ${SKYSIGN_CONFIG_REPO}/
             git checkout -b release-${CIRCLE_SHA1}
             rm -f manifest/*
+            envsubst < ../build/deploy/skysign-action-gateway-backend-envoy.yaml > manifest/skysign-action-gateway-backend-envoy.yaml
+            envsubst < ../build/deploy/skysign-action-gateway-backend.yaml > manifest/skysign-action-gateway-backend.yaml
+            envsubst < ../build/deploy/skysign-action-gateway.yaml > manifest/skysign-action-gateway.yaml
+            envsubst < ../build/deploy/skysign-action-service-backend-envoy.yaml > manifest/skysign-action-service-backend-envoy.yaml
+            envsubst < ../build/deploy/skysign-action-service-backend.yaml > manifest/skysign-action-service-backend.yaml
+            envsubst < ../build/deploy/skysign-action-service.yaml > manifest/skysign-action-service.yaml
             envsubst < ../build/deploy/skysign-client-backend.yaml > manifest/skysign-client-backend.yaml
             envsubst < ../build/deploy/skysign-client.yaml > manifest/skysign-client.yaml
-            envsubst < ../build/deploy/skysign-communication-backend-envoy.yaml > manifest/skysign-communication-backend-envoy.yaml
-            envsubst < ../build/deploy/skysign-communication-backend.yaml > manifest/skysign-communication-backend.yaml
             envsubst < ../build/deploy/skysign-communication-gateway-backend-envoy.yaml > manifest/skysign-communication-gateway-backend-envoy.yaml
             envsubst < ../build/deploy/skysign-communication-gateway-backend.yaml > manifest/skysign-communication-gateway-backend.yaml
             envsubst < ../build/deploy/skysign-communication-gateway.yaml > manifest/skysign-communication-gateway.yaml
-            envsubst < ../build/deploy/skysign-communication.yaml > manifest/skysign-communication.yaml
+            envsubst < ../build/deploy/skysign-communication-service-backend-envoy.yaml > manifest/skysign-communication-service-backend-envoy.yaml
+            envsubst < ../build/deploy/skysign-communication-service-backend.yaml > manifest/skysign-communication-service-backend.yaml
+            envsubst < ../build/deploy/skysign-communication-service.yaml > manifest/skysign-communication-service.yaml
             envsubst < ../build/deploy/skysign-db.yaml > manifest/skysign-db.yaml
             envsubst < ../build/deploy/skysign-endpoint.yaml > manifest/skysign-endpoint.yaml
-            envsubst < ../build/deploy/skysign-helper-backend.yaml > manifest/skysign-helper-backend.yaml
-            envsubst < ../build/deploy/skysign-helper-gateway-backend.yaml > manifest/skysign-helper-gateway-backend.yaml
-            envsubst < ../build/deploy/skysign-helper-gateway.yaml > manifest/skysign-helper-gateway.yaml
-            envsubst < ../build/deploy/skysign-helper.yaml > manifest/skysign-helper.yaml
-            envsubst < ../build/deploy/skysign-mission-backend-envoy.yaml > manifest/skysign-mission-backend-envoy.yaml
-            envsubst < ../build/deploy/skysign-mission-backend.yaml > manifest/skysign-mission-backend.yaml
-            envsubst < ../build/deploy/skysign-mission-gateway-backend-envoy.yaml > manifest/skysign-mission-gateway-backend-envoy.yaml
-            envsubst < ../build/deploy/skysign-mission-gateway-backend.yaml > manifest/skysign-mission-gateway-backend.yaml
-            envsubst < ../build/deploy/skysign-mission-gateway.yaml > manifest/skysign-mission-gateway.yaml
-            envsubst < ../build/deploy/skysign-mission.yaml > manifest/skysign-mission.yaml
-            envsubst < ../build/deploy/skysign-vehicle-gateway-backend-envoy.yaml > manifest/skysign-vehicle-gateway-backend-envoy.yaml
-            envsubst < ../build/deploy/skysign-vehicle-gateway-backend.yaml > manifest/skysign-vehicle-gateway-backend.yaml
-            envsubst < ../build/deploy/skysign-vehicle-gateway.yaml > manifest/skysign-vehicle-gateway.yaml
-            envsubst < ../build/deploy/skysign-flightplan-backend-envoy.yaml > manifest/skysign-flightplan-backend-envoy.yaml
-            envsubst < ../build/deploy/skysign-flightplan-backend.yaml > manifest/skysign-flightplan-backend.yaml
+            envsubst < ../build/deploy/skysign-flightoperation-gateway-backend-envoy.yaml > manifest/skysign-flightoperation-gateway-backend-envoy.yaml
+            envsubst < ../build/deploy/skysign-flightoperation-gateway-backend.yaml > manifest/skysign-flightoperation-gateway-backend.yaml
+            envsubst < ../build/deploy/skysign-flightoperation-gateway.yaml > manifest/skysign-flightoperation-gateway.yaml
+            envsubst < ../build/deploy/skysign-flightoperation-service-backend-envoy.yaml > manifest/skysign-flightoperation-service-backend-envoy.yaml
+            envsubst < ../build/deploy/skysign-flightoperation-service-backend.yaml > manifest/skysign-flightoperation-service-backend.yaml
+            envsubst < ../build/deploy/skysign-flightoperation-service.yaml > manifest/skysign-flightoperation-service.yaml
             envsubst < ../build/deploy/skysign-flightplan-gateway-backend-envoy.yaml > manifest/skysign-flightplan-gateway-backend-envoy.yaml
             envsubst < ../build/deploy/skysign-flightplan-gateway-backend.yaml > manifest/skysign-flightplan-gateway-backend.yaml
             envsubst < ../build/deploy/skysign-flightplan-gateway.yaml > manifest/skysign-flightplan-gateway.yaml
-            envsubst < ../build/deploy/skysign-flightplan.yaml > manifest/skysign-flightplan.yaml
+            envsubst < ../build/deploy/skysign-flightplan-service-backend-envoy.yaml > manifest/skysign-flightplan-service-backend-envoy.yaml
+            envsubst < ../build/deploy/skysign-flightplan-service-backend.yaml > manifest/skysign-flightplan-service-backend.yaml
+            envsubst < ../build/deploy/skysign-flightplan-service.yaml > manifest/skysign-flightplan-service.yaml
+            envsubst < ../build/deploy/skysign-flightreport-gateway-backend-envoy.yaml > manifest/skysign-flightreport-gateway-backend-envoy.yaml
+            envsubst < ../build/deploy/skysign-flightreport-gateway-backend.yaml > manifest/skysign-flightreport-gateway-backend.yaml
+            envsubst < ../build/deploy/skysign-flightreport-gateway.yaml > manifest/skysign-flightreport-gateway.yaml
+            envsubst < ../build/deploy/skysign-flightreport-service-backend-envoy.yaml > manifest/skysign-flightreport-service-backend-envoy.yaml
+            envsubst < ../build/deploy/skysign-flightreport-service-backend.yaml > manifest/skysign-flightreport-service-backend.yaml
+            envsubst < ../build/deploy/skysign-flightreport-service.yaml > manifest/skysign-flightreport-service.yaml
+            envsubst < ../build/deploy/skysign-helper-gateway-backend.yaml > manifest/skysign-helper-gateway-backend.yaml
+            envsubst < ../build/deploy/skysign-helper-gateway.yaml > manifest/skysign-helper-gateway.yaml
+            envsubst < ../build/deploy/skysign-helper-service-backend.yaml > manifest/skysign-helper-service-backend.yaml
+            envsubst < ../build/deploy/skysign-helper-service.yaml > manifest/skysign-helper-service.yaml
+            envsubst < ../build/deploy/skysign-mission-gateway-backend-envoy.yaml > manifest/skysign-mission-gateway-backend-envoy.yaml
+            envsubst < ../build/deploy/skysign-mission-gateway-backend.yaml > manifest/skysign-mission-gateway-backend.yaml
+            envsubst < ../build/deploy/skysign-mission-gateway.yaml > manifest/skysign-mission-gateway.yaml
+            envsubst < ../build/deploy/skysign-mission-service-backend-envoy.yaml > manifest/skysign-mission-service-backend-envoy.yaml
+            envsubst < ../build/deploy/skysign-mission-service-backend.yaml > manifest/skysign-mission-service-backend.yaml
+            envsubst < ../build/deploy/skysign-mission-service.yaml > manifest/skysign-mission-service.yaml
+            envsubst < ../build/deploy/skysign-vehicle-gateway-backend-envoy.yaml > manifest/skysign-vehicle-gateway-backend-envoy.yaml
+            envsubst < ../build/deploy/skysign-vehicle-gateway-backend.yaml > manifest/skysign-vehicle-gateway-backend.yaml
+            envsubst < ../build/deploy/skysign-vehicle-gateway.yaml > manifest/skysign-vehicle-gateway.yaml
+            envsubst < ../build/deploy/skysign-vehicle-service-backend-envoy.yaml > manifest/skysign-vehicle-service-backend-envoy.yaml
+            envsubst < ../build/deploy/skysign-vehicle-service-backend.yaml > manifest/skysign-vehicle-service-backend.yaml
+            envsubst < ../build/deploy/skysign-vehicle-service.yaml > manifest/skysign-vehicle-service.yaml
             git add .
             git commit -m "release-${CIRCLE_SHA1}"
             git push --set-upstream origin release-${CIRCLE_SHA1}

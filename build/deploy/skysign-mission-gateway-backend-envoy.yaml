@@ -71,7 +71,7 @@ data:
                       "name": "local_route",
                       "virtual_hosts": [
                         {
-                          "name": "skysign-mission-backend",
+                          "name": "skysign-mission-service-backend",
                           "domains": ["*"],
                           "routes": [
                             {
@@ -81,7 +81,7 @@ data:
                                   {"name": "content-type", "exact_match": "application/grpc"}
                                 ]
                               },
-                              "route": { "cluster": "skysign-mission-backend" }
+                              "route": { "cluster": "skysign-mission-service-backend" }
                             }
                           ]
                         }
@@ -120,14 +120,14 @@ data:
             ]
           },
           {
-            "name": "skysign-mission-backend",
+            "name": "skysign-mission-service-backend",
             "http2_protocol_options": {},
             "connect_timeout": "0.25s",
             "type": "STRICT_DNS",
             "lb_policy": "ROUND_ROBIN",
             "hosts": [
               {
-                "socket_address": { "address": "skysign-mission", "port_value": "5001" }
+                "socket_address": { "address": "skysign-mission-service", "port_value": "5001" }
               }
             ]
           }

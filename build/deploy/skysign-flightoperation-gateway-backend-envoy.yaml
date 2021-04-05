@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: skysign-flightplan-gateway-backend-envoy
+  name: skysign-flightoperation-gateway-backend-envoy
 data:
   envoy.json: |
     {
@@ -30,7 +30,7 @@ data:
                               "match": {
                                 "prefix": "/"
                               },
-                              "route": { "cluster": "skysign-flightplan-gateway-backend" }
+                              "route": { "cluster": "skysign-flightoperation-gateway-backend" }
                             }
                           ]
                         }
@@ -71,7 +71,7 @@ data:
                       "name": "local_route",
                       "virtual_hosts": [
                         {
-                          "name": "skysign-flightplan-service-backend",
+                          "name": "skysign-flightoperation-service-backend",
                           "domains": ["*"],
                           "routes": [
                             {
@@ -81,7 +81,7 @@ data:
                                   {"name": "content-type", "exact_match": "application/grpc"}
                                 ]
                               },
-                              "route": { "cluster": "skysign-flightplan-service-backend" }
+                              "route": { "cluster": "skysign-flightoperation-service-backend" }
                             }
                           ]
                         }
@@ -109,7 +109,7 @@ data:
         ],
         "clusters": [
           {
-            "name": "skysign-flightplan-gateway-backend",
+            "name": "skysign-flightoperation-gateway-backend",
             "connect_timeout": "0.25s",
             "type": "STATIC",
             "lb_policy": "ROUND_ROBIN",
@@ -120,14 +120,14 @@ data:
             ]
           },
           {
-            "name": "skysign-flightplan-service-backend",
+            "name": "skysign-flightoperation-service-backend",
             "http2_protocol_options": {},
             "connect_timeout": "0.25s",
             "type": "STRICT_DNS",
             "lb_policy": "ROUND_ROBIN",
             "hosts": [
               {
-                "socket_address": { "address": "skysign-flightplan-service", "port_value": "5001" }
+                "socket_address": { "address": "skysign-flightoperation-service", "port_value": "5001" }
               }
             ]
           }

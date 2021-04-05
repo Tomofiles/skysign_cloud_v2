@@ -1,21 +1,21 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: skysign-helper-backend
+  name: skysign-helper-service-backend
   labels:
-    run: skysign-helper-backend
+    run: skysign-helper-service-backend
 spec:
   selector:
     matchLabels:
-      run: skysign-helper-backend
+      run: skysign-helper-service-backend
   replicas: 1
   template:
     metadata:
       labels:
-        run: skysign-helper-backend
+        run: skysign-helper-service-backend
     spec:
       containers:
-      - name: skysign-helper-backend
+      - name: skysign-helper-service-backend
         image: ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com/skysign-cloud-v2:helper-api_${CIRCLE_SHA1}
         command: ["/app/helper-user-api"]
         ports:

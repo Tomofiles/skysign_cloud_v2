@@ -71,7 +71,7 @@ data:
                       "name": "local_route",
                       "virtual_hosts": [
                         {
-                          "name": "skysign-communication-backend",
+                          "name": "skysign-communication-service-backend",
                           "domains": ["*"],
                           "routes": [
                             {
@@ -81,7 +81,7 @@ data:
                                   {"name": "content-type", "exact_match": "application/grpc"}
                                 ]
                               },
-                              "route": { "cluster": "skysign-communication-backend" }
+                              "route": { "cluster": "skysign-communication-service-backend" }
                             }
                           ]
                         }
@@ -120,14 +120,14 @@ data:
             ]
           },
           {
-            "name": "skysign-communication-backend",
+            "name": "skysign-communication-service-backend",
             "http2_protocol_options": {},
             "connect_timeout": "0.25s",
             "type": "STRICT_DNS",
             "lb_policy": "ROUND_ROBIN",
             "hosts": [
               {
-                "socket_address": { "address": "skysign-communication", "port_value": "5001" }
+                "socket_address": { "address": "skysign-communication-service", "port_value": "5001" }
               }
             ]
           }
