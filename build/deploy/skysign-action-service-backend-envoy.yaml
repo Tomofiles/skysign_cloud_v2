@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: skysign-action-backend-envoy
+  name: skysign-action-service-backend-envoy
 data:
   envoy.json: |
     {
@@ -30,7 +30,7 @@ data:
                               "match": {
                                 "prefix": "/"
                               },
-                              "route": { "cluster": "skysign-action-backend" }
+                              "route": { "cluster": "skysign-action-service-backend" }
                             }
                           ]
                         }
@@ -58,7 +58,7 @@ data:
         ],
         "clusters": [
           {
-            "name": "skysign-action-backend",
+            "name": "skysign-action-service-backend",
             "http2_protocol_options": {},
             "connect_timeout": "0.25s",
             "type": "STATIC",

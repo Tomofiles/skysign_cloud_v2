@@ -32,7 +32,7 @@ spec:
       - name: skysign-flightreport-service-backend
         image: ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com/skysign-cloud-v2:flightreport_${CIRCLE_SHA1}
         command: ["/app/flightreport"]
-        args: ["-port", "6000", "-logtostderr"]
+        args: ["-logtostderr"]
         env:
         - name: DB_HOST
           value: "skysign-db"
@@ -41,7 +41,7 @@ spec:
         - name: DB_PASSWORD
           value: "${AWS_RDS_PASSWORD}"
         - name: DB_SSL_ENABLED
-          value: "enable"
+          value: "require"
         - name: MQ_HOST
           value: "${AWS_AMQ_MQ_HOST}"
         - name: MQ_PORT
