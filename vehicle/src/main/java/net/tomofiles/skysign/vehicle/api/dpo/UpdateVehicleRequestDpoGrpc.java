@@ -12,7 +12,7 @@ public class UpdateVehicleRequestDpoGrpc implements UpdateVehicleRequestDpo {
     private final Vehicle request;
 
     @Override
-    public VehicleId getVehicleId() {
+    public VehicleId getId() {
         return new VehicleId(request.getId());
     }
 
@@ -22,7 +22,7 @@ public class UpdateVehicleRequestDpoGrpc implements UpdateVehicleRequestDpo {
     }
 
     @Override
-    public CommunicationId getCommId() {
-        return new CommunicationId(this.request.getCommId());
+    public CommunicationId getCommunicationId() {
+        return new CommunicationId(this.request.getCommunicationId());
     }
 }

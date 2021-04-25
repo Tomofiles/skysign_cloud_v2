@@ -77,7 +77,7 @@ const VehiclesList = (props) => {
                     <TableCell component="th" scope="row">
                       {row.name}
                     </TableCell>
-                    <TableCell>{row.commId}</TableCell>
+                    <TableCell>{row.communication_id}</TableCell>
                   </TableRow>
                 ))}
               </TableBody>

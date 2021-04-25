@@ -13,7 +13,7 @@ public class GrpcObjectMother {
         return Vehicle.newBuilder()
                 .setId(vehicleId.getId())
                 .setName("vehicle name")
-                .setCommId(new CommunicationId("comm id").getId())
+                .setCommunicationId(new CommunicationId("comm id").getId())
                 .build();
     }
 
@@ -23,7 +23,7 @@ public class GrpcObjectMother {
     public static Vehicle newNoIdVehicleGrpc() {
         return Vehicle.newBuilder()
                 .setName("vehicle name")
-                .setCommId(new CommunicationId("comm id").getId())
+                .setCommunicationId(new CommunicationId("comm id").getId())
                 .build();
     }
 }

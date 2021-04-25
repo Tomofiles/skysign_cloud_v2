@@ -22,7 +22,7 @@ const EDIT_VEHICLE = "edit_vehicle"
 const DELETE_VEHICLE = "delete_vehicle"
 
 const VehiclesDetail = (props) => {
-  const [vehicle, setVehicle] = useState({id: "-", name: "-", commId: "-"});
+  const [vehicle, setVehicle] = useState({id: "-", name: "-", communication_id: "-"});
   const [ openAction, setOpenAction ] = useState(false);
 
   useEffect(() => {
@@ -31,7 +31,7 @@ const VehiclesDetail = (props) => {
         setVehicle({
           id: data.id,
           name: data.name,
-          commId: data.commId
+          communication_id: data.communication_id
         });
       })
   }, [ props.id ])
@@ -136,7 +136,7 @@ const VehiclesDetail = (props) => {
                       <Typography style={{fontSize: "12px"}}>Communication ID</Typography>
                     </Grid>
                     <Grid item xs={12}>
-                      <Typography>{vehicle.commId}</Typography>
+                      <Typography>{vehicle.communication_id}</Typography>
                     </Grid>
                   </Grid>
                 </Box>

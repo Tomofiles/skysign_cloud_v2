@@ -25,7 +25,7 @@ public class Vehicle {
 
     @Getter
     @Setter(value = AccessLevel.PACKAGE)
-    private CommunicationId commId = null;
+    private CommunicationId communicationId = null;
 
     @Getter
     @Setter(value = AccessLevel.PACKAGE)
@@ -64,40 +64,40 @@ public class Vehicle {
         this.newVersion = this.generator.newVersion();
     }
 
-    public void giveCommId(CommunicationId id) {
+    public void giveCommunication(CommunicationId id) {
         if (this.isCarbonCopy) {
             throw new CannotChangeVehicleException("cannot change carbon copied vehicle");
         }
 
-        if (this.commId == null) {
-            this.commId = id;
+        if (this.communicationId == null) {
+            this.communicationId = id;
             this.newVersion = this.generator.newVersion();
             this.publisher
                     .publish(
-                            new CommunicationIdGaveEvent(this.commId, this.id, this.newVersion));
+                            new CommunicationIdGaveEvent(this.communicationId));
         } else {
-            CommunicationId beforeId = this.commId;
-            this.commId = id;
+            CommunicationId beforeId = this.communicationId;
+            this.communicationId = id;
             this.newVersion = this.generator.newVersion();
             this.publisher
                     .publish(
-                            new CommunicationIdRemovedEvent(beforeId, this.newVersion));
+                            new CommunicationIdRemovedEvent(beforeId));
             this.publisher
                     .publish(
-                            new CommunicationIdGaveEvent(this.commId, this.id, this.newVersion));
+                            new CommunicationIdGaveEvent(this.communicationId));
         }
     }
 
-    public void removeCommId() {
+    public void removeCommunication() {
         if (this.isCarbonCopy) {
             throw new CannotChangeVehicleException("cannot change carbon copied vehicle");
         }
 
-        CommunicationId removedId = this.commId;
-        this.commId = null;
+        CommunicationId removedId = this.communicationId;
+        this.communicationId = null;
         this.newVersion = this.generator.newVersion();
         this.publisher
                 .publish(
-                        new CommunicationIdRemovedEvent(removedId, this.newVersion));
+                        new CommunicationIdRemovedEvent(removedId));
     }
 }

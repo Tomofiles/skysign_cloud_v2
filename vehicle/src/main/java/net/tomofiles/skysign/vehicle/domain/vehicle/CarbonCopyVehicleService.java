@@ -30,7 +30,7 @@ public class CarbonCopyVehicleService {
         publisher.publish(
             new CopiedVehicleCreatedEvent(
                 copy.getId(),
-                copy.getCommId(),
+                copy.getCommunicationId(),
                 flightplanId
             )
         );

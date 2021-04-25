@@ -11,7 +11,7 @@ public class DeleteVehicleRequestDpoGrpc implements DeleteVehicleRequestDpo {
     private final DeleteVehicleRequest request;
 
     @Override
-    public VehicleId getVehicleId() {
+    public VehicleId getId() {
         return new VehicleId(request.getId());
     }
 }

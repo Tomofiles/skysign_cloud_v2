@@ -36,7 +36,7 @@ const BridgeVehicleToTelemetry = () => {
     let telemetries = [];
     vehicles
       .forEach(vehicle => {
-        telemetries.push(getTelemetry(vehicle.commId));
+        telemetries.push(getTelemetry(vehicle.communication_id));
       });
 
     Promise

@@ -24,7 +24,7 @@ const VehiclesEdit = (props) => {
       .then(data => {
         setId(data.id);
         setValue("name", data.name);
-        setValue("commId", data.commId);
+        setValue("communication_id", data.communication_id);
       })
   }, [ props.id, setValue ])
 
@@ -80,7 +80,7 @@ const VehiclesEdit = (props) => {
                     <Controller
                       as={TextField}
                       label="Communication ID"
-                      name="commId"
+                      name="communication_id"
                       control={control}
                       defaultValue=""
                       fullWidth />

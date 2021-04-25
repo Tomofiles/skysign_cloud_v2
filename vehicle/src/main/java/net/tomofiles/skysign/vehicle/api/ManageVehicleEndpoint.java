@@ -71,7 +71,7 @@ public class ManageVehicleEndpoint extends ManageVehicleServiceImplBase {
             responseObserver.onError(Status
                     .NOT_FOUND
                     .withCause(new NoSuchElementException())
-                    .withDescription("vehicle-idに合致するVehicleが存在しません。")
+                    .withDescription("vehicle not found")
                     .asRuntimeException());
             return;
         }
@@ -120,7 +120,7 @@ public class ManageVehicleEndpoint extends ManageVehicleServiceImplBase {
             responseObserver.onError(Status
                     .NOT_FOUND
                     .withCause(new NoSuchElementException())
-                    .withDescription("vehicle-idに合致するVehicleが存在しません。")
+                    .withDescription("vehicle not found")
                     .asRuntimeException());
             return;
         }
@@ -149,7 +149,7 @@ public class ManageVehicleEndpoint extends ManageVehicleServiceImplBase {
             responseObserver.onError(Status
                     .NOT_FOUND
                     .withCause(new NoSuchElementException())
-                    .withDescription("vehicle-idに合致するVehicleが存在しません。")
+                    .withDescription("vehicle not found")
                     .asRuntimeException());
             return;
         }

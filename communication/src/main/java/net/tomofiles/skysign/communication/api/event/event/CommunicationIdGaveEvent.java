@@ -11,5 +11,4 @@ import lombok.ToString;
 @ToString
 public class CommunicationIdGaveEvent {
     private final String communicationId;
-    private final String version;
 }

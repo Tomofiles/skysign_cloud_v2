@@ -16,7 +16,7 @@ public class CreateVehicleResponseDpoGrpc implements CreateVehicleResponseDpo {
         return proto.skysign.common.Vehicle.newBuilder()
                 .setId(vehicle.getId().getId())
                 .setName(vehicle.getVehicleName())
-                .setCommId(vehicle.getCommId().getId())
+                .setCommunicationId(vehicle.getCommunicationId().getId())
                 .build();
     }
 }

@@ -22,7 +22,7 @@ const FlightOperationAssignment = props => {
       .filter(vehicle => vehicle.id === props.vehicleId)
       .forEach(vehicle => {
         setVehicleName(vehicle.name);
-        setCommunicationId(vehicle.commId);
+        setCommunicationId(vehicle.communication_id);
       });
   }, [ props.vehicleId, vehicles, setVehicleName, setCommunicationId ])
 

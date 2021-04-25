@@ -16,14 +16,10 @@ import java.util.UUID;
 
 import net.tomofiles.skysign.vehicle.domain.vehicle.CommunicationId;
 import net.tomofiles.skysign.vehicle.domain.vehicle.CommunicationIdGaveEvent;
-import net.tomofiles.skysign.vehicle.domain.vehicle.VehicleId;
-import net.tomofiles.skysign.vehicle.domain.vehicle.Version;
 
 public class CommunicationIdGaveEventHandlerTests {
     
     private static final CommunicationId DEFAULT_COMMUNICATION_ID = new CommunicationId(UUID.randomUUID().toString());
-    private static final VehicleId DEFAULT_VEHICLE_ID = new VehicleId(UUID.randomUUID().toString());
-    private static final Version DEFAULT_VERSION = new Version(UUID.randomUUID().toString());
     private static final String EXCHANGE_NAME = "exchange_name";
 
     @Mock
@@ -46,11 +42,7 @@ public class CommunicationIdGaveEventHandlerTests {
      */
     @Test
     public void fireCommunicationIdGaveEvent() throws Exception {
-        CommunicationIdGaveEvent event = new CommunicationIdGaveEvent(
-                DEFAULT_COMMUNICATION_ID,
-                DEFAULT_VEHICLE_ID,
-                DEFAULT_VERSION
-        );
+        CommunicationIdGaveEvent event = new CommunicationIdGaveEvent(DEFAULT_COMMUNICATION_ID);
 
         this.eventHandler.processCommunicationIdGaveEvent(event);
 
@@ -64,7 +56,6 @@ public class CommunicationIdGaveEventHandlerTests {
 
         byte[] expectMessage = proto.skysign.event.CommunicationIdGaveEvent.newBuilder()
             .setCommunicationId(DEFAULT_COMMUNICATION_ID.getId())
-            .setVersion(DEFAULT_VERSION.getVersion())
             .build()
             .toByteArray();
 

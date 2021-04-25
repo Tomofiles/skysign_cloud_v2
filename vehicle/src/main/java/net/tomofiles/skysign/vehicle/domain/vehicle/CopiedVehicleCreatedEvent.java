@@ -11,7 +11,7 @@ import net.tomofiles.skysign.vehicle.event.Event;
 @EqualsAndHashCode
 @ToString
 public class CopiedVehicleCreatedEvent implements Event {
-    private final VehicleId vehicleId;
+    private final VehicleId id;
     private final CommunicationId communicationId;
     private final FlightplanId flightplanId;
 }

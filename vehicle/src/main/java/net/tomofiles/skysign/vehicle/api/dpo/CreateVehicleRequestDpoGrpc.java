@@ -16,7 +16,7 @@ public class CreateVehicleRequestDpoGrpc implements CreateVehicleRequestDpo {
     }
 
     @Override
-    public CommunicationId getCommId() {
-        return new CommunicationId(this.request.getCommId());
+    public CommunicationId getCommunicationId() {
+        return new CommunicationId(this.request.getCommunicationId());
     }
 }

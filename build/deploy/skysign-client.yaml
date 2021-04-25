@@ -8,7 +8,6 @@ spec:
   type: NodePort
   ports:
   - port: 5000
-    nodePort: 30035
     protocol: TCP
   selector:
     run: skysign-client-backend

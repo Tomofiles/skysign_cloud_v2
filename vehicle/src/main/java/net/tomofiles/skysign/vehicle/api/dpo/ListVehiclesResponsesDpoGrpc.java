@@ -26,7 +26,7 @@ public class ListVehiclesResponsesDpoGrpc implements ListVehiclesResponsesDpo {
                     return proto.skysign.common.Vehicle.newBuilder()
                             .setId(vehicle.getId().getId())
                             .setName(vehicle.getVehicleName())
-                            .setCommId(vehicle.getCommId().getId())
+                            .setCommunicationId(vehicle.getCommunicationId().getId())
                             .build();
                 })
                 .collect(Collectors.toList());

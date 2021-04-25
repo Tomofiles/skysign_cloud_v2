@@ -4,7 +4,7 @@ import net.tomofiles.skysign.vehicle.domain.vehicle.CommunicationId;
 import net.tomofiles.skysign.vehicle.domain.vehicle.VehicleId;
 
 public interface UpdateVehicleRequestDpo {
-    public VehicleId getVehicleId();
+    public VehicleId getId();
     public String getVehicleName();
-    public CommunicationId getCommId();
+    public CommunicationId getCommunicationId();
 }

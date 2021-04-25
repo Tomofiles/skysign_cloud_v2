@@ -2,18 +2,18 @@ syntax = "proto3";
 
 package skysign_proto;
 
+import "common.proto";
+
 option java_package = "proto.skysign.event";
 option java_multiple_files = true;
 option go_package = ".;skysign_proto";
 
 message CommunicationIdGaveEvent {
-    string communicationId = 1;
-    string version = 2;
+    string communication_id = 1;
 }
 
 message CommunicationIdRemovedEvent {
-    string communicationId = 1;
-    string version = 2;
+    string communication_id = 1;
 }
 
 message FlightplanCreatedEvent {
@@ -48,10 +48,22 @@ message FlightoperationCreatedEvent {
 
 message FlightoperationCompletedEvent {
     string flightoperation_id = 1;
+    string flightplan_id = 2;
 }
 
 message FlightplanCopiedWhenFlightoperationCreatedEvent {
     string flightoperation_id = 1;
     string original_flightplan_id = 2;
     string new_flightplan_id = 3;
+}
+
+message CopiedVehicleCreatedEvent {
+    string vehicle_id = 1;
+    string communication_id = 2;
+    string flightplan_id = 3;
+}
+
+message TelemetryUpdatedEvent {
+    string communication_id = 1;
+    Telemetry telemetry = 2;
 }

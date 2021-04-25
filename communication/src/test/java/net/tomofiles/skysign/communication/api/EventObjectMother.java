@@ -7,10 +7,9 @@ public class EventObjectMother {
     /**
      * テスト用CommunicationIdGaveEventのProtocolBuffersバイナリデータを生成する。
      */
-    public static byte[] newNormalCommunicationIdGaveEvent(CommunicationId communicationId, String version) {
+    public static byte[] newNormalCommunicationIdGaveEvent(CommunicationId communicationId) {
         return proto.skysign.event.CommunicationIdGaveEvent.newBuilder()
             .setCommunicationId(communicationId.getId())
-            .setVersion(version)
             .build()
             .toByteArray();
     }
@@ -18,10 +17,9 @@ public class EventObjectMother {
     /**
      * テスト用CommunicationIdRemovedEventのProtocolBuffersバイナリデータを生成する。
      */
-    public static byte[] newNormalCommunicationIdRemovedEvent(CommunicationId communicationId, String version) {
+    public static byte[] newNormalCommunicationIdRemovedEvent(CommunicationId communicationId) {
         return proto.skysign.event.CommunicationIdRemovedEvent.newBuilder()
             .setCommunicationId(communicationId.getId())
-            .setVersion(version)
             .build()
             .toByteArray();
     }
