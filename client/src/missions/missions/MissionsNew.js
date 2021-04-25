@@ -119,10 +119,10 @@ const MissionsNew = (props) => {
                     </Grid>
                     <Grid item xs={12}>
                       <Typography>
-                        {editMission.takeoffPointGroundHeight === undefined ?
+                        {editMission.takeoff_point_ground_height === undefined ?
                           "-"
                         :
-                          editMission.takeoffPointGroundHeight} m
+                          editMission.takeoff_point_ground_height} m
                         </Typography>
                     </Grid>
                   </Grid>

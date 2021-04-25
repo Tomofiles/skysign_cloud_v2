@@ -148,7 +148,7 @@ public class CommunicateEdgeEndpointTests {
         PushTelemetryResponse response = results.get(0);
         assertThat(response).isEqualTo(PushTelemetryResponse.newBuilder()
                 .setId(DEFAULT_COMMUNICATION_ID.getId())
-                .addCommIds(DEFAULT_COMMAND_ID.getId())
+                .addCommandIds(DEFAULT_COMMAND_ID.getId())
                 .build());
     }
 

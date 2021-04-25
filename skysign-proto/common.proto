@@ -30,14 +30,14 @@ message Vehicle {
 message Mission {
     string id = 1;
     string name = 2;
-    double takeoffPointGroundHeight = 3;
+    double takeoff_point_ground_height = 3;
     repeated MissionItem items = 4;
 }
 
 message MissionItem {
     double latitude = 1;
     double longitude = 2;
-    double relativeHeight = 3;
+    double relative_height = 3;
     double speed = 4;
 }
 
@@ -45,14 +45,14 @@ message Telemetry {
     double latitude = 1;
     double longitude = 2;
     double altitude = 3;
-    double relativeAltitude = 4;
+    double relative_altitude = 4;
     double speed = 5;
     bool armed = 6;
-    string flightMode = 7;
-    double orientationX = 8;
-    double orientationY = 9;
-    double orientationZ = 10;
-    double orientationW = 11;
+    string flight_mode = 7;
+    double orientation_x = 8;
+    double orientation_y = 9;
+    double orientation_z = 10;
+    double orientation_w = 11;
 }
 
 message Flightplan {

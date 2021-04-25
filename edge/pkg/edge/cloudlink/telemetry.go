@@ -15,7 +15,7 @@ func PushTelemetry(cloud string, telemetry telemetry.Telemetry) (string, *edge.C
 	telem := telemetry.Get()
 	if telem.State.FlightMode == "" {
 		log.Println("no telemetry prepared.")
-		return telem.ID, &edge.CommandIDs{CommIds: make([]string, 0)}, nil
+		return telem.ID, &edge.CommandIDs{CommandIds: make([]string, 0)}, nil
 	}
 
 	jsonData, _ := json.Marshal(telem)

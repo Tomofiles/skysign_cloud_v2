@@ -21,10 +21,10 @@ const initialTelemetry = {
     latitude: "-",
     longitude: "-",
     altitude: "-",
-    relativeAltitude: "-",
+    relative_altitude: "-",
     speed: "-",
     armed: "-",
-    flightMode: "-",
+    flight_mode: "-",
     heading: "-",
     pitch: "-",
     roll: "-",
@@ -121,7 +121,7 @@ const FlightOperationCommunication = props => {
             </Grid>
             <Grid item xs={12}>
               <Typography style={{ fontSize: "13px", whiteSpace: "nowrap" }}>
-                <NumberValue value={telemetry.relativeAltitude} />
+                <NumberValue value={telemetry.relative_altitude} />
               </Typography>
             </Grid>
             <Grid item xs={12}>
@@ -131,7 +131,7 @@ const FlightOperationCommunication = props => {
             </Grid>
             <Grid item xs={12}>
               <Typography style={{ fontSize: "13px", whiteSpace: "nowrap" }}>
-                {telemetry.flightMode}
+                {telemetry.flight_mode}
               </Typography>
             </Grid>
           </Grid>

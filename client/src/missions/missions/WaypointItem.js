@@ -61,7 +61,7 @@ const WaypointItem = (props) => {
               <Typography style={{ fontSize: "8px" }} >lon: {props.waypoint.longitude}</Typography>
             </Grid>
             <Grid item xs={6}>
-              <Typography style={{ fontSize: "8px" }} >rel height: {props.waypoint.relativeHeight} m</Typography>
+              <Typography style={{ fontSize: "8px" }} >rel height: {props.waypoint.relative_height} m</Typography>
             </Grid>
             <Grid item xs={6}>
               <Typography style={{ fontSize: "8px" }} >speed: {props.waypoint.speed} m/s</Typography>
@@ -80,14 +80,14 @@ const WaypointItem = (props) => {
                     label="rel height"
                     type="number"
                     size="small"
-                    value={props.waypoint.relativeHeight}
+                    value={props.waypoint.relative_height}
                     onChange={onChangeHeightTextField} />
                 </Grid>
                 <Grid item xs={8}>
                   <Box p={2} >
                     <Slider
                       color={"secondary"}
-                      value={props.waypoint.relativeHeight}
+                      value={props.waypoint.relative_height}
                       onChange={onChangeHeightSlider} />
                   </Box>
                 </Grid>

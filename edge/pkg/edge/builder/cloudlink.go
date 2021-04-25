@@ -27,7 +27,7 @@ func Cloudlink(ctx context.Context, cloud string, telemetry telemetry.Telemetry)
 			case <-t.C:
 				id, commIDs, err := cloudlink.PushTelemetry(cloud, telemetry)
 				if err == nil {
-					for _, commID := range commIDs.CommIds {
+					for _, commID := range commIDs.CommandIds {
 						command, err := cloudlink.PullCommand(cloud, id, commID)
 						if err == nil {
 							if command.Type == "UPLOAD" {

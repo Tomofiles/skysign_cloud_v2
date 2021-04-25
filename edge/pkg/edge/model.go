@@ -49,19 +49,19 @@ type State struct {
 	Latitude         float64 `json:"latitude"`
 	Longitude        float64 `json:"longitude"`
 	Altitude         float64 `json:"altitude"`
-	RelativeAltitude float64 `json:"relativeAltitude"`
+	RelativeAltitude float64 `json:"relative_altitude"`
 	Speed            float64 `json:"speed"`
 	Armed            bool    `json:"armed"`
-	FlightMode       string  `json:"flightMode"`
-	OrientationX     float64 `json:"orientationX"`
-	OrientationY     float64 `json:"orientationY"`
-	OrientationZ     float64 `json:"orientationZ"`
-	OrientationW     float64 `json:"orientationW"`
+	FlightMode       string  `json:"flight_mode"`
+	OrientationX     float64 `json:"orientation_x"`
+	OrientationY     float64 `json:"orientation_y"`
+	OrientationZ     float64 `json:"orientation_z"`
+	OrientationW     float64 `json:"orientation_w"`
 }
 
 // CommandIDs .
 type CommandIDs struct {
-	CommIds []string `json:"commIds"`
+	CommandIds []string `json:"command_ids"`
 }
 
 // Command .
@@ -69,19 +69,17 @@ type Command struct {
 	Type string `json:"type"`
 }
 
-// Communication .
-type Communication struct {
-	ID           string `json:"id"`
-	VehicleID    string `json:"vehicleId"`
-	MissionID    string `json:"missionId"`
-	IsControlled bool   `json:"isControlled"`
+// UploadMission .
+type UploadMission struct {
+	ID        string `json:"id"`
+	MissionID string `json:"mission_id"`
 }
 
 // Mission .
 type Mission struct {
 	ID                       string         `json:"id"`
 	Name                     string         `json:"name"`
-	TakeoffPointGroundHeight float64        `json:"takeoffPointGroundHeight"`
+	TakeoffPointGroundHeight float64        `json:"takeoff_point_ground_height"`
 	Items                    []*MissionItem `json:"items"`
 }
 
@@ -89,6 +87,6 @@ type Mission struct {
 type MissionItem struct {
 	Latitude       float64 `json:"latitude"`
 	Longitude      float64 `json:"longitude"`
-	RelativeHeight float64 `json:"relativeHeight"`
+	RelativeHeight float64 `json:"relative_height"`
 	Speed          float64 `json:"speed"`
 }

@@ -40,7 +40,7 @@ const MissionsDetail = (props) => {
             type: 'CURRENT',
             longitude: data.items[0].longitude,
             latitude: data.items[0].latitude,
-            height: data.takeoffPointGroundHeight + 200,
+            height: data.takeoff_point_ground_height + 200,
           })
         }
       })
@@ -149,7 +149,7 @@ const MissionsDetail = (props) => {
                       <Typography style={{fontSize: "12px"}}>Takeoff Ground Height</Typography>
                     </Grid>
                     <Grid item xs={12}>
-                      <Typography>{editMission.takeoffPointGroundHeight} m</Typography>
+                      <Typography>{editMission.takeoff_point_ground_height} m</Typography>
                     </Grid>
                   </Grid>
                 </Box>

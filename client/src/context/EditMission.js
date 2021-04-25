@@ -3,7 +3,7 @@ const DEFAULT_SPEED = 3.0;
 
 export const initialEditMission = {
   name: undefined,
-  takeoffPointGroundHeight: undefined,
+  takeoff_point_ground_height: undefined,
   items: [],
 }
 
@@ -17,7 +17,7 @@ export const editMissionReducer = (state, action) => {
     }
     case 'CHANGE_RELATIVE_HEIGHT': {
       const newItems = [ ...state.items ];
-      newItems[action.index].relativeHeight = action.height;
+      newItems[action.index].relative_height = action.height;
       return {
         ...state,
         items: newItems,
@@ -26,7 +26,7 @@ export const editMissionReducer = (state, action) => {
     case 'CHANGE_TAKEOFF_POINT_GROUND_HEIGHT': {
       return {
         ...state,
-        takeoffPointGroundHeight: action.height,
+        takeoff_point_ground_height: action.height,
       };
     }
     case 'CHANGE_SPEED': {
@@ -42,7 +42,7 @@ export const editMissionReducer = (state, action) => {
       newItems.push({
         latitude: action.latitude,
         longitude: action.longitude,
-        relativeHeight: DEFAULT_HEIGHT,
+        relative_height: DEFAULT_HEIGHT,
         speed: DEFAULT_SPEED,
       });
       return {
@@ -71,7 +71,7 @@ export const editMissionReducer = (state, action) => {
       return {
         ...initialEditMission,
         name: action.mission.name,
-        takeoffPointGroundHeight: action.mission.takeoffPointGroundHeight,
+        takeoff_point_ground_height: action.mission.takeoff_point_ground_height,
         items: action.mission.items,
       };
     }

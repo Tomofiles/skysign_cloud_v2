@@ -11,10 +11,10 @@ export const convertDroneData = (vehicleID, telemetry) => {
   let base = Quaternion.fromRotationMatrix(mtx3);
   // ローカル座標での回転を計算（NED→ENU）
   let quatlocal = new Quaternion(
-    telemetry.orientationY,
-    telemetry.orientationX,
-    -telemetry.orientationZ,
-    telemetry.orientationW);
+    telemetry.orientation_y,
+    telemetry.orientation_x,
+    -telemetry.orientation_z,
+    telemetry.orientation_w);
   let quat90 = Quaternion.fromAxisAngle(
     new Cartesian3(0, 0, 1),
     CesiumMath.toRadians(90)

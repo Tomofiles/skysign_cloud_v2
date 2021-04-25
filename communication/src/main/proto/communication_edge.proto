@@ -19,14 +19,14 @@ service CommunicationEdgeService {
 
     rpc PullCommand (PullCommandRequest) returns (PullCommandResponse) {
         option (google.api.http) = {
-            post: "/api/v1/communications/{id}/commands/{commandId}"
+            post: "/api/v1/communications/{id}/commands/{command_id}"
             body: "*"
         };
     };
 
     rpc PullUploadMission (PullUploadMissionRequest) returns (PullUploadMissionResponse) {
         option (google.api.http) = {
-            post: "/api/v1/communications/{id}/uploadmissions/{commandId}"
+            post: "/api/v1/communications/{id}/uploadmissions/{command_id}"
             body: "*"
         };
     };
@@ -39,27 +39,27 @@ message PushTelemetryRequest {
 
 message PushTelemetryResponse {
     string id = 1;
-    repeated string commIds = 2;
+    repeated string command_ids = 2;
 }
 
 message PullCommandRequest {
     string id = 1;
-    string commandId = 2;
+    string command_id = 2;
 }
 
 message PullCommandResponse {
     string id = 1;
-    string commandId = 2;
+    string command_id = 2;
     CommandType type = 3;
 }
 
 message PullUploadMissionRequest {
     string id = 1;
-    string commandId = 2;
+    string command_id = 2;
 }
 
 message PullUploadMissionResponse {
     string id = 1;
-    string commandId = 2;
-    string missionId = 3;
+    string command_id = 2;
+    string mission_id = 3;
 }
