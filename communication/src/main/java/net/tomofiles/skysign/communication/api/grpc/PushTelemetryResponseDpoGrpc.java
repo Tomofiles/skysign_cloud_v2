@@ -34,7 +34,7 @@ public class PushTelemetryResponseDpoGrpc implements PushTelemetryResponseDpo {
     public proto.skysign.PushTelemetryResponse getGrpcResponse() {
         return proto.skysign.PushTelemetryResponse.newBuilder()
                 .setId(request.getId())
-                .addAllCommIds(
+                .addAllCommandIds(
                     this.commandIds.stream()
                         .map(CommandId::getId)
                         .collect(Collectors.toList())
