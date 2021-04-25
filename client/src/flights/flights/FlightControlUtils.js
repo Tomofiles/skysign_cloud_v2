@@ -26,7 +26,7 @@ export async function upload(mission, id) {
   try {
     const res = await axios
       .post(`/api/v1/communications/${id}/uploadmissions`, {
-        missionId: mission
+        mission_id: mission
       })
     return res.data;
   } catch(error) {

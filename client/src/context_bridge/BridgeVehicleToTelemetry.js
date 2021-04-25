@@ -44,10 +44,10 @@ const BridgeVehicleToTelemetry = () => {
       .then(data => {
         for (let telemetry of data) {
           let quatlocal = new Quaternion(
-            telemetry.telemetry.orientationY,
-            telemetry.telemetry.orientationX,
-            -telemetry.telemetry.orientationZ,
-            telemetry.telemetry.orientationW);
+            telemetry.telemetry.orientation_y,
+            telemetry.telemetry.orientation_x,
+            -telemetry.telemetry.orientation_z,
+            telemetry.telemetry.orientation_w);
           let hpr = HeadingPitchRoll.fromQuaternion(quatlocal);
           telemetry.telemetry.heading = Math.toDegrees(hpr.heading);
           telemetry.telemetry.pitch = Math.toDegrees(hpr.pitch);
