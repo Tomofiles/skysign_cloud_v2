@@ -1,5 +1,5 @@
-CREATE TABLE telemetry (
-    comm_id character varying(36) NOT NULL,
+CREATE TABLE telemetries (
+    communication_id character varying(36) NOT NULL,
     latitude double precision NOT NULL,
     longitude double precision NOT NULL,
     altitude double precision NOT NULL,
@@ -11,5 +11,5 @@ CREATE TABLE telemetry (
     orientation_y double precision NOT NULL,
     orientation_z double precision NOT NULL,
     orientation_w double precision NOT NULL,
-    CONSTRAINT telemetry_pkey PRIMARY KEY (comm_id)
+    CONSTRAINT telemetries_pkey PRIMARY KEY (communication_id)
 );

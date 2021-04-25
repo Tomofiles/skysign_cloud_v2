@@ -8,7 +8,7 @@ import org.apache.ibatis.annotations.Update;
 @Mapper
 public interface TelemetryMapper {
     @Select("SELECT"
-        + " comm_id as commId,"
+        + " communication_id as communicationId,"
         + " latitude,"
         + " longitude,"
         + " altitude,"
@@ -20,12 +20,12 @@ public interface TelemetryMapper {
         + " orientation_y as oriY,"
         + " orientation_z as oriZ,"
         + " orientation_w as oriW"
-        + " FROM telemetry" 
-        + " WHERE comm_id = #{commId}")
-    TelemetryRecord find(String commId);
+        + " FROM telemetries" 
+        + " WHERE communication_id = #{communicationId}")
+    TelemetryRecord find(String communicationId);
 
-    @Insert("INSERT INTO telemetry ("
-        + " comm_id,"
+    @Insert("INSERT INTO telemetries ("
+        + " communication_id,"
         + " latitude,"
         + " longitude,"
         + " altitude,"
@@ -38,7 +38,7 @@ public interface TelemetryMapper {
         + " orientation_z,"
         + " orientation_w"
         + ") VALUES ("
-        + " #{commId},"
+        + " #{communicationId},"
         + " #{latitude},"
         + " #{longitude},"
         + " #{altitude},"
@@ -53,7 +53,7 @@ public interface TelemetryMapper {
         + ")")
     void create(TelemetryRecord communication);
 
-    @Update("UPDATE telemetry SET"
+    @Update("UPDATE telemetries SET"
         + " latitude = #{latitude},"
         + " longitude = #{longitude},"
         + " altitude = #{altitude},"
@@ -66,10 +66,10 @@ public interface TelemetryMapper {
         + " orientation_z = #{oriZ},"
         + " orientation_w = #{oriW}"
         + " WHERE"
-        + " comm_id = #{commId}")
+        + " communication_id = #{communicationId}")
     void update(TelemetryRecord communication);
 
-    @Update("DELETE FROM telemetry WHERE comm_id = #{commId}")
-    void delete(String commId);
+    @Update("DELETE FROM telemetries WHERE communication_id = #{communicationId}")
+    void delete(String communicationId);
 }
 

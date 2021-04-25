@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class TelemetryRecord {
-    private String commId;
+    private String communicationId;
     private double latitude;
     private double longitude;
     private double altitude;

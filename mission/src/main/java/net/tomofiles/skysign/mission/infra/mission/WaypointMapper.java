@@ -16,14 +16,14 @@ public interface WaypointMapper {
             + "longitude, "
             + "height_wgs84_ellipsoid_m as heightWGS84EllipsoidM, "
             + "speed_m_s as speedMS "
-            + "FROM waypoint WHERE mission_id = #{id}")
+            + "FROM waypoints WHERE mission_id = #{id}")
     List<WaypointRecord> find(String id);
 
-    @Insert("INSERT INTO waypoint "
+    @Insert("INSERT INTO waypoints "
             + "(mission_id, point_order, latitude, longitude, height_wgs84_ellipsoid_m, speed_m_s) "
             + "VALUES (#{missionId}, #{order}, #{latitude}, #{longitude}, #{heightWGS84EllipsoidM}, #{speedMS})")
     void create(WaypointRecord waypoint);
 
-    @Update("DELETE FROM waypoint WHERE mission_id = #{id}")
+    @Update("DELETE FROM waypoints WHERE mission_id = #{id}")
     void delete(String id);
 }

@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 @EqualsAndHashCode(of = {"id"})
 public class CommandRecord {
     private String id;
-    private String commId;
+    private String communicationId;
     private String type;
     private LocalDateTime time;
 }

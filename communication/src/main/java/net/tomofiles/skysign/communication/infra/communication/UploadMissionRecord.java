@@ -11,6 +11,6 @@ import lombok.NoArgsConstructor;
 @EqualsAndHashCode(of = {"id"})
 public class UploadMissionRecord {
     private String id;
-    private String commId;
+    private String communicationId;
     private String missionId;
 }
