@@ -19,7 +19,6 @@ public class CommunicationIdRemovedEventPb {
 
     public CommunicationIdRemovedEvent getEvent() {
         return new CommunicationIdRemovedEvent(
-            this.event.getCommunicationId(),
-            this.event.getVersion());
+            this.event.getCommunicationId());
     }
 }
