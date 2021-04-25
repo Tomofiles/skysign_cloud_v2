@@ -53,7 +53,7 @@ public class RecordObjectMother {
      */
     public static TelemetryRecord newEmptyTelemetryRecord(CommunicationId id) {
         TelemetryRecord telemetry = new TelemetryRecord();
-        telemetry.setCommId(id.getId());
+        telemetry.setCommunicationId(id.getId());
         return telemetry;
     }
 

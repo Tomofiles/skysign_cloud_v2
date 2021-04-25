@@ -9,15 +9,15 @@ import org.apache.ibatis.annotations.Update;
 
 @Mapper
 public interface CommandMapper {
-    @Select("SELECT id, comm_id as commId, type, time FROM command WHERE comm_id = #{commId}")
-    List<CommandRecord> findByCommId(String commId);
+    @Select("SELECT id, communication_id as communicationId, type, time FROM commands WHERE communication_id = #{communicationId}")
+    List<CommandRecord> findByCommunicationId(String communicationId);
 
-    @Insert("INSERT INTO command (id, comm_id, type, time) VALUES (#{id}, #{commId}, #{type}, #{time})")
+    @Insert("INSERT INTO commands (id, communication_id, type, time) VALUES (#{id}, #{communicationId}, #{type}, #{time})")
     void create(CommandRecord command);
 
-    @Update("DELETE FROM command WHERE id = #{id}")
+    @Update("DELETE FROM commands WHERE id = #{id}")
     void delete(String id);
 
-    @Update("DELETE FROM command WHERE comm_id = #{commId}")
-    void deleteByCommId(String commId);
+    @Update("DELETE FROM commands WHERE communication_id = #{communicationId}")
+    void deleteByCommunicationId(String communicationId);
 }

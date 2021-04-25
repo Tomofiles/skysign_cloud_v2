@@ -17,7 +17,7 @@ public interface MissionMapper {
             + "takeoff_point_ground_height_wgs84_ellipsoid_m as takeoffPointGroundHeightWGS84EllipsoidM, "
             + "is_carbon_copy as isCarbonCopy, "
             + "version "
-            + "FROM mission WHERE id = #{id}")
+            + "FROM missions WHERE id = #{id}")
     MissionRecord find(String id);
 
     @Select("SELECT "
@@ -26,7 +26,7 @@ public interface MissionMapper {
             + "takeoff_point_ground_height_wgs84_ellipsoid_m as takeoffPointGroundHeightWGS84EllipsoidM, "
             + "is_carbon_copy as isCarbonCopy, "
             + "version "
-            + "FROM mission")
+            + "FROM missions")
     List<MissionRecord> findAll();
 
     @Select("SELECT "
@@ -35,16 +35,16 @@ public interface MissionMapper {
             + "takeoff_point_ground_height_wgs84_ellipsoid_m as takeoffPointGroundHeightWGS84EllipsoidM, "
             + "is_carbon_copy as isCarbonCopy, "
             + "version "
-            + "FROM mission "
+            + "FROM missions "
             + "WHERE is_carbon_copy = false")
     List<MissionRecord> findAllOriginal();
 
-    @Insert("INSERT INTO mission "
+    @Insert("INSERT INTO missions "
             + "(id, name, takeoff_point_ground_height_wgs84_ellipsoid_m, is_carbon_copy, version) "
             + "VALUES (#{id}, #{name}, #{takeoffPointGroundHeightWGS84EllipsoidM}, #{isCarbonCopy}, #{version})")
     void create(MissionRecord mission);
 
-    @Update("UPDATE mission SET "
+    @Update("UPDATE missions SET "
             + "name = #{name}, "
             + "takeoff_point_ground_height_wgs84_ellipsoid_m = #{takeoffPointGroundHeightWGS84EllipsoidM}, "
             + "is_carbon_copy = #{isCarbonCopy}, "
@@ -52,6 +52,6 @@ public interface MissionMapper {
             + "WHERE id = #{id} AND version = #{version}")
     void update(MissionRecord mission);
 
-    @Update("DELETE FROM mission WHERE id = #{id} AND version = #{version}")
+    @Update("DELETE FROM missions WHERE id = #{id} AND version = #{version}")
     void delete(DeleteCondition condition);
 }
