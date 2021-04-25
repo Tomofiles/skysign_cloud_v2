@@ -71,11 +71,11 @@ const VehiclesNew = (props) => {
                     <TextField
                       label="Communication ID"
                       type="text"
-                      name="commId"
+                      name="communication_id"
                       fullWidth
                       inputRef={register({ required: true, maxLength: 50 })}
-                      error={Boolean(errors.commId)}
-                      helperText={errors.commId} />
+                      error={Boolean(errors.communication_id)}
+                      helperText={errors.communication_id} />
                   </Box>
                 </Grid>
               </Grid>
