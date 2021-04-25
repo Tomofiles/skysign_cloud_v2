@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 public class VehicleRecord {
     private String id;
     private String name;
-    private String commId;
+    private String communicationId;
     private boolean isCarbonCopy;
     private String version;
     private String newVersion;

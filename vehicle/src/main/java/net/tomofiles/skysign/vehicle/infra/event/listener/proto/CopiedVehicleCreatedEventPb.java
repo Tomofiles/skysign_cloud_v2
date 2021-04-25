@@ -11,7 +11,7 @@ public class CopiedVehicleCreatedEventPb {
 
     public CopiedVehicleCreatedEventPb(CopiedVehicleCreatedEvent event) {
         this.event = proto.skysign.event.CopiedVehicleCreatedEvent.newBuilder()
-            .setVehicleId(event.getVehicleId().getId())
+            .setVehicleId(event.getId().getId())
             .setCommunicationId(event.getCommunicationId().getId())
             .setFlightplanId(event.getFlightplanId().getId())
             .build();

@@ -11,7 +11,7 @@ public class GetVehicleRequestDpoGrpc implements GetVehicleRequestDpo {
     private final GetVehicleRequest request;
 
     @Override
-    public VehicleId getVehicleId() {
+    public VehicleId getId() {
         return new VehicleId(request.getId());
     }
 }

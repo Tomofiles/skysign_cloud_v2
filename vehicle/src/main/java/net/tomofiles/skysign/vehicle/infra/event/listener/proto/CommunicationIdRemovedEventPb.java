@@ -12,7 +12,6 @@ public class CommunicationIdRemovedEventPb {
     public CommunicationIdRemovedEventPb(CommunicationIdRemovedEvent event) {
         this.event = proto.skysign.event.CommunicationIdRemovedEvent.newBuilder()
             .setCommunicationId(event.getCommunicationId().getId())
-            .setVersion(event.getVersion().getVersion())
             .build();
     }
 

@@ -34,7 +34,7 @@ public class VehicleRepositoryImpl implements VehicleRepository {
         }
 
         record.setName(vehicle.getVehicleName());
-        record.setCommId(vehicle.getCommId().getId());
+        record.setCommunicationId(vehicle.getCommunicationId().getId());
         record.setCarbonCopy(vehicle.isCarbonCopy());
         record.setVersion(vehicle.getVersion().getVersion());
         record.setNewVersion(vehicle.getNewVersion().getVersion());
@@ -67,7 +67,7 @@ public class VehicleRepositoryImpl implements VehicleRepository {
         return VehicleFactory.rebuild(
                 id,
                 record.getName(),
-                record.getCommId(),
+                record.getCommunicationId(),
                 record.isCarbonCopy(),
                 record.getVersion(),
                 generator);
@@ -81,7 +81,7 @@ public class VehicleRepositoryImpl implements VehicleRepository {
                 .map(record -> VehicleFactory.rebuild(
                         new VehicleId(record.getId()),
                         record.getName(),
-                        record.getCommId(),
+                        record.getCommunicationId(),
                         record.isCarbonCopy(),
                         record.getVersion(),
                         generator))
@@ -98,7 +98,7 @@ public class VehicleRepositoryImpl implements VehicleRepository {
                 .map(record -> VehicleFactory.rebuild(
                         new VehicleId(record.getId()),
                         record.getName(),
-                        record.getCommId(),
+                        record.getCommunicationId(),
                         record.isCarbonCopy(),
                         record.getVersion(),
                         generator))

@@ -71,7 +71,7 @@ public class VehicleRepositoryTests {
         assertAll(
             () -> assertThat(vehicle.getId()).isEqualTo(expectVehicle.getId()),
             () -> assertThat(vehicle.getVehicleName()).isEqualTo(expectVehicle.getVehicleName()),
-            () -> assertThat(vehicle.getCommId()).isEqualTo(expectVehicle.getCommId()),
+            () -> assertThat(vehicle.getCommunicationId()).isEqualTo(expectVehicle.getCommunicationId()),
             () -> assertThat(vehicle.isCarbonCopy()).isEqualTo(expectVehicle.isCarbonCopy()),
             () -> assertThat(vehicle.getVersion()).isEqualTo(expectVehicle.getVersion()),
             () -> assertThat(vehicle.getNewVersion()).isEqualTo(expectVehicle.getNewVersion())
@@ -108,7 +108,7 @@ public class VehicleRepositoryTests {
             () -> assertThat(vehicles).hasSize(3),
             () -> assertThat(vehicles.get(0).getId()).isEqualTo(expectVehicle.getId()),
             () -> assertThat(vehicles.get(0).getVehicleName()).isEqualTo(expectVehicle.getVehicleName()),
-            () -> assertThat(vehicles.get(0).getCommId()).isEqualTo(expectVehicle.getCommId()),
+            () -> assertThat(vehicles.get(0).getCommunicationId()).isEqualTo(expectVehicle.getCommunicationId()),
             () -> assertThat(vehicles.get(0).isCarbonCopy()).isEqualTo(expectVehicle.isCarbonCopy()),
             () -> assertThat(vehicles.get(0).getVersion()).isEqualTo(expectVehicle.getVersion()),
             () -> assertThat(vehicles.get(0).getNewVersion()).isEqualTo(expectVehicle.getNewVersion())
@@ -145,7 +145,7 @@ public class VehicleRepositoryTests {
             () -> assertThat(vehicles).hasSize(3),
             () -> assertThat(vehicles.get(0).getId()).isEqualTo(expectVehicle.getId()),
             () -> assertThat(vehicles.get(0).getVehicleName()).isEqualTo(expectVehicle.getVehicleName()),
-            () -> assertThat(vehicles.get(0).getCommId()).isEqualTo(expectVehicle.getCommId()),
+            () -> assertThat(vehicles.get(0).getCommunicationId()).isEqualTo(expectVehicle.getCommunicationId()),
             () -> assertThat(vehicles.get(0).isCarbonCopy()).isEqualTo(expectVehicle.isCarbonCopy()),
             () -> assertThat(vehicles.get(0).getVersion()).isEqualTo(expectVehicle.getVersion()),
             () -> assertThat(vehicles.get(0).getNewVersion()).isEqualTo(expectVehicle.getNewVersion())

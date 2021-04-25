@@ -12,7 +12,6 @@ public class CommunicationIdGaveEventPb {
     public CommunicationIdGaveEventPb(CommunicationIdGaveEvent event) {
         this.event = proto.skysign.event.CommunicationIdGaveEvent.newBuilder()
             .setCommunicationId(event.getCommunicationId().getId())
-            .setVersion(event.getVersion().getVersion())
             .build();
     }
 

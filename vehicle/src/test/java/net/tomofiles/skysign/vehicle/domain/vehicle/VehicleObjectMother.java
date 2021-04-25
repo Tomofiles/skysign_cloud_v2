@@ -8,7 +8,7 @@ public class VehicleObjectMother {
     public static Vehicle newNormalVehicle(VehicleId vehicleId, Version version, Generator generator) {
         Vehicle vehicle = Vehicle.newOriginal(vehicleId, version, generator);
         vehicle.setVehicleName("vehicle name");
-        vehicle.setCommId(new CommunicationId("comm id"));
+        vehicle.setCommunicationId(new CommunicationId("comm id"));
         return vehicle;
     }
 
@@ -18,7 +18,7 @@ public class VehicleObjectMother {
     public static Vehicle newCarbonCopiedVehicle(VehicleId vehicleId, Version version, Generator generator) {
         Vehicle vehicle = Vehicle.newCarbonCopy(vehicleId, version, generator);
         vehicle.setVehicleName("vehicle name");
-        vehicle.setCommId(new CommunicationId("comm id"));
+        vehicle.setCommunicationId(new CommunicationId("comm id"));
         return vehicle;
     }
 }

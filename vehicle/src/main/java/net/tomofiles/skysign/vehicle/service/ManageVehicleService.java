@@ -38,7 +38,7 @@ public class ManageVehicleService {
         vehicle.setPublisher(this.publisher);
 
         vehicle.nameVehicle(requestDpo.getVehicleName());
-        vehicle.giveCommId(requestDpo.getCommId());
+        vehicle.giveCommunication(requestDpo.getCommunicationId());
 
         this.vehicleRepository.save(vehicle);
 
@@ -47,7 +47,7 @@ public class ManageVehicleService {
 
     @Transactional
     public void updateVehicle(UpdateVehicleRequestDpo requestDpo, UpdateVehicleResponseDpo responseDpo) {
-        Vehicle vehicle = this.vehicleRepository.getById(requestDpo.getVehicleId());
+        Vehicle vehicle = this.vehicleRepository.getById(requestDpo.getId());
 
         if (vehicle == null) {
             return;
@@ -56,7 +56,7 @@ public class ManageVehicleService {
         vehicle.setPublisher(this.publisher);
 
         vehicle.nameVehicle(requestDpo.getVehicleName());
-        vehicle.giveCommId(requestDpo.getCommId());
+        vehicle.giveCommunication(requestDpo.getCommunicationId());
 
         this.vehicleRepository.save(vehicle);
 
@@ -65,7 +65,7 @@ public class ManageVehicleService {
 
     @Transactional
     public void deleteVehicle(DeleteVehicleRequestDpo requestDpo, DeleteVehicleResponseDpo responseDpo) {
-        Vehicle vehicle = this.vehicleRepository.getById(requestDpo.getVehicleId());
+        Vehicle vehicle = this.vehicleRepository.getById(requestDpo.getId());
 
         if (vehicle == null) {
             return;
@@ -73,7 +73,7 @@ public class ManageVehicleService {
 
         vehicle.setPublisher(this.publisher);
 
-        vehicle.removeCommId();
+        vehicle.removeCommunication();
 
         this.vehicleRepository.remove(vehicle.getId(), vehicle.getVersion());
 
@@ -82,7 +82,7 @@ public class ManageVehicleService {
 
     @Transactional
     public void getVehicle(GetVehicleRequestDpo requestDpo, GetVehicleResponseDpo responseDpo) {
-        Vehicle vehicle = this.vehicleRepository.getById(requestDpo.getVehicleId());
+        Vehicle vehicle = this.vehicleRepository.getById(requestDpo.getId());
 
         responseDpo.setVehicle(vehicle);
     }

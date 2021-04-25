@@ -12,5 +12,4 @@ import net.tomofiles.skysign.vehicle.event.Event;
 @ToString
 public class CommunicationIdRemovedEvent implements Event {
     private final CommunicationId communicationId;
-    private final Version version;
 }
