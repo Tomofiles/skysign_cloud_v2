@@ -43,31 +43,31 @@ func (rm *publisherMock) Flush() error {
 	return nil
 }
 
-// Flightplan構成オブジェクトモック
-type flightplanComponentMock struct {
-	id           string
-	name         string
-	description  string
-	isCarbonCopy bool
-	version      string
+// Vehicle構成オブジェクトモック
+type vehicleComponentMock struct {
+	id              string
+	name            string
+	communicationID string
+	isCarbonCopy    bool
+	version         string
 }
 
-func (f *flightplanComponentMock) GetID() string {
-	return f.id
+func (v *vehicleComponentMock) GetID() string {
+	return v.id
 }
 
-func (f *flightplanComponentMock) GetName() string {
-	return f.name
+func (v *vehicleComponentMock) GetName() string {
+	return v.name
 }
 
-func (f *flightplanComponentMock) GetDescription() string {
-	return f.description
+func (v *vehicleComponentMock) GetCommunicationID() string {
+	return v.communicationID
 }
 
-func (f *flightplanComponentMock) GetIsCarbonCopy() bool {
-	return f.isCarbonCopy
+func (v *vehicleComponentMock) GetIsCarbonCopy() bool {
+	return v.isCarbonCopy
 }
 
-func (f *flightplanComponentMock) GetVersion() string {
-	return f.version
+func (v *vehicleComponentMock) GetVersion() string {
+	return v.version
 }
