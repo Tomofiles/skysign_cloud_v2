@@ -309,194 +309,139 @@ func TestCreateVehicleOperation(t *testing.T) {
 	a.Equal(pub.events[0], expectEvent)
 }
 
-// func TestUpdateFlightplanTransaction(t *testing.T) {
-// 	a := assert.New(t)
+func TestUpdateVehicleTransaction(t *testing.T) {
+	a := assert.New(t)
 
-// 	var (
-// 		AfterFlightplanName        = DefaultFlightplanName + "-after"
-// 		AfterFlightplanDescription = DefaultFlightplanDescription + "-after"
-// 		DefaultFlightplanVersion1  = DefaultFlightplanVersion + "-1"
-// 		DefaultFlightplanVersion2  = DefaultFlightplanVersion + "-2"
-// 	)
+	var (
+		AfterVehicleName            = DefaultVehicleName + "-after"
+		AfterVehicleCommunicationID = DefaultVehicleCommunicationID + "-after"
+		DefaultVehicleVersion1      = DefaultVehicleVersion + "-1"
+		DefaultVehicleVersion2      = DefaultVehicleVersion + "-2"
+	)
 
-// 	gen := &generatorMockFlightplan{
-// 		id:       DefaultFlightplanID,
-// 		versions: []fpl.Version{DefaultFlightplanVersion1, DefaultFlightplanVersion2},
-// 	}
+	gen := &generatorMock{
+		id:       DefaultVehicleID,
+		versions: []v.Version{DefaultVehicleVersion1, DefaultVehicleVersion2},
+	}
 
-// 	flightplan := fpl.AssembleFrom(
-// 		gen,
-// 		&flightplanComponentMock{
-// 			ID:          string(DefaultFlightplanID),
-// 			Name:        DefaultFlightplanName,
-// 			Description: DefaultFlightplanDescription,
-// 			Version:     string(DefaultFlightplanVersion),
-// 		},
-// 	)
+	vehicle := v.AssembleFrom(
+		gen,
+		&vehicleComponentMock{
+			ID:              string(DefaultVehicleID),
+			Name:            DefaultVehicleName,
+			CommunicationID: string(DefaultVehicleCommunicationID),
+			Version:         string(DefaultVehicleVersion),
+		},
+	)
 
-// 	repo := &flightplanRepositoryMock{}
-// 	txm := &txManagerMock{}
-// 	pub := &publisherMock{}
-// 	psm := &pubSubManagerMock{}
+	repo := &vehicleRepositoryMock{}
+	txm := &txManagerMock{}
+	pub := &publisherMock{}
+	psm := &pubSubManagerMock{}
 
-// 	var isClose bool
-// 	close := func() error {
-// 		isClose = true
-// 		return nil
-// 	}
+	var isClose bool
+	close := func() error {
+		isClose = true
+		return nil
+	}
 
-// 	psm.On("GetPublisher").Return(pub, close, nil)
-// 	repo.On("GetByID", DefaultFlightplanID).Return(flightplan, nil)
-// 	repo.On("Save", mock.Anything).Return(nil)
+	psm.On("GetPublisher").Return(pub, close, nil)
+	repo.On("GetByID", DefaultVehicleID).Return(vehicle, nil)
+	repo.On("Save", mock.Anything).Return(nil)
 
-// 	service := &manageFlightplanService{
-// 		gen:  gen,
-// 		repo: repo,
-// 		txm:  txm,
-// 		psm:  psm,
-// 	}
+	service := &manageVehicleService{
+		gen:  gen,
+		repo: repo,
+		txm:  txm,
+		psm:  psm,
+	}
 
-// 	req := &flightplanRequestMock{
-// 		ID:          string(DefaultFlightplanID),
-// 		Name:        AfterFlightplanName,
-// 		Description: AfterFlightplanDescription,
-// 	}
-// 	var resCall bool
-// 	ret := service.UpdateFlightplan(
-// 		req,
-// 		func(id, name, description string) {
-// 			resCall = true
-// 		},
-// 	)
+	req := &vehicleRequestMock{
+		ID:              string(DefaultVehicleID),
+		Name:            AfterVehicleName,
+		CommunicationID: string(AfterVehicleCommunicationID),
+	}
+	var resCall bool
+	ret := service.UpdateVehicle(
+		req,
+		func(id, name, communicationID string) {
+			resCall = true
+		},
+	)
 
-// 	a.Nil(ret)
-// 	a.True(resCall)
-// 	a.Len(pub.events, 0)
-// 	a.True(isClose)
-// 	a.True(pub.isFlush)
-// 	a.Nil(txm.isOpe)
-// 	a.Nil(txm.isEH)
-// }
+	a.Nil(ret)
+	a.True(resCall)
+	a.Len(pub.events, 2)
+	a.True(isClose)
+	a.True(pub.isFlush)
+	a.Nil(txm.isOpe)
+	a.Nil(txm.isEH)
+}
 
-// func TestUpdateFlightplanOperation(t *testing.T) {
-// 	a := assert.New(t)
+func TestUpdateVehicleOperation(t *testing.T) {
+	a := assert.New(t)
 
-// 	var (
-// 		AfterFlightplanName        = DefaultFlightplanName + "-after"
-// 		AfterFlightplanDescription = DefaultFlightplanDescription + "-after"
-// 		DefaultFlightplanVersion1  = DefaultFlightplanVersion + "-1"
-// 		DefaultFlightplanVersion2  = DefaultFlightplanVersion + "-2"
-// 	)
+	var (
+		AfterVehicleName            = DefaultVehicleName + "-after"
+		AfterVehicleCommunicationID = DefaultVehicleCommunicationID + "-after"
+		DefaultVehicleVersion1      = DefaultVehicleVersion + "-1"
+		DefaultVehicleVersion2      = DefaultVehicleVersion + "-2"
+	)
 
-// 	gen := &generatorMockFlightplan{
-// 		id:       DefaultFlightplanID,
-// 		versions: []fpl.Version{DefaultFlightplanVersion1, DefaultFlightplanVersion2},
-// 	}
+	gen := &generatorMock{
+		id:       DefaultVehicleID,
+		versions: []v.Version{DefaultVehicleVersion1, DefaultVehicleVersion2},
+	}
 
-// 	flightplan := fpl.AssembleFrom(
-// 		gen,
-// 		&flightplanComponentMock{
-// 			ID:           string(DefaultFlightplanID),
-// 			Name:         DefaultFlightplanName,
-// 			Description:  DefaultFlightplanDescription,
-// 			IsCarbonCopy: fpl.Original,
-// 			Version:      string(DefaultFlightplanVersion),
-// 		},
-// 	)
+	vehicle := v.AssembleFrom(
+		gen,
+		&vehicleComponentMock{
+			ID:              string(DefaultVehicleID),
+			Name:            DefaultVehicleName,
+			CommunicationID: string(DefaultVehicleCommunicationID),
+			Version:         string(DefaultVehicleVersion),
+		},
+	)
 
-// 	repo := &flightplanRepositoryMock{}
-// 	repo.On("GetByID", DefaultFlightplanID).Return(flightplan, nil)
-// 	repo.On("Save", mock.Anything).Return(nil)
-// 	pub := &publisherMock{}
+	repo := &vehicleRepositoryMock{}
+	repo.On("GetByID", DefaultVehicleID).Return(vehicle, nil)
+	repo.On("Save", mock.Anything).Return(nil)
+	pub := &publisherMock{}
 
-// 	service := &manageFlightplanService{
-// 		gen:  nil,
-// 		repo: repo,
-// 		txm:  nil,
-// 		psm:  nil,
-// 	}
+	service := &manageVehicleService{
+		gen:  nil,
+		repo: repo,
+		txm:  nil,
+		psm:  nil,
+	}
 
-// 	req := &flightplanRequestMock{
-// 		ID:          string(DefaultFlightplanID),
-// 		Name:        AfterFlightplanName,
-// 		Description: AfterFlightplanDescription,
-// 	}
-// 	var resID, resName, resDescription string
-// 	ret := service.updateFlightplanOperation(
-// 		nil,
-// 		pub,
-// 		req,
-// 		func(id, name, description string) {
-// 			resID = id
-// 			resName = name
-// 			resDescription = description
-// 		},
-// 	)
+	req := &vehicleRequestMock{
+		ID:              string(DefaultVehicleID),
+		Name:            AfterVehicleName,
+		CommunicationID: string(AfterVehicleCommunicationID),
+	}
+	var resID, resName, resCommunicationID string
+	ret := service.updateVehicleOperation(
+		nil,
+		pub,
+		req,
+		func(id, name, communicationID string) {
+			resID = id
+			resName = name
+			resCommunicationID = communicationID
+		},
+	)
 
-// 	a.Nil(ret)
-// 	a.Equal(resID, string(DefaultFlightplanID))
-// 	a.Equal(resName, AfterFlightplanName)
-// 	a.Equal(resDescription, AfterFlightplanDescription)
-// 	a.Len(pub.events, 0)
-// }
+	expectEvent1 := v.CommunicationIdGaveEvent{CommunicationID: AfterVehicleCommunicationID}
+	expectEvent2 := v.CommunicationIdRemovedEvent{CommunicationID: DefaultVehicleCommunicationID}
 
-// func TestCannotChangeErrorWhenUpdateFlightplanOperation(t *testing.T) {
-// 	a := assert.New(t)
-
-// 	var (
-// 		AfterFlightplanName        = DefaultFlightplanName + "-after"
-// 		AfterFlightplanDescription = DefaultFlightplanDescription + "-after"
-// 		DefaultFlightplanVersion1  = DefaultFlightplanVersion + "-1"
-// 		DefaultFlightplanVersion2  = DefaultFlightplanVersion + "-2"
-// 	)
-
-// 	gen := &generatorMockFlightplan{
-// 		id:       DefaultFlightplanID,
-// 		versions: []fpl.Version{DefaultFlightplanVersion1, DefaultFlightplanVersion2},
-// 	}
-
-// 	flightplan := fpl.AssembleFrom(
-// 		gen,
-// 		&flightplanComponentMock{
-// 			ID:           string(DefaultFlightplanID),
-// 			Name:         DefaultFlightplanName,
-// 			Description:  DefaultFlightplanDescription,
-// 			IsCarbonCopy: fpl.CarbonCopy,
-// 			Version:      string(DefaultFlightplanVersion),
-// 		},
-// 	)
-
-// 	repo := &flightplanRepositoryMock{}
-// 	repo.On("GetByID", DefaultFlightplanID).Return(flightplan, nil)
-// 	repo.On("Save", mock.Anything).Return(nil)
-// 	pub := &publisherMock{}
-
-// 	service := &manageFlightplanService{
-// 		gen:  nil,
-// 		repo: repo,
-// 		txm:  nil,
-// 		psm:  nil,
-// 	}
-
-// 	req := &flightplanRequestMock{
-// 		ID:          string(DefaultFlightplanID),
-// 		Name:        AfterFlightplanName,
-// 		Description: AfterFlightplanDescription,
-// 	}
-// 	resCall := false
-// 	ret := service.updateFlightplanOperation(
-// 		nil,
-// 		pub,
-// 		req,
-// 		func(id, name, description string) {
-// 			resCall = true
-// 		},
-// 	)
-
-// 	a.Equal(ret, fpl.ErrCannotChange)
-// 	a.False(resCall)
-// 	a.Len(pub.events, 0)
-// }
+	a.Nil(ret)
+	a.Equal(resID, string(DefaultVehicleID))
+	a.Equal(resName, AfterVehicleName)
+	a.Equal(resCommunicationID, string(AfterVehicleCommunicationID))
+	a.Len(pub.events, 2)
+	a.Equal(pub.events, []interface{}{expectEvent2, expectEvent1})
+}
 
 func TestDeleteVehicleTransaction(t *testing.T) {
 	a := assert.New(t)

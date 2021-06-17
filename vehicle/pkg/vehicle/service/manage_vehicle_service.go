@@ -178,7 +178,7 @@ func (s *manageVehicleService) createVehicleOperation(
 		s.repo,
 		pub,
 		requestDpo.GetName(),
-		requestDpo.GetCommunicationID())
+		v.CommunicationID(requestDpo.GetCommunicationID()))
 	if ret != nil {
 		return ret
 	}
@@ -218,27 +218,19 @@ func (s *manageVehicleService) updateVehicleOperation(
 	requestDpo UpdateVehicleRequestDpo,
 	responseDpo UpdateVehicleResponseDpo,
 ) error {
-	// flightplan, err := s.repo.GetByID(tx, v.ID(requestDpo.GetID()))
-	// if err != nil {
-	// 	return err
-	// }
+	ret := v.UpdateVehicle(
+		tx,
+		s.gen,
+		s.repo,
+		pub,
+		v.ID(requestDpo.GetID()),
+		requestDpo.GetName(),
+		v.CommunicationID(requestDpo.GetCommunicationID()))
+	if ret != nil {
+		return ret
+	}
 
-	// if err := flightplan.NameVehicle(requestDpo.GetName()); err != nil {
-	// 	return err
-	// }
-	// if err := flightplan.ChangeDescription(requestDpo.GetDescription()); err != nil {
-	// 	return err
-	// }
-
-	// if ret := s.repo.Save(tx, flightplan); ret != nil {
-	// 	return ret
-	// }
-
-	// responseDpo(
-	// 	string(flightplan.GetID()),
-	// 	flightplan.GetName(),
-	// 	string(flightplan.GetCommunicationID()),
-	// )
+	responseDpo(requestDpo.GetID(), requestDpo.GetName(), requestDpo.GetCommunicationID())
 	return nil
 }
 
