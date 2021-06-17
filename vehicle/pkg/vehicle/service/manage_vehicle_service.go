@@ -55,7 +55,7 @@ type DeleteVehicleRequestDpo interface {
 type CarbonCopyVehicleRequestDpo interface {
 	GetOriginalID() string
 	GetNewID() string
-	GetFlightplanId() string
+	GetFlightplanID() string
 }
 
 // NewManageVehicleService .
@@ -317,7 +317,7 @@ func (s *manageVehicleService) carbonCopyVehicleOperation(
 		pub,
 		v.ID(requestDpo.GetOriginalID()),
 		v.ID(requestDpo.GetNewID()),
-		v.FlightplanID(requestDpo.GetFlightplanId()),
+		v.FlightplanID(requestDpo.GetFlightplanID()),
 	); ret != nil {
 		return ret
 	}
