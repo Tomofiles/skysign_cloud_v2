@@ -169,22 +169,22 @@ func (v *vehicleComponentMock) GetVersion() string {
 	return v.Version
 }
 
-type flightplanRequestMock struct {
-	ID          string
-	Name        string
-	Description string
+type vehicleRequestMock struct {
+	ID              string
+	Name            string
+	CommunicationID string
 }
 
-func (f *flightplanRequestMock) GetID() string {
+func (f *vehicleRequestMock) GetID() string {
 	return f.ID
 }
 
-func (f *flightplanRequestMock) GetName() string {
+func (f *vehicleRequestMock) GetName() string {
 	return f.Name
 }
 
-func (f *flightplanRequestMock) GetDescription() string {
-	return f.Description
+func (f *vehicleRequestMock) GetCommunicationID() string {
+	return f.CommunicationID
 }
 
 type vehicleIDRequestMock struct {

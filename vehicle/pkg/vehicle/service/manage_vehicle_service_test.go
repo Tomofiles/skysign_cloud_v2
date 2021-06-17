@@ -204,110 +204,110 @@ func TestListVehiclesOperation(t *testing.T) {
 	a.Equal(resCommunicationID, []string{DefaultVehicleCommunicationID1, DefaultVehicleCommunicationID2, DefaultVehicleCommunicationID3})
 }
 
-// func TestCreateFlightplanTransaction(t *testing.T) {
-// 	a := assert.New(t)
+func TestCreateVehicleTransaction(t *testing.T) {
+	a := assert.New(t)
 
-// 	var (
-// 		DefaultFlightplanVersion1 = DefaultFlightplanVersion + "-1"
-// 		DefaultFlightplanVersion2 = DefaultFlightplanVersion + "-2"
-// 		DefaultFlightplanVersion3 = DefaultFlightplanVersion + "-3"
-// 	)
+	var (
+		DefaultVehicleVersion1 = DefaultVehicleVersion + "-1"
+		DefaultVehicleVersion2 = DefaultVehicleVersion + "-2"
+		DefaultVehicleVersion3 = DefaultVehicleVersion + "-3"
+	)
 
-// 	gen := &generatorMockFlightplan{
-// 		id:       DefaultFlightplanID,
-// 		versions: []fpl.Version{DefaultFlightplanVersion1, DefaultFlightplanVersion2, DefaultFlightplanVersion3},
-// 	}
-// 	repo := &flightplanRepositoryMock{}
-// 	txm := &txManagerMock{}
-// 	pub := &publisherMock{}
-// 	psm := &pubSubManagerMock{}
+	gen := &generatorMock{
+		id:       DefaultVehicleID,
+		versions: []v.Version{DefaultVehicleVersion1, DefaultVehicleVersion2, DefaultVehicleVersion3},
+	}
+	repo := &vehicleRepositoryMock{}
+	txm := &txManagerMock{}
+	pub := &publisherMock{}
+	psm := &pubSubManagerMock{}
 
-// 	var isClose bool
-// 	close := func() error {
-// 		isClose = true
-// 		return nil
-// 	}
+	var isClose bool
+	close := func() error {
+		isClose = true
+		return nil
+	}
 
-// 	psm.On("GetPublisher").Return(pub, close, nil)
-// 	repo.On("Save", mock.Anything).Return(nil)
+	psm.On("GetPublisher").Return(pub, close, nil)
+	repo.On("Save", mock.Anything).Return(nil)
 
-// 	service := &manageFlightplanService{
-// 		gen:  gen,
-// 		repo: repo,
-// 		txm:  txm,
-// 		psm:  psm,
-// 	}
+	service := &manageVehicleService{
+		gen:  gen,
+		repo: repo,
+		txm:  txm,
+		psm:  psm,
+	}
 
-// 	req := &flightplanRequestMock{
-// 		Name:        DefaultFlightplanName,
-// 		Description: DefaultFlightplanDescription,
-// 	}
-// 	var resCall bool
-// 	ret := service.CreateFlightplan(
-// 		req,
-// 		func(id, name, description string) {
-// 			resCall = true
-// 		},
-// 	)
+	req := &vehicleRequestMock{
+		Name:            DefaultVehicleName,
+		CommunicationID: string(DefaultVehicleCommunicationID),
+	}
+	var resCall bool
+	ret := service.CreateVehicle(
+		req,
+		func(id, name, communicationID string) {
+			resCall = true
+		},
+	)
 
-// 	a.Nil(ret)
-// 	a.True(resCall)
-// 	a.Len(pub.events, 1)
-// 	a.True(isClose)
-// 	a.True(pub.isFlush)
-// 	a.Nil(txm.isOpe)
-// 	a.Nil(txm.isEH)
-// }
+	a.Nil(ret)
+	a.True(resCall)
+	a.Len(pub.events, 1)
+	a.True(isClose)
+	a.True(pub.isFlush)
+	a.Nil(txm.isOpe)
+	a.Nil(txm.isEH)
+}
 
-// func TestCreateFlightplanOperation(t *testing.T) {
-// 	a := assert.New(t)
+func TestCreateVehicleOperation(t *testing.T) {
+	a := assert.New(t)
 
-// 	var (
-// 		DefaultFlightplanVersion1 = DefaultFlightplanVersion + "-1"
-// 		DefaultFlightplanVersion2 = DefaultFlightplanVersion + "-2"
-// 		DefaultFlightplanVersion3 = DefaultFlightplanVersion + "-3"
-// 	)
+	var (
+		DefaultVehicleVersion1 = DefaultVehicleVersion + "-1"
+		DefaultVehicleVersion2 = DefaultVehicleVersion + "-2"
+		DefaultVehicleVersion3 = DefaultVehicleVersion + "-3"
+	)
 
-// 	gen := &generatorMockFlightplan{
-// 		id:       DefaultFlightplanID,
-// 		versions: []fpl.Version{DefaultFlightplanVersion1, DefaultFlightplanVersion2, DefaultFlightplanVersion3},
-// 	}
-// 	repo := &flightplanRepositoryMock{}
-// 	repo.On("Save", mock.Anything).Return(nil)
-// 	pub := &publisherMock{}
+	gen := &generatorMock{
+		id:       DefaultVehicleID,
+		versions: []v.Version{DefaultVehicleVersion1, DefaultVehicleVersion2, DefaultVehicleVersion3},
+	}
+	repo := &vehicleRepositoryMock{}
+	repo.On("Save", mock.Anything).Return(nil)
+	pub := &publisherMock{}
 
-// 	service := &manageFlightplanService{
-// 		gen:  gen,
-// 		repo: repo,
-// 		txm:  nil,
-// 		psm:  nil,
-// 	}
+	service := &manageVehicleService{
+		gen:  gen,
+		repo: repo,
+		txm:  nil,
+		psm:  nil,
+	}
 
-// 	req := &flightplanRequestMock{
-// 		Name:        DefaultFlightplanName,
-// 		Description: DefaultFlightplanDescription,
-// 	}
-// 	var resID, resName, resDescription string
-// 	ret := service.createFlightplanOperation(
-// 		nil,
-// 		pub,
-// 		req,
-// 		func(id, name, description string) {
-// 			resID = id
-// 			resName = name
-// 			resDescription = description
-// 		},
-// 	)
+	req := &vehicleRequestMock{
+		Name:            DefaultVehicleName,
+		CommunicationID: string(DefaultVehicleCommunicationID),
+	}
+	var resID, resName, resCommunicationID string
+	ret := service.createVehicleOperation(
+		nil,
+		pub,
+		req,
+		func(id, name, communicationID string) {
+			resID = id
+			resName = name
+			resCommunicationID = communicationID
+		},
+	)
 
-// 	expectEvent := fpl.CreatedEvent{ID: DefaultFlightplanID}
+	expectEvent := v.CommunicationIdGaveEvent{CommunicationID: DefaultVehicleCommunicationID}
 
-// 	a.Nil(ret)
-// 	a.Equal(resID, string(DefaultFlightplanID))
-// 	a.Equal(resName, DefaultFlightplanName)
-// 	a.Equal(resDescription, DefaultFlightplanDescription)
-// 	a.Len(pub.events, 1)
-// 	a.Equal(pub.events[0], expectEvent)
-// }
+	a.Nil(ret)
+	a.Equal(resID, string(DefaultVehicleID))
+	a.Equal(resName, DefaultVehicleName)
+	a.Equal(resCommunicationID, string(DefaultVehicleCommunicationID))
+	a.Len(pub.events, 1)
+	a.Equal(pub.events[0], expectEvent)
+}
 
 // func TestUpdateFlightplanTransaction(t *testing.T) {
 // 	a := assert.New(t)

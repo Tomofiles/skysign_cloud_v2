@@ -172,18 +172,18 @@ func (s *manageVehicleService) createVehicleOperation(
 	requestDpo CreateVehicleRequestDpo,
 	responseDpo CreateVehicleResponseDpo,
 ) error {
-	// id, ret := v.CreateNewVehicle(
-	// 	tx,
-	// 	s.gen,
-	// 	s.repo,
-	// 	pub,
-	// 	requestDpo.GetName(),
-	// 	requestDpo.GetDescription())
-	// if ret != nil {
-	// 	return ret
-	// }
+	id, ret := v.CreateNewVehicle(
+		tx,
+		s.gen,
+		s.repo,
+		pub,
+		requestDpo.GetName(),
+		requestDpo.GetCommunicationID())
+	if ret != nil {
+		return ret
+	}
 
-	// responseDpo(id, requestDpo.GetName(), requestDpo.GetDescription())
+	responseDpo(id, requestDpo.GetName(), requestDpo.GetCommunicationID())
 	return nil
 }
 
