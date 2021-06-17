@@ -2,9 +2,9 @@ package vehicle
 
 import "errors"
 
-const DefaultID = ID("flightplan-id")
+const DefaultID = ID("vehicle-id")
 const DefaultVersion = Version("version")
-const DefaultName = "flightplan-name"
+const DefaultName = "vehicle-name"
 const DefaultCommunicationID = CommunicationID("communication-id")
 const DefaultFlightplanID = FlightplanID("flightplan-id")
 
