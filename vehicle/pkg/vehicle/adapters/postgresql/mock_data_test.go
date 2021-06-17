@@ -1,10 +1,18 @@
 package postgresql
 
 import (
+	v "vehicle/pkg/vehicle/domain/vehicle"
+
 	sqlmock "github.com/DATA-DOG/go-sqlmock"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
+
+const DefaultVehicleID = v.ID("vehicle-id")
+const DefaultVehicleVersion = v.Version("version")
+const DefaultVehicleName = "vehicle-name"
+const DefaultVehicleCommunicationID = v.CommunicationID("communication-id")
+const DefaultFlightplanID = v.FlightplanID("flightplan-id")
 
 func GetNewDbMock() (*gorm.DB, sqlmock.Sqlmock, error) {
 	db, mock, err := sqlmock.New()
@@ -23,4 +31,32 @@ func GetNewDbMock() (*gorm.DB, sqlmock.Sqlmock, error) {
 	}
 
 	return gormDB, mock, nil
+}
+
+type vehicleComponentMock struct {
+	ID              string
+	Name            string
+	CommunicationID string
+	IsCarbonCopy    bool
+	Version         string
+}
+
+func (v *vehicleComponentMock) GetID() string {
+	return v.ID
+}
+
+func (v *vehicleComponentMock) GetName() string {
+	return v.Name
+}
+
+func (v *vehicleComponentMock) GetCommunicationID() string {
+	return v.CommunicationID
+}
+
+func (v *vehicleComponentMock) GetIsCarbonCopy() bool {
+	return v.IsCarbonCopy
+}
+
+func (v *vehicleComponentMock) GetVersion() string {
+	return v.Version
 }
