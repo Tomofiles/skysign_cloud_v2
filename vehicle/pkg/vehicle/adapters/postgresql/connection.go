@@ -9,7 +9,7 @@ import (
 	"gorm.io/gorm"
 )
 
-const dsnTemplate = "host=%s user=%s password=%s dbname=flightplan port=%s sslmode=%s"
+const dsnTemplate = "host=%s user=%s password=%s dbname=vehicle port=%s sslmode=%s"
 
 var (
 	host     = "localhost"
