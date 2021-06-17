@@ -10,8 +10,8 @@ import (
 )
 
 // Vehicleを作成するドメインサービスをテストする。
-// 名前とコミュニケーションIDをあらかじめ与えられたVehicleを作成し、保存する。
-// 保存が成功すると、Vehicleが作成されたことを表す
+// 名前とCommunicationIDをあらかじめ与えられたVehicleを作成し、保存する。
+// 保存が成功すると、CommunicationIDが付与されたことを表す
 // ドメインイベントを発行する。
 func TestCreateNewVehicleService(t *testing.T) {
 	a := assert.New(t)
@@ -32,7 +32,7 @@ func TestCreateNewVehicleService(t *testing.T) {
 	repo.On("Save", mock.Anything).Return(nil)
 	pub := &publisherMock{}
 
-	id, ret := CreateNewVehicle(ctx, gen, repo, pub, DefaultName, string(DefaultCommunicationID))
+	id, ret := CreateNewVehicle(ctx, gen, repo, pub, DefaultName, DefaultCommunicationID)
 
 	expectVehicle := Vehicle{
 		id:              DefaultID,
@@ -78,7 +78,7 @@ func TestSaveErrorWhenCreateNewVehicleService(t *testing.T) {
 	repo.On("Save", mock.Anything).Return(ErrSave)
 	pub := &publisherMock{}
 
-	id, ret := CreateNewVehicle(ctx, gen, repo, pub, DefaultName, string(DefaultCommunicationID))
+	id, ret := CreateNewVehicle(ctx, gen, repo, pub, DefaultName, DefaultCommunicationID)
 
 	a.Empty(id)
 	a.Len(repo.saveVehicles, 0)

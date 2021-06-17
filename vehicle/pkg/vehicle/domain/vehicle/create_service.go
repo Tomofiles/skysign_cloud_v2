@@ -12,7 +12,7 @@ func CreateNewVehicle(
 	repo Repository,
 	pub event.Publisher,
 	name string,
-	communicationID string,
+	communicationID CommunicationID,
 ) (string, error) {
 	vehicle := NewInstance(gen)
 
@@ -20,7 +20,7 @@ func CreateNewVehicle(
 
 	// 生成直後のためエラーは発生しない想定
 	vehicle.NameVehicle(name)
-	vehicle.GiveCommunication(CommunicationID(communicationID))
+	vehicle.GiveCommunication(communicationID)
 
 	if err := repo.Save(tx, vehicle); err != nil {
 		return "", err
