@@ -38,7 +38,7 @@ func TestDeleteVehicleService(t *testing.T) {
 
 	ret := DeleteVehicle(ctx, repo, pub, DefaultID)
 
-	expectEvent := CommunicationIdRemovedEvent{
+	expectEvent := CommunicationIDRemovedEvent{
 		CommunicationID: DefaultCommunicationID,
 	}
 

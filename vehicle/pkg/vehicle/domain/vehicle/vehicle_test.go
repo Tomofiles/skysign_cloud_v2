@@ -52,7 +52,7 @@ func TestChangeNewVehiclesCommunicationIdAndPublishEvent(t *testing.T) {
 	vehicle.SetPublisher(pub)
 	err := vehicle.GiveCommunication(DefaultCommunicationID)
 
-	expectEvent := CommunicationIdGaveEvent{
+	expectEvent := CommunicationIDGaveEvent{
 		CommunicationID: DefaultCommunicationID,
 	}
 
@@ -89,10 +89,10 @@ func TestChangePreExistVehiclesCommunicationIdAndPublishEvent(t *testing.T) {
 	vehicle.SetPublisher(pub)
 	err := vehicle.GiveCommunication(NewCommunicationID)
 
-	expectEvent1 := CommunicationIdGaveEvent{
+	expectEvent1 := CommunicationIDGaveEvent{
 		CommunicationID: NewCommunicationID,
 	}
-	expectEvent2 := CommunicationIdRemovedEvent{
+	expectEvent2 := CommunicationIDRemovedEvent{
 		CommunicationID: DefaultCommunicationID,
 	}
 
@@ -129,7 +129,7 @@ func TestRemovePreExistVehiclesCommunicationIdAndPublishEvent(t *testing.T) {
 	vehicle.SetPublisher(pub)
 	err := vehicle.RemoveCommunication()
 
-	expectEvent := CommunicationIdRemovedEvent{
+	expectEvent := CommunicationIDRemovedEvent{
 		CommunicationID: DefaultCommunicationID,
 	}
 

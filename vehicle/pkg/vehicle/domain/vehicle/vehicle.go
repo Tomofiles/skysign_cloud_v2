@@ -87,17 +87,17 @@ func (v *Vehicle) GiveCommunication(communicationID CommunicationID) error {
 		if v.communicationID == "" {
 			v.communicationID = communicationID
 			v.newVersion = v.gen.NewVersion()
-			v.pub.Publish(CommunicationIdGaveEvent{
+			v.pub.Publish(CommunicationIDGaveEvent{
 				CommunicationID: v.communicationID,
 			})
 		} else {
 			beforeId := v.communicationID
 			v.communicationID = communicationID
 			v.newVersion = v.gen.NewVersion()
-			v.pub.Publish(CommunicationIdRemovedEvent{
+			v.pub.Publish(CommunicationIDRemovedEvent{
 				CommunicationID: beforeId,
 			})
-			v.pub.Publish(CommunicationIdGaveEvent{
+			v.pub.Publish(CommunicationIDGaveEvent{
 				CommunicationID: v.communicationID,
 			})
 		}
@@ -111,7 +111,7 @@ func (v *Vehicle) RemoveCommunication() error {
 		return ErrCannotChange
 	}
 	if v.pub != nil {
-		v.pub.Publish(CommunicationIdRemovedEvent{
+		v.pub.Publish(CommunicationIDRemovedEvent{
 			CommunicationID: v.communicationID,
 		})
 	}

@@ -3,23 +3,23 @@ package vehicle
 // FlightplanID .
 type FlightplanID string
 
-// CommunicationIdGaveEvent .
-type CommunicationIdGaveEvent struct {
+// CommunicationIDGaveEvent .
+type CommunicationIDGaveEvent struct {
 	CommunicationID CommunicationID
 }
 
 // GetCommunicationID .
-func (e *CommunicationIdGaveEvent) GetCommunicationID() string {
+func (e *CommunicationIDGaveEvent) GetCommunicationID() string {
 	return string(e.CommunicationID)
 }
 
-// CommunicationIdRemovedEvent .
-type CommunicationIdRemovedEvent struct {
+// CommunicationIDRemovedEvent .
+type CommunicationIDRemovedEvent struct {
 	CommunicationID CommunicationID
 }
 
 // GetCommunicationID .
-func (e *CommunicationIdRemovedEvent) GetCommunicationID() string {
+func (e *CommunicationIDRemovedEvent) GetCommunicationID() string {
 	return string(e.CommunicationID)
 }
 

@@ -56,8 +56,8 @@ func TestUpdateVehicleService(t *testing.T) {
 		gen:             gen,
 		pub:             pub,
 	}
-	expectEvent1 := CommunicationIdGaveEvent{CommunicationID: NewCommunicationID}
-	expectEvent2 := CommunicationIdRemovedEvent{CommunicationID: DefaultCommunicationID}
+	expectEvent1 := CommunicationIDGaveEvent{CommunicationID: NewCommunicationID}
+	expectEvent2 := CommunicationIDRemovedEvent{CommunicationID: DefaultCommunicationID}
 
 	a.Len(repo.saveVehicles, 1)
 	a.Equal(repo.saveVehicles[0], &expectVehicle)

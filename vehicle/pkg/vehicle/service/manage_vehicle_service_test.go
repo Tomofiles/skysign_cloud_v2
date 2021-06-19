@@ -299,7 +299,7 @@ func TestCreateVehicleOperation(t *testing.T) {
 		},
 	)
 
-	expectEvent := v.CommunicationIdGaveEvent{CommunicationID: DefaultVehicleCommunicationID}
+	expectEvent := v.CommunicationIDGaveEvent{CommunicationID: DefaultVehicleCommunicationID}
 
 	a.Nil(ret)
 	a.Equal(resID, string(DefaultVehicleID))
@@ -432,8 +432,8 @@ func TestUpdateVehicleOperation(t *testing.T) {
 		},
 	)
 
-	expectEvent1 := v.CommunicationIdGaveEvent{CommunicationID: AfterVehicleCommunicationID}
-	expectEvent2 := v.CommunicationIdRemovedEvent{CommunicationID: DefaultVehicleCommunicationID}
+	expectEvent1 := v.CommunicationIDGaveEvent{CommunicationID: AfterVehicleCommunicationID}
+	expectEvent2 := v.CommunicationIDRemovedEvent{CommunicationID: DefaultVehicleCommunicationID}
 
 	a.Nil(ret)
 	a.Equal(resID, string(DefaultVehicleID))
@@ -533,7 +533,7 @@ func TestDeleteVehicleOperation(t *testing.T) {
 		req,
 	)
 
-	expectEvent := v.CommunicationIdRemovedEvent{
+	expectEvent := v.CommunicationIDRemovedEvent{
 		CommunicationID: DefaultVehicleCommunicationID,
 	}
 
