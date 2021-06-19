@@ -57,23 +57,23 @@ func NewWaypoint(
 
 // Navigation .
 type Navigation struct {
-	currentOrder             int
-	takeoffPointGroundHeight Height
-	waypoints                []Waypoint
+	currentOrder                            int
+	takeoffPointGroundHeightWGS84EllipsoidM Height
+	waypoints                               []Waypoint
 }
 
 // NewNavigation .
-func NewNavigation(takeoffPointGroundHeightM float64) *Navigation {
+func NewNavigation(takeoffPointGroundHeightWGS84EllipsoidM float64) *Navigation {
 	return &Navigation{
-		currentOrder:             1,
-		takeoffPointGroundHeight: NewHeightFromM(takeoffPointGroundHeightM),
-		waypoints:                []Waypoint{},
+		currentOrder:                            0,
+		takeoffPointGroundHeightWGS84EllipsoidM: NewHeightFromM(takeoffPointGroundHeightWGS84EllipsoidM),
+		waypoints:                               []Waypoint{},
 	}
 }
 
-// GetTakeoffPointGroundHeightM .
-func (n *Navigation) GetTakeoffPointGroundHeightM() float64 {
-	return n.takeoffPointGroundHeight.heightM
+// GetTakeoffPointGroundHeightWGS84EllipsoidM .
+func (n *Navigation) GetTakeoffPointGroundHeightWGS84EllipsoidM() float64 {
+	return n.takeoffPointGroundHeightWGS84EllipsoidM.heightM
 }
 
 // PushNextWaypoint .

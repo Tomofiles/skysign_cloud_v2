@@ -26,7 +26,7 @@ func Copy(gen Generator, id ID, original *Mission) *Mission {
 
 	if original.navigation != nil {
 		navigation := NewNavigation(
-			original.navigation.takeoffPointGroundHeight.heightM,
+			original.navigation.GetTakeoffPointGroundHeightWGS84EllipsoidM(),
 		)
 		original.navigation.ProvideWaypointsInterest(
 			func(order int, latitudeDegree, longitudeDegree, relativeHeightM, speedMS float64) {
@@ -55,12 +55,12 @@ func AssembleFrom(gen Generator, comp Component) *Mission {
 		gen:          gen,
 	}
 
-	navigation := NewNavigation(comp.GetTakeoffPointGroundHeightWGS84M())
-	for _, waypointComp := range comp.GetWaypoints() {
+	navigation := NewNavigation(comp.GetNavigation().GetTakeoffPointGroundHeightWGS84EllipsoidM())
+	for _, waypointComp := range comp.GetNavigation().GetWaypoints() {
 		navigation.PushNextWaypoint(
 			waypointComp.GetLatitudeDegree(),
 			waypointComp.GetLongitudeDegree(),
-			waypointComp.GetHeightWGS84M(),
+			waypointComp.GetRelativeHeightM(),
 			waypointComp.GetSpeedMS(),
 		)
 	}
@@ -72,15 +72,18 @@ func AssembleFrom(gen Generator, comp Component) *Mission {
 // TakeApart .
 func TakeApart(
 	mission *Mission,
-	component func(id, name, version string, takeoffPointGroundHeightM float64, isCarbonCopy bool),
+	component func(id, name, version string, isCarbonCopy bool),
+	navigationComponent func(takeoffPointGroundHeightWGS84EllipsoidM float64),
 	waypointComponent func(order int, latitudeDegree, longitudeDegree, relativeHeightM, speedMS float64),
 ) {
 	component(
 		string(mission.id),
 		mission.name,
 		string(mission.version),
-		mission.navigation.GetTakeoffPointGroundHeightM(),
 		mission.isCarbonCopy,
+	)
+	navigationComponent(
+		mission.navigation.GetTakeoffPointGroundHeightWGS84EllipsoidM(),
 	)
 	mission.navigation.ProvideWaypointsInterest(
 		waypointComponent,
@@ -91,9 +94,14 @@ func TakeApart(
 type Component interface {
 	GetID() string
 	GetName() string
-	GetTakeoffPointGroundHeightWGS84M() float64
+	GetNavigation() NavigationComponent
 	GetIsCarbonCopy() bool
 	GetVersion() string
+}
+
+// NavigationComponent .
+type NavigationComponent interface {
+	GetTakeoffPointGroundHeightWGS84EllipsoidM() float64
 	GetWaypoints() []WaypointComponent
 }
 
@@ -102,6 +110,6 @@ type WaypointComponent interface {
 	GetOrder() int
 	GetLatitudeDegree() float64
 	GetLongitudeDegree() float64
-	GetHeightWGS84M() float64
+	GetRelativeHeightM() float64
 	GetSpeedMS() float64
 }
