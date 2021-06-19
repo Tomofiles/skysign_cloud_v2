@@ -29,7 +29,7 @@ func Copy(gen Generator, id ID, original *Mission) *Mission {
 			original.navigation.takeoffPointGroundHeight.heightM,
 		)
 		original.navigation.ProvideWaypointsInterest(
-			func(latitudeDegree, longitudeDegree, relativeHeightM, speedMS float64) {
+			func(order int, latitudeDegree, longitudeDegree, relativeHeightM, speedMS float64) {
 				navigation.PushNextWaypoint(
 					latitudeDegree,
 					longitudeDegree,
