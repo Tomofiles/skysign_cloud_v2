@@ -101,10 +101,9 @@ services:
       context: ../../vehicle
       dockerfile: Dockerfile
     environment:
-     - db.host=skysign-vehicle-db
-     - mq.host=skysign-mq
-     - mq.ssl.enabled=false
-    command: java -cp app:app/lib/* net.tomofiles.skysign.vehicle.VehicleApplication
+     - DB_HOST=skysign-vehicle-db
+     - MQ_HOST=skysign-mq
+    command: /app/vehicle -logtostderr
     depends_on:
       - skysign-vehicle-db-for-debugging
       - skysign-mq-for-debugging
