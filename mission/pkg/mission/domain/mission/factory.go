@@ -44,38 +44,64 @@ func Copy(gen Generator, id ID, original *Mission) *Mission {
 	return mission
 }
 
-// // AssembleFrom .
-// func AssembleFrom(gen Generator, comp Component) *Vehicle {
-// 	return &Vehicle{
-// 		id:              ID(comp.GetID()),
-// 		name:            comp.GetName(),
-// 		communicationID: CommunicationID(comp.GetCommunicationID()),
-// 		isCarbonCopy:    comp.GetIsCarbonCopy(),
-// 		version:         Version(comp.GetVersion()),
-// 		newVersion:      Version(comp.GetVersion()),
-// 		gen:             gen,
-// 	}
-// }
+// AssembleFrom .
+func AssembleFrom(gen Generator, comp Component) *Mission {
+	mission := &Mission{
+		id:           ID(comp.GetID()),
+		name:         comp.GetName(),
+		isCarbonCopy: comp.GetIsCarbonCopy(),
+		version:      Version(comp.GetVersion()),
+		newVersion:   Version(comp.GetVersion()),
+		gen:          gen,
+	}
 
-// // TakeApart .
-// func TakeApart(
-// 	vehicle *Vehicle,
-// 	component func(id, name, communicationID, version string, isCarbonCopy bool),
-// ) {
-// 	component(
-// 		string(vehicle.id),
-// 		vehicle.name,
-// 		string(vehicle.communicationID),
-// 		string(vehicle.version),
-// 		vehicle.isCarbonCopy,
-// 	)
-// }
+	navigation := NewNavigation(comp.GetTakeoffPointGroundHeightWGS84M())
+	for _, waypointComp := range comp.GetWaypoints() {
+		navigation.PushNextWaypoint(
+			waypointComp.GetLatitudeDegree(),
+			waypointComp.GetLongitudeDegree(),
+			waypointComp.GetHeightWGS84M(),
+			waypointComp.GetSpeedMS(),
+		)
+	}
+	mission.navigation = navigation
 
-// // Component .
-// type Component interface {
-// 	GetID() string
-// 	GetName() string
-// 	GetCommunicationID() string
-// 	GetIsCarbonCopy() bool
-// 	GetVersion() string
-// }
+	return mission
+}
+
+// TakeApart .
+func TakeApart(
+	mission *Mission,
+	component func(id, name, version string, takeoffPointGroundHeightM float64, isCarbonCopy bool),
+	waypointComponent func(order int, latitudeDegree, longitudeDegree, relativeHeightM, speedMS float64),
+) {
+	component(
+		string(mission.id),
+		mission.name,
+		string(mission.version),
+		mission.navigation.GetTakeoffPointGroundHeightM(),
+		mission.isCarbonCopy,
+	)
+	mission.navigation.ProvideWaypointsInterest(
+		waypointComponent,
+	)
+}
+
+// Component .
+type Component interface {
+	GetID() string
+	GetName() string
+	GetTakeoffPointGroundHeightWGS84M() float64
+	GetIsCarbonCopy() bool
+	GetVersion() string
+	GetWaypoints() []WaypointComponent
+}
+
+// WaypointComponent .
+type WaypointComponent interface {
+	GetOrder() int
+	GetLatitudeDegree() float64
+	GetLongitudeDegree() float64
+	GetHeightWGS84M() float64
+	GetSpeedMS() float64
+}

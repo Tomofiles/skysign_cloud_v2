@@ -95,10 +95,11 @@ func (n *Navigation) PushNextWaypoint(
 
 // ProvideWaypointsInterest .
 func (n *Navigation) ProvideWaypointsInterest(
-	waypoint func(latitudeDegree, longitudeDegree, relativeHeightM, speedMS float64),
+	waypoint func(order int, latitudeDegree, longitudeDegree, relativeHeightM, speedMS float64),
 ) {
 	for _, w := range n.waypoints {
 		waypoint(
+			w.order,
 			w.coordinates.latitudeDegree,
 			w.coordinates.longitudeDegree,
 			w.relativeHeight.heightM,
