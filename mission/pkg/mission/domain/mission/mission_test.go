@@ -46,7 +46,7 @@ func TestAddNavigationToMission(t *testing.T) {
 	}
 	mission := NewInstance(gen)
 
-	navigation := NewNavigation(DefaultTakeoffPointGroundHeightM)
+	navigation := NewNavigation(DefaultTakeoffPointGroundHeightWGS84EllipsoidM)
 	err := mission.ReplaceNavigationWith(navigation)
 
 	a.Equal(mission.GetNavigation(), navigation)
@@ -112,7 +112,7 @@ func TestCannotChangeErrorWhenChangeCarbonCopiedMissionsNavigation(t *testing.T)
 	}
 	mission := Copy(gen, CopiedID, original)
 
-	navigation := NewNavigation(DefaultTakeoffPointGroundHeightM)
+	navigation := NewNavigation(DefaultTakeoffPointGroundHeightWGS84EllipsoidM)
 	err := mission.ReplaceNavigationWith(navigation)
 
 	a.Nil(mission.GetNavigation())

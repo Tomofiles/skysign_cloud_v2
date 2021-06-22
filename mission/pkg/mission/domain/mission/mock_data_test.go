@@ -5,7 +5,7 @@ import "errors"
 const DefaultID = ID("mission-id")
 const DefaultVersion = Version("version")
 const DefaultName = "mission-name"
-const DefaultTakeoffPointGroundHeightM float64 = 10
+const DefaultTakeoffPointGroundHeightWGS84EllipsoidM float64 = 10
 
 var (
 	ErrSave   = errors.New("save error")

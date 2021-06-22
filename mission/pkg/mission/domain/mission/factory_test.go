@@ -32,7 +32,7 @@ func TestCopyMission(t *testing.T) {
 
 	gen := &generatorMock{}
 	id := DefaultID + "-copied"
-	navigation := NewNavigation(DefaultTakeoffPointGroundHeightM)
+	navigation := NewNavigation(DefaultTakeoffPointGroundHeightWGS84EllipsoidM)
 	navigation.PushNextWaypoint(11.0, 21.0, 31.0, 41.0)
 	navigation.PushNextWaypoint(12.0, 22.0, 32.0, 42.0)
 	navigation.PushNextWaypoint(13.0, 23.0, 33.0, 43.0)
@@ -66,7 +66,7 @@ func TestMissionAssembleFromComponent(t *testing.T) {
 		id:   string(DefaultID),
 		name: DefaultName,
 		navigation: navigationComponentMock{
-			takeoffPointGroundHeightWGS84EllipsoidM: DefaultTakeoffPointGroundHeightM,
+			takeoffPointGroundHeightWGS84EllipsoidM: DefaultTakeoffPointGroundHeightWGS84EllipsoidM,
 			waypoints: []waypointComponentMock{
 				{
 					order:           1,
@@ -100,7 +100,7 @@ func TestMissionAssembleFromComponent(t *testing.T) {
 	}
 	mission := AssembleFrom(gen, comp)
 
-	expectNav := NewNavigation(DefaultTakeoffPointGroundHeightM)
+	expectNav := NewNavigation(DefaultTakeoffPointGroundHeightWGS84EllipsoidM)
 	expectNav.PushNextWaypoint(11.0, 21.0, 31.0, 41.0)
 	expectNav.PushNextWaypoint(12.0, 22.0, 32.0, 42.0)
 	expectNav.PushNextWaypoint(13.0, 23.0, 33.0, 43.0)
@@ -120,7 +120,7 @@ func TestMissionAssembleFromComponent(t *testing.T) {
 func TestTakeApartMission(t *testing.T) {
 	a := assert.New(t)
 
-	navigation := NewNavigation(DefaultTakeoffPointGroundHeightM)
+	navigation := NewNavigation(DefaultTakeoffPointGroundHeightWGS84EllipsoidM)
 	navigation.PushNextWaypoint(11.0, 21.0, 31.0, 41.0)
 	navigation.PushNextWaypoint(12.0, 22.0, 32.0, 42.0)
 	navigation.PushNextWaypoint(13.0, 23.0, 33.0, 43.0)
@@ -165,7 +165,7 @@ func TestTakeApartMission(t *testing.T) {
 		id:   string(DefaultID),
 		name: DefaultName,
 		navigation: navigationComponentMock{
-			takeoffPointGroundHeightWGS84EllipsoidM: DefaultTakeoffPointGroundHeightM,
+			takeoffPointGroundHeightWGS84EllipsoidM: DefaultTakeoffPointGroundHeightWGS84EllipsoidM,
 			waypoints: []waypointComponentMock{
 				{
 					order:           1,
