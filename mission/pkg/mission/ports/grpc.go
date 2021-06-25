@@ -38,50 +38,80 @@ func NewGrpcServer(application app.Application) GrpcServer {
 	return GrpcServer{app: application}
 }
 
-// // ListVehicles .
-// func (s *GrpcServer) ListVehicles(
-// 	ctx context.Context,
-// 	request *proto.Empty,
-// ) (*proto.ListVehiclesResponses, error) {
-// 	response := &proto.ListVehiclesResponses{}
-// 	if ret := s.app.Services.ManageVehicle.ListVehicles(
-// 		func(id, name, communicationID string) {
-// 			response.Vehicles = append(
-// 				response.Vehicles,
-// 				&proto.Vehicle{
-// 					Id:              id,
-// 					Name:            name,
-// 					CommunicationId: communicationID,
-// 				},
-// 			)
-// 		},
-// 	); ret != nil {
-// 		return nil, ret
-// 	}
-// 	return response, nil
-// }
+// ListMissions .
+func (s *GrpcServer) ListMissions(
+	ctx context.Context,
+	request *proto.Empty,
+) (*proto.ListMissionsResponses, error) {
+	response := &proto.ListMissionsResponses{}
+	if ret := s.app.Services.ManageMission.ListMissions(
+		func(model service.MissionPresentationModel) {
+			mission := &proto.Mission{}
+			mission.Id = model.GetMission().GetID()
+			mission.Name = model.GetMission().GetName()
+			waypoints := []*proto.Waypoint{}
+			for _, w := range model.GetMission().GetNavigation().GetWaypoints() {
+				waypoints = append(
+					waypoints,
+					&proto.Waypoint{
+						Latitude:       w.GetLatitude(),
+						Longitude:      w.GetLongitude(),
+						RelativeHeight: w.GetRelativeHeight(),
+						Speed:          w.GetSpeed(),
+					},
+				)
+			}
+			mission.Navigation = &proto.Navigation{
+				TakeoffPointGroundHeight: model.GetMission().GetNavigation().GetTakeoffPointGroundHeight(),
+				Waypoints:                waypoints,
+			}
+			response.Missions = append(
+				response.Missions,
+				mission,
+			)
+		},
+	); ret != nil {
+		return nil, ret
+	}
+	return response, nil
+}
 
-// // GetVehicle .
-// func (s *GrpcServer) GetVehicle(
-// 	ctx context.Context,
-// 	request *proto.GetVehicleRequest,
-// ) (*proto.Vehicle, error) {
-// 	response := &proto.Vehicle{}
-// 	requestDpo := &vehicleIDRequestDpo{
-// 		id: request.Id,
-// 	}
-// 	if ret := s.app.Services.ManageVehicle.GetVehicle(
-// 		requestDpo,
-// 		func(id, name, communicationID string) {
-// 			response.Id = id
-// 			response.Name = name
-// 			response.CommunicationId = communicationID
-// 		},
-// 	); ret != nil {
-// 		return nil, ret
-// 	}
-// 	return response, nil
-// }
+// GetMission .
+func (s *GrpcServer) GetMission(
+	ctx context.Context,
+	request *proto.GetMissionRequest,
+) (*proto.Mission, error) {
+	response := &proto.Mission{}
+	command := &missionIDCommand{
+		id: request.Id,
+	}
+	if ret := s.app.Services.ManageMission.GetMission(
+		command,
+		func(model service.MissionPresentationModel) {
+			response.Id = model.GetMission().GetID()
+			response.Name = model.GetMission().GetName()
+			waypoints := []*proto.Waypoint{}
+			for _, w := range model.GetMission().GetNavigation().GetWaypoints() {
+				waypoints = append(
+					waypoints,
+					&proto.Waypoint{
+						Latitude:       w.GetLatitude(),
+						Longitude:      w.GetLongitude(),
+						RelativeHeight: w.GetRelativeHeight(),
+						Speed:          w.GetSpeed(),
+					},
+				)
+			}
+			response.Navigation = &proto.Navigation{
+				TakeoffPointGroundHeight: model.GetMission().GetNavigation().GetTakeoffPointGroundHeight(),
+				Waypoints:                waypoints,
+			}
+		},
+	); ret != nil {
+		return nil, ret
+	}
+	return response, nil
+}
 
 // CreateMission .
 func (s *GrpcServer) CreateMission(
@@ -89,7 +119,7 @@ func (s *GrpcServer) CreateMission(
 	request *proto.Mission,
 ) (*proto.Mission, error) {
 	response := &proto.Mission{}
-	command := &missionCommand{
+	command := &createCommand{
 		request: request,
 	}
 	if ret := s.app.Services.ManageMission.CreateMission(
@@ -111,7 +141,7 @@ func (s *GrpcServer) UpdateMission(
 	request *proto.Mission,
 ) (*proto.Mission, error) {
 	response := &proto.Mission{}
-	command := &missionCommand{
+	command := &updateCommand{
 		request: request,
 	}
 	if ret := s.app.Services.ManageMission.UpdateMission(command); ret != nil {
@@ -138,19 +168,43 @@ func (s *GrpcServer) DeleteMission(
 	return response, nil
 }
 
-type missionCommand struct {
+type createCommand struct {
 	request *proto.Mission
 }
 
-func (f *missionCommand) GetID() string {
+func (f *createCommand) GetMission() service.Mission {
+	return &mission{
+		request: f.request,
+	}
+}
+
+type updateCommand struct {
+	request *proto.Mission
+}
+
+func (f *updateCommand) GetID() string {
 	return f.request.Id
 }
 
-func (f *missionCommand) GetName() string {
+func (f *updateCommand) GetMission() service.Mission {
+	return &mission{
+		request: f.request,
+	}
+}
+
+type mission struct {
+	request *proto.Mission
+}
+
+func (f *mission) GetID() string {
+	return f.request.Id
+}
+
+func (f *mission) GetName() string {
 	return f.request.Name
 }
 
-func (f *missionCommand) GetNavigation() service.Navigation {
+func (f *mission) GetNavigation() service.Navigation {
 	waypoints := []waypoint{}
 	for _, w := range f.request.Navigation.Waypoints {
 		waypoints = append(

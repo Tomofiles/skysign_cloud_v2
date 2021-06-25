@@ -8,8 +8,8 @@ import (
 
 // ManageMissionService .
 type ManageMissionService interface {
-	// GetVehicle(requestDpo GetVehicleRequestDpo, responseDpo GetVehicleResponseDpo) error
-	// ListVehicles(responseEachDpo ListVehiclesResponseDpo) error
+	GetMission(command GetMissionCommand, retrievedModel RetrievedModel) error
+	ListMissions(retrievedModel RetrievedModel) error
 	CreateMission(command CreateMissionCommand, createdID CreatedID) error
 	UpdateMission(command UpdateMissionCommand) error
 	DeleteMission(command DeleteMissionCommand) error
@@ -18,12 +18,38 @@ type ManageMissionService interface {
 
 // CreateMissionCommand .
 type CreateMissionCommand interface {
-	GetName() string
-	GetNavigation() Navigation
+	GetMission() Mission
 }
 
 // UpdateMissionCommand .
 type UpdateMissionCommand interface {
+	GetID() string
+	GetMission() Mission
+}
+
+// GetMissionCommand .
+type GetMissionCommand interface {
+	GetID() string
+}
+
+// DeleteMissionCommand .
+type DeleteMissionCommand interface {
+	GetID() string
+}
+
+// CarbonCopyMissionCommand .
+type CarbonCopyMissionCommand interface {
+	GetOriginalID() string
+	GetNewID() string
+}
+
+// MissionPresentationModel .
+type MissionPresentationModel interface {
+	GetMission() Mission
+}
+
+// Mission .
+type Mission interface {
 	GetID() string
 	GetName() string
 	GetNavigation() Navigation
@@ -46,27 +72,8 @@ type Waypoint interface {
 // CreatedID .
 type CreatedID = func(id string)
 
-// // GetVehicleRequestDpo .
-// type GetVehicleRequestDpo interface {
-// 	GetID() string
-// }
-
-// // GetVehicleResponseDpo .
-// type GetVehicleResponseDpo = func(id, name, communicationID string)
-
-// // ListVehiclesResponseDpo .
-// type ListVehiclesResponseDpo = func(id, name, communicationID string)
-
-// DeleteMissionCommand .
-type DeleteMissionCommand interface {
-	GetID() string
-}
-
-// CarbonCopyMissionCommand .
-type CarbonCopyMissionCommand interface {
-	GetOriginalID() string
-	GetNewID() string
-}
+// RetrievedModel .
+type RetrievedModel = func(model MissionPresentationModel)
 
 // NewManageMissionService .
 func NewManageMissionService(
@@ -90,66 +97,66 @@ type manageMissionService struct {
 	psm  event.PubSubManager
 }
 
-// func (s *manageVehicleService) GetVehicle(
-// 	requestDpo GetVehicleRequestDpo,
-// 	responseDpo GetVehicleResponseDpo,
-// ) error {
-// 	return s.txm.Do(func(tx txmanager.Tx) error {
-// 		return s.getVehicleOperation(
-// 			tx,
-// 			requestDpo,
-// 			responseDpo,
-// 		)
-// 	})
-// }
+func (s *manageMissionService) GetMission(
+	command GetMissionCommand,
+	retrievedModel RetrievedModel,
+) error {
+	return s.txm.Do(func(tx txmanager.Tx) error {
+		return s.getMissionOperation(
+			tx,
+			command,
+			retrievedModel,
+		)
+	})
+}
 
-// func (s *manageVehicleService) getVehicleOperation(
-// 	tx txmanager.Tx,
-// 	requestDpo GetVehicleRequestDpo,
-// 	responseDpo GetVehicleResponseDpo,
-// ) error {
-// 	vehicle, err := s.repo.GetByID(tx, v.ID(requestDpo.GetID()))
-// 	if err != nil {
-// 		return err
-// 	}
+func (s *manageMissionService) getMissionOperation(
+	tx txmanager.Tx,
+	command GetMissionCommand,
+	retrievedModel RetrievedModel,
+) error {
+	mission, err := s.repo.GetByID(tx, m.ID(command.GetID()))
+	if err != nil {
+		return err
+	}
 
-// 	responseDpo(
-// 		string(vehicle.GetID()),
-// 		vehicle.GetName(),
-// 		string(vehicle.GetCommunicationID()),
-// 	)
-// 	return nil
-// }
+	retrievedModel(
+		&missionModel{
+			mission: mission,
+		},
+	)
+	return nil
+}
 
-// func (s *manageVehicleService) ListVehicles(
-// 	responseEachDpo ListVehiclesResponseDpo,
-// ) error {
-// 	return s.txm.Do(func(tx txmanager.Tx) error {
-// 		return s.listVehiclesOperation(
-// 			tx,
-// 			responseEachDpo,
-// 		)
-// 	})
-// }
+func (s *manageMissionService) ListMissions(
+	retrievedModel RetrievedModel,
+) error {
+	return s.txm.Do(func(tx txmanager.Tx) error {
+		return s.listMissionsOperation(
+			tx,
+			retrievedModel,
+		)
+	})
+}
 
-// func (s *manageVehicleService) listVehiclesOperation(
-// 	tx txmanager.Tx,
-// 	responseEachDpo ListVehiclesResponseDpo,
-// ) error {
-// 	vehicles, err := s.repo.GetAllOrigin(tx)
-// 	if err != nil {
-// 		return err
-// 	}
+func (s *manageMissionService) listMissionsOperation(
+	tx txmanager.Tx,
+	retrievedModel RetrievedModel,
+) error {
+	missions, err := s.repo.GetAllOrigin(tx)
+	if err != nil {
+		return err
+	}
 
-// 	for _, v := range vehicles {
-// 		responseEachDpo(
-// 			string(v.GetID()),
-// 			v.GetName(),
-// 			string(v.GetCommunicationID()),
-// 		)
-// 	}
-// 	return nil
-// }
+	for _, mission := range missions {
+		retrievedModel(
+			&missionModel{
+				mission: mission,
+			},
+		)
+	}
+	return nil
+}
 
 func (s *manageMissionService) CreateMission(
 	command CreateMissionCommand,
@@ -182,8 +189,8 @@ func (s *manageMissionService) createMissionOperation(
 	command CreateMissionCommand,
 	createdID CreatedID,
 ) error {
-	navigation := m.NewNavigation(command.GetNavigation().GetTakeoffPointGroundHeight())
-	for _, w := range command.GetNavigation().GetWaypoints() {
+	navigation := m.NewNavigation(command.GetMission().GetNavigation().GetTakeoffPointGroundHeight())
+	for _, w := range command.GetMission().GetNavigation().GetWaypoints() {
 		navigation.PushNextWaypoint(
 			w.GetLatitude(),
 			w.GetLongitude(),
@@ -196,7 +203,7 @@ func (s *manageMissionService) createMissionOperation(
 		s.gen,
 		s.repo,
 		pub,
-		command.GetName(),
+		command.GetMission().GetName(),
 		navigation,
 	)
 	if ret != nil {
@@ -235,8 +242,8 @@ func (s *manageMissionService) updateMissionOperation(
 	pub event.Publisher,
 	command UpdateMissionCommand,
 ) error {
-	navigation := m.NewNavigation(command.GetNavigation().GetTakeoffPointGroundHeight())
-	for _, w := range command.GetNavigation().GetWaypoints() {
+	navigation := m.NewNavigation(command.GetMission().GetNavigation().GetTakeoffPointGroundHeight())
+	for _, w := range command.GetMission().GetNavigation().GetWaypoints() {
 		navigation.PushNextWaypoint(
 			w.GetLatitude(),
 			w.GetLongitude(),
@@ -250,7 +257,7 @@ func (s *manageMissionService) updateMissionOperation(
 		s.repo,
 		pub,
 		m.ID(command.GetID()),
-		command.GetName(),
+		command.GetMission().GetName(),
 		navigation,
 	)
 	if ret != nil {
@@ -340,4 +347,96 @@ func (s *manageMissionService) carbonCopyMissionOperation(
 	}
 
 	return nil
+}
+
+type missionModel struct {
+	mission *m.Mission
+}
+
+func (f *missionModel) GetMission() Mission {
+	return &mission{
+		mission: f.mission,
+	}
+}
+
+type mission struct {
+	mission *m.Mission
+}
+
+func (f *mission) GetID() string {
+	return string(f.mission.GetID())
+}
+
+func (f *mission) GetName() string {
+	return f.mission.GetName()
+}
+
+func (f *mission) GetNavigation() Navigation {
+	waypoints := []waypoint{}
+	f.mission.GetNavigation().ProvideWaypointsInterest(
+		func(order int, latitudeDegree, longitudeDegree, relativeHeightM, speedMS float64) {
+			waypoints = append(
+				waypoints,
+				waypoint{
+					latitude:       latitudeDegree,
+					longitude:      longitudeDegree,
+					relativeHeight: relativeHeightM,
+					speed:          speedMS,
+				},
+			)
+		},
+	)
+	navigation := &navigation{
+		takeoffPointGroundHeight: f.mission.GetNavigation().GetTakeoffPointGroundHeightWGS84EllipsoidM(),
+		waypoints:                waypoints,
+	}
+	return navigation
+}
+
+type navigation struct {
+	takeoffPointGroundHeight float64
+	waypoints                []waypoint
+}
+
+func (f *navigation) GetTakeoffPointGroundHeight() float64 {
+	return f.takeoffPointGroundHeight
+}
+
+func (f *navigation) GetWaypoints() []Waypoint {
+	waypoints := []Waypoint{}
+	for _, w := range f.waypoints {
+		waypoints = append(
+			waypoints,
+			&waypoint{
+				latitude:       w.latitude,
+				longitude:      w.longitude,
+				relativeHeight: w.relativeHeight,
+				speed:          w.speed,
+			},
+		)
+	}
+	return waypoints
+}
+
+type waypoint struct {
+	latitude       float64
+	longitude      float64
+	relativeHeight float64
+	speed          float64
+}
+
+func (f *waypoint) GetLatitude() float64 {
+	return f.latitude
+}
+
+func (f *waypoint) GetLongitude() float64 {
+	return f.longitude
+}
+
+func (f *waypoint) GetRelativeHeight() float64 {
+	return f.relativeHeight
+}
+
+func (f *waypoint) GetSpeed() float64 {
+	return f.speed
 }
