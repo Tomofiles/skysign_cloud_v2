@@ -46,25 +46,7 @@ func (s *GrpcServer) ListMissions(
 	response := &proto.ListMissionsResponses{}
 	if ret := s.app.Services.ManageMission.ListMissions(
 		func(model service.MissionPresentationModel) {
-			mission := &proto.Mission{}
-			mission.Id = model.GetMission().GetID()
-			mission.Name = model.GetMission().GetName()
-			waypoints := []*proto.Waypoint{}
-			for _, w := range model.GetMission().GetNavigation().GetWaypoints() {
-				waypoints = append(
-					waypoints,
-					&proto.Waypoint{
-						Latitude:       w.GetLatitude(),
-						Longitude:      w.GetLongitude(),
-						RelativeHeight: w.GetRelativeHeight(),
-						Speed:          w.GetSpeed(),
-					},
-				)
-			}
-			mission.Navigation = &proto.Navigation{
-				TakeoffPointGroundHeight: model.GetMission().GetNavigation().GetTakeoffPointGroundHeight(),
-				Waypoints:                waypoints,
-			}
+			mission := MissionProtoTransfomerFromModel(model)
 			response.Missions = append(
 				response.Missions,
 				mission,
@@ -81,31 +63,14 @@ func (s *GrpcServer) GetMission(
 	ctx context.Context,
 	request *proto.GetMissionRequest,
 ) (*proto.Mission, error) {
-	response := &proto.Mission{}
+	var response *proto.Mission
 	command := &missionIDCommand{
 		id: request.Id,
 	}
 	if ret := s.app.Services.ManageMission.GetMission(
 		command,
 		func(model service.MissionPresentationModel) {
-			response.Id = model.GetMission().GetID()
-			response.Name = model.GetMission().GetName()
-			waypoints := []*proto.Waypoint{}
-			for _, w := range model.GetMission().GetNavigation().GetWaypoints() {
-				waypoints = append(
-					waypoints,
-					&proto.Waypoint{
-						Latitude:       w.GetLatitude(),
-						Longitude:      w.GetLongitude(),
-						RelativeHeight: w.GetRelativeHeight(),
-						Speed:          w.GetSpeed(),
-					},
-				)
-			}
-			response.Navigation = &proto.Navigation{
-				TakeoffPointGroundHeight: model.GetMission().GetNavigation().GetTakeoffPointGroundHeight(),
-				Waypoints:                waypoints,
-			}
+			response = MissionProtoTransfomerFromModel(model)
 		},
 	); ret != nil {
 		return nil, ret

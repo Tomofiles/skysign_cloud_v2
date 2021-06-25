@@ -189,15 +189,7 @@ func (s *manageMissionService) createMissionOperation(
 	command CreateMissionCommand,
 	createdID CreatedID,
 ) error {
-	navigation := m.NewNavigation(command.GetMission().GetNavigation().GetTakeoffPointGroundHeight())
-	for _, w := range command.GetMission().GetNavigation().GetWaypoints() {
-		navigation.PushNextWaypoint(
-			w.GetLatitude(),
-			w.GetLongitude(),
-			w.GetRelativeHeight(),
-			w.GetSpeed(),
-		)
-	}
+	navigation := NavigationTransfomerFromCommand(command.GetMission())
 	id, ret := m.CreateNewMission(
 		tx,
 		s.gen,
@@ -242,15 +234,7 @@ func (s *manageMissionService) updateMissionOperation(
 	pub event.Publisher,
 	command UpdateMissionCommand,
 ) error {
-	navigation := m.NewNavigation(command.GetMission().GetNavigation().GetTakeoffPointGroundHeight())
-	for _, w := range command.GetMission().GetNavigation().GetWaypoints() {
-		navigation.PushNextWaypoint(
-			w.GetLatitude(),
-			w.GetLongitude(),
-			w.GetRelativeHeight(),
-			w.GetSpeed(),
-		)
-	}
+	navigation := NavigationTransfomerFromCommand(command.GetMission())
 	ret := m.UpdateMission(
 		tx,
 		s.gen,
