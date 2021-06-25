@@ -13,7 +13,7 @@ type ManageMissionService interface {
 	CreateMission(command CreateMissionCommand, createdID CreatedID) error
 	UpdateMission(command UpdateMissionCommand) error
 	DeleteMission(command DeleteMissionCommand) error
-	// CarbonCopyVehicle(requestDpo CarbonCopyVehicleRequestDpo) error
+	CarbonCopyMission(command CarbonCopyMissionCommand) error
 }
 
 // CreateMissionCommand .
@@ -62,12 +62,11 @@ type DeleteMissionCommand interface {
 	GetID() string
 }
 
-// // CarbonCopyVehicleRequestDpo .
-// type CarbonCopyVehicleRequestDpo interface {
-// 	GetOriginalID() string
-// 	GetNewID() string
-// 	GetFlightplanID() string
-// }
+// CarbonCopyMissionCommand .
+type CarbonCopyMissionCommand interface {
+	GetOriginalID() string
+	GetNewID() string
+}
 
 // NewManageMissionService .
 func NewManageMissionService(
@@ -301,45 +300,44 @@ func (s *manageMissionService) deleteMissionOperation(
 	return nil
 }
 
-// func (s *manageVehicleService) CarbonCopyVehicle(
-// 	requestDpo CarbonCopyVehicleRequestDpo,
-// ) error {
-// 	pub, chClose, err := s.psm.GetPublisher()
-// 	if err != nil {
-// 		return err
-// 	}
-// 	defer chClose()
+func (s *manageMissionService) CarbonCopyMission(
+	command CarbonCopyMissionCommand,
+) error {
+	pub, chClose, err := s.psm.GetPublisher()
+	if err != nil {
+		return err
+	}
+	defer chClose()
 
-// 	return s.txm.DoAndEndHook(
-// 		func(tx txmanager.Tx) error {
-// 			return s.carbonCopyVehicleOperation(
-// 				tx,
-// 				pub,
-// 				requestDpo,
-// 			)
-// 		},
-// 		func() error {
-// 			return pub.Flush()
-// 		},
-// 	)
-// }
+	return s.txm.DoAndEndHook(
+		func(tx txmanager.Tx) error {
+			return s.carbonCopyMissionOperation(
+				tx,
+				pub,
+				command,
+			)
+		},
+		func() error {
+			return pub.Flush()
+		},
+	)
+}
 
-// func (s *manageVehicleService) carbonCopyVehicleOperation(
-// 	tx txmanager.Tx,
-// 	pub event.Publisher,
-// 	requestDpo CarbonCopyVehicleRequestDpo,
-// ) error {
-// 	if ret := v.CarbonCopyVehicle(
-// 		tx,
-// 		s.gen,
-// 		s.repo,
-// 		pub,
-// 		v.ID(requestDpo.GetOriginalID()),
-// 		v.ID(requestDpo.GetNewID()),
-// 		v.FlightplanID(requestDpo.GetFlightplanID()),
-// 	); ret != nil {
-// 		return ret
-// 	}
+func (s *manageMissionService) carbonCopyMissionOperation(
+	tx txmanager.Tx,
+	pub event.Publisher,
+	command CarbonCopyMissionCommand,
+) error {
+	if ret := m.CarbonCopyMission(
+		tx,
+		s.gen,
+		s.repo,
+		pub,
+		m.ID(command.GetOriginalID()),
+		m.ID(command.GetNewID()),
+	); ret != nil {
+		return ret
+	}
 
-// 	return nil
-// }
+	return nil
+}

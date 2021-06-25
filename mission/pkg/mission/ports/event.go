@@ -1,66 +1,61 @@
 package ports
 
-// import (
-// 	"context"
-// 	"vehicle/pkg/skysign_proto"
-// 	"vehicle/pkg/vehicle/app"
+import (
+	"context"
+	"mission/pkg/mission/app"
+	"mission/pkg/skysign_proto"
 
-// 	"github.com/golang/glog"
-// 	"google.golang.org/protobuf/proto"
-// )
+	"github.com/golang/glog"
+	"google.golang.org/protobuf/proto"
+)
 
-// const (
-// 	// VehicleCopiedWhenFlightplanCopiedEventExchangeName .
-// 	VehicleCopiedWhenFlightplanCopiedEventExchangeName = "fleet.vehicle_copied_when_flightplan_copied_event"
-// 	// VehicleCopiedWhenFlightplanCopiedEventQueueName .
-// 	VehicleCopiedWhenFlightplanCopiedEventQueueName = "vehicle.vehicle_copied_when_flightplan_copied_event"
-// )
+const (
+	// MissionCopiedWhenFlightplanCopiedEventExchangeName .
+	MissionCopiedWhenFlightplanCopiedEventExchangeName = "fleet.mission_copied_when_flightplan_copied_event"
+	// MissionCopiedWhenFlightplanCopiedEventQueueName .
+	MissionCopiedWhenFlightplanCopiedEventQueueName = "mission.mission_copied_when_flightplan_copied_event"
+)
 
-// // EventHandler .
-// type EventHandler struct {
-// 	app app.Application
-// }
+// EventHandler .
+type EventHandler struct {
+	app app.Application
+}
 
-// // NewEventHandler .
-// func NewEventHandler(application app.Application) EventHandler {
-// 	return EventHandler{app: application}
-// }
+// NewEventHandler .
+func NewEventHandler(application app.Application) EventHandler {
+	return EventHandler{app: application}
+}
 
-// // HandleVehicleCopiedWhenFlightplanCopiedEvent .
-// func (h *EventHandler) HandleVehicleCopiedWhenFlightplanCopiedEvent(
-// 	ctx context.Context,
-// 	event []byte,
-// ) error {
-// 	eventPb := skysign_proto.VehicleCopiedWhenFlightplanCopiedEvent{}
-// 	if err := proto.Unmarshal(event, &eventPb); err != nil {
-// 		return err
-// 	}
+// HandleMissionCopiedWhenFlightplanCopiedEvent .
+func (h *EventHandler) HandleMissionCopiedWhenFlightplanCopiedEvent(
+	ctx context.Context,
+	event []byte,
+) error {
+	eventPb := skysign_proto.MissionCopiedWhenFlightplanCopiedEvent{}
+	if err := proto.Unmarshal(event, &eventPb); err != nil {
+		return err
+	}
 
-// 	glog.Infof("RECEIVE , Event: %s, Message: %s", VehicleCopiedWhenFlightplanCopiedEventQueueName, eventPb.String())
+	glog.Infof("RECEIVE , Event: %s, Message: %s", MissionCopiedWhenFlightplanCopiedEventQueueName, eventPb.String())
 
-// 	requestDpo := copyRequestDpoHolder{
-// 		originalID:   eventPb.GetOriginalVehicleId(),
-// 		newID:        eventPb.GetNewVehicleId(),
-// 		flightplanID: eventPb.GetFlightplanId(),
-// 	}
-// 	if ret := h.app.Services.ManageVehicle.CarbonCopyVehicle(&requestDpo); ret != nil {
-// 		return ret
-// 	}
-// 	return nil
-// }
+	command := &copyCommand{
+		originalID: eventPb.GetOriginalMissionId(),
+		newID:      eventPb.GetNewMissionId(),
+	}
+	if ret := h.app.Services.ManageMission.CarbonCopyMission(command); ret != nil {
+		return ret
+	}
+	return nil
+}
 
-// type copyRequestDpoHolder struct {
-// 	originalID   string
-// 	newID        string
-// 	flightplanID string
-// }
+type copyCommand struct {
+	originalID string
+	newID      string
+}
 
-// func (h *copyRequestDpoHolder) GetOriginalID() string {
-// 	return h.originalID
-// }
-// func (h *copyRequestDpoHolder) GetNewID() string {
-// 	return h.newID
-// }
-// func (h *copyRequestDpoHolder) GetFlightplanID() string {
-// 	return h.flightplanID
-// }
+func (h *copyCommand) GetOriginalID() string {
+	return h.originalID
+}
+func (h *copyCommand) GetNewID() string {
+	return h.newID
+}
