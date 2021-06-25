@@ -1,5 +1,7 @@
 package app
 
+import "mission/pkg/mission/service"
+
 // Application .
 type Application struct {
 	Services Services
@@ -7,5 +9,5 @@ type Application struct {
 
 // Services .
 type Services struct {
-	// ManageVehicle service.ManageVehicleService
+	ManageMission service.ManageMissionService
 }

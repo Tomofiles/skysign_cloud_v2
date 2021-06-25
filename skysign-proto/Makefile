@@ -58,13 +58,13 @@ compile_vehicle: common.proto vehicle.proto event.proto
 	protoc -I/usr/local/include -I.   -I$(GOPATH)/src   -I$(GOPATH)/pkg/mod/github.com/grpc-ecosystem/grpc-gateway@v1.9.6/third_party/googleapis   --go_out=plugins=grpc:../vehicle/pkg/skysign_proto vehicle.proto
 	protoc -I/usr/local/include -I.   -I$(GOPATH)/src   -I$(GOPATH)/pkg/mod/github.com/grpc-ecosystem/grpc-gateway@v1.9.6/third_party/googleapis   --go_out=plugins=grpc:../vehicle/pkg/skysign_proto event.proto
 
+compile_mission: common.proto mission.proto event.proto
+	protoc -I/usr/local/include -I.   -I$(GOPATH)/src   -I$(GOPATH)/pkg/mod/github.com/grpc-ecosystem/grpc-gateway@v1.9.6/third_party/googleapis   --go_out=plugins=grpc:../mission/pkg/skysign_proto common.proto
+	protoc -I/usr/local/include -I.   -I$(GOPATH)/src   -I$(GOPATH)/pkg/mod/github.com/grpc-ecosystem/grpc-gateway@v1.9.6/third_party/googleapis   --go_out=plugins=grpc:../mission/pkg/skysign_proto mission.proto
+	protoc -I/usr/local/include -I.   -I$(GOPATH)/src   -I$(GOPATH)/pkg/mod/github.com/grpc-ecosystem/grpc-gateway@v1.9.6/third_party/googleapis   --go_out=plugins=grpc:../mission/pkg/skysign_proto event.proto
+
 cp_communication: common.proto communication_edge.proto communication_user.proto event.proto
 	cp common.proto ../communication/src/main/proto
 	cp communication_edge.proto ../communication/src/main/proto
 	cp communication_user.proto ../communication/src/main/proto
 	cp event.proto ../communication/src/main/proto
-
-cp_mission: common.proto mission.proto vehicle.proto event.proto
-	cp common.proto ../mission/src/main/proto
-	cp mission.proto ../mission/src/main/proto
-	cp event.proto ../mission/src/main/proto
