@@ -5,7 +5,8 @@ import (
 	proto "mission/pkg/skysign_proto"
 )
 
-func MissionProtoTransfomerFromModel(
+// MissionProtoTransformerFromModel .
+func MissionProtoTransformerFromModel(
 	model service.MissionPresentationModel,
 ) *proto.Mission {
 	mission := &proto.Mission{}

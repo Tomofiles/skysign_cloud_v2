@@ -46,7 +46,7 @@ func (s *GrpcServer) ListMissions(
 	response := &proto.ListMissionsResponses{}
 	if ret := s.app.Services.ManageMission.ListMissions(
 		func(model service.MissionPresentationModel) {
-			mission := MissionProtoTransfomerFromModel(model)
+			mission := MissionProtoTransformerFromModel(model)
 			response.Missions = append(
 				response.Missions,
 				mission,
@@ -70,7 +70,7 @@ func (s *GrpcServer) GetMission(
 	if ret := s.app.Services.ManageMission.GetMission(
 		command,
 		func(model service.MissionPresentationModel) {
-			response = MissionProtoTransfomerFromModel(model)
+			response = MissionProtoTransformerFromModel(model)
 		},
 	); ret != nil {
 		return nil, ret

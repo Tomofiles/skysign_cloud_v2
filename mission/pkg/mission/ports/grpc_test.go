@@ -1,300 +1,381 @@
 package ports
 
-// import (
-// 	"testing"
-// 	proto "vehicle/pkg/skysign_proto"
-// 	"vehicle/pkg/vehicle/app"
+import (
+	"mission/pkg/mission/app"
+	m "mission/pkg/mission/domain/mission"
+	s "mission/pkg/mission/service"
+	proto "mission/pkg/skysign_proto"
+	"testing"
 
-// 	"github.com/stretchr/testify/assert"
-// 	"github.com/stretchr/testify/mock"
-// )
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/mock"
+)
 
-// func TestSingleVehiclesListVehicles(t *testing.T) {
-// 	a := assert.New(t)
+func TestSingleMissionsListMissions(t *testing.T) {
+	a := assert.New(t)
 
-// 	service := manageVehicleServiceMock{}
+	service := manageMissionServiceMock{}
 
-// 	vehicles := []vehicleMock{
-// 		{
-// 			id:              DefaultVehicleID,
-// 			name:            DefaultVehicleName,
-// 			communicationID: DefaultCommunicationID,
-// 		},
-// 	}
-// 	service.On("ListVehicles", mock.Anything).Return(vehicles, nil)
+	missionModels := []s.MissionPresentationModel{
+		&missionModelMock{
+			mission: m.AssembleFrom(
+				nil,
+				&missionComponentMock{
+					ID:   string(DefaultMissionID),
+					Name: DefaultMissionName,
+					Navigation: navigationComponentMock{
+						TakeoffPointGroundHeightWGS84EllipsoidM: DefaultMissionTakeoffPointGroundHeightWGS84EllipsoidM,
+						Waypoints:                               []waypointComponentMock{},
+					},
+					Version: string(DefaultMissionVersion),
+				},
+			),
+		},
+	}
+	service.On("ListMissions", mock.Anything).Return(missionModels, nil)
 
-// 	app := app.Application{
-// 		Services: app.Services{
-// 			ManageVehicle: &service,
-// 		},
-// 	}
+	app := app.Application{
+		Services: app.Services{
+			ManageMission: &service,
+		},
+	}
 
-// 	grpc := NewGrpcServer(app)
+	grpc := NewGrpcServer(app)
 
-// 	request := &proto.Empty{}
-// 	response, err := grpc.ListVehicles(
-// 		nil,
-// 		request,
-// 	)
+	request := &proto.Empty{}
+	response, err := grpc.ListMissions(
+		nil,
+		request,
+	)
 
-// 	expectResponse := &proto.ListVehiclesResponses{
-// 		Vehicles: []*proto.Vehicle{
-// 			{
-// 				Id:              DefaultVehicleID,
-// 				Name:            DefaultVehicleName,
-// 				CommunicationId: DefaultCommunicationID,
-// 			},
-// 		},
-// 	}
+	expectResponse := &proto.ListMissionsResponses{
+		Missions: []*proto.Mission{
+			{
+				Id:   DefaultMissionID,
+				Name: DefaultMissionName,
+				Navigation: &proto.Navigation{
+					TakeoffPointGroundHeight: DefaultMissionTakeoffPointGroundHeightWGS84EllipsoidM,
+					Waypoints:                []*proto.Waypoint{},
+				},
+			},
+		},
+	}
 
-// 	a.Nil(err)
-// 	a.Equal(response, expectResponse)
-// }
+	a.Nil(err)
+	a.Equal(response, expectResponse)
+}
 
-// func TestMultipleVehiclesListVehicles(t *testing.T) {
-// 	a := assert.New(t)
+func TestMultipleMissionsListMissions(t *testing.T) {
+	a := assert.New(t)
 
-// 	var (
-// 		DefaultVehicleID1       = DefaultVehicleID + "-1"
-// 		DefaultVehicleName1     = DefaultVehicleName + "-1"
-// 		DefaultCommunicationID1 = DefaultCommunicationID + "-1"
-// 		DefaultVehicleID2       = DefaultVehicleID + "-2"
-// 		DefaultVehicleName2     = DefaultVehicleName + "-2"
-// 		DefaultCommunicationID2 = DefaultCommunicationID + "-2"
-// 		DefaultVehicleID3       = DefaultVehicleID + "-3"
-// 		DefaultVehicleName3     = DefaultVehicleName + "-3"
-// 		DefaultCommunicationID3 = DefaultCommunicationID + "-3"
-// 	)
+	var (
+		DefaultMissionID1                                      = DefaultMissionID + "-1"
+		DefaultMissionName1                                    = DefaultMissionName + "-1"
+		DefaultMissionTakeoffPointGroundHeightWGS84EllipsoidM1 = DefaultMissionTakeoffPointGroundHeightWGS84EllipsoidM + 1
+		DefaultMissionVersion1                                 = DefaultMissionVersion + "-1"
+		DefaultMissionID2                                      = DefaultMissionID + "-2"
+		DefaultMissionName2                                    = DefaultMissionName + "-2"
+		DefaultMissionTakeoffPointGroundHeightWGS84EllipsoidM2 = DefaultMissionTakeoffPointGroundHeightWGS84EllipsoidM + 2
+		DefaultMissionVersion2                                 = DefaultMissionVersion + "-2"
+		DefaultMissionID3                                      = DefaultMissionID + "-3"
+		DefaultMissionName3                                    = DefaultMissionName + "-3"
+		DefaultMissionTakeoffPointGroundHeightWGS84EllipsoidM3 = DefaultMissionTakeoffPointGroundHeightWGS84EllipsoidM + 3
+		DefaultMissionVersion3                                 = DefaultMissionVersion + "-3"
+	)
 
-// 	service := manageVehicleServiceMock{}
+	service := manageMissionServiceMock{}
 
-// 	vehicles := []vehicleMock{
-// 		{
-// 			id:              DefaultVehicleID1,
-// 			name:            DefaultVehicleName1,
-// 			communicationID: DefaultCommunicationID1,
-// 		},
-// 		{
-// 			id:              DefaultVehicleID2,
-// 			name:            DefaultVehicleName2,
-// 			communicationID: DefaultCommunicationID2,
-// 		},
-// 		{
-// 			id:              DefaultVehicleID3,
-// 			name:            DefaultVehicleName3,
-// 			communicationID: DefaultCommunicationID3,
-// 		},
-// 	}
-// 	service.On("ListVehicles", mock.Anything).Return(vehicles, nil)
+	missionModels := []s.MissionPresentationModel{
+		&missionModelMock{
+			mission: m.AssembleFrom(
+				nil,
+				&missionComponentMock{
+					ID:   string(DefaultMissionID1),
+					Name: DefaultMissionName1,
+					Navigation: navigationComponentMock{
+						TakeoffPointGroundHeightWGS84EllipsoidM: DefaultMissionTakeoffPointGroundHeightWGS84EllipsoidM1,
+						Waypoints:                               []waypointComponentMock{},
+					},
+					Version: string(DefaultMissionVersion1),
+				},
+			),
+		},
+		&missionModelMock{
+			mission: m.AssembleFrom(
+				nil,
+				&missionComponentMock{
+					ID:   string(DefaultMissionID2),
+					Name: DefaultMissionName2,
+					Navigation: navigationComponentMock{
+						TakeoffPointGroundHeightWGS84EllipsoidM: DefaultMissionTakeoffPointGroundHeightWGS84EllipsoidM2,
+						Waypoints:                               []waypointComponentMock{},
+					},
+					Version: string(DefaultMissionVersion2),
+				},
+			),
+		},
+		&missionModelMock{
+			mission: m.AssembleFrom(
+				nil,
+				&missionComponentMock{
+					ID:   string(DefaultMissionID3),
+					Name: DefaultMissionName3,
+					Navigation: navigationComponentMock{
+						TakeoffPointGroundHeightWGS84EllipsoidM: DefaultMissionTakeoffPointGroundHeightWGS84EllipsoidM3,
+						Waypoints:                               []waypointComponentMock{},
+					},
+					Version: string(DefaultMissionVersion3),
+				},
+			),
+		},
+	}
+	service.On("ListMissions", mock.Anything).Return(missionModels, nil)
 
-// 	app := app.Application{
-// 		Services: app.Services{
-// 			ManageVehicle: &service,
-// 		},
-// 	}
+	app := app.Application{
+		Services: app.Services{
+			ManageMission: &service,
+		},
+	}
 
-// 	grpc := NewGrpcServer(app)
+	grpc := NewGrpcServer(app)
 
-// 	request := &proto.Empty{}
-// 	response, err := grpc.ListVehicles(
-// 		nil,
-// 		request,
-// 	)
+	request := &proto.Empty{}
+	response, err := grpc.ListMissions(
+		nil,
+		request,
+	)
 
-// 	expectResponse := &proto.ListVehiclesResponses{
-// 		Vehicles: []*proto.Vehicle{
-// 			{
-// 				Id:              DefaultVehicleID1,
-// 				Name:            DefaultVehicleName1,
-// 				CommunicationId: DefaultCommunicationID1,
-// 			},
-// 			{
-// 				Id:              DefaultVehicleID2,
-// 				Name:            DefaultVehicleName2,
-// 				CommunicationId: DefaultCommunicationID2,
-// 			},
-// 			{
-// 				Id:              DefaultVehicleID3,
-// 				Name:            DefaultVehicleName3,
-// 				CommunicationId: DefaultCommunicationID3,
-// 			},
-// 		},
-// 	}
+	expectResponse := &proto.ListMissionsResponses{
+		Missions: []*proto.Mission{
+			{
+				Id:   DefaultMissionID1,
+				Name: DefaultMissionName1,
+				Navigation: &proto.Navigation{
+					TakeoffPointGroundHeight: DefaultMissionTakeoffPointGroundHeightWGS84EllipsoidM1,
+					Waypoints:                []*proto.Waypoint{},
+				},
+			},
+			{
+				Id:   DefaultMissionID2,
+				Name: DefaultMissionName2,
+				Navigation: &proto.Navigation{
+					TakeoffPointGroundHeight: DefaultMissionTakeoffPointGroundHeightWGS84EllipsoidM2,
+					Waypoints:                []*proto.Waypoint{},
+				},
+			},
+			{
+				Id:   DefaultMissionID3,
+				Name: DefaultMissionName3,
+				Navigation: &proto.Navigation{
+					TakeoffPointGroundHeight: DefaultMissionTakeoffPointGroundHeightWGS84EllipsoidM3,
+					Waypoints:                []*proto.Waypoint{},
+				},
+			},
+		},
+	}
 
-// 	a.Nil(err)
-// 	a.Equal(response, expectResponse)
-// }
+	a.Nil(err)
+	a.Equal(response, expectResponse)
+}
 
-// func TestNoneVehiclesListVehicles(t *testing.T) {
-// 	a := assert.New(t)
+func TestNoneMissionsListMissions(t *testing.T) {
+	a := assert.New(t)
 
-// 	service := manageVehicleServiceMock{}
+	service := manageMissionServiceMock{}
 
-// 	vehicles := []vehicleMock{}
-// 	service.On("ListVehicles", mock.Anything).Return(vehicles, nil)
+	missionModels := []s.MissionPresentationModel{}
+	service.On("ListMissions", mock.Anything).Return(missionModels, nil)
 
-// 	app := app.Application{
-// 		Services: app.Services{
-// 			ManageVehicle: &service,
-// 		},
-// 	}
+	app := app.Application{
+		Services: app.Services{
+			ManageMission: &service,
+		},
+	}
 
-// 	grpc := NewGrpcServer(app)
+	grpc := NewGrpcServer(app)
 
-// 	request := &proto.Empty{}
-// 	response, err := grpc.ListVehicles(
-// 		nil,
-// 		request,
-// 	)
+	request := &proto.Empty{}
+	response, err := grpc.ListMissions(
+		nil,
+		request,
+	)
 
-// 	expectResponse := &proto.ListVehiclesResponses{}
+	expectResponse := &proto.ListMissionsResponses{}
 
-// 	a.Nil(err)
-// 	a.Equal(response, expectResponse)
-// }
+	a.Nil(err)
+	a.Equal(response, expectResponse)
+}
 
-// func TestGetVehicle(t *testing.T) {
-// 	a := assert.New(t)
+func TestGetMission(t *testing.T) {
+	a := assert.New(t)
 
-// 	service := manageVehicleServiceMock{}
+	service := manageMissionServiceMock{}
 
-// 	vehicle := vehicleMock{
-// 		id:              DefaultVehicleID,
-// 		name:            DefaultVehicleName,
-// 		communicationID: DefaultCommunicationID,
-// 	}
-// 	service.On("GetVehicle", mock.Anything, mock.Anything).Return(vehicle, nil)
+	missionModel := &missionModelMock{
+		mission: m.AssembleFrom(
+			nil,
+			&missionComponentMock{
+				ID:   string(DefaultMissionID),
+				Name: DefaultMissionName,
+				Navigation: navigationComponentMock{
+					TakeoffPointGroundHeightWGS84EllipsoidM: DefaultMissionTakeoffPointGroundHeightWGS84EllipsoidM,
+					Waypoints:                               []waypointComponentMock{},
+				},
+				Version: string(DefaultMissionVersion),
+			},
+		),
+	}
+	service.On("GetMission", mock.Anything, mock.Anything).Return(missionModel, nil)
 
-// 	app := app.Application{
-// 		Services: app.Services{
-// 			ManageVehicle: &service,
-// 		},
-// 	}
+	app := app.Application{
+		Services: app.Services{
+			ManageMission: &service,
+		},
+	}
 
-// 	grpc := NewGrpcServer(app)
+	grpc := NewGrpcServer(app)
 
-// 	request := &proto.GetVehicleRequest{
-// 		Id: DefaultVehicleID,
-// 	}
-// 	response, err := grpc.GetVehicle(
-// 		nil,
-// 		request,
-// 	)
+	request := &proto.GetMissionRequest{
+		Id: DefaultMissionID,
+	}
+	response, err := grpc.GetMission(
+		nil,
+		request,
+	)
 
-// 	expectResponse := &proto.Vehicle{
-// 		Id:              DefaultVehicleID,
-// 		Name:            DefaultVehicleName,
-// 		CommunicationId: DefaultCommunicationID,
-// 	}
+	expectResponse := &proto.Mission{
+		Id:   DefaultMissionID,
+		Name: DefaultMissionName,
+		Navigation: &proto.Navigation{
+			TakeoffPointGroundHeight: DefaultMissionTakeoffPointGroundHeightWGS84EllipsoidM,
+			Waypoints:                []*proto.Waypoint{},
+		},
+	}
 
-// 	a.Nil(err)
-// 	a.Equal(response, expectResponse)
-// }
+	a.Nil(err)
+	a.Equal(response, expectResponse)
+}
 
-// func TestCreateVehicle(t *testing.T) {
-// 	a := assert.New(t)
+func TestCreateMission(t *testing.T) {
+	a := assert.New(t)
 
-// 	service := manageVehicleServiceMock{}
+	service := manageMissionServiceMock{}
 
-// 	vehicle := vehicleMock{
-// 		id:              DefaultVehicleID,
-// 		name:            DefaultVehicleName,
-// 		communicationID: DefaultCommunicationID,
-// 	}
-// 	service.On("CreateVehicle", mock.Anything, mock.Anything).Return(vehicle, nil)
+	missionModel := &missionModelMock{
+		mission: m.AssembleFrom(
+			nil,
+			&missionComponentMock{
+				ID:   string(DefaultMissionID),
+				Name: DefaultMissionName,
+				Navigation: navigationComponentMock{
+					TakeoffPointGroundHeightWGS84EllipsoidM: DefaultMissionTakeoffPointGroundHeightWGS84EllipsoidM,
+					Waypoints:                               []waypointComponentMock{},
+				},
+				Version: string(DefaultMissionVersion),
+			},
+		),
+	}
+	service.On("CreateMission", mock.Anything, mock.Anything).Return(missionModel, nil)
 
-// 	app := app.Application{
-// 		Services: app.Services{
-// 			ManageVehicle: &service,
-// 		},
-// 	}
+	app := app.Application{
+		Services: app.Services{
+			ManageMission: &service,
+		},
+	}
 
-// 	grpc := NewGrpcServer(app)
+	grpc := NewGrpcServer(app)
 
-// 	request := &proto.Vehicle{
-// 		Name:            DefaultVehicleName,
-// 		CommunicationId: DefaultCommunicationID,
-// 	}
-// 	response, err := grpc.CreateVehicle(
-// 		nil,
-// 		request,
-// 	)
+	request := &proto.Mission{
+		Name: DefaultMissionID,
+		Navigation: &proto.Navigation{
+			TakeoffPointGroundHeight: DefaultMissionTakeoffPointGroundHeightWGS84EllipsoidM,
+			Waypoints:                []*proto.Waypoint{},
+		},
+	}
+	response, err := grpc.CreateMission(
+		nil,
+		request,
+	)
 
-// 	expectResponse := &proto.Vehicle{
-// 		Id:              DefaultVehicleID,
-// 		Name:            DefaultVehicleName,
-// 		CommunicationId: DefaultCommunicationID,
-// 	}
+	expectResponse := &proto.Mission{
+		Id:   DefaultMissionID,
+		Name: DefaultMissionID,
+		Navigation: &proto.Navigation{
+			TakeoffPointGroundHeight: DefaultMissionTakeoffPointGroundHeightWGS84EllipsoidM,
+			Waypoints:                []*proto.Waypoint{},
+		},
+	}
 
-// 	a.Nil(err)
-// 	a.Equal(response, expectResponse)
-// }
+	a.Nil(err)
+	a.Equal(response, expectResponse)
+}
 
-// func TestUpdateVehicle(t *testing.T) {
-// 	a := assert.New(t)
+func TestUpdateMission(t *testing.T) {
+	a := assert.New(t)
 
-// 	service := manageVehicleServiceMock{}
+	service := manageMissionServiceMock{}
 
-// 	vehicle := vehicleMock{
-// 		id:              DefaultVehicleID,
-// 		name:            DefaultVehicleName,
-// 		communicationID: DefaultCommunicationID,
-// 	}
-// 	service.On("UpdateVehicle", mock.Anything, mock.Anything).Return(vehicle, nil)
+	service.On("UpdateMission", mock.Anything, mock.Anything).Return(nil)
 
-// 	app := app.Application{
-// 		Services: app.Services{
-// 			ManageVehicle: &service,
-// 		},
-// 	}
+	app := app.Application{
+		Services: app.Services{
+			ManageMission: &service,
+		},
+	}
 
-// 	grpc := NewGrpcServer(app)
+	grpc := NewGrpcServer(app)
 
-// 	request := &proto.Vehicle{
-// 		Id:              DefaultVehicleID,
-// 		Name:            DefaultVehicleName,
-// 		CommunicationId: DefaultCommunicationID,
-// 	}
-// 	response, err := grpc.UpdateVehicle(
-// 		nil,
-// 		request,
-// 	)
+	request := &proto.Mission{
+		Id:   DefaultMissionID,
+		Name: DefaultMissionID,
+		Navigation: &proto.Navigation{
+			TakeoffPointGroundHeight: DefaultMissionTakeoffPointGroundHeightWGS84EllipsoidM,
+			Waypoints:                []*proto.Waypoint{},
+		},
+	}
+	response, err := grpc.UpdateMission(
+		nil,
+		request,
+	)
 
-// 	expectResponse := &proto.Vehicle{
-// 		Id:              DefaultVehicleID,
-// 		Name:            DefaultVehicleName,
-// 		CommunicationId: DefaultCommunicationID,
-// 	}
+	expectResponse := &proto.Mission{
+		Id:   DefaultMissionID,
+		Name: DefaultMissionID,
+		Navigation: &proto.Navigation{
+			TakeoffPointGroundHeight: DefaultMissionTakeoffPointGroundHeightWGS84EllipsoidM,
+			Waypoints:                []*proto.Waypoint{},
+		},
+	}
 
-// 	a.Nil(err)
-// 	a.Equal(response, expectResponse)
-// }
+	a.Nil(err)
+	a.Equal(response, expectResponse)
+}
 
-// func TestDeleteVehicle(t *testing.T) {
-// 	a := assert.New(t)
+func TestDeleteMission(t *testing.T) {
+	a := assert.New(t)
 
-// 	service := manageVehicleServiceMock{}
+	service := manageMissionServiceMock{}
 
-// 	service.On("DeleteVehicle", mock.Anything).Return(nil)
+	service.On("DeleteMission", mock.Anything).Return(nil)
 
-// 	app := app.Application{
-// 		Services: app.Services{
-// 			ManageVehicle: &service,
-// 		},
-// 	}
+	app := app.Application{
+		Services: app.Services{
+			ManageMission: &service,
+		},
+	}
 
-// 	grpc := NewGrpcServer(app)
+	grpc := NewGrpcServer(app)
 
-// 	request := &proto.DeleteVehicleRequest{
-// 		Id: DefaultVehicleID,
-// 	}
-// 	response, err := grpc.DeleteVehicle(
-// 		nil,
-// 		request,
-// 	)
+	request := &proto.DeleteMissionRequest{
+		Id: DefaultMissionID,
+	}
+	response, err := grpc.DeleteMission(
+		nil,
+		request,
+	)
 
-// 	expectResponse := &proto.Empty{}
+	expectResponse := &proto.Empty{}
 
-// 	a.Nil(err)
-// 	a.Equal(response, expectResponse)
-// }
+	a.Nil(err)
+	a.Equal(response, expectResponse)
+}
