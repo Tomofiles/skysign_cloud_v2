@@ -19,7 +19,9 @@ func DeleteMission(
 
 	mission.SetPublisher(pub)
 
-	// 取得したmissionに対しては特にやることなし
+	if mission.isCarbonCopy {
+		return ErrCannotChange
+	}
 
 	if err := repo.Delete(tx, id); err != nil {
 		return err

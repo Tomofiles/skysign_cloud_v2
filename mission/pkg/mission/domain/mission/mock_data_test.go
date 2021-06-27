@@ -30,7 +30,7 @@ func (gen *generatorMock) NewVersion() Version {
 	return version
 }
 
-// Flightplan用汎用パブリッシャモック
+// Mission用汎用パブリッシャモック
 type publisherMock struct {
 	events []interface{}
 }

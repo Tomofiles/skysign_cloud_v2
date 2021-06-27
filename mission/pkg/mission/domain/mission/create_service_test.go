@@ -1,114 +1,114 @@
 package mission
 
-// import (
-// 	"context"
-// 	"testing"
-// 	"vehicle/pkg/vehicle/domain/txmanager"
+import (
+	"context"
+	"mission/pkg/mission/domain/txmanager"
+	"testing"
 
-// 	"github.com/stretchr/testify/assert"
-// 	"github.com/stretchr/testify/mock"
-// )
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/mock"
+)
 
-// // Vehicleを作成するドメインサービスをテストする。
-// // 名前とCommunicationIDをあらかじめ与えられたVehicleを作成し、保存する。
-// // 保存が成功すると、CommunicationIDが付与されたことを表す
-// // ドメインイベントを発行する。
-// func TestCreateNewVehicleService(t *testing.T) {
-// 	a := assert.New(t)
+// Missionを作成するドメインサービスをテストする。
+// 名前とNavigationをあらかじめ与えられたMissionを作成し、保存する。
+func TestCreateNewMissionService(t *testing.T) {
+	a := assert.New(t)
 
-// 	ctx := context.Background()
+	ctx := context.Background()
 
-// 	var (
-// 		DefaultVersion1 = DefaultVersion + "-1"
-// 		DefaultVersion2 = DefaultVersion + "-2"
-// 		DefaultVersion3 = DefaultVersion + "-3"
-// 	)
+	var (
+		DefaultVersion1 = DefaultVersion + "-1"
+		DefaultVersion2 = DefaultVersion + "-2"
+		DefaultVersion3 = DefaultVersion + "-3"
+	)
 
-// 	gen := &generatorMock{
-// 		id:       DefaultID,
-// 		versions: []Version{DefaultVersion1, DefaultVersion2, DefaultVersion3},
-// 	}
-// 	repo := &repositoryMockCreateService{}
-// 	repo.On("Save", mock.Anything).Return(nil)
-// 	pub := &publisherMock{}
+	gen := &generatorMock{
+		id:       DefaultID,
+		versions: []Version{DefaultVersion1, DefaultVersion2, DefaultVersion3},
+	}
+	repo := &repositoryMockCreateService{}
+	repo.On("Save", mock.Anything).Return(nil)
+	pub := &publisherMock{}
 
-// 	id, ret := CreateNewVehicle(ctx, gen, repo, pub, DefaultName, DefaultCommunicationID)
+	navigation := NewNavigation(DefaultTakeoffPointGroundHeightWGS84EllipsoidM)
 
-// 	expectVehicle := Vehicle{
-// 		id:              DefaultID,
-// 		name:            DefaultName,
-// 		communicationID: DefaultCommunicationID,
-// 		isCarbonCopy:    Original,
-// 		version:         DefaultVersion1,
-// 		newVersion:      DefaultVersion3,
-// 		gen:             gen,
-// 		pub:             pub,
-// 	}
-// 	expectEvent := CommunicationIDGaveEvent{CommunicationID: DefaultCommunicationID}
+	id, ret := CreateNewMission(ctx, gen, repo, pub, DefaultName, navigation)
 
-// 	a.Equal(id, string(DefaultID))
-// 	a.Len(repo.saveVehicles, 1)
-// 	a.Equal(repo.saveVehicles[0], &expectVehicle)
-// 	a.Len(pub.events, 1)
-// 	a.Equal(pub.events[0], expectEvent)
+	expectMission := Mission{
+		id:           DefaultID,
+		name:         DefaultName,
+		navigation:   navigation,
+		isCarbonCopy: Original,
+		version:      DefaultVersion1,
+		newVersion:   DefaultVersion3,
+		gen:          gen,
+		pub:          pub,
+	}
 
-// 	a.Nil(ret)
-// }
+	a.Equal(id, string(DefaultID))
+	a.Len(repo.saveMissions, 1)
+	a.Equal(repo.saveMissions[0], &expectMission)
+	a.Len(pub.events, 0)
 
-// // Vehicleを作成するドメインサービスをテストする。
-// // 保存時にリポジトリがエラーとなった場合、
-// // 作成が失敗し、エラーが返却されることを検証する。
-// // また、ドメインイベントは発行されないことを検証する。
-// func TestSaveErrorWhenCreateNewVehicleService(t *testing.T) {
-// 	a := assert.New(t)
+	a.Nil(ret)
+}
 
-// 	ctx := context.Background()
+// Missionを作成するドメインサービスをテストする。
+// 保存時にリポジトリがエラーとなった場合、
+// 作成が失敗し、エラーが返却されることを検証する。
+func TestSaveErrorWhenCreateNewMissionService(t *testing.T) {
+	a := assert.New(t)
 
-// 	var (
-// 		DefaultVersion1 = DefaultVersion + "-1"
-// 		DefaultVersion2 = DefaultVersion + "-2"
-// 		DefaultVersion3 = DefaultVersion + "-3"
-// 	)
+	ctx := context.Background()
 
-// 	gen := &generatorMock{
-// 		id:       DefaultID,
-// 		versions: []Version{DefaultVersion1, DefaultVersion2, DefaultVersion3},
-// 	}
-// 	repo := &repositoryMockCreateService{}
-// 	repo.On("Save", mock.Anything).Return(ErrSave)
-// 	pub := &publisherMock{}
+	var (
+		DefaultVersion1 = DefaultVersion + "-1"
+		DefaultVersion2 = DefaultVersion + "-2"
+		DefaultVersion3 = DefaultVersion + "-3"
+	)
 
-// 	id, ret := CreateNewVehicle(ctx, gen, repo, pub, DefaultName, DefaultCommunicationID)
+	gen := &generatorMock{
+		id:       DefaultID,
+		versions: []Version{DefaultVersion1, DefaultVersion2, DefaultVersion3},
+	}
+	repo := &repositoryMockCreateService{}
+	repo.On("Save", mock.Anything).Return(ErrSave)
+	pub := &publisherMock{}
 
-// 	a.Empty(id)
-// 	a.Len(repo.saveVehicles, 0)
-// 	// a.Len(pub.events, 0) // 1件PublishされるがFlushされない想定
-// 	a.Equal(ret, ErrSave)
-// }
+	navigation := NewNavigation(DefaultTakeoffPointGroundHeightWGS84EllipsoidM)
 
-// // Vehicle作成サービス用リポジトリモック
-// type repositoryMockCreateService struct {
-// 	mock.Mock
+	id, ret := CreateNewMission(ctx, gen, repo, pub, DefaultName, navigation)
 
-// 	saveVehicles []*Vehicle
-// }
+	a.Empty(id)
+	a.Len(repo.saveMissions, 0)
+	a.Len(pub.events, 0)
 
-// func (rm *repositoryMockCreateService) GetAll(tx txmanager.Tx) ([]*Vehicle, error) {
-// 	panic("implement me")
-// }
-// func (rm *repositoryMockCreateService) GetAllOrigin(tx txmanager.Tx) ([]*Vehicle, error) {
-// 	panic("implement me")
-// }
-// func (rm *repositoryMockCreateService) GetByID(tx txmanager.Tx, id ID) (*Vehicle, error) {
-// 	panic("implement me")
-// }
-// func (rm *repositoryMockCreateService) Save(tx txmanager.Tx, v *Vehicle) error {
-// 	ret := rm.Called(v)
-// 	if ret.Error(0) == nil {
-// 		rm.saveVehicles = append(rm.saveVehicles, v)
-// 	}
-// 	return ret.Error(0)
-// }
-// func (rm *repositoryMockCreateService) Delete(tx txmanager.Tx, id ID) error {
-// 	panic("implement me")
-// }
+	a.Equal(ret, ErrSave)
+}
+
+// Mission作成サービス用リポジトリモック
+type repositoryMockCreateService struct {
+	mock.Mock
+
+	saveMissions []*Mission
+}
+
+func (rm *repositoryMockCreateService) GetAll(tx txmanager.Tx) ([]*Mission, error) {
+	panic("implement me")
+}
+func (rm *repositoryMockCreateService) GetAllOrigin(tx txmanager.Tx) ([]*Mission, error) {
+	panic("implement me")
+}
+func (rm *repositoryMockCreateService) GetByID(tx txmanager.Tx, id ID) (*Mission, error) {
+	panic("implement me")
+}
+func (rm *repositoryMockCreateService) Save(tx txmanager.Tx, v *Mission) error {
+	ret := rm.Called(v)
+	if ret.Error(0) == nil {
+		rm.saveMissions = append(rm.saveMissions, v)
+	}
+	return ret.Error(0)
+}
+func (rm *repositoryMockCreateService) Delete(tx txmanager.Tx, id ID) error {
+	panic("implement me")
+}
