@@ -189,7 +189,7 @@ func (s *manageMissionService) createMissionOperation(
 	command CreateMissionCommand,
 	createdID CreatedID,
 ) error {
-	navigation := NavigationTransfomerFromCommand(command.GetMission())
+	navigation := NavigationTransformerFromCommand(command.GetMission())
 	id, ret := m.CreateNewMission(
 		tx,
 		s.gen,
@@ -234,7 +234,7 @@ func (s *manageMissionService) updateMissionOperation(
 	pub event.Publisher,
 	command UpdateMissionCommand,
 ) error {
-	navigation := NavigationTransfomerFromCommand(command.GetMission())
+	navigation := NavigationTransformerFromCommand(command.GetMission())
 	ret := m.UpdateMission(
 		tx,
 		s.gen,

@@ -4,8 +4,8 @@ import (
 	m "mission/pkg/mission/domain/mission"
 )
 
-// NavigationTransfomerFromCommand .
-func NavigationTransfomerFromCommand(
+// NavigationTransformerFromCommand .
+func NavigationTransformerFromCommand(
 	command Mission,
 ) *m.Navigation {
 	navigation := m.NewNavigation(command.GetNavigation().GetTakeoffPointGroundHeight())
