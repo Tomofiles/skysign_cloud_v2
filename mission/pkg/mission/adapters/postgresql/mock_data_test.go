@@ -1,16 +1,17 @@
 package postgresql
 
 import (
+	m "mission/pkg/mission/domain/mission"
+
 	sqlmock "github.com/DATA-DOG/go-sqlmock"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
 
-// const DefaultVehicleID = v.ID("vehicle-id")
-// const DefaultVehicleVersion = v.Version("version")
-// const DefaultVehicleName = "vehicle-name"
-// const DefaultVehicleCommunicationID = v.CommunicationID("communication-id")
-// const DefaultFlightplanID = v.FlightplanID("flightplan-id")
+const DefaultMissionID = m.ID("mission-id")
+const DefaultMissionVersion = m.Version("version")
+const DefaultMissionName = "mission-name"
+const DefaultMissionTakeoffPointGroundHeightWGS84EllipsoidM float64 = 10
 
 func GetNewDbMock() (*gorm.DB, sqlmock.Sqlmock, error) {
 	db, mock, err := sqlmock.New()
@@ -31,30 +32,84 @@ func GetNewDbMock() (*gorm.DB, sqlmock.Sqlmock, error) {
 	return gormDB, mock, nil
 }
 
-// type vehicleComponentMock struct {
-// 	ID              string
-// 	Name            string
-// 	CommunicationID string
-// 	IsCarbonCopy    bool
-// 	Version         string
-// }
+// Mission構成オブジェクトモック
+type missionComponentMock struct {
+	ID           string
+	Name         string
+	Navigation   navigationComponentMock
+	IsCarbonCopy bool
+	Version      string
+}
 
-// func (v *vehicleComponentMock) GetID() string {
-// 	return v.ID
-// }
+func (v *missionComponentMock) GetID() string {
+	return v.ID
+}
 
-// func (v *vehicleComponentMock) GetName() string {
-// 	return v.Name
-// }
+func (v *missionComponentMock) GetName() string {
+	return v.Name
+}
 
-// func (v *vehicleComponentMock) GetCommunicationID() string {
-// 	return v.CommunicationID
-// }
+func (v *missionComponentMock) GetNavigation() m.NavigationComponent {
+	return &v.Navigation
+}
 
-// func (v *vehicleComponentMock) GetIsCarbonCopy() bool {
-// 	return v.IsCarbonCopy
-// }
+func (v *missionComponentMock) GetIsCarbonCopy() bool {
+	return v.IsCarbonCopy
+}
 
-// func (v *vehicleComponentMock) GetVersion() string {
-// 	return v.Version
-// }
+func (v *missionComponentMock) GetVersion() string {
+	return v.Version
+}
+
+// Navigation構成オブジェクトモック
+type navigationComponentMock struct {
+	TakeoffPointGroundHeightWGS84EllipsoidM float64
+	Waypoints                               []waypointComponentMock
+}
+
+func (v *navigationComponentMock) GetTakeoffPointGroundHeightWGS84EllipsoidM() float64 {
+	return v.TakeoffPointGroundHeightWGS84EllipsoidM
+}
+
+func (v *navigationComponentMock) GetWaypoints() []m.WaypointComponent {
+	var waypoints []m.WaypointComponent
+	for _, w := range v.Waypoints {
+		waypoints = append(
+			waypoints,
+			&waypointComponentMock{
+				Order:           w.Order,
+				LatitudeDegree:  w.LatitudeDegree,
+				LongitudeDegree: w.LongitudeDegree,
+				RelativeHeightM: w.RelativeHeightM,
+				SpeedMS:         w.SpeedMS,
+			},
+		)
+	}
+	return waypoints
+}
+
+// Waypoint構成オブジェクトモック
+type waypointComponentMock struct {
+	Order                                                     int
+	LatitudeDegree, LongitudeDegree, RelativeHeightM, SpeedMS float64
+}
+
+func (v *waypointComponentMock) GetOrder() int {
+	return v.Order
+}
+
+func (v *waypointComponentMock) GetLatitudeDegree() float64 {
+	return v.LatitudeDegree
+}
+
+func (v *waypointComponentMock) GetLongitudeDegree() float64 {
+	return v.LongitudeDegree
+}
+
+func (v *waypointComponentMock) GetRelativeHeightM() float64 {
+	return v.RelativeHeightM
+}
+
+func (v *waypointComponentMock) GetSpeedMS() float64 {
+	return v.SpeedMS
+}

@@ -1,35 +1,103 @@
 package postgresql
 
-// Vehicle .
-type Vehicle struct {
-	ID              string `gorm:"primaryKey"`
-	Name            string
-	CommunicationID string
-	IsCarbonCopy    bool
-	Version         string
+import m "mission/pkg/mission/domain/mission"
+
+// Mission .
+type Mission struct {
+	ID           string `gorm:"primaryKey"`
+	Name         string
+	Navigation   *Navigation `gorm:"-"`
+	IsCarbonCopy bool
+	Version      string
 }
 
 // GetID .
-func (v *Vehicle) GetID() string {
+func (v *Mission) GetID() string {
 	return v.ID
 }
 
 // GetName .
-func (v *Vehicle) GetName() string {
+func (v *Mission) GetName() string {
 	return v.Name
 }
 
-// GetCommunicationID .
-func (v *Vehicle) GetCommunicationID() string {
-	return v.CommunicationID
-}
-
 // GetIsCarbonCopy .
-func (v *Vehicle) GetIsCarbonCopy() bool {
+func (v *Mission) GetIsCarbonCopy() bool {
 	return v.IsCarbonCopy
 }
 
 // GetVersion .
-func (v *Vehicle) GetVersion() string {
+func (v *Mission) GetVersion() string {
 	return v.Version
+}
+
+// GetNavigation .
+func (v *Mission) GetNavigation() m.NavigationComponent {
+	return v.Navigation
+}
+
+// Navigation .
+type Navigation struct {
+	MissionID                               string `gorm:"primaryKey"`
+	TakeoffPointGroundHeightWGS84EllipsoidM float64
+	Waypoints                               []*Waypoint `gorm:"-"`
+}
+
+// GetMissionID .
+func (v *Navigation) GetMissionID() string {
+	return v.MissionID
+}
+
+// GetTakeoffPointGroundHeightWGS84EllipsoidM .
+func (v *Navigation) GetTakeoffPointGroundHeightWGS84EllipsoidM() float64 {
+	return v.TakeoffPointGroundHeightWGS84EllipsoidM
+}
+
+// GetWaypoints .
+func (v *Navigation) GetWaypoints() []m.WaypointComponent {
+	waypoints := []m.WaypointComponent{}
+	for _, w := range v.Waypoints {
+		waypoints = append(waypoints, w)
+	}
+	return waypoints
+}
+
+// Waypoint
+type Waypoint struct {
+	MissionID       string
+	Order           int
+	LatitudeDegree  float64
+	LongitudeDegree float64
+	RelativeHeightM float64
+	SpeedMS         float64
+}
+
+// GetMissionID .
+func (v *Waypoint) GetMissionID() string {
+	return v.MissionID
+}
+
+// GetOrder .
+func (v *Waypoint) GetOrder() int {
+	return v.Order
+}
+
+// GetLatitude .
+func (v *Waypoint) GetLatitudeDegree() float64 {
+	return v.LatitudeDegree
+}
+
+// GetLongitude .
+func (v *Waypoint) GetLongitudeDegree() float64 {
+	return v.LongitudeDegree
+}
+
+// GetRelativeHeightM .
+func (v *Waypoint) GetRelativeHeightM() float64 {
+	return v.RelativeHeightM
+}
+
+// GetSpeedMS .
+func (v *Waypoint) GetSpeedMS() float64 {
+	return v.SpeedMS
 }
