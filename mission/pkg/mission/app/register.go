@@ -2,8 +2,11 @@ package app
 
 import (
 	"context"
+	"mission/pkg/mission/adapters/postgresql"
+	"mission/pkg/mission/adapters/uuid"
 	"mission/pkg/mission/domain/event"
 	"mission/pkg/mission/domain/txmanager"
+	"mission/pkg/mission/service"
 )
 
 // NewApplication .
@@ -20,11 +23,11 @@ func newApplication(
 	txm txmanager.TransactionManager,
 	psm event.PubSubManager,
 ) Application {
-	// vehicleGen := uuid.NewVehicleUUID()
-	// vehicleRepo := postgresql.NewVehicleRepository(vehicleGen)
+	missionGen := uuid.NewMissionUUID()
+	missionRepo := postgresql.NewMissionRepository(missionGen)
 	return Application{
 		Services: Services{
-			// ManageVehicle: service.NewManageVehicleService(vehicleGen, vehicleRepo, txm, psm),
+			ManageMission: service.NewManageMissionService(missionGen, missionRepo, txm, psm),
 		},
 	}
 }
