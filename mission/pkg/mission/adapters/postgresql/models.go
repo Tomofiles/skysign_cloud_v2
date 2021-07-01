@@ -65,7 +65,7 @@ func (v *Navigation) GetWaypoints() []m.WaypointComponent {
 // Waypoint
 type Waypoint struct {
 	MissionID       string
-	Order           int
+	PointOrder      int
 	LatitudeDegree  float64
 	LongitudeDegree float64
 	RelativeHeightM float64
@@ -77,9 +77,9 @@ func (v *Waypoint) GetMissionID() string {
 	return v.MissionID
 }
 
-// GetOrder .
-func (v *Waypoint) GetOrder() int {
-	return v.Order
+// GetPointOrder .
+func (v *Waypoint) GetPointOrder() int {
+	return v.PointOrder
 }
 
 // GetLatitude .

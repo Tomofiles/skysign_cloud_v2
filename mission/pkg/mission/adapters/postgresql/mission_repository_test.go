@@ -39,7 +39,7 @@ func TestMissionRepositoryGetSingleWhenGetAll(t *testing.T) {
 			regexp.QuoteMeta(`SELECT * FROM "waypoints" WHERE mission_id = $1`)).
 		WithArgs(DefaultMissionID).
 		WillReturnRows(
-			sqlmock.NewRows([]string{"mission_id", "order", "latitude_degree", "longitude_degree", "relative_height_m", "speed_ms"}).
+			sqlmock.NewRows([]string{"mission_id", "point_order", "latitude_degree", "longitude_degree", "relative_height_m", "speed_ms"}).
 				AddRow(DefaultMissionID, 1, 11.0, 21.0, 31.0, 41.0).
 				AddRow(DefaultMissionID, 2, 12.0, 22.0, 32.0, 42.0).
 				AddRow(DefaultMissionID, 3, 13.0, 23.0, 33.0, 43.0),
@@ -52,21 +52,21 @@ func TestMissionRepositoryGetSingleWhenGetAll(t *testing.T) {
 
 	waypointComps := []waypointComponentMock{
 		{
-			Order:           1,
+			PointOrder:      1,
 			LatitudeDegree:  11.0,
 			LongitudeDegree: 21.0,
 			RelativeHeightM: 31.0,
 			SpeedMS:         41.0,
 		},
 		{
-			Order:           2,
+			PointOrder:      2,
 			LatitudeDegree:  12.0,
 			LongitudeDegree: 22.0,
 			RelativeHeightM: 32.0,
 			SpeedMS:         42.0,
 		},
 		{
-			Order:           3,
+			PointOrder:      3,
 			LatitudeDegree:  13.0,
 			LongitudeDegree: 23.0,
 			RelativeHeightM: 33.0,
@@ -139,7 +139,7 @@ func TestMissionRepositoryGetMultipleWhenGetAll(t *testing.T) {
 			regexp.QuoteMeta(`SELECT * FROM "waypoints" WHERE mission_id = $1`)).
 		WithArgs(DefaultMissionID1).
 		WillReturnRows(
-			sqlmock.NewRows([]string{"mission_id", "order", "latitude_degree", "longitude_degree", "relative_height_m", "speed_ms"}).
+			sqlmock.NewRows([]string{"mission_id", "point_order", "latitude_degree", "longitude_degree", "relative_height_m", "speed_ms"}).
 				AddRow(DefaultMissionID1, 1, 11.0, 21.0, 31.0, 41.0).
 				AddRow(DefaultMissionID1, 2, 12.0, 22.0, 32.0, 42.0).
 				AddRow(DefaultMissionID1, 3, 13.0, 23.0, 33.0, 43.0),
@@ -157,7 +157,7 @@ func TestMissionRepositoryGetMultipleWhenGetAll(t *testing.T) {
 			regexp.QuoteMeta(`SELECT * FROM "waypoints" WHERE mission_id = $1`)).
 		WithArgs(DefaultMissionID2).
 		WillReturnRows(
-			sqlmock.NewRows([]string{"mission_id", "order", "latitude_degree", "longitude_degree", "relative_height_m", "speed_ms"}).
+			sqlmock.NewRows([]string{"mission_id", "point_order", "latitude_degree", "longitude_degree", "relative_height_m", "speed_ms"}).
 				AddRow(DefaultMissionID2, 1, 11.0, 21.0, 31.0, 41.0).
 				AddRow(DefaultMissionID2, 2, 12.0, 22.0, 32.0, 42.0).
 				AddRow(DefaultMissionID2, 3, 13.0, 23.0, 33.0, 43.0),
@@ -175,7 +175,7 @@ func TestMissionRepositoryGetMultipleWhenGetAll(t *testing.T) {
 			regexp.QuoteMeta(`SELECT * FROM "waypoints" WHERE mission_id = $1`)).
 		WithArgs(DefaultMissionID3).
 		WillReturnRows(
-			sqlmock.NewRows([]string{"mission_id", "order", "latitude_degree", "longitude_degree", "relative_height_m", "speed_ms"}).
+			sqlmock.NewRows([]string{"mission_id", "point_order", "latitude_degree", "longitude_degree", "relative_height_m", "speed_ms"}).
 				AddRow(DefaultMissionID3, 1, 11.0, 21.0, 31.0, 41.0).
 				AddRow(DefaultMissionID3, 2, 12.0, 22.0, 32.0, 42.0).
 				AddRow(DefaultMissionID3, 3, 13.0, 23.0, 33.0, 43.0),
@@ -188,21 +188,21 @@ func TestMissionRepositoryGetMultipleWhenGetAll(t *testing.T) {
 
 	waypointComps := []waypointComponentMock{
 		{
-			Order:           1,
+			PointOrder:      1,
 			LatitudeDegree:  11.0,
 			LongitudeDegree: 21.0,
 			RelativeHeightM: 31.0,
 			SpeedMS:         41.0,
 		},
 		{
-			Order:           2,
+			PointOrder:      2,
 			LatitudeDegree:  12.0,
 			LongitudeDegree: 22.0,
 			RelativeHeightM: 32.0,
 			SpeedMS:         42.0,
 		},
 		{
-			Order:           3,
+			PointOrder:      3,
 			LatitudeDegree:  13.0,
 			LongitudeDegree: 23.0,
 			RelativeHeightM: 33.0,
@@ -308,7 +308,7 @@ func TestMissionRepositoryGetSingleWhenGetAllOrigin(t *testing.T) {
 			regexp.QuoteMeta(`SELECT * FROM "waypoints" WHERE mission_id = $1`)).
 		WithArgs(DefaultMissionID).
 		WillReturnRows(
-			sqlmock.NewRows([]string{"mission_id", "order", "latitude_degree", "longitude_degree", "relative_height_m", "speed_ms"}).
+			sqlmock.NewRows([]string{"mission_id", "point_order", "latitude_degree", "longitude_degree", "relative_height_m", "speed_ms"}).
 				AddRow(DefaultMissionID, 1, 11.0, 21.0, 31.0, 41.0).
 				AddRow(DefaultMissionID, 2, 12.0, 22.0, 32.0, 42.0).
 				AddRow(DefaultMissionID, 3, 13.0, 23.0, 33.0, 43.0),
@@ -321,21 +321,21 @@ func TestMissionRepositoryGetSingleWhenGetAllOrigin(t *testing.T) {
 
 	waypointComps := []waypointComponentMock{
 		{
-			Order:           1,
+			PointOrder:      1,
 			LatitudeDegree:  11.0,
 			LongitudeDegree: 21.0,
 			RelativeHeightM: 31.0,
 			SpeedMS:         41.0,
 		},
 		{
-			Order:           2,
+			PointOrder:      2,
 			LatitudeDegree:  12.0,
 			LongitudeDegree: 22.0,
 			RelativeHeightM: 32.0,
 			SpeedMS:         42.0,
 		},
 		{
-			Order:           3,
+			PointOrder:      3,
 			LatitudeDegree:  13.0,
 			LongitudeDegree: 23.0,
 			RelativeHeightM: 33.0,
@@ -408,7 +408,7 @@ func TestMissionRepositoryGetMultipleWhenGetAllOrigin(t *testing.T) {
 			regexp.QuoteMeta(`SELECT * FROM "waypoints" WHERE mission_id = $1`)).
 		WithArgs(DefaultMissionID1).
 		WillReturnRows(
-			sqlmock.NewRows([]string{"mission_id", "order", "latitude_degree", "longitude_degree", "relative_height_m", "speed_ms"}).
+			sqlmock.NewRows([]string{"mission_id", "point_order", "latitude_degree", "longitude_degree", "relative_height_m", "speed_ms"}).
 				AddRow(DefaultMissionID1, 1, 11.0, 21.0, 31.0, 41.0).
 				AddRow(DefaultMissionID1, 2, 12.0, 22.0, 32.0, 42.0).
 				AddRow(DefaultMissionID1, 3, 13.0, 23.0, 33.0, 43.0),
@@ -426,7 +426,7 @@ func TestMissionRepositoryGetMultipleWhenGetAllOrigin(t *testing.T) {
 			regexp.QuoteMeta(`SELECT * FROM "waypoints" WHERE mission_id = $1`)).
 		WithArgs(DefaultMissionID2).
 		WillReturnRows(
-			sqlmock.NewRows([]string{"mission_id", "order", "latitude_degree", "longitude_degree", "relative_height_m", "speed_ms"}).
+			sqlmock.NewRows([]string{"mission_id", "point_order", "latitude_degree", "longitude_degree", "relative_height_m", "speed_ms"}).
 				AddRow(DefaultMissionID2, 1, 11.0, 21.0, 31.0, 41.0).
 				AddRow(DefaultMissionID2, 2, 12.0, 22.0, 32.0, 42.0).
 				AddRow(DefaultMissionID2, 3, 13.0, 23.0, 33.0, 43.0),
@@ -444,7 +444,7 @@ func TestMissionRepositoryGetMultipleWhenGetAllOrigin(t *testing.T) {
 			regexp.QuoteMeta(`SELECT * FROM "waypoints" WHERE mission_id = $1`)).
 		WithArgs(DefaultMissionID3).
 		WillReturnRows(
-			sqlmock.NewRows([]string{"mission_id", "order", "latitude_degree", "longitude_degree", "relative_height_m", "speed_ms"}).
+			sqlmock.NewRows([]string{"mission_id", "point_order", "latitude_degree", "longitude_degree", "relative_height_m", "speed_ms"}).
 				AddRow(DefaultMissionID3, 1, 11.0, 21.0, 31.0, 41.0).
 				AddRow(DefaultMissionID3, 2, 12.0, 22.0, 32.0, 42.0).
 				AddRow(DefaultMissionID3, 3, 13.0, 23.0, 33.0, 43.0),
@@ -457,21 +457,21 @@ func TestMissionRepositoryGetMultipleWhenGetAllOrigin(t *testing.T) {
 
 	waypointComps := []waypointComponentMock{
 		{
-			Order:           1,
+			PointOrder:      1,
 			LatitudeDegree:  11.0,
 			LongitudeDegree: 21.0,
 			RelativeHeightM: 31.0,
 			SpeedMS:         41.0,
 		},
 		{
-			Order:           2,
+			PointOrder:      2,
 			LatitudeDegree:  12.0,
 			LongitudeDegree: 22.0,
 			RelativeHeightM: 32.0,
 			SpeedMS:         42.0,
 		},
 		{
-			Order:           3,
+			PointOrder:      3,
 			LatitudeDegree:  13.0,
 			LongitudeDegree: 23.0,
 			RelativeHeightM: 33.0,
@@ -578,7 +578,7 @@ func TestMissionRepositoryGetByID(t *testing.T) {
 			regexp.QuoteMeta(`SELECT * FROM "waypoints" WHERE mission_id = $1`)).
 		WithArgs(DefaultMissionID).
 		WillReturnRows(
-			sqlmock.NewRows([]string{"mission_id", "order", "latitude_degree", "longitude_degree", "relative_height_m", "speed_ms"}).
+			sqlmock.NewRows([]string{"mission_id", "point_order", "latitude_degree", "longitude_degree", "relative_height_m", "speed_ms"}).
 				AddRow(DefaultMissionID, 1, 11.0, 21.0, 31.0, 41.0).
 				AddRow(DefaultMissionID, 2, 12.0, 22.0, 32.0, 42.0).
 				AddRow(DefaultMissionID, 3, 13.0, 23.0, 33.0, 43.0),
@@ -591,21 +591,21 @@ func TestMissionRepositoryGetByID(t *testing.T) {
 
 	waypointComps := []waypointComponentMock{
 		{
-			Order:           1,
+			PointOrder:      1,
 			LatitudeDegree:  11.0,
 			LongitudeDegree: 21.0,
 			RelativeHeightM: 31.0,
 			SpeedMS:         41.0,
 		},
 		{
-			Order:           2,
+			PointOrder:      2,
 			LatitudeDegree:  12.0,
 			LongitudeDegree: 22.0,
 			RelativeHeightM: 32.0,
 			SpeedMS:         42.0,
 		},
 		{
-			Order:           3,
+			PointOrder:      3,
 			LatitudeDegree:  13.0,
 			LongitudeDegree: 23.0,
 			RelativeHeightM: 33.0,
@@ -693,7 +693,7 @@ func TestMissionRepositorySingleWaypointCreateSave(t *testing.T) {
 
 	mock.
 		ExpectExec(
-			regexp.QuoteMeta(`INSERT INTO "waypoints" ("mission_id","order","latitude_degree","longitude_degree","relative_height_m","speed_ms") VALUES ($1,$2,$3,$4,$5,$6)`)).
+			regexp.QuoteMeta(`INSERT INTO "waypoints" ("mission_id","point_order","latitude_degree","longitude_degree","relative_height_m","speed_ms") VALUES ($1,$2,$3,$4,$5,$6)`)).
 		WithArgs(DefaultMissionID, 1, 11.0, 21.0, 31.0, 41.0).
 		WillReturnResult(
 			sqlmock.NewResult(1, 1),
@@ -704,7 +704,7 @@ func TestMissionRepositorySingleWaypointCreateSave(t *testing.T) {
 
 	waypointComps := []waypointComponentMock{
 		{
-			Order:           1,
+			PointOrder:      1,
 			LatitudeDegree:  11.0,
 			LongitudeDegree: 21.0,
 			RelativeHeightM: 31.0,
@@ -825,7 +825,7 @@ func TestMissionRepositoryMultipleWaypointsCreateSave(t *testing.T) {
 
 	mock.
 		ExpectExec(
-			regexp.QuoteMeta(`INSERT INTO "waypoints" ("mission_id","order","latitude_degree","longitude_degree","relative_height_m","speed_ms") VALUES ($1,$2,$3,$4,$5,$6),($7,$8,$9,$10,$11,$12),($13,$14,$15,$16,$17,$18)`)).
+			regexp.QuoteMeta(`INSERT INTO "waypoints" ("mission_id","point_order","latitude_degree","longitude_degree","relative_height_m","speed_ms") VALUES ($1,$2,$3,$4,$5,$6),($7,$8,$9,$10,$11,$12),($13,$14,$15,$16,$17,$18)`)).
 		WithArgs(
 			DefaultMissionID, 1, 11.0, 21.0, 31.0, 41.0,
 			DefaultMissionID, 2, 12.0, 22.0, 32.0, 42.0,
@@ -840,21 +840,21 @@ func TestMissionRepositoryMultipleWaypointsCreateSave(t *testing.T) {
 
 	waypointComps := []waypointComponentMock{
 		{
-			Order:           1,
+			PointOrder:      1,
 			LatitudeDegree:  11.0,
 			LongitudeDegree: 21.0,
 			RelativeHeightM: 31.0,
 			SpeedMS:         41.0,
 		},
 		{
-			Order:           2,
+			PointOrder:      2,
 			LatitudeDegree:  12.0,
 			LongitudeDegree: 22.0,
 			RelativeHeightM: 32.0,
 			SpeedMS:         42.0,
 		},
 		{
-			Order:           3,
+			PointOrder:      3,
 			LatitudeDegree:  13.0,
 			LongitudeDegree: 23.0,
 			RelativeHeightM: 33.0,
@@ -934,7 +934,7 @@ func TestMissionRepositorySingleWaypointUpdateSave(t *testing.T) {
 
 	mock.
 		ExpectExec(
-			regexp.QuoteMeta(`INSERT INTO "waypoints" ("mission_id","order","latitude_degree","longitude_degree","relative_height_m","speed_ms") VALUES ($1,$2,$3,$4,$5,$6)`)).
+			regexp.QuoteMeta(`INSERT INTO "waypoints" ("mission_id","point_order","latitude_degree","longitude_degree","relative_height_m","speed_ms") VALUES ($1,$2,$3,$4,$5,$6)`)).
 		WithArgs(DefaultMissionID, 1, 11.0, 21.0, 31.0, 41.0).
 		WillReturnResult(
 			sqlmock.NewResult(1, 1),
@@ -945,7 +945,7 @@ func TestMissionRepositorySingleWaypointUpdateSave(t *testing.T) {
 
 	waypointComps := []waypointComponentMock{
 		{
-			Order:           1,
+			PointOrder:      1,
 			LatitudeDegree:  11.0,
 			LongitudeDegree: 21.0,
 			RelativeHeightM: 31.0,
@@ -1100,7 +1100,7 @@ func TestMissionRepositoryMultipleWaypointsUpdateSave(t *testing.T) {
 
 	mock.
 		ExpectExec(
-			regexp.QuoteMeta(`INSERT INTO "waypoints" ("mission_id","order","latitude_degree","longitude_degree","relative_height_m","speed_ms") VALUES ($1,$2,$3,$4,$5,$6),($7,$8,$9,$10,$11,$12),($13,$14,$15,$16,$17,$18)`)).
+			regexp.QuoteMeta(`INSERT INTO "waypoints" ("mission_id","point_order","latitude_degree","longitude_degree","relative_height_m","speed_ms") VALUES ($1,$2,$3,$4,$5,$6),($7,$8,$9,$10,$11,$12),($13,$14,$15,$16,$17,$18)`)).
 		WithArgs(
 			DefaultMissionID, 1, 11.0, 21.0, 31.0, 41.0,
 			DefaultMissionID, 2, 12.0, 22.0, 32.0, 42.0,
@@ -1115,21 +1115,21 @@ func TestMissionRepositoryMultipleWaypointsUpdateSave(t *testing.T) {
 
 	waypointComps := []waypointComponentMock{
 		{
-			Order:           1,
+			PointOrder:      1,
 			LatitudeDegree:  11.0,
 			LongitudeDegree: 21.0,
 			RelativeHeightM: 31.0,
 			SpeedMS:         41.0,
 		},
 		{
-			Order:           2,
+			PointOrder:      2,
 			LatitudeDegree:  12.0,
 			LongitudeDegree: 22.0,
 			RelativeHeightM: 32.0,
 			SpeedMS:         42.0,
 		},
 		{
-			Order:           3,
+			PointOrder:      3,
 			LatitudeDegree:  13.0,
 			LongitudeDegree: 23.0,
 			RelativeHeightM: 33.0,

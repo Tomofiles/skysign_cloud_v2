@@ -14,7 +14,7 @@ func TestCreateNewNavigation(t *testing.T) {
 
 	var resCall bool
 	navigation.ProvideWaypointsInterest(
-		func(order int, latitudeDegree, longitudeDegree, relativeHeightM, speedMS float64) {
+		func(pointOrder int, latitudeDegree, longitudeDegree, relativeHeightM, speedMS float64) {
 			resCall = true
 		},
 	)
@@ -35,8 +35,8 @@ func TestCreateAndPushSingleWaypointNavigation(t *testing.T) {
 
 	var wpComp waypointComponentMock
 	navigation.ProvideWaypointsInterest(
-		func(order int, latitudeDegree, longitudeDegree, relativeHeightM, speedMS float64) {
-			wpComp.order = order
+		func(pointOrder int, latitudeDegree, longitudeDegree, relativeHeightM, speedMS float64) {
+			wpComp.pointOrder = pointOrder
 			wpComp.latitudeDegree = latitudeDegree
 			wpComp.longitudeDegree = longitudeDegree
 			wpComp.relativeHeightM = relativeHeightM
@@ -46,7 +46,7 @@ func TestCreateAndPushSingleWaypointNavigation(t *testing.T) {
 
 	expectNav := []Waypoint{
 		{
-			order:          1,
+			pointOrder:     1,
 			coordinates:    NewGeodesicCoordinatesFromDegree(11.0, 21.0),
 			relativeHeight: NewHeightFromM(31.0),
 			speed:          NewSpeedFromMS(41.0),
@@ -54,7 +54,7 @@ func TestCreateAndPushSingleWaypointNavigation(t *testing.T) {
 	}
 
 	expectWp := waypointComponentMock{
-		order:           1,
+		pointOrder:      1,
 		latitudeDegree:  11.0,
 		longitudeDegree: 21.0,
 		relativeHeightM: 31.0,
@@ -80,11 +80,11 @@ func TestCreateAndPushMultipleWaypointsNavigation(t *testing.T) {
 
 	var wpComps []waypointComponentMock
 	navigation.ProvideWaypointsInterest(
-		func(order int, latitudeDegree, longitudeDegree, relativeHeightM, speedMS float64) {
+		func(pointOrder int, latitudeDegree, longitudeDegree, relativeHeightM, speedMS float64) {
 			wpComps = append(
 				wpComps,
 				waypointComponentMock{
-					order:           order,
+					pointOrder:      pointOrder,
 					latitudeDegree:  latitudeDegree,
 					longitudeDegree: longitudeDegree,
 					relativeHeightM: relativeHeightM,
@@ -96,19 +96,19 @@ func TestCreateAndPushMultipleWaypointsNavigation(t *testing.T) {
 
 	expectNav := []Waypoint{
 		{
-			order:          1,
+			pointOrder:     1,
 			coordinates:    NewGeodesicCoordinatesFromDegree(11.0, 21.0),
 			relativeHeight: NewHeightFromM(31.0),
 			speed:          NewSpeedFromMS(41.0),
 		},
 		{
-			order:          2,
+			pointOrder:     2,
 			coordinates:    NewGeodesicCoordinatesFromDegree(12.0, 22.0),
 			relativeHeight: NewHeightFromM(32.0),
 			speed:          NewSpeedFromMS(42.0),
 		},
 		{
-			order:          3,
+			pointOrder:     3,
 			coordinates:    NewGeodesicCoordinatesFromDegree(13.0, 23.0),
 			relativeHeight: NewHeightFromM(33.0),
 			speed:          NewSpeedFromMS(43.0),
@@ -117,21 +117,21 @@ func TestCreateAndPushMultipleWaypointsNavigation(t *testing.T) {
 
 	expectWps := []waypointComponentMock{
 		{
-			order:           1,
+			pointOrder:      1,
 			latitudeDegree:  11.0,
 			longitudeDegree: 21.0,
 			relativeHeightM: 31.0,
 			speedMS:         41.0,
 		},
 		{
-			order:           2,
+			pointOrder:      2,
 			latitudeDegree:  12.0,
 			longitudeDegree: 22.0,
 			relativeHeightM: 32.0,
 			speedMS:         42.0,
 		},
 		{
-			order:           3,
+			pointOrder:      3,
 			latitudeDegree:  13.0,
 			longitudeDegree: 23.0,
 			relativeHeightM: 33.0,

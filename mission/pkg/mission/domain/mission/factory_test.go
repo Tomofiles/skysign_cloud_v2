@@ -69,21 +69,21 @@ func TestMissionAssembleFromComponent(t *testing.T) {
 			takeoffPointGroundHeightWGS84EllipsoidM: DefaultTakeoffPointGroundHeightWGS84EllipsoidM,
 			waypoints: []waypointComponentMock{
 				{
-					order:           1,
+					pointOrder:      1,
 					latitudeDegree:  11.0,
 					longitudeDegree: 21.0,
 					relativeHeightM: 31.0,
 					speedMS:         41.0,
 				},
 				{
-					order:           2,
+					pointOrder:      2,
 					latitudeDegree:  12.0,
 					longitudeDegree: 22.0,
 					relativeHeightM: 32.0,
 					speedMS:         42.0,
 				},
 				{
-					order:           3,
+					pointOrder:      3,
 					latitudeDegree:  13.0,
 					longitudeDegree: 23.0,
 					relativeHeightM: 33.0,
@@ -147,11 +147,11 @@ func TestTakeApartMission(t *testing.T) {
 		func(takeoffPointGroundHeightWGS84EllipsoidM float64) {
 			comp.navigation.takeoffPointGroundHeightWGS84EllipsoidM = takeoffPointGroundHeightWGS84EllipsoidM
 		},
-		func(order int, latitudeDegree, longitudeDegree, relativeHeightM, speedMS float64) {
+		func(pointOrder int, latitudeDegree, longitudeDegree, relativeHeightM, speedMS float64) {
 			comp.navigation.waypoints = append(
 				comp.navigation.waypoints,
 				waypointComponentMock{
-					order:           order,
+					pointOrder:      pointOrder,
 					latitudeDegree:  latitudeDegree,
 					longitudeDegree: longitudeDegree,
 					relativeHeightM: relativeHeightM,
@@ -168,21 +168,21 @@ func TestTakeApartMission(t *testing.T) {
 			takeoffPointGroundHeightWGS84EllipsoidM: DefaultTakeoffPointGroundHeightWGS84EllipsoidM,
 			waypoints: []waypointComponentMock{
 				{
-					order:           1,
+					pointOrder:      1,
 					latitudeDegree:  11.0,
 					longitudeDegree: 21.0,
 					relativeHeightM: 31.0,
 					speedMS:         41.0,
 				},
 				{
-					order:           2,
+					pointOrder:      2,
 					latitudeDegree:  12.0,
 					longitudeDegree: 22.0,
 					relativeHeightM: 32.0,
 					speedMS:         42.0,
 				},
 				{
-					order:           3,
+					pointOrder:      3,
 					latitudeDegree:  13.0,
 					longitudeDegree: 23.0,
 					relativeHeightM: 33.0,

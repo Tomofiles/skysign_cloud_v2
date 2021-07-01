@@ -358,7 +358,7 @@ func (f *mission) GetName() string {
 func (f *mission) GetNavigation() Navigation {
 	waypoints := []waypoint{}
 	f.mission.GetNavigation().ProvideWaypointsInterest(
-		func(order int, latitudeDegree, longitudeDegree, relativeHeightM, speedMS float64) {
+		func(pointOrder int, latitudeDegree, longitudeDegree, relativeHeightM, speedMS float64) {
 			waypoints = append(
 				waypoints,
 				waypoint{

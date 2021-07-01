@@ -29,7 +29,7 @@ func Copy(gen Generator, id ID, original *Mission) *Mission {
 			original.navigation.GetTakeoffPointGroundHeightWGS84EllipsoidM(),
 		)
 		original.navigation.ProvideWaypointsInterest(
-			func(order int, latitudeDegree, longitudeDegree, relativeHeightM, speedMS float64) {
+			func(pointOrder int, latitudeDegree, longitudeDegree, relativeHeightM, speedMS float64) {
 				navigation.PushNextWaypoint(
 					latitudeDegree,
 					longitudeDegree,
@@ -74,7 +74,7 @@ func TakeApart(
 	mission *Mission,
 	component func(id, name, version string, isCarbonCopy bool),
 	navigationComponent func(takeoffPointGroundHeightWGS84EllipsoidM float64),
-	waypointComponent func(order int, latitudeDegree, longitudeDegree, relativeHeightM, speedMS float64),
+	waypointComponent func(pointOrder int, latitudeDegree, longitudeDegree, relativeHeightM, speedMS float64),
 ) {
 	component(
 		string(mission.id),
@@ -107,7 +107,7 @@ type NavigationComponent interface {
 
 // WaypointComponent .
 type WaypointComponent interface {
-	GetOrder() int
+	GetPointOrder() int
 	GetLatitudeDegree() float64
 	GetLongitudeDegree() float64
 	GetRelativeHeightM() float64

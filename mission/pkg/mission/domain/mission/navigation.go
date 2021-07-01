@@ -37,18 +37,18 @@ func NewSpeedFromMS(speedMS float64) Speed {
 
 // Waypoint .
 type Waypoint struct {
-	order          int
+	pointOrder     int
 	coordinates    GeodesicCoordinates
 	relativeHeight Height
 	speed          Speed
 }
 
 func NewWaypoint(
-	order int,
+	pointOrder int,
 	latitudeDegree, longitudeDegree, relativeHeightM, speedMS float64,
 ) Waypoint {
 	return Waypoint{
-		order,
+		pointOrder,
 		NewGeodesicCoordinatesFromDegree(latitudeDegree, longitudeDegree),
 		NewHeightFromM(relativeHeightM),
 		NewSpeedFromMS(speedMS),
@@ -95,11 +95,11 @@ func (n *Navigation) PushNextWaypoint(
 
 // ProvideWaypointsInterest .
 func (n *Navigation) ProvideWaypointsInterest(
-	waypoint func(order int, latitudeDegree, longitudeDegree, relativeHeightM, speedMS float64),
+	waypoint func(pointOrder int, latitudeDegree, longitudeDegree, relativeHeightM, speedMS float64),
 ) {
 	for _, w := range n.waypoints {
 		waypoint(
-			w.order,
+			w.pointOrder,
 			w.coordinates.latitudeDegree,
 			w.coordinates.longitudeDegree,
 			w.relativeHeight.heightM,

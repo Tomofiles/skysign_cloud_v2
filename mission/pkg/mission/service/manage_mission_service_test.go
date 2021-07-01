@@ -704,7 +704,7 @@ func TestSingleWaypointMissionModel(t *testing.T) {
 				TakeoffPointGroundHeightWGS84EllipsoidM: DefaultMissionTakeoffPointGroundHeightWGS84EllipsoidM,
 				Waypoints: []waypointComponentMock{
 					{
-						Order:           1,
+						PointOrder:      1,
 						LatitudeDegree:  11.0,
 						LongitudeDegree: 21.0,
 						RelativeHeightM: 31.0,
@@ -748,21 +748,21 @@ func TestMultipleWaypointsMissionModel(t *testing.T) {
 				TakeoffPointGroundHeightWGS84EllipsoidM: DefaultMissionTakeoffPointGroundHeightWGS84EllipsoidM,
 				Waypoints: []waypointComponentMock{
 					{
-						Order:           1,
+						PointOrder:      1,
 						LatitudeDegree:  11.0,
 						LongitudeDegree: 21.0,
 						RelativeHeightM: 31.0,
 						SpeedMS:         41.0,
 					},
 					{
-						Order:           2,
+						PointOrder:      2,
 						LatitudeDegree:  12.0,
 						LongitudeDegree: 22.0,
 						RelativeHeightM: 32.0,
 						SpeedMS:         42.0,
 					},
 					{
-						Order:           3,
+						PointOrder:      3,
 						LatitudeDegree:  13.0,
 						LongitudeDegree: 23.0,
 						RelativeHeightM: 33.0,

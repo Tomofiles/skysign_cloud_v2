@@ -185,7 +185,7 @@ func (v *navigationComponentMock) GetWaypoints() []m.WaypointComponent {
 		waypoints = append(
 			waypoints,
 			&waypointComponentMock{
-				Order:           w.Order,
+				PointOrder:      w.PointOrder,
 				LatitudeDegree:  w.LatitudeDegree,
 				LongitudeDegree: w.LongitudeDegree,
 				RelativeHeightM: w.RelativeHeightM,
@@ -198,12 +198,12 @@ func (v *navigationComponentMock) GetWaypoints() []m.WaypointComponent {
 
 // Waypoint構成オブジェクトモック
 type waypointComponentMock struct {
-	Order                                                     int
+	PointOrder                                                int
 	LatitudeDegree, LongitudeDegree, RelativeHeightM, SpeedMS float64
 }
 
-func (v *waypointComponentMock) GetOrder() int {
-	return v.Order
+func (v *waypointComponentMock) GetPointOrder() int {
+	return v.PointOrder
 }
 
 func (v *waypointComponentMock) GetLatitudeDegree() float64 {

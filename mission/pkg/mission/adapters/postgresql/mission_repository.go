@@ -42,7 +42,7 @@ func (r *MissionRepository) GetAll(
 		if err := txGorm.Limit(1).Find(&navigationRecord, "mission_id = ?", string(missionRecord.ID)).Error; err != nil {
 			return nil, err
 		}
-		if err := txGorm.Order("order").Where("mission_id = ?", string(missionRecord.ID)).Find(&waypointRecords).Error; err != nil {
+		if err := txGorm.Order("point_order").Where("mission_id = ?", string(missionRecord.ID)).Find(&waypointRecords).Error; err != nil {
 			return nil, err
 		}
 
@@ -79,7 +79,7 @@ func (r *MissionRepository) GetAllOrigin(
 		if err := txGorm.Limit(1).Find(&navigationRecord, "mission_id = ?", string(missionRecord.ID)).Error; err != nil {
 			return nil, err
 		}
-		if err := txGorm.Order("order").Where("mission_id = ?", string(missionRecord.ID)).Find(&waypointRecords).Error; err != nil {
+		if err := txGorm.Order("point_order").Where("mission_id = ?", string(missionRecord.ID)).Find(&waypointRecords).Error; err != nil {
 			return nil, err
 		}
 
@@ -118,7 +118,7 @@ func (r *MissionRepository) GetByID(
 	if err := txGorm.Limit(1).Find(&navigationRecord, "mission_id = ?", string(id)).Error; err != nil {
 		return nil, err
 	}
-	if err := txGorm.Order("order").Where("mission_id = ?", string(id)).Find(&waypointRecords).Error; err != nil {
+	if err := txGorm.Order("point_order").Where("mission_id = ?", string(id)).Find(&waypointRecords).Error; err != nil {
 		return nil, err
 	}
 
@@ -165,12 +165,12 @@ func (r *MissionRepository) Save(
 			navigationRecord.MissionID = string(mission.GetID())
 			navigationRecord.TakeoffPointGroundHeightWGS84EllipsoidM = takeoffPointGroundHeightWGS84EllipsoidM
 		},
-		func(order int, latitudeDegree, longitudeDegree, relativeHeightM, speedMS float64) {
+		func(pointOrder int, latitudeDegree, longitudeDegree, relativeHeightM, speedMS float64) {
 			waypointRecords = append(
 				waypointRecords,
 				&Waypoint{
 					MissionID:       string(mission.GetID()),
-					Order:           order,
+					PointOrder:      pointOrder,
 					LatitudeDegree:  latitudeDegree,
 					LongitudeDegree: longitudeDegree,
 					RelativeHeightM: relativeHeightM,
