@@ -35,12 +35,12 @@ const MissionsDetail = (props) => {
           type: 'OPEN',
           mission: data,
         });
-        if (data.items.length > 0) {
+        if (data.navigation.waypoints.length > 0) {
           dispatchMapPosition({
             type: 'CURRENT',
-            longitude: data.items[0].longitude,
-            latitude: data.items[0].latitude,
-            height: data.takeoff_point_ground_height + 200,
+            longitude: data.navigation.waypoints[0].longitude,
+            latitude: data.navigation.waypoints[0].latitude,
+            height: data.navigation.takeoff_point_ground_height + 200,
           })
         }
       })
@@ -48,6 +48,10 @@ const MissionsDetail = (props) => {
       dispatchEditMission({ type: "CLEAR"});
     }
   }, [ props.id, dispatchEditMission, dispatchMapPosition ])
+
+  useEffect(() => {
+    console.log(editMission);
+  }, [ editMission ])
 
   const onClickReturn = () => {
     props.openList();  
@@ -149,7 +153,7 @@ const MissionsDetail = (props) => {
                       <Typography style={{fontSize: "12px"}}>Takeoff Ground Height</Typography>
                     </Grid>
                     <Grid item xs={12}>
-                      <Typography>{editMission.takeoff_point_ground_height} m</Typography>
+                      <Typography>{editMission.navigation.takeoff_point_ground_height} m</Typography>
                     </Grid>
                   </Grid>
                 </Box>
@@ -161,10 +165,10 @@ const MissionsDetail = (props) => {
               <Grid item xs={12}>
                 <List
                   className={props.classes.missionList} >
-                  {editMission.items.length === 0 &&
+                  {editMission.navigation.waypoints.length === 0 &&
                     <Typography>No Waypoints</Typography>
                   }
-                  {editMission.items.map((waypoint, index) => (
+                  {editMission.navigation.waypoints.map((waypoint, index) => (
                     <WaypointItem
                       key={index}
                       classes={props.classes}

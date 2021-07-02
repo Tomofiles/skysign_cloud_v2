@@ -115,12 +115,12 @@ services:
       context: ../../mission
       dockerfile: Dockerfile
     environment:
-     - db.host=skysign-mission-db
-     - mq.host=skysign-mq
-     - mq.ssl.enabled=false
-    command: java -cp app:app/lib/* net.tomofiles.skysign.mission.MissionApplication
+     - DB_HOST=skysign-mission-db
+     - MQ_HOST=skysign-mq
+    command: /app/mission -logtostderr
     depends_on:
       - skysign-mission-db-for-debugging
+      - skysign-mq-for-debugging
 
   skysign-helper-backend-for-debugging:
     container_name: skysign-helper-backend

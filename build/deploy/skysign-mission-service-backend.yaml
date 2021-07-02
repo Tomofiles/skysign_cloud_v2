@@ -31,22 +31,22 @@ spec:
             mountPath: /etc/envoy
       - name: skysign-mission-service-backend
         image: ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com/skysign-cloud-v2:mission_${CIRCLE_SHA1}
-        command: ["java"]
-        args: ["-cp", "app:app/lib/*", "net.tomofiles.skysign.mission.MissionApplication"]
+        command: ["/app/mission"]
+        args: ["-logtostderr"]
         env:
-        - name: db.host
+        - name: DB_HOST
           value: "skysign-db"
-        - name: db.username
+        - name: DB_USERNAME
           value: "${AWS_RDS_USER_NAME}"
-        - name: db.password
+        - name: DB_PASSWORD
           value: "${AWS_RDS_PASSWORD}"
-        - name: mq.host
+        - name: MQ_HOST
           value: "${AWS_AMQ_MQ_HOST}"
-        - name: mq.port
+        - name: MQ_PORT
           value: "${AWS_AMQ_PORT}"
-        - name: mq.username
+        - name: MQ_USERNAME
           value: "${AWS_AMQ_USER_NAME}"
-        - name: mq.password
+        - name: MQ_PASSWORD
           value: "${AWS_AMQ_PASSWORD}"
         ports:
         - containerPort: 5001

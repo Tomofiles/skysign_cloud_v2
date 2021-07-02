@@ -1,18 +1,18 @@
 import { Cartesian3 } from 'cesium';
 
 export const getWaypointsForDisplayToMap = (mission) => {
-  return mission.items
-      .map((item, index) => {
+  return mission.navigation.waypoints
+      .map((waypoint, index) => {
         return {
           id: "WP_" + index,
           groundPosition: Cartesian3.fromDegrees(
-              item.longitude,
-              item.latitude,
-              mission.takeoff_point_ground_height),
+              waypoint.longitude,
+              waypoint.latitude,
+              mission.navigation.takeoff_point_ground_height),
           airPosition: Cartesian3.fromDegrees(
-              item.longitude,
-              item.latitude,
-              mission.takeoff_point_ground_height + item.relative_height)
+              waypoint.longitude,
+              waypoint.latitude,
+              mission.navigation.takeoff_point_ground_height + waypoint.relative_height)
         }
       });
 }
@@ -42,6 +42,6 @@ export const getPathsForDisplayToMap = (mission) => {
   }
 
   const paths = [];
-  pairwise(mission.items, pairOfWaypoint(paths, mission.takeoff_point_ground_height));
+  pairwise(mission.navigation.waypoints, pairOfWaypoint(paths, mission.navigation.takeoff_point_ground_height));
   return paths;
 }
