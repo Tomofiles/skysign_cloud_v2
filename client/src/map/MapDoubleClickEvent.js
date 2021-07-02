@@ -20,7 +20,7 @@ const MapDoubleClickEvent = () => {
         let latitude = Math.toDegrees(cartographic.latitude);
 
         if (editMode === EDIT_MODE.MISSION) {
-          if (editMission.items.length === 0) {
+          if (editMission.navigation.waypoints.length === 0) {
             let height = await getTakeoffHeight(latitude, longitude);
             dispatchEditMission({
               type: 'CHANGE_TAKEOFF_POINT_GROUND_HEIGHT',
