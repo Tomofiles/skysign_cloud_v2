@@ -1,0 +1,27 @@
+syntax = "proto3";
+
+package skysign_proto;
+
+import "google/api/annotations.proto";
+import "common.proto";
+
+option java_package = "proto.skysign";
+option java_multiple_files = true;
+option go_package = ".;skysign_proto";
+
+service UploadMissionEdgeService {
+    rpc GetUploadMission (GetUploadMissionRequest) returns (UploadMission) {
+        option (google.api.http) = {
+            get: "/api/v1/uploadmissions/{id}"
+        };
+    };
+}
+
+message GetUploadMissionRequest {
+    string id = 1;
+}
+
+message UploadMission {
+    string id = 1;
+    repeated Waypoint waypoints = 2;
+}
