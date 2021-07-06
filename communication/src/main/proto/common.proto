@@ -34,8 +34,9 @@ message Mission {
 }
 
 message Navigation {
-    double takeoff_point_ground_height = 1;
-    repeated Waypoint waypoints = 2;
+    string upload_id = 1;
+    double takeoff_point_ground_height = 2;
+    repeated Waypoint waypoints = 3;
 }
 
 message Waypoint {
