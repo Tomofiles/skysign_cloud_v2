@@ -13,6 +13,8 @@ digraph G {
     CommunicationExchange1 [label="- Exchange -\n<communication>\ntelemetry updated event", shape=Box];
     CommunicationQueue1 [label="- Queue -\n<communication>\ncommunication_id gave event", shape=cylinder];
     CommunicationQueue2 [label="- Queue -\n<communication>\ncommunication_id removed event", shape=cylinder];
+    CommunicationQueue3 [label="- Queue -\n<communication>\nmission created event", shape=cylinder];
+    CommunicationQueue4 [label="- Queue -\n<communication>\nmission deleted event", shape=cylinder];
     
     Action [label="Action"]
     ActionQueue1 [label="- Queue -\n<action>\ncopied vehicle created event", shape=cylinder];
@@ -20,6 +22,8 @@ digraph G {
     ActionQueue3 [label="- Queue -\n<action>\nflightoperation completed event", shape=cylinder];
     
     Mission [label="Mission"]
+    MissionExchange1 [label="- Exchange -\n<mission>\nmission created event", shape=Box];
+    MissionExchange2 [label="- Exchange -\n<mission>\nmission deleted event", shape=Box];
     MissionQueue1 [label="- Queue -\n<mission>\nmission copied when flightplan copied event", shape=cylinder];
     
     Flightplan [label="Flightplan"]
@@ -51,7 +55,11 @@ digraph G {
     Communication -> CommunicationExchange1;
     CommunicationQueue1 -> Communication;
     CommunicationQueue2 -> Communication;
+    CommunicationQueue3 -> Communication;
+    CommunicationQueue4 -> Communication;
     
+    Mission -> MissionExchange1
+    Mission -> MissionExchange2
     MissionQueue1 -> Mission;
     
     Flightplan -> FlightplanExchange1;
@@ -80,6 +88,9 @@ digraph G {
     VehicleExchange1 -> CommunicationQueue1;
     VehicleExchange2 -> CommunicationQueue2;
 
+    MissionExchange1 -> CommunicationQueue3;
+    MissionExchange2 -> CommunicationQueue4;
+
     FleetExchange2 -> MissionQueue1;
 
     VehicleExchange3 -> ActionQueue1;
@@ -94,7 +105,7 @@ digraph G {
     FlightoperationExchange2 -> ActionQueue3;
     FlightoperationExchange3 -> FlightplanQueue1;
     
-    {rank = same; VehicleExchange1; VehicleExchange2; VehicleExchange3;}
-    {rank = same; CommunicationQueue1; CommunicationQueue2; ActionQueue1;}
+    {rank = same; VehicleExchange1; VehicleExchange2; VehicleExchange3; MissionExchange1; MissionExchange2;}
+    {rank = same; CommunicationQueue1; CommunicationQueue2; ActionQueue1; CommunicationQueue3; CommunicationQueue4;}
     {rank = same; FlightreportQueue1; ActionQueue3;}
 }
