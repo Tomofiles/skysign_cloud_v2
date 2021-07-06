@@ -30,11 +30,16 @@ message Vehicle {
 message Mission {
     string id = 1;
     string name = 2;
-    double takeoff_point_ground_height = 3;
-    repeated MissionItem items = 4;
+    Navigation navigation = 3;
 }
 
-message MissionItem {
+message Navigation {
+    string upload_id = 1;
+    double takeoff_point_ground_height = 2;
+    repeated Waypoint waypoints = 3;
+}
+
+message Waypoint {
     double latitude = 1;
     double longitude = 2;
     double relative_height = 3;

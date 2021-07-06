@@ -41,6 +41,7 @@ type Navigation struct {
 	MissionID                               string `gorm:"primaryKey"`
 	TakeoffPointGroundHeightWGS84EllipsoidM float64
 	Waypoints                               []*Waypoint `gorm:"-"`
+	UploadID                                string
 }
 
 // GetMissionID .
@@ -60,6 +61,11 @@ func (v *Navigation) GetWaypoints() []m.WaypointComponent {
 		waypoints = append(waypoints, w)
 	}
 	return waypoints
+}
+
+// GetUploadID .
+func (v *Navigation) GetUploadID() string {
+	return v.UploadID
 }
 
 // Waypoint

@@ -17,10 +17,12 @@ func TestCarbonCopyMissionService(t *testing.T) {
 	ctx := context.Background()
 
 	var (
-		NewID = DefaultID + "-new"
+		NewID       = DefaultID + "-new"
+		NewUploadID = DefaultUploadID + "-new"
 	)
 
 	navigation := NewNavigation(DefaultTakeoffPointGroundHeightWGS84EllipsoidM)
+	navigation.uploadID = DefaultUploadID
 	navigation.PushNextWaypoint(11.0, 21.0, 31.0, 41.0)
 	navigation.PushNextWaypoint(12.0, 22.0, 32.0, 42.0)
 	navigation.PushNextWaypoint(13.0, 23.0, 33.0, 43.0)
@@ -34,7 +36,9 @@ func TestCarbonCopyMissionService(t *testing.T) {
 		newVersion:   DefaultVersion,
 		gen:          nil,
 	}
-	gen := &generatorMock{}
+	gen := &generatorMock{
+		uploadID: NewUploadID,
+	}
 	repo := &repositoryMockCopyService{}
 	repo.On("GetByID", NewID).Return(nil, ErrNotFound)
 	repo.On("GetByID", DefaultID).Return(&testMission, nil)
@@ -42,9 +46,10 @@ func TestCarbonCopyMissionService(t *testing.T) {
 
 	pub := &publisherMock{}
 
-	ret := CarbonCopyMission(ctx, gen, repo, pub, DefaultID, NewID)
+	id, ret := CarbonCopyMission(ctx, gen, repo, pub, DefaultID, NewID)
 
 	expectNav := NewNavigation(DefaultTakeoffPointGroundHeightWGS84EllipsoidM)
+	expectNav.uploadID = NewUploadID
 	expectNav.PushNextWaypoint(11.0, 21.0, 31.0, 41.0)
 	expectNav.PushNextWaypoint(12.0, 22.0, 32.0, 42.0)
 	expectNav.PushNextWaypoint(13.0, 23.0, 33.0, 43.0)
@@ -58,10 +63,16 @@ func TestCarbonCopyMissionService(t *testing.T) {
 		newVersion:   DefaultVersion,
 		gen:          gen,
 	}
+	expectEvent := CreatedEvent{
+		ID:      NewID,
+		Mission: &expectMission,
+	}
 
+	a.Equal(id, string(NewUploadID))
 	a.Len(repo.saveMissions, 1)
 	a.Equal(repo.saveMissions[0], &expectMission)
-	a.Len(pub.events, 0)
+	a.Len(pub.events, 1)
+	a.Equal(pub.events, []interface{}{expectEvent})
 
 	a.Nil(ret)
 }
@@ -79,6 +90,7 @@ func TestCopySuccessWhenAlreadyExistsMissionWhenCarbonCopyMissionService(t *test
 	)
 
 	navigation := NewNavigation(DefaultTakeoffPointGroundHeightWGS84EllipsoidM)
+	navigation.uploadID = DefaultUploadID
 
 	testMission := Mission{
 		id:           DefaultID,
@@ -95,8 +107,9 @@ func TestCopySuccessWhenAlreadyExistsMissionWhenCarbonCopyMissionService(t *test
 
 	pub := &publisherMock{}
 
-	ret := CarbonCopyMission(ctx, gen, repo, pub, DefaultID, NewID)
+	id, ret := CarbonCopyMission(ctx, gen, repo, pub, DefaultID, NewID)
 
+	a.Equal(id, string(DefaultUploadID))
 	a.Len(repo.saveMissions, 0)
 	a.Len(pub.events, 0)
 	a.Nil(ret)
@@ -122,8 +135,9 @@ func TestGetErrorWhenCarbonCopyMissionService(t *testing.T) {
 
 	pub := &publisherMock{}
 
-	ret := CarbonCopyMission(ctx, gen, repo, pub, DefaultID, NewID)
+	id, ret := CarbonCopyMission(ctx, gen, repo, pub, DefaultID, NewID)
 
+	a.Empty(id)
 	a.Len(pub.events, 0)
 	a.Equal(ret, ErrGet)
 }
@@ -148,8 +162,9 @@ func TestGetError2WhenCarbonCopyMissionService(t *testing.T) {
 
 	pub := &publisherMock{}
 
-	ret := CarbonCopyMission(ctx, gen, repo, pub, DefaultID, NewID)
+	id, ret := CarbonCopyMission(ctx, gen, repo, pub, DefaultID, NewID)
 
+	a.Empty(id)
 	a.Len(pub.events, 0)
 	a.Equal(ret, ErrGet)
 }
@@ -185,8 +200,9 @@ func TestSaveErrorWhenCarbonCopyMissionService(t *testing.T) {
 
 	pub := &publisherMock{}
 
-	ret := CarbonCopyMission(ctx, gen, repo, pub, DefaultID, NewID)
+	id, ret := CarbonCopyMission(ctx, gen, repo, pub, DefaultID, NewID)
 
+	a.Empty(id)
 	a.Len(pub.events, 0)
 	a.Equal(ret, ErrSave)
 }

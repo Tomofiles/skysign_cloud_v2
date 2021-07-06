@@ -22,6 +22,7 @@ func TestCreateNewNavigation(t *testing.T) {
 	a.Equal(navigation.currentOrder, 0)
 	a.Equal(navigation.takeoffPointGroundHeightWGS84EllipsoidM, NewHeightFromM(DefaultTakeoffPointGroundHeightWGS84EllipsoidM))
 	a.Len(navigation.waypoints, 0)
+	a.Empty(navigation.uploadID)
 	a.False(resCall)
 }
 

@@ -11,6 +11,7 @@ const DefaultMissionID = "mission-id"
 const DefaultMissionName = "mission-name"
 const DefaultMissionTakeoffPointGroundHeightWGS84EllipsoidM float64 = 10
 const DefaultMissionVersion = m.Version("version")
+const DefaultMissionUploadID = m.UploadID("upload-id")
 
 type manageMissionServiceMock struct {
 	mock.Mock
@@ -45,20 +46,27 @@ func (s *manageMissionServiceMock) ListMissions(
 func (s *manageMissionServiceMock) CreateMission(
 	command service.CreateMissionCommand,
 	createdID service.CreatedID,
+	uploadID service.UploadID,
 ) error {
 	ret := s.Called()
 	if model := ret.Get(0); model != nil {
 		f := model.(service.MissionPresentationModel)
 		createdID(f.GetMission().GetID())
+		uploadID(f.GetMission().GetNavigation().GetUploadID())
 	}
 	return ret.Error(1)
 }
 
 func (s *manageMissionServiceMock) UpdateMission(
 	command service.UpdateMissionCommand,
+	uploadID service.UploadID,
 ) error {
 	ret := s.Called()
-	return ret.Error(0)
+	if model := ret.Get(0); model != nil {
+		f := model.(service.MissionPresentationModel)
+		uploadID(f.GetMission().GetNavigation().GetUploadID())
+	}
+	return ret.Error(1)
 }
 
 func (s *manageMissionServiceMock) DeleteMission(
@@ -70,11 +78,16 @@ func (s *manageMissionServiceMock) DeleteMission(
 
 func (s *manageMissionServiceMock) CarbonCopyMission(
 	command service.CarbonCopyMissionCommand,
+	uploadID service.UploadID,
 ) error {
 	ret := s.Called()
+	if model := ret.Get(0); model != nil {
+		f := model.(service.MissionPresentationModel)
+		uploadID(f.GetMission().GetNavigation().GetUploadID())
+	}
 	s.OriginalID = command.GetOriginalID()
 	s.NewID = command.GetNewID()
-	return ret.Error(0)
+	return ret.Error(1)
 }
 
 type missionModelMock struct {
@@ -117,6 +130,7 @@ func (f *missionMock) GetNavigation() service.Navigation {
 	navigation := &navigationMock{
 		takeoffPointGroundHeight: f.mission.GetNavigation().GetTakeoffPointGroundHeightWGS84EllipsoidM(),
 		waypoints:                waypoints,
+		uploadID:                 string(f.mission.GetNavigation().GetUploadID()),
 	}
 	return navigation
 }
@@ -124,6 +138,7 @@ func (f *missionMock) GetNavigation() service.Navigation {
 type navigationMock struct {
 	takeoffPointGroundHeight float64
 	waypoints                []waypointMock
+	uploadID                 string
 }
 
 func (f *navigationMock) GetTakeoffPointGroundHeight() float64 {
@@ -144,6 +159,10 @@ func (f *navigationMock) GetWaypoints() []service.Waypoint {
 		)
 	}
 	return waypoints
+}
+
+func (v *navigationMock) GetUploadID() string {
+	return v.uploadID
 }
 
 type waypointMock struct {
@@ -202,6 +221,7 @@ func (v *missionComponentMock) GetVersion() string {
 type navigationComponentMock struct {
 	TakeoffPointGroundHeightWGS84EllipsoidM float64
 	Waypoints                               []waypointComponentMock
+	UploadID                                string
 }
 
 func (v *navigationComponentMock) GetTakeoffPointGroundHeightWGS84EllipsoidM() float64 {
@@ -223,6 +243,10 @@ func (v *navigationComponentMock) GetWaypoints() []m.WaypointComponent {
 		)
 	}
 	return waypoints
+}
+
+func (v *navigationComponentMock) GetUploadID() string {
+	return v.UploadID
 }
 
 // Waypoint構成オブジェクトモック

@@ -77,14 +77,12 @@ type UploadMission struct {
 
 // Mission .
 type Mission struct {
-	ID                       string         `json:"id"`
-	Name                     string         `json:"name"`
-	TakeoffPointGroundHeight float64        `json:"takeoff_point_ground_height"`
-	Items                    []*MissionItem `json:"items"`
+	ID        string       `json:"id"`
+	Waypoints []*Waypoints `json:"waypoints"`
 }
 
-// MissionItem .
-type MissionItem struct {
+// Waypoints .
+type Waypoints struct {
 	Latitude       float64 `json:"latitude"`
 	Longitude      float64 `json:"longitude"`
 	RelativeHeight float64 `json:"relative_height"`

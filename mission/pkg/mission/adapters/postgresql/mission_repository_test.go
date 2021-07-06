@@ -31,8 +31,8 @@ func TestMissionRepositoryGetSingleWhenGetAll(t *testing.T) {
 			regexp.QuoteMeta(`SELECT * FROM "navigations" WHERE mission_id = $1`)).
 		WithArgs(DefaultMissionID).
 		WillReturnRows(
-			sqlmock.NewRows([]string{"mission_id", "takeoff_point_ground_height_wgs84_ellipsoid_m"}).
-				AddRow(DefaultMissionID, DefaultMissionTakeoffPointGroundHeightWGS84EllipsoidM),
+			sqlmock.NewRows([]string{"mission_id", "takeoff_point_ground_height_wgs84_ellipsoid_m", "upload_id"}).
+				AddRow(DefaultMissionID, DefaultMissionTakeoffPointGroundHeightWGS84EllipsoidM, DefaultMissionUploadID),
 		)
 	mock.
 		ExpectQuery(
@@ -76,6 +76,7 @@ func TestMissionRepositoryGetSingleWhenGetAll(t *testing.T) {
 	navigationComp := navigationComponentMock{
 		TakeoffPointGroundHeightWGS84EllipsoidM: DefaultMissionTakeoffPointGroundHeightWGS84EllipsoidM,
 		Waypoints:                               waypointComps,
+		UploadID:                                string(DefaultMissionUploadID),
 	}
 	missionComp := missionComponentMock{
 		ID:           string(DefaultMissionID),
@@ -131,8 +132,8 @@ func TestMissionRepositoryGetMultipleWhenGetAll(t *testing.T) {
 			regexp.QuoteMeta(`SELECT * FROM "navigations" WHERE mission_id = $1`)).
 		WithArgs(DefaultMissionID1).
 		WillReturnRows(
-			sqlmock.NewRows([]string{"mission_id", "takeoff_point_ground_height_wgs84_ellipsoid_m"}).
-				AddRow(DefaultMissionID1, DefaultMissionTakeoffPointGroundHeightWGS84EllipsoidM),
+			sqlmock.NewRows([]string{"mission_id", "takeoff_point_ground_height_wgs84_ellipsoid_m", "upload_id"}).
+				AddRow(DefaultMissionID1, DefaultMissionTakeoffPointGroundHeightWGS84EllipsoidM, DefaultMissionUploadID),
 		)
 	mock.
 		ExpectQuery(
@@ -149,8 +150,8 @@ func TestMissionRepositoryGetMultipleWhenGetAll(t *testing.T) {
 			regexp.QuoteMeta(`SELECT * FROM "navigations" WHERE mission_id = $1`)).
 		WithArgs(DefaultMissionID2).
 		WillReturnRows(
-			sqlmock.NewRows([]string{"mission_id", "takeoff_point_ground_height_wgs84_ellipsoid_m"}).
-				AddRow(DefaultMissionID2, DefaultMissionTakeoffPointGroundHeightWGS84EllipsoidM),
+			sqlmock.NewRows([]string{"mission_id", "takeoff_point_ground_height_wgs84_ellipsoid_m", "upload_id"}).
+				AddRow(DefaultMissionID2, DefaultMissionTakeoffPointGroundHeightWGS84EllipsoidM, DefaultMissionUploadID),
 		)
 	mock.
 		ExpectQuery(
@@ -167,8 +168,8 @@ func TestMissionRepositoryGetMultipleWhenGetAll(t *testing.T) {
 			regexp.QuoteMeta(`SELECT * FROM "navigations" WHERE mission_id = $1`)).
 		WithArgs(DefaultMissionID3).
 		WillReturnRows(
-			sqlmock.NewRows([]string{"mission_id", "takeoff_point_ground_height_wgs84_ellipsoid_m"}).
-				AddRow(DefaultMissionID3, DefaultMissionTakeoffPointGroundHeightWGS84EllipsoidM),
+			sqlmock.NewRows([]string{"mission_id", "takeoff_point_ground_height_wgs84_ellipsoid_m", "upload_id"}).
+				AddRow(DefaultMissionID3, DefaultMissionTakeoffPointGroundHeightWGS84EllipsoidM, DefaultMissionUploadID),
 		)
 	mock.
 		ExpectQuery(
@@ -212,6 +213,7 @@ func TestMissionRepositoryGetMultipleWhenGetAll(t *testing.T) {
 	navigationComp := navigationComponentMock{
 		TakeoffPointGroundHeightWGS84EllipsoidM: DefaultMissionTakeoffPointGroundHeightWGS84EllipsoidM,
 		Waypoints:                               waypointComps,
+		UploadID:                                string(DefaultMissionUploadID),
 	}
 	missionComp1 := missionComponentMock{
 		ID:           string(DefaultMissionID1),
@@ -300,8 +302,8 @@ func TestMissionRepositoryGetSingleWhenGetAllOrigin(t *testing.T) {
 			regexp.QuoteMeta(`SELECT * FROM "navigations" WHERE mission_id = $1`)).
 		WithArgs(DefaultMissionID).
 		WillReturnRows(
-			sqlmock.NewRows([]string{"mission_id", "takeoff_point_ground_height_wgs84_ellipsoid_m"}).
-				AddRow(DefaultMissionID, DefaultMissionTakeoffPointGroundHeightWGS84EllipsoidM),
+			sqlmock.NewRows([]string{"mission_id", "takeoff_point_ground_height_wgs84_ellipsoid_m", "upload_id"}).
+				AddRow(DefaultMissionID, DefaultMissionTakeoffPointGroundHeightWGS84EllipsoidM, DefaultMissionUploadID),
 		)
 	mock.
 		ExpectQuery(
@@ -345,6 +347,7 @@ func TestMissionRepositoryGetSingleWhenGetAllOrigin(t *testing.T) {
 	navigationComp := navigationComponentMock{
 		TakeoffPointGroundHeightWGS84EllipsoidM: DefaultMissionTakeoffPointGroundHeightWGS84EllipsoidM,
 		Waypoints:                               waypointComps,
+		UploadID:                                string(DefaultMissionUploadID),
 	}
 	missionComp := missionComponentMock{
 		ID:           string(DefaultMissionID),
@@ -400,8 +403,8 @@ func TestMissionRepositoryGetMultipleWhenGetAllOrigin(t *testing.T) {
 			regexp.QuoteMeta(`SELECT * FROM "navigations" WHERE mission_id = $1`)).
 		WithArgs(DefaultMissionID1).
 		WillReturnRows(
-			sqlmock.NewRows([]string{"mission_id", "takeoff_point_ground_height_wgs84_ellipsoid_m"}).
-				AddRow(DefaultMissionID1, DefaultMissionTakeoffPointGroundHeightWGS84EllipsoidM),
+			sqlmock.NewRows([]string{"mission_id", "takeoff_point_ground_height_wgs84_ellipsoid_m", "upload_id"}).
+				AddRow(DefaultMissionID1, DefaultMissionTakeoffPointGroundHeightWGS84EllipsoidM, DefaultMissionUploadID),
 		)
 	mock.
 		ExpectQuery(
@@ -418,8 +421,8 @@ func TestMissionRepositoryGetMultipleWhenGetAllOrigin(t *testing.T) {
 			regexp.QuoteMeta(`SELECT * FROM "navigations" WHERE mission_id = $1`)).
 		WithArgs(DefaultMissionID2).
 		WillReturnRows(
-			sqlmock.NewRows([]string{"mission_id", "takeoff_point_ground_height_wgs84_ellipsoid_m"}).
-				AddRow(DefaultMissionID2, DefaultMissionTakeoffPointGroundHeightWGS84EllipsoidM),
+			sqlmock.NewRows([]string{"mission_id", "takeoff_point_ground_height_wgs84_ellipsoid_m", "upload_id"}).
+				AddRow(DefaultMissionID2, DefaultMissionTakeoffPointGroundHeightWGS84EllipsoidM, DefaultMissionUploadID),
 		)
 	mock.
 		ExpectQuery(
@@ -436,8 +439,8 @@ func TestMissionRepositoryGetMultipleWhenGetAllOrigin(t *testing.T) {
 			regexp.QuoteMeta(`SELECT * FROM "navigations" WHERE mission_id = $1`)).
 		WithArgs(DefaultMissionID3).
 		WillReturnRows(
-			sqlmock.NewRows([]string{"mission_id", "takeoff_point_ground_height_wgs84_ellipsoid_m"}).
-				AddRow(DefaultMissionID3, DefaultMissionTakeoffPointGroundHeightWGS84EllipsoidM),
+			sqlmock.NewRows([]string{"mission_id", "takeoff_point_ground_height_wgs84_ellipsoid_m", "upload_id"}).
+				AddRow(DefaultMissionID3, DefaultMissionTakeoffPointGroundHeightWGS84EllipsoidM, DefaultMissionUploadID),
 		)
 	mock.
 		ExpectQuery(
@@ -481,6 +484,7 @@ func TestMissionRepositoryGetMultipleWhenGetAllOrigin(t *testing.T) {
 	navigationComp := navigationComponentMock{
 		TakeoffPointGroundHeightWGS84EllipsoidM: DefaultMissionTakeoffPointGroundHeightWGS84EllipsoidM,
 		Waypoints:                               waypointComps,
+		UploadID:                                string(DefaultMissionUploadID),
 	}
 	missionComp1 := missionComponentMock{
 		ID:           string(DefaultMissionID1),
@@ -570,8 +574,8 @@ func TestMissionRepositoryGetByID(t *testing.T) {
 			regexp.QuoteMeta(`SELECT * FROM "navigations" WHERE mission_id = $1`)).
 		WithArgs(DefaultMissionID).
 		WillReturnRows(
-			sqlmock.NewRows([]string{"mission_id", "takeoff_point_ground_height_wgs84_ellipsoid_m"}).
-				AddRow(DefaultMissionID, DefaultMissionTakeoffPointGroundHeightWGS84EllipsoidM),
+			sqlmock.NewRows([]string{"mission_id", "takeoff_point_ground_height_wgs84_ellipsoid_m", "upload_id"}).
+				AddRow(DefaultMissionID, DefaultMissionTakeoffPointGroundHeightWGS84EllipsoidM, DefaultMissionUploadID),
 		)
 	mock.
 		ExpectQuery(
@@ -615,6 +619,7 @@ func TestMissionRepositoryGetByID(t *testing.T) {
 	navigationComp := navigationComponentMock{
 		TakeoffPointGroundHeightWGS84EllipsoidM: DefaultMissionTakeoffPointGroundHeightWGS84EllipsoidM,
 		Waypoints:                               waypointComps,
+		UploadID:                                string(DefaultMissionUploadID),
 	}
 	missionComp := missionComponentMock{
 		ID:           string(DefaultMissionID),
@@ -685,8 +690,8 @@ func TestMissionRepositorySingleWaypointCreateSave(t *testing.T) {
 
 	mock.
 		ExpectExec(
-			regexp.QuoteMeta(`INSERT INTO "navigations" ("mission_id","takeoff_point_ground_height_wgs84_ellipsoid_m") VALUES ($1,$2)`)).
-		WithArgs(DefaultMissionID, DefaultMissionTakeoffPointGroundHeightWGS84EllipsoidM).
+			regexp.QuoteMeta(`INSERT INTO "navigations" ("mission_id","takeoff_point_ground_height_wgs84_ellipsoid_m","upload_id") VALUES ($1,$2,$3)`)).
+		WithArgs(DefaultMissionID, DefaultMissionTakeoffPointGroundHeightWGS84EllipsoidM, DefaultMissionUploadID).
 		WillReturnResult(
 			sqlmock.NewResult(1, 1),
 		)
@@ -714,6 +719,7 @@ func TestMissionRepositorySingleWaypointCreateSave(t *testing.T) {
 	navigationComp := navigationComponentMock{
 		TakeoffPointGroundHeightWGS84EllipsoidM: DefaultMissionTakeoffPointGroundHeightWGS84EllipsoidM,
 		Waypoints:                               waypointComps,
+		UploadID:                                string(DefaultMissionUploadID),
 	}
 	missionComp := missionComponentMock{
 		ID:           string(DefaultMissionID),
@@ -759,8 +765,8 @@ func TestMissionRepositoryNoWaypointCreateSave(t *testing.T) {
 
 	mock.
 		ExpectExec(
-			regexp.QuoteMeta(`INSERT INTO "navigations" ("mission_id","takeoff_point_ground_height_wgs84_ellipsoid_m") VALUES ($1,$2)`)).
-		WithArgs(DefaultMissionID, DefaultMissionTakeoffPointGroundHeightWGS84EllipsoidM).
+			regexp.QuoteMeta(`INSERT INTO "navigations" ("mission_id","takeoff_point_ground_height_wgs84_ellipsoid_m","upload_id") VALUES ($1,$2,$3)`)).
+		WithArgs(DefaultMissionID, DefaultMissionTakeoffPointGroundHeightWGS84EllipsoidM, DefaultMissionUploadID).
 		WillReturnResult(
 			sqlmock.NewResult(1, 1),
 		)
@@ -772,6 +778,7 @@ func TestMissionRepositoryNoWaypointCreateSave(t *testing.T) {
 	navigationComp := navigationComponentMock{
 		TakeoffPointGroundHeightWGS84EllipsoidM: DefaultMissionTakeoffPointGroundHeightWGS84EllipsoidM,
 		Waypoints:                               waypointComps,
+		UploadID:                                string(DefaultMissionUploadID),
 	}
 	missionComp := missionComponentMock{
 		ID:           string(DefaultMissionID),
@@ -817,8 +824,8 @@ func TestMissionRepositoryMultipleWaypointsCreateSave(t *testing.T) {
 
 	mock.
 		ExpectExec(
-			regexp.QuoteMeta(`INSERT INTO "navigations" ("mission_id","takeoff_point_ground_height_wgs84_ellipsoid_m") VALUES ($1,$2)`)).
-		WithArgs(DefaultMissionID, DefaultMissionTakeoffPointGroundHeightWGS84EllipsoidM).
+			regexp.QuoteMeta(`INSERT INTO "navigations" ("mission_id","takeoff_point_ground_height_wgs84_ellipsoid_m","upload_id") VALUES ($1,$2,$3)`)).
+		WithArgs(DefaultMissionID, DefaultMissionTakeoffPointGroundHeightWGS84EllipsoidM, DefaultMissionUploadID).
 		WillReturnResult(
 			sqlmock.NewResult(1, 1),
 		)
@@ -864,6 +871,7 @@ func TestMissionRepositoryMultipleWaypointsCreateSave(t *testing.T) {
 	navigationComp := navigationComponentMock{
 		TakeoffPointGroundHeightWGS84EllipsoidM: DefaultMissionTakeoffPointGroundHeightWGS84EllipsoidM,
 		Waypoints:                               waypointComps,
+		UploadID:                                string(DefaultMissionUploadID),
 	}
 	missionComp := missionComponentMock{
 		ID:           string(DefaultMissionID),
@@ -918,8 +926,8 @@ func TestMissionRepositorySingleWaypointUpdateSave(t *testing.T) {
 
 	mock.
 		ExpectExec(
-			regexp.QuoteMeta(`INSERT INTO "navigations" ("mission_id","takeoff_point_ground_height_wgs84_ellipsoid_m") VALUES ($1,$2)`)).
-		WithArgs(DefaultMissionID, DefaultMissionTakeoffPointGroundHeightWGS84EllipsoidM).
+			regexp.QuoteMeta(`INSERT INTO "navigations" ("mission_id","takeoff_point_ground_height_wgs84_ellipsoid_m","upload_id") VALUES ($1,$2,$3)`)).
+		WithArgs(DefaultMissionID, DefaultMissionTakeoffPointGroundHeightWGS84EllipsoidM, DefaultMissionUploadID).
 		WillReturnResult(
 			sqlmock.NewResult(1, 1),
 		)
@@ -955,6 +963,7 @@ func TestMissionRepositorySingleWaypointUpdateSave(t *testing.T) {
 	navigationComp := navigationComponentMock{
 		TakeoffPointGroundHeightWGS84EllipsoidM: DefaultMissionTakeoffPointGroundHeightWGS84EllipsoidM,
 		Waypoints:                               waypointComps,
+		UploadID:                                string(DefaultMissionUploadID),
 	}
 	missionComp := missionComponentMock{
 		ID:           string(DefaultMissionID),
@@ -1009,8 +1018,8 @@ func TestMissionRepositoryNoWaypointUpdateSave(t *testing.T) {
 
 	mock.
 		ExpectExec(
-			regexp.QuoteMeta(`INSERT INTO "navigations" ("mission_id","takeoff_point_ground_height_wgs84_ellipsoid_m") VALUES ($1,$2)`)).
-		WithArgs(DefaultMissionID, DefaultMissionTakeoffPointGroundHeightWGS84EllipsoidM).
+			regexp.QuoteMeta(`INSERT INTO "navigations" ("mission_id","takeoff_point_ground_height_wgs84_ellipsoid_m","upload_id") VALUES ($1,$2,$3)`)).
+		WithArgs(DefaultMissionID, DefaultMissionTakeoffPointGroundHeightWGS84EllipsoidM, DefaultMissionUploadID).
 		WillReturnResult(
 			sqlmock.NewResult(1, 1),
 		)
@@ -1030,6 +1039,7 @@ func TestMissionRepositoryNoWaypointUpdateSave(t *testing.T) {
 	navigationComp := navigationComponentMock{
 		TakeoffPointGroundHeightWGS84EllipsoidM: DefaultMissionTakeoffPointGroundHeightWGS84EllipsoidM,
 		Waypoints:                               waypointComps,
+		UploadID:                                string(DefaultMissionUploadID),
 	}
 	missionComp := missionComponentMock{
 		ID:           string(DefaultMissionID),
@@ -1084,8 +1094,8 @@ func TestMissionRepositoryMultipleWaypointsUpdateSave(t *testing.T) {
 
 	mock.
 		ExpectExec(
-			regexp.QuoteMeta(`INSERT INTO "navigations" ("mission_id","takeoff_point_ground_height_wgs84_ellipsoid_m") VALUES ($1,$2)`)).
-		WithArgs(DefaultMissionID, DefaultMissionTakeoffPointGroundHeightWGS84EllipsoidM).
+			regexp.QuoteMeta(`INSERT INTO "navigations" ("mission_id","takeoff_point_ground_height_wgs84_ellipsoid_m","upload_id") VALUES ($1,$2,$3)`)).
+		WithArgs(DefaultMissionID, DefaultMissionTakeoffPointGroundHeightWGS84EllipsoidM, DefaultMissionUploadID).
 		WillReturnResult(
 			sqlmock.NewResult(1, 1),
 		)
@@ -1139,6 +1149,7 @@ func TestMissionRepositoryMultipleWaypointsUpdateSave(t *testing.T) {
 	navigationComp := navigationComponentMock{
 		TakeoffPointGroundHeightWGS84EllipsoidM: DefaultMissionTakeoffPointGroundHeightWGS84EllipsoidM,
 		Waypoints:                               waypointComps,
+		UploadID:                                string(DefaultMissionUploadID),
 	}
 	missionComp := missionComponentMock{
 		ID:           string(DefaultMissionID),

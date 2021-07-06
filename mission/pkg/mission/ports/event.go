@@ -42,7 +42,10 @@ func (h *EventHandler) HandleMissionCopiedWhenFlightplanCopiedEvent(
 		originalID: eventPb.GetOriginalMissionId(),
 		newID:      eventPb.GetNewMissionId(),
 	}
-	if ret := h.app.Services.ManageMission.CarbonCopyMission(command); ret != nil {
+	if ret := h.app.Services.ManageMission.CarbonCopyMission(
+		command,
+		func(uploadID string) { /* 処理なし */ },
+	); ret != nil {
 		return ret
 	}
 	return nil

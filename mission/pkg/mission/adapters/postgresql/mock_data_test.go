@@ -12,6 +12,7 @@ const DefaultMissionID = m.ID("mission-id")
 const DefaultMissionVersion = m.Version("version")
 const DefaultMissionName = "mission-name"
 const DefaultMissionTakeoffPointGroundHeightWGS84EllipsoidM float64 = 10
+const DefaultMissionUploadID = m.UploadID("upload-id")
 
 func GetNewDbMock() (*gorm.DB, sqlmock.Sqlmock, error) {
 	db, mock, err := sqlmock.New()
@@ -65,6 +66,7 @@ func (v *missionComponentMock) GetVersion() string {
 type navigationComponentMock struct {
 	TakeoffPointGroundHeightWGS84EllipsoidM float64
 	Waypoints                               []waypointComponentMock
+	UploadID                                string
 }
 
 func (v *navigationComponentMock) GetTakeoffPointGroundHeightWGS84EllipsoidM() float64 {
@@ -86,6 +88,11 @@ func (v *navigationComponentMock) GetWaypoints() []m.WaypointComponent {
 		)
 	}
 	return waypoints
+}
+
+// GetUploadID .
+func (v *navigationComponentMock) GetUploadID() string {
+	return v.UploadID
 }
 
 // Waypoint構成オブジェクトモック

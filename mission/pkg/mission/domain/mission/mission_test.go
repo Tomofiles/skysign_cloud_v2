@@ -42,6 +42,7 @@ func TestAddNavigationToMission(t *testing.T) {
 
 	gen := &generatorMock{
 		id:       DefaultID,
+		uploadID: DefaultUploadID,
 		versions: []Version{DefaultVersion1, DefaultVersion2},
 	}
 	mission := NewInstance(gen)
@@ -49,7 +50,10 @@ func TestAddNavigationToMission(t *testing.T) {
 	navigation := NewNavigation(DefaultTakeoffPointGroundHeightWGS84EllipsoidM)
 	err := mission.ReplaceNavigationWith(navigation)
 
-	a.Equal(mission.GetNavigation(), navigation)
+	expectNav := NewNavigation(DefaultTakeoffPointGroundHeightWGS84EllipsoidM)
+	expectNav.uploadID = DefaultUploadID
+
+	a.Equal(mission.GetNavigation(), expectNav)
 	a.Equal(mission.GetVersion(), DefaultVersion1)
 	a.Equal(mission.GetNewVersion(), DefaultVersion2)
 	a.Nil(err)

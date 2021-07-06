@@ -55,11 +55,15 @@ func NewWaypoint(
 	}
 }
 
+// UploadID .
+type UploadID string
+
 // Navigation .
 type Navigation struct {
 	currentOrder                            int
 	takeoffPointGroundHeightWGS84EllipsoidM Height
 	waypoints                               []Waypoint
+	uploadID                                UploadID
 }
 
 // NewNavigation .
@@ -91,6 +95,11 @@ func (n *Navigation) PushNextWaypoint(
 			speedMS,
 		),
 	)
+}
+
+// GetUploadID .
+func (n *Navigation) GetUploadID() UploadID {
+	return n.uploadID
 }
 
 // ProvideWaypointsInterest .

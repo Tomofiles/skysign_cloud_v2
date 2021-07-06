@@ -6,6 +6,7 @@ const DefaultID = ID("mission-id")
 const DefaultVersion = Version("version")
 const DefaultName = "mission-name"
 const DefaultTakeoffPointGroundHeightWGS84EllipsoidM float64 = 10
+const DefaultUploadID = UploadID("upload-id")
 
 var (
 	ErrSave   = errors.New("save error")
@@ -17,12 +18,16 @@ var (
 type generatorMock struct {
 	Generator
 	id           ID
+	uploadID     UploadID
 	versions     []Version
 	versionIndex int
 }
 
 func (gen *generatorMock) NewID() ID {
 	return gen.id
+}
+func (gen *generatorMock) NewUploadID() UploadID {
+	return gen.uploadID
 }
 func (gen *generatorMock) NewVersion() Version {
 	version := gen.versions[gen.versionIndex]
@@ -76,6 +81,7 @@ func (v *missionComponentMock) GetVersion() string {
 type navigationComponentMock struct {
 	takeoffPointGroundHeightWGS84EllipsoidM float64
 	waypoints                               []waypointComponentMock
+	uploadID                                string
 }
 
 func (v *navigationComponentMock) GetTakeoffPointGroundHeightWGS84EllipsoidM() float64 {
@@ -97,6 +103,10 @@ func (v *navigationComponentMock) GetWaypoints() []WaypointComponent {
 		)
 	}
 	return waypoints
+}
+
+func (v *navigationComponentMock) GetUploadID() string {
+	return v.uploadID
 }
 
 // Waypoint構成オブジェクトモック

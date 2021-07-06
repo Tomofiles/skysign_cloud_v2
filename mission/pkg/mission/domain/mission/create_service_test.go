@@ -24,6 +24,7 @@ func TestCreateNewMissionService(t *testing.T) {
 
 	gen := &generatorMock{
 		id:       DefaultID,
+		uploadID: DefaultUploadID,
 		versions: []Version{DefaultVersion1, DefaultVersion2, DefaultVersion3},
 	}
 	repo := &repositoryMockCreateService{}
@@ -32,7 +33,7 @@ func TestCreateNewMissionService(t *testing.T) {
 
 	navigation := NewNavigation(DefaultTakeoffPointGroundHeightWGS84EllipsoidM)
 
-	id, ret := CreateNewMission(ctx, gen, repo, pub, DefaultName, navigation)
+	id, uploadID, ret := CreateNewMission(ctx, gen, repo, pub, DefaultName, navigation)
 
 	expectMission := Mission{
 		id:           DefaultID,
@@ -44,11 +45,17 @@ func TestCreateNewMissionService(t *testing.T) {
 		gen:          gen,
 		pub:          pub,
 	}
+	expectEvent := CreatedEvent{
+		ID:      DefaultID,
+		Mission: &expectMission,
+	}
 
 	a.Equal(id, string(DefaultID))
+	a.Equal(uploadID, string(DefaultUploadID))
 	a.Len(repo.saveMissions, 1)
 	a.Equal(repo.saveMissions[0], &expectMission)
-	a.Len(pub.events, 0)
+	a.Len(pub.events, 1)
+	a.Equal(pub.events, []interface{}{expectEvent})
 
 	a.Nil(ret)
 }
@@ -77,9 +84,10 @@ func TestSaveErrorWhenCreateNewMissionService(t *testing.T) {
 
 	navigation := NewNavigation(DefaultTakeoffPointGroundHeightWGS84EllipsoidM)
 
-	id, ret := CreateNewMission(ctx, gen, repo, pub, DefaultName, navigation)
+	id, uploadID, ret := CreateNewMission(ctx, gen, repo, pub, DefaultName, navigation)
 
 	a.Empty(id)
+	a.Empty(uploadID)
 	a.Len(repo.saveMissions, 0)
 	a.Len(pub.events, 0)
 

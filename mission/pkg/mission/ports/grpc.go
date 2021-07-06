@@ -92,6 +92,9 @@ func (s *GrpcServer) CreateMission(
 		func(id string) {
 			response.Id = id
 		},
+		func(uploadID string) {
+			request.Navigation.UploadId = uploadID
+		},
 	); ret != nil {
 		return nil, ret
 	}
@@ -109,7 +112,12 @@ func (s *GrpcServer) UpdateMission(
 	command := &updateCommand{
 		request: request,
 	}
-	if ret := s.app.Services.ManageMission.UpdateMission(command); ret != nil {
+	if ret := s.app.Services.ManageMission.UpdateMission(
+		command,
+		func(uploadID string) {
+			request.Navigation.UploadId = uploadID
+		},
+	); ret != nil {
 		return nil, ret
 	}
 	response.Id = request.Id
@@ -192,6 +200,7 @@ func (f *mission) GetNavigation() service.Navigation {
 type navigation struct {
 	takeoffPointGroundHeight float64
 	waypoints                []waypoint
+	uploadID                 string
 }
 
 func (f *navigation) GetTakeoffPointGroundHeight() float64 {
@@ -212,6 +221,10 @@ func (f *navigation) GetWaypoints() []service.Waypoint {
 		)
 	}
 	return waypoints
+}
+
+func (f *navigation) GetUploadID() string {
+	return f.uploadID
 }
 
 type waypoint struct {

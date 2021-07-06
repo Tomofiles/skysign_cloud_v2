@@ -39,6 +39,10 @@ func run() error {
 	if err != nil {
 		return err
 	}
+	err = gw.RegisterUploadMissionEdgeServiceHandlerFromEndpoint(ctx, mux, endpoint, opts)
+	if err != nil {
+		return err
+	}
 
 	return http.ListenAndServe(":"+*port, mux)
 }

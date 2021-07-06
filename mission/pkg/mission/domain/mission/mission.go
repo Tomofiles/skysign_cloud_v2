@@ -80,6 +80,7 @@ func (m *Mission) ReplaceNavigationWith(navigation *Navigation) error {
 	if m.isCarbonCopy {
 		return ErrCannotChange
 	}
+	navigation.uploadID = m.gen.NewUploadID()
 	m.navigation = navigation
 	m.newVersion = m.gen.NewVersion()
 	return nil
@@ -88,5 +89,6 @@ func (m *Mission) ReplaceNavigationWith(navigation *Navigation) error {
 // Generator .
 type Generator interface {
 	NewID() ID
+	NewUploadID() UploadID
 	NewVersion() Version
 }
