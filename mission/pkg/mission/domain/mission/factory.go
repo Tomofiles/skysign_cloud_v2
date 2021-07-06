@@ -38,6 +38,7 @@ func Copy(gen Generator, id ID, original *Mission) *Mission {
 				)
 			},
 		)
+		navigation.uploadID = gen.NewUploadID()
 		mission.navigation = navigation
 	}
 
@@ -64,6 +65,7 @@ func AssembleFrom(gen Generator, comp Component) *Mission {
 			waypointComp.GetSpeedMS(),
 		)
 	}
+	navigation.uploadID = UploadID(comp.GetNavigation().GetUploadID())
 	mission.navigation = navigation
 
 	return mission
@@ -73,7 +75,7 @@ func AssembleFrom(gen Generator, comp Component) *Mission {
 func TakeApart(
 	mission *Mission,
 	component func(id, name, version string, isCarbonCopy bool),
-	navigationComponent func(takeoffPointGroundHeightWGS84EllipsoidM float64),
+	navigationComponent func(takeoffPointGroundHeightWGS84EllipsoidM float64, uploadID string),
 	waypointComponent func(pointOrder int, latitudeDegree, longitudeDegree, relativeHeightM, speedMS float64),
 ) {
 	component(
@@ -84,6 +86,7 @@ func TakeApart(
 	)
 	navigationComponent(
 		mission.navigation.GetTakeoffPointGroundHeightWGS84EllipsoidM(),
+		string(mission.navigation.uploadID),
 	)
 	mission.navigation.ProvideWaypointsInterest(
 		waypointComponent,
@@ -103,6 +106,7 @@ type Component interface {
 type NavigationComponent interface {
 	GetTakeoffPointGroundHeightWGS84EllipsoidM() float64
 	GetWaypoints() []WaypointComponent
+	GetUploadID() string
 }
 
 // WaypointComponent .

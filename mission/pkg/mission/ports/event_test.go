@@ -2,6 +2,7 @@ package ports
 
 import (
 	"mission/pkg/mission/app"
+	m "mission/pkg/mission/domain/mission"
 	"mission/pkg/skysign_proto"
 	"testing"
 
@@ -20,7 +21,22 @@ func TestHandleMissionCopiedWhenFlightplanCopiedEvent(t *testing.T) {
 
 	service := manageMissionServiceMock{}
 
-	service.On("CarbonCopyMission", mock.Anything).Return(nil)
+	missionModel := &missionModelMock{
+		mission: m.AssembleFrom(
+			nil,
+			&missionComponentMock{
+				ID:   string(DefaultMissionID),
+				Name: DefaultMissionName,
+				Navigation: navigationComponentMock{
+					TakeoffPointGroundHeightWGS84EllipsoidM: DefaultMissionTakeoffPointGroundHeightWGS84EllipsoidM,
+					Waypoints:                               []waypointComponentMock{},
+					UploadID:                                string(DefaultMissionUploadID),
+				},
+				Version: string(DefaultMissionVersion),
+			},
+		),
+	}
+	service.On("CarbonCopyMission", mock.Anything).Return(missionModel, nil)
 
 	app := app.Application{
 		Services: app.Services{

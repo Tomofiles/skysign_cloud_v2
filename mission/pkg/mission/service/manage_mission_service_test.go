@@ -19,6 +19,7 @@ func TestGetMissionTransaction(t *testing.T) {
 			Navigation: navigationComponentMock{
 				TakeoffPointGroundHeightWGS84EllipsoidM: DefaultMissionTakeoffPointGroundHeightWGS84EllipsoidM,
 				Waypoints:                               []waypointComponentMock{},
+				UploadID:                                string(DefaultMissionUploadID),
 			},
 			Version: string(DefaultMissionVersion),
 		},
@@ -63,6 +64,7 @@ func TestGetMissionOperation(t *testing.T) {
 			Navigation: navigationComponentMock{
 				TakeoffPointGroundHeightWGS84EllipsoidM: DefaultMissionTakeoffPointGroundHeightWGS84EllipsoidM,
 				Waypoints:                               []waypointComponentMock{},
+				UploadID:                                string(DefaultMissionUploadID),
 			},
 			Version: string(DefaultMissionVersion),
 		},
@@ -94,6 +96,7 @@ func TestGetMissionOperation(t *testing.T) {
 	a.Equal(resModel.GetMission().GetID(), string(DefaultMissionID))
 	a.Equal(resModel.GetMission().GetName(), DefaultMissionName)
 	a.Equal(resModel.GetMission().GetNavigation().GetTakeoffPointGroundHeight(), DefaultMissionTakeoffPointGroundHeightWGS84EllipsoidM)
+	a.Equal(resModel.GetMission().GetNavigation().GetUploadID(), string(DefaultMissionUploadID))
 	a.Len(resModel.GetMission().GetNavigation().GetWaypoints(), 0)
 }
 
@@ -109,6 +112,7 @@ func TestListMissionsTransaction(t *testing.T) {
 				Navigation: navigationComponentMock{
 					TakeoffPointGroundHeightWGS84EllipsoidM: DefaultMissionTakeoffPointGroundHeightWGS84EllipsoidM,
 					Waypoints:                               []waypointComponentMock{},
+					UploadID:                                string(DefaultMissionUploadID),
 				},
 				Version: string(DefaultMissionVersion),
 			},
@@ -146,14 +150,17 @@ func TestListMissionsOperation(t *testing.T) {
 		DefaultMissionName1                                    = DefaultMissionName + "-1"
 		DefaultMissionTakeoffPointGroundHeightWGS84EllipsoidM1 = DefaultMissionTakeoffPointGroundHeightWGS84EllipsoidM + 1
 		DefaultMissionVersion1                                 = string(DefaultMissionVersion) + "-1"
+		DefaultMissionUploadID1                                = string(DefaultMissionUploadID) + "-1"
 		DefaultMissionID2                                      = string(DefaultMissionID) + "-2"
 		DefaultMissionName2                                    = DefaultMissionName + "-2"
 		DefaultMissionTakeoffPointGroundHeightWGS84EllipsoidM2 = DefaultMissionTakeoffPointGroundHeightWGS84EllipsoidM + 2
 		DefaultMissionVersion2                                 = string(DefaultMissionVersion) + "-2"
+		DefaultMissionUploadID2                                = string(DefaultMissionUploadID) + "-2"
 		DefaultMissionID3                                      = string(DefaultMissionID) + "-3"
 		DefaultMissionName3                                    = DefaultMissionName + "-3"
 		DefaultMissionTakeoffPointGroundHeightWGS84EllipsoidM3 = DefaultMissionTakeoffPointGroundHeightWGS84EllipsoidM + 3
 		DefaultMissionVersion3                                 = string(DefaultMissionVersion) + "-3"
+		DefaultMissionUploadID3                                = string(DefaultMissionUploadID) + "-3"
 	)
 
 	missions := []*m.Mission{
@@ -165,6 +172,7 @@ func TestListMissionsOperation(t *testing.T) {
 				Navigation: navigationComponentMock{
 					TakeoffPointGroundHeightWGS84EllipsoidM: DefaultMissionTakeoffPointGroundHeightWGS84EllipsoidM1,
 					Waypoints:                               []waypointComponentMock{},
+					UploadID:                                string(DefaultMissionUploadID1),
 				},
 				Version: string(DefaultMissionVersion1),
 			},
@@ -177,6 +185,7 @@ func TestListMissionsOperation(t *testing.T) {
 				Navigation: navigationComponentMock{
 					TakeoffPointGroundHeightWGS84EllipsoidM: DefaultMissionTakeoffPointGroundHeightWGS84EllipsoidM2,
 					Waypoints:                               []waypointComponentMock{},
+					UploadID:                                string(DefaultMissionUploadID2),
 				},
 				Version: string(DefaultMissionVersion2),
 			},
@@ -189,6 +198,7 @@ func TestListMissionsOperation(t *testing.T) {
 				Navigation: navigationComponentMock{
 					TakeoffPointGroundHeightWGS84EllipsoidM: DefaultMissionTakeoffPointGroundHeightWGS84EllipsoidM3,
 					Waypoints:                               []waypointComponentMock{},
+					UploadID:                                string(DefaultMissionUploadID3),
 				},
 				Version: string(DefaultMissionVersion3),
 			},
@@ -228,6 +238,7 @@ func TestCreateMissionTransaction(t *testing.T) {
 
 	gen := &generatorMock{
 		id:       DefaultMissionID,
+		uploadID: DefaultMissionUploadID,
 		versions: []m.Version{DefaultMissionVersion1, DefaultMissionVersion2, DefaultMissionVersion3},
 	}
 	repo := &missionRepositoryMock{}
@@ -260,17 +271,21 @@ func TestCreateMissionTransaction(t *testing.T) {
 			},
 		},
 	}
-	var resCall bool
+	var resCall1, resCall2 bool
 	ret := service.CreateMission(
 		command,
 		func(id string) {
-			resCall = true
+			resCall1 = true
+		},
+		func(uploadID string) {
+			resCall2 = true
 		},
 	)
 
 	a.Nil(ret)
-	a.True(resCall)
-	a.Len(pub.events, 0)
+	a.True(resCall1)
+	a.True(resCall2)
+	a.Len(pub.events, 1)
 	a.True(isClose)
 	a.True(pub.isFlush)
 	a.Nil(txm.isOpe)
@@ -288,6 +303,7 @@ func TestCreateMissionOperation(t *testing.T) {
 
 	gen := &generatorMock{
 		id:       DefaultMissionID,
+		uploadID: DefaultMissionUploadID,
 		versions: []m.Version{DefaultMissionVersion1, DefaultMissionVersion2, DefaultMissionVersion3},
 	}
 	repo := &missionRepositoryMock{}
@@ -310,7 +326,7 @@ func TestCreateMissionOperation(t *testing.T) {
 			},
 		},
 	}
-	var resID string
+	var resID, resUploadID string
 	ret := service.createMissionOperation(
 		nil,
 		pub,
@@ -318,11 +334,15 @@ func TestCreateMissionOperation(t *testing.T) {
 		func(id string) {
 			resID = id
 		},
+		func(uploadID string) {
+			resUploadID = uploadID
+		},
 	)
 
 	a.Nil(ret)
 	a.Equal(resID, string(DefaultMissionID))
-	a.Len(pub.events, 0)
+	a.Equal(resUploadID, string(DefaultMissionUploadID))
+	a.Len(pub.events, 1)
 }
 
 func TestUpdateMissionTransaction(t *testing.T) {
@@ -336,6 +356,7 @@ func TestUpdateMissionTransaction(t *testing.T) {
 
 	gen := &generatorMock{
 		id:       DefaultMissionID,
+		uploadID: DefaultMissionUploadID,
 		versions: []m.Version{DefaultMissionVersion1, DefaultMissionVersion2},
 	}
 
@@ -347,6 +368,7 @@ func TestUpdateMissionTransaction(t *testing.T) {
 			Navigation: navigationComponentMock{
 				TakeoffPointGroundHeightWGS84EllipsoidM: DefaultMissionTakeoffPointGroundHeightWGS84EllipsoidM,
 				Waypoints:                               []waypointComponentMock{},
+				UploadID:                                string(DefaultMissionUploadID),
 			},
 			Version: string(DefaultMissionVersion),
 		},
@@ -384,10 +406,17 @@ func TestUpdateMissionTransaction(t *testing.T) {
 			},
 		},
 	}
-	ret := service.UpdateMission(command)
+	var resCall bool
+	ret := service.UpdateMission(
+		command,
+		func(uploadID string) {
+			resCall = true
+		},
+	)
 
 	a.Nil(ret)
-	a.Len(pub.events, 0)
+	a.True(resCall)
+	a.Len(pub.events, 2)
 	a.True(isClose)
 	a.True(pub.isFlush)
 	a.Nil(txm.isOpe)
@@ -405,6 +434,7 @@ func TestUpdateMissionOperation(t *testing.T) {
 
 	gen := &generatorMock{
 		id:       DefaultMissionID,
+		uploadID: DefaultMissionUploadID,
 		versions: []m.Version{DefaultMissionVersion1, DefaultMissionVersion2},
 	}
 
@@ -416,6 +446,7 @@ func TestUpdateMissionOperation(t *testing.T) {
 			Navigation: navigationComponentMock{
 				TakeoffPointGroundHeightWGS84EllipsoidM: DefaultMissionTakeoffPointGroundHeightWGS84EllipsoidM,
 				Waypoints:                               []waypointComponentMock{},
+				UploadID:                                string(DefaultMissionUploadID),
 			},
 			Version: string(DefaultMissionVersion),
 		},
@@ -443,14 +474,19 @@ func TestUpdateMissionOperation(t *testing.T) {
 			},
 		},
 	}
+	var resUploadID string
 	ret := service.updateMissionOperation(
 		nil,
 		pub,
 		command,
+		func(uploadID string) {
+			resUploadID = uploadID
+		},
 	)
 
 	a.Nil(ret)
-	a.Len(pub.events, 0)
+	a.Equal(resUploadID, string(DefaultMissionUploadID))
+	a.Len(pub.events, 2)
 }
 
 func TestDeleteMissionTransaction(t *testing.T) {
@@ -468,6 +504,7 @@ func TestDeleteMissionTransaction(t *testing.T) {
 			Navigation: navigationComponentMock{
 				TakeoffPointGroundHeightWGS84EllipsoidM: DefaultMissionTakeoffPointGroundHeightWGS84EllipsoidM,
 				Waypoints:                               []waypointComponentMock{},
+				UploadID:                                string(DefaultMissionUploadID),
 			},
 			Version: string(DefaultMissionVersion),
 		},
@@ -501,7 +538,7 @@ func TestDeleteMissionTransaction(t *testing.T) {
 	ret := service.DeleteMission(command)
 
 	a.Nil(ret)
-	a.Len(pub.events, 0)
+	a.Len(pub.events, 1)
 	a.True(isClose)
 	a.True(pub.isFlush)
 	a.Nil(txm.isOpe)
@@ -523,6 +560,7 @@ func TestDeleteMissionOperation(t *testing.T) {
 			Navigation: navigationComponentMock{
 				TakeoffPointGroundHeightWGS84EllipsoidM: DefaultMissionTakeoffPointGroundHeightWGS84EllipsoidM,
 				Waypoints:                               []waypointComponentMock{},
+				UploadID:                                string(DefaultMissionUploadID),
 			},
 			Version: string(DefaultMissionVersion),
 		},
@@ -550,7 +588,7 @@ func TestDeleteMissionOperation(t *testing.T) {
 	)
 
 	a.Nil(ret)
-	a.Len(pub.events, 0)
+	a.Len(pub.events, 1)
 }
 
 func TestCarbonCopyMissionTransaction(t *testing.T) {
@@ -561,7 +599,9 @@ func TestCarbonCopyMissionTransaction(t *testing.T) {
 		DefaultNewID      = DefaultMissionID + "-new"
 	)
 
-	gen := &generatorMock{}
+	gen := &generatorMock{
+		uploadID: DefaultMissionUploadID,
+	}
 
 	mission := m.AssembleFrom(
 		gen,
@@ -571,6 +611,7 @@ func TestCarbonCopyMissionTransaction(t *testing.T) {
 			Navigation: navigationComponentMock{
 				TakeoffPointGroundHeightWGS84EllipsoidM: DefaultMissionTakeoffPointGroundHeightWGS84EllipsoidM,
 				Waypoints:                               []waypointComponentMock{},
+				UploadID:                                string(DefaultMissionUploadID),
 			},
 			Version: string(DefaultMissionVersion),
 		},
@@ -603,10 +644,17 @@ func TestCarbonCopyMissionTransaction(t *testing.T) {
 		OriginalID: string(DefaultOriginalID),
 		NewID:      string(DefaultNewID),
 	}
-	ret := service.CarbonCopyMission(command)
+	var resCall bool
+	ret := service.CarbonCopyMission(
+		command,
+		func(uploadID string) {
+			resCall = true
+		},
+	)
 
 	a.Nil(ret)
-	a.Len(pub.events, 0)
+	a.True(resCall)
+	a.Len(pub.events, 1)
 	a.True(isClose)
 	a.True(pub.isFlush)
 	a.Nil(txm.isOpe)
@@ -621,7 +669,9 @@ func TestCarbonCopyMissionOperation(t *testing.T) {
 		DefaultNewID      = DefaultMissionID + "-new"
 	)
 
-	gen := &generatorMock{}
+	gen := &generatorMock{
+		uploadID: DefaultMissionUploadID,
+	}
 
 	mission := m.AssembleFrom(
 		gen,
@@ -631,6 +681,7 @@ func TestCarbonCopyMissionOperation(t *testing.T) {
 			Navigation: navigationComponentMock{
 				TakeoffPointGroundHeightWGS84EllipsoidM: DefaultMissionTakeoffPointGroundHeightWGS84EllipsoidM,
 				Waypoints:                               []waypointComponentMock{},
+				UploadID:                                string(DefaultMissionUploadID),
 			},
 			Version: string(DefaultMissionVersion),
 		},
@@ -653,14 +704,19 @@ func TestCarbonCopyMissionOperation(t *testing.T) {
 		OriginalID: string(DefaultOriginalID),
 		NewID:      string(DefaultNewID),
 	}
+	var resUploadID string
 	ret := service.carbonCopyMissionOperation(
 		nil,
 		pub,
 		command,
+		func(uploadID string) {
+			resUploadID = uploadID
+		},
 	)
 
 	a.Nil(ret)
-	a.Len(pub.events, 0)
+	a.Equal(resUploadID, string(DefaultMissionUploadID))
+	a.Len(pub.events, 1)
 }
 
 func TestNoWaypointMissionModel(t *testing.T) {
@@ -674,6 +730,7 @@ func TestNoWaypointMissionModel(t *testing.T) {
 			Navigation: navigationComponentMock{
 				TakeoffPointGroundHeightWGS84EllipsoidM: DefaultMissionTakeoffPointGroundHeightWGS84EllipsoidM,
 				Waypoints:                               []waypointComponentMock{},
+				UploadID:                                string(DefaultMissionUploadID),
 			},
 			Version: string(DefaultMissionVersion),
 		},
@@ -688,6 +745,7 @@ func TestNoWaypointMissionModel(t *testing.T) {
 	a.Equal(model.GetMission().GetID(), string(DefaultMissionID))
 	a.Equal(model.GetMission().GetName(), DefaultMissionName)
 	a.Equal(model.GetMission().GetNavigation().GetTakeoffPointGroundHeight(), DefaultMissionTakeoffPointGroundHeightWGS84EllipsoidM)
+	a.Equal(model.GetMission().GetNavigation().GetUploadID(), string(DefaultMissionUploadID))
 	a.Len(model.GetMission().GetNavigation().GetWaypoints(), 0)
 	a.Equal(model.GetMission().GetNavigation().GetWaypoints(), expectWps)
 }
@@ -711,6 +769,7 @@ func TestSingleWaypointMissionModel(t *testing.T) {
 						SpeedMS:         41.0,
 					},
 				},
+				UploadID: string(DefaultMissionUploadID),
 			},
 			Version: string(DefaultMissionVersion),
 		},
@@ -732,6 +791,7 @@ func TestSingleWaypointMissionModel(t *testing.T) {
 	a.Equal(model.GetMission().GetID(), string(DefaultMissionID))
 	a.Equal(model.GetMission().GetName(), DefaultMissionName)
 	a.Equal(model.GetMission().GetNavigation().GetTakeoffPointGroundHeight(), DefaultMissionTakeoffPointGroundHeightWGS84EllipsoidM)
+	a.Equal(model.GetMission().GetNavigation().GetUploadID(), string(DefaultMissionUploadID))
 	a.Len(model.GetMission().GetNavigation().GetWaypoints(), 1)
 	a.Equal(model.GetMission().GetNavigation().GetWaypoints(), expectWps)
 }
@@ -769,6 +829,7 @@ func TestMultipleWaypointsMissionModel(t *testing.T) {
 						SpeedMS:         43.0,
 					},
 				},
+				UploadID: string(DefaultMissionUploadID),
 			},
 			Version: string(DefaultMissionVersion),
 		},
@@ -802,6 +863,7 @@ func TestMultipleWaypointsMissionModel(t *testing.T) {
 	a.Equal(model.GetMission().GetID(), string(DefaultMissionID))
 	a.Equal(model.GetMission().GetName(), DefaultMissionName)
 	a.Equal(model.GetMission().GetNavigation().GetTakeoffPointGroundHeight(), DefaultMissionTakeoffPointGroundHeightWGS84EllipsoidM)
+	a.Equal(model.GetMission().GetNavigation().GetUploadID(), string(DefaultMissionUploadID))
 	a.Len(model.GetMission().GetNavigation().GetWaypoints(), 3)
 	a.Equal(model.GetMission().GetNavigation().GetWaypoints(), expectWps)
 }

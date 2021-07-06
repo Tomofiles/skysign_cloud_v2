@@ -27,6 +27,7 @@ func MissionProtoTransformerFromModel(
 	mission.Navigation = &proto.Navigation{
 		TakeoffPointGroundHeight: model.GetMission().GetNavigation().GetTakeoffPointGroundHeight(),
 		Waypoints:                waypoints,
+		UploadId:                 model.GetMission().GetNavigation().GetUploadID(),
 	}
 	return mission
 }

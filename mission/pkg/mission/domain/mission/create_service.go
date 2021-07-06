@@ -13,7 +13,7 @@ func CreateNewMission(
 	pub event.Publisher,
 	name string,
 	navigation *Navigation,
-) (string, error) {
+) (string, string, error) {
 	mission := NewInstance(gen)
 
 	mission.SetPublisher(pub)
@@ -23,8 +23,12 @@ func CreateNewMission(
 	mission.ReplaceNavigationWith(navigation)
 
 	if err := repo.Save(tx, mission); err != nil {
-		return "", err
+		return "", "", err
 	}
 
-	return string(mission.GetID()), nil
+	pub.Publish(CreatedEvent{
+		ID:      mission.GetID(),
+		Mission: mission,
+	})
+	return string(mission.GetID()), string(mission.GetNavigation().GetUploadID()), nil
 }

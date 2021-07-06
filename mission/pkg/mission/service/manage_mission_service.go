@@ -10,10 +10,10 @@ import (
 type ManageMissionService interface {
 	GetMission(command GetMissionCommand, retrievedModel RetrievedModel) error
 	ListMissions(retrievedModel RetrievedModel) error
-	CreateMission(command CreateMissionCommand, createdID CreatedID) error
-	UpdateMission(command UpdateMissionCommand) error
+	CreateMission(command CreateMissionCommand, createdID CreatedID, uploadID UploadID) error
+	UpdateMission(command UpdateMissionCommand, uploadID UploadID) error
 	DeleteMission(command DeleteMissionCommand) error
-	CarbonCopyMission(command CarbonCopyMissionCommand) error
+	CarbonCopyMission(command CarbonCopyMissionCommand, uploadID UploadID) error
 }
 
 // CreateMissionCommand .
@@ -59,6 +59,7 @@ type Mission interface {
 type Navigation interface {
 	GetTakeoffPointGroundHeight() float64
 	GetWaypoints() []Waypoint
+	GetUploadID() string
 }
 
 // Waypoint .
@@ -71,6 +72,9 @@ type Waypoint interface {
 
 // CreatedID .
 type CreatedID = func(id string)
+
+// UploadID .
+type UploadID = func(uploadID string)
 
 // RetrievedModel .
 type RetrievedModel = func(model MissionPresentationModel)
@@ -161,6 +165,7 @@ func (s *manageMissionService) listMissionsOperation(
 func (s *manageMissionService) CreateMission(
 	command CreateMissionCommand,
 	createdID CreatedID,
+	uploadID UploadID,
 ) error {
 	pub, chClose, err := s.psm.GetPublisher()
 	if err != nil {
@@ -175,6 +180,7 @@ func (s *manageMissionService) CreateMission(
 				pub,
 				command,
 				createdID,
+				uploadID,
 			)
 		},
 		func() error {
@@ -188,9 +194,10 @@ func (s *manageMissionService) createMissionOperation(
 	pub event.Publisher,
 	command CreateMissionCommand,
 	createdID CreatedID,
+	uploadID UploadID,
 ) error {
 	navigation := NavigationTransformerFromCommand(command.GetMission())
-	id, ret := m.CreateNewMission(
+	id, uID, ret := m.CreateNewMission(
 		tx,
 		s.gen,
 		s.repo,
@@ -203,11 +210,13 @@ func (s *manageMissionService) createMissionOperation(
 	}
 
 	createdID(id)
+	uploadID(uID)
 	return nil
 }
 
 func (s *manageMissionService) UpdateMission(
 	command UpdateMissionCommand,
+	uploadID UploadID,
 ) error {
 	pub, chClose, err := s.psm.GetPublisher()
 	if err != nil {
@@ -221,6 +230,7 @@ func (s *manageMissionService) UpdateMission(
 				tx,
 				pub,
 				command,
+				uploadID,
 			)
 		},
 		func() error {
@@ -233,9 +243,10 @@ func (s *manageMissionService) updateMissionOperation(
 	tx txmanager.Tx,
 	pub event.Publisher,
 	command UpdateMissionCommand,
+	uploadID UploadID,
 ) error {
 	navigation := NavigationTransformerFromCommand(command.GetMission())
-	ret := m.UpdateMission(
+	uID, ret := m.UpdateMission(
 		tx,
 		s.gen,
 		s.repo,
@@ -248,6 +259,7 @@ func (s *manageMissionService) updateMissionOperation(
 		return ret
 	}
 
+	uploadID(uID)
 	return nil
 }
 
@@ -293,6 +305,7 @@ func (s *manageMissionService) deleteMissionOperation(
 
 func (s *manageMissionService) CarbonCopyMission(
 	command CarbonCopyMissionCommand,
+	uploadID UploadID,
 ) error {
 	pub, chClose, err := s.psm.GetPublisher()
 	if err != nil {
@@ -306,6 +319,7 @@ func (s *manageMissionService) CarbonCopyMission(
 				tx,
 				pub,
 				command,
+				uploadID,
 			)
 		},
 		func() error {
@@ -318,18 +332,21 @@ func (s *manageMissionService) carbonCopyMissionOperation(
 	tx txmanager.Tx,
 	pub event.Publisher,
 	command CarbonCopyMissionCommand,
+	uploadID UploadID,
 ) error {
-	if ret := m.CarbonCopyMission(
+	id, ret := m.CarbonCopyMission(
 		tx,
 		s.gen,
 		s.repo,
 		pub,
 		m.ID(command.GetOriginalID()),
 		m.ID(command.GetNewID()),
-	); ret != nil {
+	)
+	if ret != nil {
 		return ret
 	}
 
+	uploadID(id)
 	return nil
 }
 
@@ -373,6 +390,7 @@ func (f *mission) GetNavigation() Navigation {
 	navigation := &navigation{
 		takeoffPointGroundHeight: f.mission.GetNavigation().GetTakeoffPointGroundHeightWGS84EllipsoidM(),
 		waypoints:                waypoints,
+		uploadID:                 string(f.mission.GetNavigation().GetUploadID()),
 	}
 	return navigation
 }
@@ -380,6 +398,7 @@ func (f *mission) GetNavigation() Navigation {
 type navigation struct {
 	takeoffPointGroundHeight float64
 	waypoints                []waypoint
+	uploadID                 string
 }
 
 func (f *navigation) GetTakeoffPointGroundHeight() float64 {
@@ -400,6 +419,10 @@ func (f *navigation) GetWaypoints() []Waypoint {
 		)
 	}
 	return waypoints
+}
+
+func (f *navigation) GetUploadID() string {
+	return string(f.uploadID)
 }
 
 type waypoint struct {

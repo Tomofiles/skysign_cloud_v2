@@ -27,5 +27,11 @@ func DeleteMission(
 		return err
 	}
 
+	if mission.navigation != nil {
+		pub.Publish(DeletedEvent{
+			ID:       mission.GetID(),
+			UploadID: mission.navigation.uploadID,
+		})
+	}
 	return nil
 }

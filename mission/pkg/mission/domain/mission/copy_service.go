@@ -14,24 +14,28 @@ func CarbonCopyMission(
 	pub event.Publisher,
 	originalID ID,
 	newID ID,
-) error {
-	_, err := repo.GetByID(tx, newID)
+) (string, error) {
+	old, err := repo.GetByID(tx, newID)
 	if err != nil && !errors.Is(err, ErrNotFound) {
-		return err
+		return "", err
 	} else if err == nil {
-		return nil
+		return string(old.GetNavigation().GetUploadID()), nil
 	}
 
 	original, err := repo.GetByID(tx, originalID)
 	if err != nil {
-		return err
+		return "", err
 	}
 
 	mission := Copy(gen, newID, original)
 
 	if err := repo.Save(tx, mission); err != nil {
-		return err
+		return "", err
 	}
 
-	return nil
+	pub.Publish(CreatedEvent{
+		ID:      mission.GetID(),
+		Mission: mission,
+	})
+	return string(mission.GetNavigation().GetUploadID()), nil
 }

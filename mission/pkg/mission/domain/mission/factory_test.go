@@ -30,9 +30,16 @@ func TestCreateNewMission(t *testing.T) {
 func TestCopyMission(t *testing.T) {
 	a := assert.New(t)
 
-	gen := &generatorMock{}
-	id := DefaultID + "-copied"
+	var (
+		CopiedID    = DefaultID + "-copied"
+		NewUploadID = DefaultUploadID + "-new"
+	)
+
+	gen := &generatorMock{
+		uploadID: NewUploadID,
+	}
 	navigation := NewNavigation(DefaultTakeoffPointGroundHeightWGS84EllipsoidM)
+	navigation.uploadID = DefaultUploadID
 	navigation.PushNextWaypoint(11.0, 21.0, 31.0, 41.0)
 	navigation.PushNextWaypoint(12.0, 22.0, 32.0, 42.0)
 	navigation.PushNextWaypoint(13.0, 23.0, 33.0, 43.0)
@@ -45,11 +52,17 @@ func TestCopyMission(t *testing.T) {
 		newVersion:   DefaultVersion,
 		pub:          &publisherMock{},
 	}
-	mission := Copy(gen, id, original)
+	mission := Copy(gen, CopiedID, original)
 
-	a.Equal(mission.GetID(), id)
+	expectNav := NewNavigation(DefaultTakeoffPointGroundHeightWGS84EllipsoidM)
+	expectNav.uploadID = NewUploadID
+	expectNav.PushNextWaypoint(11.0, 21.0, 31.0, 41.0)
+	expectNav.PushNextWaypoint(12.0, 22.0, 32.0, 42.0)
+	expectNav.PushNextWaypoint(13.0, 23.0, 33.0, 43.0)
+
+	a.Equal(mission.GetID(), CopiedID)
 	a.Equal(mission.GetName(), DefaultName)
-	a.Equal(mission.GetNavigation(), navigation)
+	a.Equal(mission.GetNavigation(), expectNav)
 	a.Equal(mission.isCarbonCopy, CarbonCopy)
 	a.Equal(mission.GetVersion(), DefaultVersion)
 	a.Equal(mission.GetNewVersion(), DefaultVersion)
@@ -90,6 +103,7 @@ func TestMissionAssembleFromComponent(t *testing.T) {
 					speedMS:         43.0,
 				},
 			},
+			uploadID: string(DefaultUploadID),
 		},
 		isCarbonCopy: CarbonCopy,
 		version:      string(DefaultVersion),
@@ -101,6 +115,7 @@ func TestMissionAssembleFromComponent(t *testing.T) {
 	mission := AssembleFrom(gen, comp)
 
 	expectNav := NewNavigation(DefaultTakeoffPointGroundHeightWGS84EllipsoidM)
+	expectNav.uploadID = DefaultUploadID
 	expectNav.PushNextWaypoint(11.0, 21.0, 31.0, 41.0)
 	expectNav.PushNextWaypoint(12.0, 22.0, 32.0, 42.0)
 	expectNav.PushNextWaypoint(13.0, 23.0, 33.0, 43.0)
@@ -121,6 +136,7 @@ func TestTakeApartMission(t *testing.T) {
 	a := assert.New(t)
 
 	navigation := NewNavigation(DefaultTakeoffPointGroundHeightWGS84EllipsoidM)
+	navigation.uploadID = DefaultUploadID
 	navigation.PushNextWaypoint(11.0, 21.0, 31.0, 41.0)
 	navigation.PushNextWaypoint(12.0, 22.0, 32.0, 42.0)
 	navigation.PushNextWaypoint(13.0, 23.0, 33.0, 43.0)
@@ -144,8 +160,9 @@ func TestTakeApartMission(t *testing.T) {
 			comp.isCarbonCopy = isCarbonCopy
 			comp.version = version
 		},
-		func(takeoffPointGroundHeightWGS84EllipsoidM float64) {
+		func(takeoffPointGroundHeightWGS84EllipsoidM float64, uploadID string) {
 			comp.navigation.takeoffPointGroundHeightWGS84EllipsoidM = takeoffPointGroundHeightWGS84EllipsoidM
+			comp.navigation.uploadID = uploadID
 		},
 		func(pointOrder int, latitudeDegree, longitudeDegree, relativeHeightM, speedMS float64) {
 			comp.navigation.waypoints = append(
@@ -189,6 +206,7 @@ func TestTakeApartMission(t *testing.T) {
 					speedMS:         43.0,
 				},
 			},
+			uploadID: string(DefaultUploadID),
 		},
 		isCarbonCopy: CarbonCopy,
 		version:      string(DefaultVersion),

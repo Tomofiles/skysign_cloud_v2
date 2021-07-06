@@ -20,6 +20,12 @@ func (g *MissionUUID) NewID() mission.ID {
 	return mission.ID(uuid.String())
 }
 
+// NewUploadID .
+func (g *MissionUUID) NewUploadID() mission.UploadID {
+	uuid, _ := uuid.NewRandom()
+	return mission.UploadID(uuid.String())
+}
+
 // NewVersion .
 func (g *MissionUUID) NewVersion() mission.Version {
 	uuid, _ := uuid.NewRandom()
