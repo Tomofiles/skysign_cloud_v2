@@ -50,7 +50,7 @@ func PullMission(cloud string, vehicleID string, commandID string) (*edge.Missio
 
 	req, err = http.NewRequest(
 		"GET",
-		cloud+"/api/v1/missions/"+uploadMission.MissionID,
+		cloud+"/api/v1/uploadmissions/"+uploadMission.MissionID,
 		strings.NewReader("{}"),
 	)
 	if err != nil {
