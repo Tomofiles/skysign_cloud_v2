@@ -15,6 +15,7 @@ const FlightOperationAssignment = props => {
   const { vehicles, missions } = useContext(AppContext);
   const [ vehicleName, setVehicleName ] = useState("-");
   const [ missionName, setMissionName ] = useState("-");
+  const [ missionUploadId, setMissionUploadId ] = useState("-");
   const [ communicationId, setCommunicationId ] = useState(undefined);
 
   useEffect(() => {
@@ -29,8 +30,11 @@ const FlightOperationAssignment = props => {
   useEffect(() => {
     missions
       .filter(mission => mission.id === props.missionId)
-      .forEach(mission => setMissionName(mission.name));
-  }, [ props.missionId, missions, setMissionName ])
+      .forEach(mission => {
+        setMissionName(mission.name);
+        setMissionUploadId(mission.navigation.upload_id);
+      });
+  }, [ props.missionId, missions, setMissionName, setMissionUploadId ])
 
   return (
     <Box pb={1}>
@@ -66,7 +70,7 @@ const FlightOperationAssignment = props => {
             <FlightOperationCommunication 
               classes={props.classes} 
               communicationId={communicationId}
-              missionId={props.missionId} />
+              missionId={missionUploadId} />
           </Grid>
         </Box>
       </ListItem>
