@@ -4,16 +4,16 @@ import java.util.stream.Collectors;
 
 import com.google.protobuf.InvalidProtocolBufferException;
 
-import net.tomofiles.skysign.communication.api.event.event.MissionCreatedEvent;
+import net.tomofiles.skysign.communication.api.event.event.CopiedMissionCreatedEvent;
 import net.tomofiles.skysign.communication.api.event.event.Waypoint;
 
 
-public class MissionCreatedEventPb {
+public class CopiedMissionCreatedEventPb {
 
-    private final proto.skysign.event.MissionCreatedEvent event;
+    private final proto.skysign.event.CopiedMissionCreatedEvent event;
 
-    public MissionCreatedEventPb(byte[] message) throws InvalidProtocolBufferException {
-        this.event = proto.skysign.event.MissionCreatedEvent.parseFrom(message);
+    public CopiedMissionCreatedEventPb(byte[] message) throws InvalidProtocolBufferException {
+        this.event = proto.skysign.event.CopiedMissionCreatedEvent.parseFrom(message);
     }
 
     @Override
@@ -21,8 +21,8 @@ public class MissionCreatedEventPb {
         return this.event.toString().replaceAll("\\r\\n|\\r|\\n", " ");
     }
 
-    public MissionCreatedEvent getEvent() {
-        return new MissionCreatedEvent(
+    public CopiedMissionCreatedEvent getEvent() {
+        return new CopiedMissionCreatedEvent(
             this.event.getMission().getNavigation().getUploadId(),
             this.event.getMission().getNavigation().getWaypointsList().stream()
                 .map(waypoint -> {

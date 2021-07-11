@@ -7,7 +7,6 @@ import lombok.AllArgsConstructor;
 import net.tomofiles.skysign.communication.domain.mission.Mission;
 import net.tomofiles.skysign.communication.domain.mission.MissionRepository;
 import net.tomofiles.skysign.communication.service.dpo.CreateMissionRequestDpo;
-import net.tomofiles.skysign.communication.service.dpo.DeleteMissionRequestDpo;
 import net.tomofiles.skysign.communication.service.dpo.ManageMissionResponseDpo;
 
 @Component
@@ -29,19 +28,6 @@ public class ManageMissionService {
             });
 
         this.missionRepository.save(mission);
-
-        responseDpo.setMission(mission);
-    }
-
-    @Transactional
-    public void deleteMission(DeleteMissionRequestDpo requestDpo, ManageMissionResponseDpo responseDpo) {
-        Mission mission = this.missionRepository.getById(requestDpo.getMissionId());
-
-        if (mission == null) {
-            return;
-        }
-
-        this.missionRepository.remove(mission.getId());
 
         responseDpo.setMission(mission);
     }
