@@ -10,13 +10,6 @@ option java_multiple_files = true;
 option go_package = ".;skysign_proto";
 
 service AssignAssetsToFlightplanService {
-    rpc ChangeNumberOfVehicles (ChangeNumberOfVehiclesRequest) returns (ChangeNumberOfVehiclesResponse) {
-        option (google.api.http) = {
-            put: "/api/v1/flightplans/{id}/numberofvehicles"
-            body: "*"
-        };
-    };
-
     rpc GetAssignments (GetAssignmentsRequest) returns (GetAssignmentsResponse) {
         option (google.api.http) = {
             get: "/api/v1/flightplans/{id}/assignments"
@@ -29,16 +22,6 @@ service AssignAssetsToFlightplanService {
             body: "*"
         };
     };
-}
-
-message ChangeNumberOfVehiclesRequest {
-    string id = 1;
-    int32 number_of_vehicles = 2;
-}
-
-message ChangeNumberOfVehiclesResponse {
-    string id = 1;
-    int32 number_of_vehicles = 2;
 }
 
 message GetAssignmentsRequest {

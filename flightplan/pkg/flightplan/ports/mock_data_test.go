@@ -1,6 +1,7 @@
 package ports
 
 import (
+	f "flightplan/pkg/flightplan/domain/flightplan"
 	"flightplan/pkg/flightplan/service"
 
 	"github.com/stretchr/testify/mock"
@@ -9,6 +10,7 @@ import (
 const DefaultFlightplanID = "flightplan-id"
 const DefaultFlightplanName = "flightplan-name"
 const DefaultFlightplanDescription = "flightplan-description"
+const DefaultFlightplanFleetID = "fleet-id"
 const DefaultFleetNumberOfVehicles int32 = 3
 const DefaultFleetAssignmentID = "assignment-id"
 const DefaultFleetEventID = "event-id"
@@ -22,66 +24,59 @@ type manageFlightplanServiceMock struct {
 }
 
 func (s *manageFlightplanServiceMock) GetFlightplan(
-	requestDpo service.GetFlightplanRequestDpo,
-	responseDpo service.GetFlightplanResponseDpo,
+	command service.GetFlightplanCommand,
+	retrievedModel service.RetrievedModel,
 ) error {
 	ret := s.Called()
-	if flightplan := ret.Get(0); flightplan != nil {
-		f := flightplan.(flightplanMock)
-		responseDpo(f.id, f.name, f.description)
+	if model := ret.Get(0); model != nil {
+		f := model.(service.FlightplanPresentationModel)
+		retrievedModel(f)
 	}
 	return ret.Error(1)
 }
 
 func (s *manageFlightplanServiceMock) ListFlightplans(
-	responseEachDpo service.ListFlightplansResponseDpo,
+	retrievedModel service.RetrievedModel,
 ) error {
 	ret := s.Called()
-	if flightplans := ret.Get(0); flightplans != nil {
-		for _, f := range flightplans.([]flightplanMock) {
-			responseEachDpo(f.id, f.name, f.description)
+	if models := ret.Get(0); models != nil {
+		for _, f := range models.([]service.FlightplanPresentationModel) {
+			retrievedModel(f)
 		}
 	}
 	return ret.Error(1)
 }
 
 func (s *manageFlightplanServiceMock) CreateFlightplan(
-	requestDpo service.CreateFlightplanRequestDpo,
-	responseDpo service.CreateFlightplanResponseDpo,
+	command service.CreateFlightplanCommand,
+	createdID service.CreatedID,
+	fleetID service.FleetID,
 ) error {
 	ret := s.Called()
-	if flightplan := ret.Get(0); flightplan != nil {
-		f := flightplan.(flightplanMock)
-		responseDpo(f.id, f.name, f.description)
+	if model := ret.Get(0); model != nil {
+		f := model.(service.FlightplanPresentationModel)
+		createdID(f.GetFlightplan().GetID())
+		fleetID(f.GetFlightplan().GetFleetID())
 	}
 	return ret.Error(1)
 }
 
 func (s *manageFlightplanServiceMock) UpdateFlightplan(
-	requestDpo service.UpdateFlightplanRequestDpo,
-	responseDpo service.UpdateFlightplanResponseDpo,
+	command service.UpdateFlightplanCommand,
+	fleetID service.FleetID,
 ) error {
 	ret := s.Called()
-	if flightplan := ret.Get(0); flightplan != nil {
-		f := flightplan.(flightplanMock)
-		responseDpo(f.id, f.name, f.description)
+	if model := ret.Get(0); model != nil {
+		f := model.(service.FlightplanPresentationModel)
+		fleetID(f.GetFlightplan().GetFleetID())
 	}
 	return ret.Error(1)
 }
 
 func (s *manageFlightplanServiceMock) DeleteFlightplan(
-	requestDpo service.DeleteFlightplanRequestDpo,
+	command service.DeleteFlightplanCommand,
 ) error {
 	ret := s.Called()
-	return ret.Error(0)
-}
-
-func (s *manageFlightplanServiceMock) CarbonCopyFlightplan(
-	requestDpo service.CarbonCopyFlightplanRequestDpo,
-) error {
-	ret := s.Called()
-	s.OriginalID = requestDpo.GetOriginalID()
-	s.NewID = requestDpo.GetNewID()
 	return ret.Error(0)
 }
 
@@ -114,6 +109,17 @@ func (s *manageFleetServiceMock) CarbonCopyFleet(
 	ret := s.Called()
 	s.OriginalID = requestDpo.GetOriginalID()
 	s.NewID = requestDpo.GetNewID()
+	return ret.Error(0)
+}
+
+type changeFlightplanServiceMock struct {
+	mock.Mock
+}
+
+func (s *changeFlightplanServiceMock) ChangeNumberOfVehicles(
+	command service.ChangeNumberOfVehiclesCommand,
+) error {
+	ret := s.Called()
 	return ret.Error(0)
 }
 
@@ -160,9 +166,9 @@ func (s *assignFleetServiceMock) UpdateAssignment(
 	return ret.Error(0)
 }
 
-type flightplanMock struct {
-	id, name, description string
-}
+// type flightplanMock struct {
+// 	id, name, description, fleetID string
+// }
 
 type changeNumberOfVehiclesMock struct {
 	flightplanID     string
@@ -171,4 +177,63 @@ type changeNumberOfVehiclesMock struct {
 
 type assignmentMock struct {
 	id, assignmentID, vehicleID, missionID string
+}
+
+type flightplanModelMock struct {
+	flightplan *f.Flightplan
+}
+
+func (f *flightplanModelMock) GetFlightplan() service.Flightplan {
+	return &flightplanMock{
+		flightplan: f.flightplan,
+	}
+}
+
+type flightplanMock struct {
+	flightplan *f.Flightplan
+}
+
+func (f *flightplanMock) GetID() string {
+	return string(f.flightplan.GetID())
+}
+
+func (f *flightplanMock) GetName() string {
+	return f.flightplan.GetName()
+}
+
+func (f *flightplanMock) GetDescription() string {
+	return f.flightplan.GetDescription()
+}
+
+func (f *flightplanMock) GetFleetID() string {
+	return string(f.flightplan.GetFleetID())
+}
+
+// Flightplan構成オブジェクトモック
+type flightplanComponentMock struct {
+	ID          string
+	Name        string
+	Description string
+	FleetID     string
+	Version     string
+}
+
+func (f *flightplanComponentMock) GetID() string {
+	return f.ID
+}
+
+func (f *flightplanComponentMock) GetName() string {
+	return f.Name
+}
+
+func (f *flightplanComponentMock) GetDescription() string {
+	return f.Description
+}
+
+func (f *flightplanComponentMock) GetFleetID() string {
+	return f.FleetID
+}
+
+func (f *flightplanComponentMock) GetVersion() string {
+	return f.Version
 }

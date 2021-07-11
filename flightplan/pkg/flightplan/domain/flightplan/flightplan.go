@@ -1,34 +1,44 @@
 package flightplan
 
-import "errors"
+import (
+	"errors"
+	"flightplan/pkg/flightplan/domain/event"
+)
 
 // ID .
 type ID string
+
+// FleetID .
+type FleetID string
 
 // Version .
 type Version string
 
 const (
-	// Original .
-	Original = false
-	// CarbonCopy .
-	CarbonCopy = true
+	// BlankFleetID .
+	BlankFleetID = FleetID("blank-fleet-id-@domain")
 )
 
 var (
 	// ErrCannotChange .
-	ErrCannotChange = errors.New("cannnot carbon copied flightplan")
+	ErrCannotChange = errors.New("cannnot change carbon copied flightplan")
 )
 
 // Flightplan .
 type Flightplan struct {
-	id           ID
-	name         string
-	description  string
-	isCarbonCopy bool
-	version      Version
-	newVersion   Version
-	gen          Generator
+	id          ID
+	name        string
+	description string
+	fleetID     FleetID
+	version     Version
+	newVersion  Version
+	gen         Generator
+	pub         event.Publisher
+}
+
+// SetPublisher .
+func (f *Flightplan) SetPublisher(pub event.Publisher) {
+	f.pub = pub
 }
 
 // GetID .
@@ -46,6 +56,11 @@ func (f *Flightplan) GetDescription() string {
 	return f.description
 }
 
+// GetFleetID .
+func (f *Flightplan) GetFleetID() FleetID {
+	return f.fleetID
+}
+
 // GetVersion .
 func (f *Flightplan) GetVersion() Version {
 	return f.version
@@ -58,9 +73,6 @@ func (f *Flightplan) GetNewVersion() Version {
 
 // NameFlightplan .
 func (f *Flightplan) NameFlightplan(name string) error {
-	if f.isCarbonCopy {
-		return ErrCannotChange
-	}
 	f.name = name
 	f.newVersion = f.gen.NewVersion()
 	return nil
@@ -68,16 +80,48 @@ func (f *Flightplan) NameFlightplan(name string) error {
 
 // ChangeDescription .
 func (f *Flightplan) ChangeDescription(description string) error {
-	if f.isCarbonCopy {
-		return ErrCannotChange
-	}
 	f.description = description
 	f.newVersion = f.gen.NewVersion()
+	return nil
+}
+
+// ChangeNumberOfVehicles .
+func (f *Flightplan) ChangeNumberOfVehicles(numberOfVehicles int) error {
+	if f.fleetID != BlankFleetID {
+		if f.pub != nil {
+			f.pub.Publish(FleetIDRemovedEvent{
+				FleetID: f.fleetID,
+			})
+		}
+	}
+	f.fleetID = f.gen.NewFleetID()
+	f.newVersion = f.gen.NewVersion()
+	if f.pub != nil {
+		f.pub.Publish(FleetIDGaveEvent{
+			FleetID:          f.fleetID,
+			NumberOfVehicles: numberOfVehicles,
+		})
+	}
+	return nil
+}
+
+// RemoveFleetID .
+func (f *Flightplan) RemoveFleetID() error {
+	if f.fleetID != BlankFleetID {
+		if f.pub != nil {
+			f.pub.Publish(FleetIDRemovedEvent{
+				FleetID: f.fleetID,
+			})
+		}
+		f.fleetID = BlankFleetID
+		f.newVersion = f.gen.NewVersion()
+	}
 	return nil
 }
 
 // Generator .
 type Generator interface {
 	NewID() ID
+	NewFleetID() FleetID
 	NewVersion() Version
 }

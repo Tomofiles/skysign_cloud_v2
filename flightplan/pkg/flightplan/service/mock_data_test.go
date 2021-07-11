@@ -14,6 +14,7 @@ const DefaultFlightplanID = fpl.ID("flightplan-id")
 const DefaultFlightplanVersion = fpl.Version("version")
 const DefaultFlightplanName = "flightplan-name"
 const DefaultFlightplanDescription = "flightplan-description"
+const DefaultFlightplanFleetID = fpl.FleetID("fleet-id")
 const DefaultFleetID = fl.ID("fleet-id")
 const DefaultFleetVersion = fl.Version("version")
 const DefaultFleetNumberOfVehicles int32 = 3
@@ -123,12 +124,16 @@ func (r *fleetRepositoryMock) DeleteByFlightplanID(
 type generatorMockFlightplan struct {
 	fpl.Generator
 	id           fpl.ID
+	fleetID      fpl.FleetID
 	versions     []fpl.Version
 	versionIndex int
 }
 
 func (gen *generatorMockFlightplan) NewID() fpl.ID {
 	return gen.id
+}
+func (gen *generatorMockFlightplan) NewFleetID() fpl.FleetID {
+	return gen.fleetID
 }
 func (gen *generatorMockFlightplan) NewVersion() fpl.Version {
 	version := gen.versions[gen.versionIndex]
@@ -231,11 +236,11 @@ func (txm *txManagerMock) DoAndEndHook(operation func(txmanager.Tx) error, endHo
 }
 
 type flightplanComponentMock struct {
-	ID           string
-	Name         string
-	Description  string
-	IsCarbonCopy bool
-	Version      string
+	ID          string
+	Name        string
+	Description string
+	FleetID     string
+	Version     string
 }
 
 func (f *flightplanComponentMock) GetID() string {
@@ -250,8 +255,8 @@ func (f *flightplanComponentMock) GetDescription() string {
 	return f.Description
 }
 
-func (f *flightplanComponentMock) GetIsCarbonCopy() bool {
-	return f.IsCarbonCopy
+func (f *flightplanComponentMock) GetFleetID() string {
+	return f.FleetID
 }
 
 func (f *flightplanComponentMock) GetVersion() string {
@@ -340,29 +345,46 @@ func (e *eventComponentMock) GetMissionID() string {
 	return e.MissionID
 }
 
-type flightplanRequestMock struct {
+type flightplanCommandMock struct {
+	Flightplan flightplanMock
+}
+
+func (f *flightplanCommandMock) GetID() string {
+	return f.Flightplan.ID
+}
+
+func (f *flightplanCommandMock) GetFlightplan() Flightplan {
+	return &f.Flightplan
+}
+
+type flightplanMock struct {
 	ID          string
 	Name        string
 	Description string
+	FleetID     string
 }
 
-func (f *flightplanRequestMock) GetID() string {
+func (f *flightplanMock) GetID() string {
 	return f.ID
 }
 
-func (f *flightplanRequestMock) GetName() string {
+func (f *flightplanMock) GetName() string {
 	return f.Name
 }
 
-func (f *flightplanRequestMock) GetDescription() string {
+func (f *flightplanMock) GetDescription() string {
 	return f.Description
 }
 
-type flightplanIDRequestMock struct {
+func (f *flightplanMock) GetFleetID() string {
+	return f.FleetID
+}
+
+type flightplanIDCommandMock struct {
 	ID string
 }
 
-func (f *flightplanIDRequestMock) GetID() string {
+func (f *flightplanIDCommandMock) GetID() string {
 	return f.ID
 }
 
@@ -397,6 +419,19 @@ func (c *changeNumberOfVehiclesRequestMock) GetFlightplanID() string {
 }
 
 func (c *changeNumberOfVehiclesRequestMock) GetNumberOfVehicles() int32 {
+	return c.NumberOfVehicles
+}
+
+type changeNumberOfVehiclesCommandMock struct {
+	ID               string
+	NumberOfVehicles int
+}
+
+func (c *changeNumberOfVehiclesCommandMock) GetID() string {
+	return c.ID
+}
+
+func (c *changeNumberOfVehiclesCommandMock) GetNumberOfVehicles() int {
 	return c.NumberOfVehicles
 }
 

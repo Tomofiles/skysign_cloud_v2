@@ -6,6 +6,8 @@ const DefaultID = ID("flightplan-id")
 const DefaultVersion = Version("version")
 const DefaultName = "flightplan-name"
 const DefaultDescription = "flightplan-description"
+const DefaultFleetID = FleetID("fleet-id")
+const DefaultNumberOfVehicles = 10
 
 var (
 	ErrSave   = errors.New("save error")
@@ -17,12 +19,16 @@ var (
 type generatorMock struct {
 	Generator
 	id           ID
+	fleetID      FleetID
 	versions     []Version
 	versionIndex int
 }
 
 func (gen *generatorMock) NewID() ID {
 	return gen.id
+}
+func (gen *generatorMock) NewFleetID() FleetID {
+	return gen.fleetID
 }
 func (gen *generatorMock) NewVersion() Version {
 	version := gen.versions[gen.versionIndex]
@@ -45,11 +51,11 @@ func (rm *publisherMock) Flush() error {
 
 // Flightplan構成オブジェクトモック
 type flightplanComponentMock struct {
-	id           string
-	name         string
-	description  string
-	isCarbonCopy bool
-	version      string
+	id          string
+	name        string
+	description string
+	fleetID     string
+	version     string
 }
 
 func (f *flightplanComponentMock) GetID() string {
@@ -64,8 +70,8 @@ func (f *flightplanComponentMock) GetDescription() string {
 	return f.description
 }
 
-func (f *flightplanComponentMock) GetIsCarbonCopy() bool {
-	return f.isCarbonCopy
+func (f *flightplanComponentMock) GetFleetID() string {
+	return f.fleetID
 }
 
 func (f *flightplanComponentMock) GetVersion() string {

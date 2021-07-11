@@ -5,12 +5,14 @@ import (
 	"flightplan/pkg/flightplan/domain/txmanager"
 )
 
-// DeleteFlightplan .
-func DeleteFlightplan(
+// ChangeNumberOfVehicles .
+func ChangeNumberOfVehicles(
 	tx txmanager.Tx,
+	gen Generator,
 	repo Repository,
 	pub event.Publisher,
 	id ID,
+	numberOfVehicles int,
 ) error {
 	flightplan, err := repo.GetByID(tx, id)
 	if err != nil {
@@ -18,12 +20,12 @@ func DeleteFlightplan(
 	}
 
 	flightplan.SetPublisher(pub)
-	if err := flightplan.RemoveFleetID(); err != nil {
+	if err := flightplan.ChangeNumberOfVehicles(numberOfVehicles); err != nil {
 		return err
 	}
 
-	if err := repo.Delete(tx, id); err != nil {
-		return err
+	if ret := repo.Save(tx, flightplan); ret != nil {
+		return ret
 	}
 
 	return nil

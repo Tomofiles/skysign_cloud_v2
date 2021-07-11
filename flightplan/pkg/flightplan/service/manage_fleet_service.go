@@ -3,7 +3,7 @@ package service
 import (
 	"flightplan/pkg/flightplan/domain/event"
 	"flightplan/pkg/flightplan/domain/fleet"
-	"flightplan/pkg/flightplan/domain/flightplan"
+	f "flightplan/pkg/flightplan/domain/flightplan"
 	"flightplan/pkg/flightplan/domain/txmanager"
 )
 
@@ -69,7 +69,7 @@ func (s *manageFleetService) createFleetOperation(
 ) error {
 	fleet := fleet.NewInstance(
 		s.gen,
-		flightplan.ID(requestDpo.GetFlightplanID()),
+		f.ID(requestDpo.GetFlightplanID()),
 		0)
 	if ret := s.repo.Save(tx, fleet); ret != nil {
 		return ret
@@ -95,7 +95,7 @@ func (s *manageFleetService) deleteFleetOperation(
 ) error {
 	if ret := s.repo.DeleteByFlightplanID(
 		tx,
-		flightplan.ID(requestDpo.GetFlightplanID()),
+		f.ID(requestDpo.GetFlightplanID()),
 	); ret != nil {
 		return ret
 	}
@@ -136,8 +136,8 @@ func (s *manageFleetService) carbonCopyFleetOperation(
 		s.gen,
 		s.repo,
 		pub,
-		flightplan.ID(requestDpo.GetOriginalID()),
-		flightplan.ID(requestDpo.GetNewID()),
+		f.ID(requestDpo.GetOriginalID()),
+		f.ID(requestDpo.GetNewID()),
 	); ret != nil {
 		return ret
 	}

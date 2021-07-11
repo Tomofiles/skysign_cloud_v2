@@ -2,65 +2,66 @@ package service
 
 import (
 	"flightplan/pkg/flightplan/domain/event"
-	fpl "flightplan/pkg/flightplan/domain/flightplan"
+	f "flightplan/pkg/flightplan/domain/flightplan"
 	"flightplan/pkg/flightplan/domain/txmanager"
 )
 
 // ManageFlightplanService .
 type ManageFlightplanService interface {
-	GetFlightplan(requestDpo GetFlightplanRequestDpo, responseDpo GetFlightplanResponseDpo) error
-	ListFlightplans(responseEachDpo ListFlightplansResponseDpo) error
-	CreateFlightplan(requestDpo CreateFlightplanRequestDpo, responseDpo CreateFlightplanResponseDpo) error
-	UpdateFlightplan(requestDpo UpdateFlightplanRequestDpo, responseDpo UpdateFlightplanResponseDpo) error
-	DeleteFlightplan(requestDpo DeleteFlightplanRequestDpo) error
-	CarbonCopyFlightplan(requestDpo CarbonCopyFlightplanRequestDpo) error
+	GetFlightplan(command GetFlightplanCommand, retrievedModel RetrievedModel) error
+	ListFlightplans(retrievedModel RetrievedModel) error
+	CreateFlightplan(command CreateFlightplanCommand, createdID CreatedID, fleetID FleetID) error
+	UpdateFlightplan(command UpdateFlightplanCommand, fleetID FleetID) error
+	DeleteFlightplan(command DeleteFlightplanCommand) error
 }
 
-// CreateFlightplanRequestDpo .
-type CreateFlightplanRequestDpo interface {
-	GetName() string
-	GetDescription() string
+// CreateFlightplanCommand .
+type CreateFlightplanCommand interface {
+	GetFlightplan() Flightplan
 }
 
-// CreateFlightplanResponseDpo .
-type CreateFlightplanResponseDpo = func(id, name, description string)
+// UpdateFlightplanCommand .
+type UpdateFlightplanCommand interface {
+	GetID() string
+	GetFlightplan() Flightplan
+}
 
-// UpdateFlightplanRequestDpo .
-type UpdateFlightplanRequestDpo interface {
+// GetFlightplanCommand .
+type GetFlightplanCommand interface {
+	GetID() string
+}
+
+// DeleteFlightplanCommand .
+type DeleteFlightplanCommand interface {
+	GetID() string
+}
+
+// FlightplanPresentationModel .
+type FlightplanPresentationModel interface {
+	GetFlightplan() Flightplan
+}
+
+// Flightplan .
+type Flightplan interface {
 	GetID() string
 	GetName() string
 	GetDescription() string
+	GetFleetID() string
 }
 
-// UpdateFlightplanResponseDpo .
-type UpdateFlightplanResponseDpo = func(id, name, description string)
+// CreatedID .
+type CreatedID = func(id string)
 
-// GetFlightplanRequestDpo .
-type GetFlightplanRequestDpo interface {
-	GetID() string
-}
+// UploadID .
+type FleetID = func(fleetID string)
 
-// GetFlightplanResponseDpo .
-type GetFlightplanResponseDpo = func(id, name, description string)
-
-// ListFlightplansResponseDpo .
-type ListFlightplansResponseDpo = func(id, name, description string)
-
-// DeleteFlightplanRequestDpo .
-type DeleteFlightplanRequestDpo interface {
-	GetID() string
-}
-
-// CarbonCopyFlightplanRequestDpo .
-type CarbonCopyFlightplanRequestDpo interface {
-	GetOriginalID() string
-	GetNewID() string
-}
+// RetrievedModel .
+type RetrievedModel = func(model FlightplanPresentationModel)
 
 // NewManageFlightplanService .
 func NewManageFlightplanService(
-	gen fpl.Generator,
-	repo fpl.Repository,
+	gen f.Generator,
+	repo f.Repository,
 	txm txmanager.TransactionManager,
 	psm event.PubSubManager,
 ) ManageFlightplanService {
@@ -73,76 +74,77 @@ func NewManageFlightplanService(
 }
 
 type manageFlightplanService struct {
-	gen  fpl.Generator
-	repo fpl.Repository
+	gen  f.Generator
+	repo f.Repository
 	txm  txmanager.TransactionManager
 	psm  event.PubSubManager
 }
 
 func (s *manageFlightplanService) GetFlightplan(
-	requestDpo GetFlightplanRequestDpo,
-	responseDpo GetFlightplanResponseDpo,
+	command GetFlightplanCommand,
+	retrievedModel RetrievedModel,
 ) error {
 	return s.txm.Do(func(tx txmanager.Tx) error {
 		return s.getFlightplanOperation(
 			tx,
-			requestDpo,
-			responseDpo,
+			command,
+			retrievedModel,
 		)
 	})
 }
 
 func (s *manageFlightplanService) getFlightplanOperation(
 	tx txmanager.Tx,
-	requestDpo GetFlightplanRequestDpo,
-	responseDpo GetFlightplanResponseDpo,
+	command GetFlightplanCommand,
+	retrievedModel RetrievedModel,
 ) error {
-	flightplan, err := s.repo.GetByID(tx, fpl.ID(requestDpo.GetID()))
+	flightplan, err := s.repo.GetByID(tx, f.ID(command.GetID()))
 	if err != nil {
 		return err
 	}
 
-	responseDpo(
-		string(flightplan.GetID()),
-		flightplan.GetName(),
-		flightplan.GetDescription(),
+	retrievedModel(
+		&flightplanModel{
+			flightplan: flightplan,
+		},
 	)
 	return nil
 }
 
 func (s *manageFlightplanService) ListFlightplans(
-	responseEachDpo ListFlightplansResponseDpo,
+	retrievedModel RetrievedModel,
 ) error {
 	return s.txm.Do(func(tx txmanager.Tx) error {
 		return s.listFlightplansOperation(
 			tx,
-			responseEachDpo,
+			retrievedModel,
 		)
 	})
 }
 
 func (s *manageFlightplanService) listFlightplansOperation(
 	tx txmanager.Tx,
-	responseEachDpo ListFlightplansResponseDpo,
+	retrievedModel RetrievedModel,
 ) error {
-	flightplans, err := s.repo.GetAllOrigin(tx)
+	flightplans, err := s.repo.GetAll(tx)
 	if err != nil {
 		return err
 	}
 
 	for _, f := range flightplans {
-		responseEachDpo(
-			string(f.GetID()),
-			f.GetName(),
-			f.GetDescription(),
+		retrievedModel(
+			&flightplanModel{
+				flightplan: f,
+			},
 		)
 	}
 	return nil
 }
 
 func (s *manageFlightplanService) CreateFlightplan(
-	requestDpo CreateFlightplanRequestDpo,
-	responseDpo CreateFlightplanResponseDpo,
+	command CreateFlightplanCommand,
+	createdID CreatedID,
+	fleetID FleetID,
 ) error {
 	pub, chClose, err := s.psm.GetPublisher()
 	if err != nil {
@@ -155,8 +157,9 @@ func (s *manageFlightplanService) CreateFlightplan(
 			return s.createFlightplanOperation(
 				tx,
 				pub,
-				requestDpo,
-				responseDpo,
+				command,
+				createdID,
+				fleetID,
 			)
 		},
 		func() error {
@@ -168,27 +171,29 @@ func (s *manageFlightplanService) CreateFlightplan(
 func (s *manageFlightplanService) createFlightplanOperation(
 	tx txmanager.Tx,
 	pub event.Publisher,
-	requestDpo CreateFlightplanRequestDpo,
-	responseDpo CreateFlightplanResponseDpo,
+	command CreateFlightplanCommand,
+	createdID CreatedID,
+	fleetID FleetID,
 ) error {
-	id, ret := fpl.CreateNewFlightplan(
+	id, fid, ret := f.CreateNewFlightplan(
 		tx,
 		s.gen,
 		s.repo,
 		pub,
-		requestDpo.GetName(),
-		requestDpo.GetDescription())
+		command.GetFlightplan().GetName(),
+		command.GetFlightplan().GetDescription())
 	if ret != nil {
 		return ret
 	}
 
-	responseDpo(id, requestDpo.GetName(), requestDpo.GetDescription())
+	createdID(string(id))
+	fleetID(string(fid))
 	return nil
 }
 
 func (s *manageFlightplanService) UpdateFlightplan(
-	requestDpo UpdateFlightplanRequestDpo,
-	responseDpo UpdateFlightplanResponseDpo,
+	command UpdateFlightplanCommand,
+	fleetID FleetID,
 ) error {
 	pub, chClose, err := s.psm.GetPublisher()
 	if err != nil {
@@ -201,8 +206,8 @@ func (s *manageFlightplanService) UpdateFlightplan(
 			return s.updateFlightplanOperation(
 				tx,
 				pub,
-				requestDpo,
-				responseDpo,
+				command,
+				fleetID,
 			)
 		},
 		func() error {
@@ -214,35 +219,28 @@ func (s *manageFlightplanService) UpdateFlightplan(
 func (s *manageFlightplanService) updateFlightplanOperation(
 	tx txmanager.Tx,
 	pub event.Publisher,
-	requestDpo UpdateFlightplanRequestDpo,
-	responseDpo UpdateFlightplanResponseDpo,
+	command UpdateFlightplanCommand,
+	fleetID FleetID,
 ) error {
-	flightplan, err := s.repo.GetByID(tx, fpl.ID(requestDpo.GetID()))
-	if err != nil {
-		return err
-	}
-
-	if err := flightplan.NameFlightplan(requestDpo.GetName()); err != nil {
-		return err
-	}
-	if err := flightplan.ChangeDescription(requestDpo.GetDescription()); err != nil {
-		return err
-	}
-
-	if ret := s.repo.Save(tx, flightplan); ret != nil {
+	ret := f.UpdateFlightplan(
+		tx,
+		s.gen,
+		s.repo,
+		pub,
+		f.ID(command.GetID()),
+		command.GetFlightplan().GetName(),
+		command.GetFlightplan().GetDescription())
+	if ret != nil {
 		return ret
 	}
 
-	responseDpo(
-		string(flightplan.GetID()),
-		flightplan.GetName(),
-		flightplan.GetDescription(),
-	)
+	flightplan, _ := s.repo.GetByID(tx, f.ID(command.GetID()))
+	fleetID(string(flightplan.GetFleetID()))
 	return nil
 }
 
 func (s *manageFlightplanService) DeleteFlightplan(
-	requestDpo DeleteFlightplanRequestDpo,
+	command DeleteFlightplanCommand,
 ) error {
 	pub, chClose, err := s.psm.GetPublisher()
 	if err != nil {
@@ -255,7 +253,7 @@ func (s *manageFlightplanService) DeleteFlightplan(
 			return s.deleteFlightplanOperation(
 				tx,
 				pub,
-				requestDpo,
+				command,
 			)
 		},
 		func() error {
@@ -267,13 +265,13 @@ func (s *manageFlightplanService) DeleteFlightplan(
 func (s *manageFlightplanService) deleteFlightplanOperation(
 	tx txmanager.Tx,
 	pub event.Publisher,
-	requestDpo DeleteFlightplanRequestDpo,
+	command DeleteFlightplanCommand,
 ) error {
-	if ret := fpl.DeleteFlightplan(
+	if ret := f.DeleteFlightplan(
 		tx,
 		s.repo,
 		pub,
-		fpl.ID(requestDpo.GetID()),
+		f.ID(command.GetID()),
 	); ret != nil {
 		return ret
 	}
@@ -281,44 +279,32 @@ func (s *manageFlightplanService) deleteFlightplanOperation(
 	return nil
 }
 
-func (s *manageFlightplanService) CarbonCopyFlightplan(
-	requestDpo CarbonCopyFlightplanRequestDpo,
-) error {
-	pub, chClose, err := s.psm.GetPublisher()
-	if err != nil {
-		return err
-	}
-	defer chClose()
-
-	return s.txm.DoAndEndHook(
-		func(tx txmanager.Tx) error {
-			return s.carbonCopyFlightplanOperation(
-				tx,
-				pub,
-				requestDpo,
-			)
-		},
-		func() error {
-			return pub.Flush()
-		},
-	)
+type flightplanModel struct {
+	flightplan *f.Flightplan
 }
 
-func (s *manageFlightplanService) carbonCopyFlightplanOperation(
-	tx txmanager.Tx,
-	pub event.Publisher,
-	requestDpo CarbonCopyFlightplanRequestDpo,
-) error {
-	if ret := fpl.CarbonCopyFlightplan(
-		tx,
-		s.gen,
-		s.repo,
-		pub,
-		fpl.ID(requestDpo.GetOriginalID()),
-		fpl.ID(requestDpo.GetNewID()),
-	); ret != nil {
-		return ret
+func (f *flightplanModel) GetFlightplan() Flightplan {
+	return &flightplan{
+		flightplan: f.flightplan,
 	}
+}
 
-	return nil
+type flightplan struct {
+	flightplan *f.Flightplan
+}
+
+func (f *flightplan) GetID() string {
+	return string(f.flightplan.GetID())
+}
+
+func (f *flightplan) GetName() string {
+	return f.flightplan.GetName()
+}
+
+func (f *flightplan) GetDescription() string {
+	return f.flightplan.GetDescription()
+}
+
+func (f *flightplan) GetFleetID() string {
+	return string(f.flightplan.GetFleetID())
 }

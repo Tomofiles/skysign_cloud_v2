@@ -2,6 +2,8 @@ package ports
 
 import (
 	"flightplan/pkg/flightplan/app"
+	f "flightplan/pkg/flightplan/domain/flightplan"
+	s "flightplan/pkg/flightplan/service"
 	"flightplan/pkg/skysign_proto"
 	"testing"
 
@@ -14,14 +16,20 @@ func TestSingleFlightplansListFlightplans(t *testing.T) {
 
 	service := manageFlightplanServiceMock{}
 
-	flightplans := []flightplanMock{
-		{
-			id:          DefaultFlightplanID,
-			name:        DefaultFlightplanName,
-			description: DefaultFlightplanDescription,
+	flightplanModels := []s.FlightplanPresentationModel{
+		&flightplanModelMock{
+			flightplan: f.AssembleFrom(
+				nil,
+				&flightplanComponentMock{
+					ID:          string(DefaultFlightplanID),
+					Name:        DefaultFlightplanName,
+					Description: DefaultFlightplanDescription,
+					FleetID:     DefaultFlightplanFleetID,
+				},
+			),
 		},
 	}
-	service.On("ListFlightplans", mock.Anything).Return(flightplans, nil)
+	service.On("ListFlightplans", mock.Anything).Return(flightplanModels, nil)
 
 	app := app.Application{
 		Services: app.Services{
@@ -43,6 +51,7 @@ func TestSingleFlightplansListFlightplans(t *testing.T) {
 				Id:          DefaultFlightplanID,
 				Name:        DefaultFlightplanName,
 				Description: DefaultFlightplanDescription,
+				FleetId:     DefaultFlightplanFleetID,
 			},
 		},
 	}
@@ -58,34 +67,55 @@ func TestMultipleFlightplansListFlightplans(t *testing.T) {
 		DefaultFlightplanID1          = DefaultFlightplanID + "-1"
 		DefaultFlightplanName1        = DefaultFlightplanName + "-1"
 		DefaultFlightplanDescription1 = DefaultFlightplanDescription + "-1"
+		DefaultFlightplanFleetID1     = DefaultFlightplanFleetID + "-1"
 		DefaultFlightplanID2          = DefaultFlightplanID + "-2"
 		DefaultFlightplanName2        = DefaultFlightplanName + "-2"
 		DefaultFlightplanDescription2 = DefaultFlightplanDescription + "-2"
+		DefaultFlightplanFleetID2     = DefaultFlightplanFleetID + "-2"
 		DefaultFlightplanID3          = DefaultFlightplanID + "-3"
 		DefaultFlightplanName3        = DefaultFlightplanName + "-3"
 		DefaultFlightplanDescription3 = DefaultFlightplanDescription + "-3"
+		DefaultFlightplanFleetID3     = DefaultFlightplanFleetID + "-3"
 	)
 
 	service := manageFlightplanServiceMock{}
 
-	flightplans := []flightplanMock{
-		{
-			id:          DefaultFlightplanID1,
-			name:        DefaultFlightplanName1,
-			description: DefaultFlightplanDescription1,
+	flightplanModels := []s.FlightplanPresentationModel{
+		&flightplanModelMock{
+			flightplan: f.AssembleFrom(
+				nil,
+				&flightplanComponentMock{
+					ID:          string(DefaultFlightplanID1),
+					Name:        DefaultFlightplanName1,
+					Description: DefaultFlightplanDescription1,
+					FleetID:     DefaultFlightplanFleetID1,
+				},
+			),
 		},
-		{
-			id:          DefaultFlightplanID2,
-			name:        DefaultFlightplanName2,
-			description: DefaultFlightplanDescription2,
+		&flightplanModelMock{
+			flightplan: f.AssembleFrom(
+				nil,
+				&flightplanComponentMock{
+					ID:          string(DefaultFlightplanID2),
+					Name:        DefaultFlightplanName2,
+					Description: DefaultFlightplanDescription2,
+					FleetID:     DefaultFlightplanFleetID2,
+				},
+			),
 		},
-		{
-			id:          DefaultFlightplanID3,
-			name:        DefaultFlightplanName3,
-			description: DefaultFlightplanDescription3,
+		&flightplanModelMock{
+			flightplan: f.AssembleFrom(
+				nil,
+				&flightplanComponentMock{
+					ID:          string(DefaultFlightplanID3),
+					Name:        DefaultFlightplanName3,
+					Description: DefaultFlightplanDescription3,
+					FleetID:     DefaultFlightplanFleetID3,
+				},
+			),
 		},
 	}
-	service.On("ListFlightplans", mock.Anything).Return(flightplans, nil)
+	service.On("ListFlightplans", mock.Anything).Return(flightplanModels, nil)
 
 	app := app.Application{
 		Services: app.Services{
@@ -107,16 +137,19 @@ func TestMultipleFlightplansListFlightplans(t *testing.T) {
 				Id:          DefaultFlightplanID1,
 				Name:        DefaultFlightplanName1,
 				Description: DefaultFlightplanDescription1,
+				FleetId:     DefaultFlightplanFleetID1,
 			},
 			{
 				Id:          DefaultFlightplanID2,
 				Name:        DefaultFlightplanName2,
 				Description: DefaultFlightplanDescription2,
+				FleetId:     DefaultFlightplanFleetID2,
 			},
 			{
 				Id:          DefaultFlightplanID3,
 				Name:        DefaultFlightplanName3,
 				Description: DefaultFlightplanDescription3,
+				FleetId:     DefaultFlightplanFleetID3,
 			},
 		},
 	}
@@ -130,8 +163,8 @@ func TestNoneFlightplansListFlightplans(t *testing.T) {
 
 	service := manageFlightplanServiceMock{}
 
-	flightplans := []flightplanMock{}
-	service.On("ListFlightplans", mock.Anything).Return(flightplans, nil)
+	flightplanModels := []s.FlightplanPresentationModel{}
+	service.On("ListFlightplans", mock.Anything).Return(flightplanModels, nil)
 
 	app := app.Application{
 		Services: app.Services{
@@ -158,12 +191,18 @@ func TestGetFlightplan(t *testing.T) {
 
 	service := manageFlightplanServiceMock{}
 
-	flightplan := flightplanMock{
-		id:          DefaultFlightplanID,
-		name:        DefaultFlightplanName,
-		description: DefaultFlightplanDescription,
+	flightplanModel := &flightplanModelMock{
+		flightplan: f.AssembleFrom(
+			nil,
+			&flightplanComponentMock{
+				ID:          string(DefaultFlightplanID),
+				Name:        DefaultFlightplanName,
+				Description: DefaultFlightplanDescription,
+				FleetID:     DefaultFlightplanFleetID,
+			},
+		),
 	}
-	service.On("GetFlightplan", mock.Anything, mock.Anything).Return(flightplan, nil)
+	service.On("GetFlightplan", mock.Anything, mock.Anything).Return(flightplanModel, nil)
 
 	app := app.Application{
 		Services: app.Services{
@@ -185,6 +224,7 @@ func TestGetFlightplan(t *testing.T) {
 		Id:          DefaultFlightplanID,
 		Name:        DefaultFlightplanName,
 		Description: DefaultFlightplanDescription,
+		FleetId:     DefaultFlightplanFleetID,
 	}
 
 	a.Nil(err)
@@ -196,12 +236,18 @@ func TestCreateFlightplan(t *testing.T) {
 
 	service := manageFlightplanServiceMock{}
 
-	flightplan := flightplanMock{
-		id:          DefaultFlightplanID,
-		name:        DefaultFlightplanName,
-		description: DefaultFlightplanDescription,
+	flightplanModel := &flightplanModelMock{
+		flightplan: f.AssembleFrom(
+			nil,
+			&flightplanComponentMock{
+				ID:          string(DefaultFlightplanID),
+				Name:        DefaultFlightplanName,
+				Description: DefaultFlightplanDescription,
+				FleetID:     DefaultFlightplanFleetID,
+			},
+		),
 	}
-	service.On("CreateFlightplan", mock.Anything, mock.Anything).Return(flightplan, nil)
+	service.On("CreateFlightplan", mock.Anything, mock.Anything).Return(flightplanModel, nil)
 
 	app := app.Application{
 		Services: app.Services{
@@ -224,6 +270,7 @@ func TestCreateFlightplan(t *testing.T) {
 		Id:          DefaultFlightplanID,
 		Name:        DefaultFlightplanName,
 		Description: DefaultFlightplanDescription,
+		FleetId:     DefaultFlightplanFleetID,
 	}
 
 	a.Nil(err)
@@ -235,12 +282,18 @@ func TestUpdateFlightplan(t *testing.T) {
 
 	service := manageFlightplanServiceMock{}
 
-	flightplan := flightplanMock{
-		id:          DefaultFlightplanID,
-		name:        DefaultFlightplanName,
-		description: DefaultFlightplanDescription,
+	flightplanModel := &flightplanModelMock{
+		flightplan: f.AssembleFrom(
+			nil,
+			&flightplanComponentMock{
+				ID:          string(DefaultFlightplanID),
+				Name:        DefaultFlightplanName,
+				Description: DefaultFlightplanDescription,
+				FleetID:     DefaultFlightplanFleetID,
+			},
+		),
 	}
-	service.On("UpdateFlightplan", mock.Anything, mock.Anything).Return(flightplan, nil)
+	service.On("UpdateFlightplan", mock.Anything, mock.Anything).Return(flightplanModel, nil)
 
 	app := app.Application{
 		Services: app.Services{
@@ -264,6 +317,7 @@ func TestUpdateFlightplan(t *testing.T) {
 		Id:          DefaultFlightplanID,
 		Name:        DefaultFlightplanName,
 		Description: DefaultFlightplanDescription,
+		FleetId:     DefaultFlightplanFleetID,
 	}
 
 	a.Nil(err)
@@ -302,18 +356,13 @@ func TestDeleteFlightplan(t *testing.T) {
 func TestChangeNumberOfVehicles(t *testing.T) {
 	a := assert.New(t)
 
-	service := assignFleetServiceMock{}
+	service := changeFlightplanServiceMock{}
 
-	changeNumberOfVehicles := changeNumberOfVehiclesMock{
-		flightplanID:     DefaultFlightplanID,
-		numberOfVehicles: DefaultFleetNumberOfVehicles,
-	}
-
-	service.On("ChangeNumberOfVehicles", mock.Anything, mock.Anything).Return(changeNumberOfVehicles, nil)
+	service.On("ChangeNumberOfVehicles", mock.Anything, mock.Anything).Return(nil)
 
 	app := app.Application{
 		Services: app.Services{
-			AssignFleet: &service,
+			ChangeFlightplan: &service,
 		},
 	}
 

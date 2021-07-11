@@ -2,7 +2,7 @@ package service
 
 import (
 	"flightplan/pkg/flightplan/domain/fleet"
-	"flightplan/pkg/flightplan/domain/flightplan"
+	f "flightplan/pkg/flightplan/domain/flightplan"
 	"flightplan/pkg/flightplan/domain/txmanager"
 )
 
@@ -93,7 +93,7 @@ func (s *assignFleetService) changeNumberOfVehiclesOperation(
 		tx,
 		s.gen,
 		s.repo,
-		flightplan.ID(requestDpo.GetFlightplanID()),
+		f.ID(requestDpo.GetFlightplanID()),
 		requestDpo.GetNumberOfVehicles(),
 	); ret != nil {
 		return ret
@@ -123,7 +123,7 @@ func (s *assignFleetService) getAssignmentsOperation(
 ) error {
 	aFleet, err := s.repo.GetByFlightplanID(
 		tx,
-		flightplan.ID(requestDpo.GetFlightplanID()),
+		f.ID(requestDpo.GetFlightplanID()),
 	)
 	if err != nil {
 		return err
@@ -190,7 +190,7 @@ func (s *assignFleetService) updateAssignmentOperation(
 ) error {
 	aFleet, err := s.repo.GetByFlightplanID(
 		tx,
-		flightplan.ID(requestDpo.GetFlightplanID()),
+		f.ID(requestDpo.GetFlightplanID()),
 	)
 	if err != nil {
 		return err

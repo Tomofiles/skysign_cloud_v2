@@ -16,6 +16,7 @@ func TestGetFlightplanTransaction(t *testing.T) {
 		&flightplanComponentMock{
 			ID:          string(DefaultFlightplanID),
 			Name:        DefaultFlightplanName,
+			FleetID:     string(DefaultFlightplanFleetID),
 			Description: DefaultFlightplanDescription,
 			Version:     string(DefaultFlightplanVersion),
 		},
@@ -33,13 +34,13 @@ func TestGetFlightplanTransaction(t *testing.T) {
 		psm:  nil,
 	}
 
-	req := &flightplanIDRequestMock{
+	command := &flightplanIDCommandMock{
 		ID: string(DefaultFlightplanID),
 	}
 	var resCall bool
 	ret := service.GetFlightplan(
-		req,
-		func(id, name, description string) {
+		command,
+		func(model FlightplanPresentationModel) {
 			resCall = true
 		},
 	)
@@ -57,6 +58,7 @@ func TestGetFlightplanOperation(t *testing.T) {
 		&flightplanComponentMock{
 			ID:          string(DefaultFlightplanID),
 			Name:        DefaultFlightplanName,
+			FleetID:     string(DefaultFlightplanFleetID),
 			Description: DefaultFlightplanDescription,
 			Version:     string(DefaultFlightplanVersion),
 		},
@@ -72,24 +74,23 @@ func TestGetFlightplanOperation(t *testing.T) {
 		psm:  nil,
 	}
 
-	req := &flightplanIDRequestMock{
+	command := &flightplanIDCommandMock{
 		ID: string(DefaultFlightplanID),
 	}
-	var resID, resName, resDescription string
+	var resModel FlightplanPresentationModel
 	ret := service.getFlightplanOperation(
 		nil,
-		req,
-		func(id, name, description string) {
-			resID = id
-			resName = name
-			resDescription = description
+		command,
+		func(model FlightplanPresentationModel) {
+			resModel = model
 		},
 	)
 
 	a.Nil(ret)
-	a.Equal(resID, string(DefaultFlightplanID))
-	a.Equal(resName, DefaultFlightplanName)
-	a.Equal(resDescription, DefaultFlightplanDescription)
+	a.Equal(resModel.GetFlightplan().GetID(), string(DefaultFlightplanID))
+	a.Equal(resModel.GetFlightplan().GetName(), DefaultFlightplanName)
+	a.Equal(resModel.GetFlightplan().GetDescription(), DefaultFlightplanDescription)
+	a.Equal(resModel.GetFlightplan().GetFleetID(), string(DefaultFlightplanFleetID))
 }
 
 func TestListFlightplansTransaction(t *testing.T) {
@@ -102,6 +103,7 @@ func TestListFlightplansTransaction(t *testing.T) {
 				ID:          string(DefaultFlightplanID),
 				Name:        DefaultFlightplanName,
 				Description: DefaultFlightplanDescription,
+				FleetID:     string(DefaultFlightplanFleetID),
 				Version:     string(DefaultFlightplanVersion),
 			},
 		),
@@ -110,7 +112,7 @@ func TestListFlightplansTransaction(t *testing.T) {
 	repo := &flightplanRepositoryMock{}
 	txm := &txManagerMock{}
 
-	repo.On("GetAllOrigin").Return(flightplans, nil)
+	repo.On("GetAll").Return(flightplans, nil)
 
 	service := &manageFlightplanService{
 		gen:  nil,
@@ -121,7 +123,7 @@ func TestListFlightplansTransaction(t *testing.T) {
 
 	var resCall bool
 	ret := service.ListFlightplans(
-		func(id, name, description string) {
+		func(model FlightplanPresentationModel) {
 			resCall = true
 		},
 	)
@@ -138,14 +140,17 @@ func TestListFlightplansOperation(t *testing.T) {
 		DefaultFlightplanID1          = string(DefaultFlightplanID) + "-1"
 		DefaultFlightplanName1        = DefaultFlightplanName + "-1"
 		DefaultFlightplanDescription1 = DefaultFlightplanDescription + "-1"
+		DefaultFlightplanFleetID1     = string(DefaultFlightplanFleetID) + "-1"
 		DefaultFlightplanVersion1     = string(DefaultFlightplanVersion) + "-1"
 		DefaultFlightplanID2          = string(DefaultFlightplanID) + "-2"
 		DefaultFlightplanName2        = DefaultFlightplanName + "-2"
 		DefaultFlightplanDescription2 = DefaultFlightplanDescription + "-2"
+		DefaultFlightplanFleetID2     = string(DefaultFlightplanFleetID) + "-2"
 		DefaultFlightplanVersion2     = string(DefaultFlightplanVersion) + "-2"
 		DefaultFlightplanID3          = string(DefaultFlightplanID) + "-3"
 		DefaultFlightplanName3        = DefaultFlightplanName + "-3"
 		DefaultFlightplanDescription3 = DefaultFlightplanDescription + "-3"
+		DefaultFlightplanFleetID3     = string(DefaultFlightplanFleetID) + "-3"
 		DefaultFlightplanVersion3     = string(DefaultFlightplanVersion) + "-3"
 	)
 
@@ -156,6 +161,7 @@ func TestListFlightplansOperation(t *testing.T) {
 				ID:          DefaultFlightplanID1,
 				Name:        DefaultFlightplanName1,
 				Description: DefaultFlightplanDescription1,
+				FleetID:     DefaultFlightplanFleetID1,
 				Version:     DefaultFlightplanVersion1,
 			},
 		),
@@ -165,6 +171,7 @@ func TestListFlightplansOperation(t *testing.T) {
 				ID:          DefaultFlightplanID2,
 				Name:        DefaultFlightplanName2,
 				Description: DefaultFlightplanDescription2,
+				FleetID:     DefaultFlightplanFleetID2,
 				Version:     DefaultFlightplanVersion2,
 			},
 		),
@@ -174,13 +181,14 @@ func TestListFlightplansOperation(t *testing.T) {
 				ID:          DefaultFlightplanID3,
 				Name:        DefaultFlightplanName3,
 				Description: DefaultFlightplanDescription3,
+				FleetID:     DefaultFlightplanFleetID3,
 				Version:     DefaultFlightplanVersion3,
 			},
 		),
 	}
 
 	repo := &flightplanRepositoryMock{}
-	repo.On("GetAllOrigin").Return(flightplans, nil)
+	repo.On("GetAll").Return(flightplans, nil)
 
 	service := &manageFlightplanService{
 		gen:  nil,
@@ -189,26 +197,16 @@ func TestListFlightplansOperation(t *testing.T) {
 		psm:  nil,
 	}
 
-	var resID, resName, resDescription []string
+	var resModels []FlightplanPresentationModel
 	ret := service.listFlightplansOperation(
 		nil,
-		func(id, name, description string) {
-			resID = append(resID, id)
-			resName = append(resName, name)
-			resDescription = append(resDescription, description)
+		func(model FlightplanPresentationModel) {
+			resModels = append(resModels, model)
 		},
 	)
 
 	a.Nil(ret)
-	a.Equal(resID[0], DefaultFlightplanID1)
-	a.Equal(resName[0], DefaultFlightplanName1)
-	a.Equal(resDescription[0], DefaultFlightplanDescription1)
-	a.Equal(resID[1], DefaultFlightplanID2)
-	a.Equal(resName[1], DefaultFlightplanName2)
-	a.Equal(resDescription[1], DefaultFlightplanDescription2)
-	a.Equal(resID[2], DefaultFlightplanID3)
-	a.Equal(resName[2], DefaultFlightplanName3)
-	a.Equal(resDescription[2], DefaultFlightplanDescription3)
+	a.Len(resModels, 3)
 }
 
 func TestCreateFlightplanTransaction(t *testing.T) {
@@ -218,11 +216,13 @@ func TestCreateFlightplanTransaction(t *testing.T) {
 		DefaultFlightplanVersion1 = DefaultFlightplanVersion + "-1"
 		DefaultFlightplanVersion2 = DefaultFlightplanVersion + "-2"
 		DefaultFlightplanVersion3 = DefaultFlightplanVersion + "-3"
+		DefaultFlightplanVersion4 = DefaultFlightplanVersion + "-4"
 	)
 
 	gen := &generatorMockFlightplan{
 		id:       DefaultFlightplanID,
-		versions: []fpl.Version{DefaultFlightplanVersion1, DefaultFlightplanVersion2, DefaultFlightplanVersion3},
+		fleetID:  DefaultFlightplanFleetID,
+		versions: []fpl.Version{DefaultFlightplanVersion1, DefaultFlightplanVersion2, DefaultFlightplanVersion3, DefaultFlightplanVersion4},
 	}
 	repo := &flightplanRepositoryMock{}
 	txm := &txManagerMock{}
@@ -245,20 +245,26 @@ func TestCreateFlightplanTransaction(t *testing.T) {
 		psm:  psm,
 	}
 
-	req := &flightplanRequestMock{
-		Name:        DefaultFlightplanName,
-		Description: DefaultFlightplanDescription,
+	command := &flightplanCommandMock{
+		Flightplan: flightplanMock{
+			Name:        DefaultFlightplanName,
+			Description: DefaultFlightplanDescription,
+		},
 	}
-	var resCall bool
+	var resCall1, resCall2 bool
 	ret := service.CreateFlightplan(
-		req,
-		func(id, name, description string) {
-			resCall = true
+		command,
+		func(id string) {
+			resCall1 = true
+		},
+		func(fleetID string) {
+			resCall2 = true
 		},
 	)
 
 	a.Nil(ret)
-	a.True(resCall)
+	a.True(resCall1)
+	a.True(resCall2)
 	a.Len(pub.events, 1)
 	a.True(isClose)
 	a.True(pub.isFlush)
@@ -273,11 +279,13 @@ func TestCreateFlightplanOperation(t *testing.T) {
 		DefaultFlightplanVersion1 = DefaultFlightplanVersion + "-1"
 		DefaultFlightplanVersion2 = DefaultFlightplanVersion + "-2"
 		DefaultFlightplanVersion3 = DefaultFlightplanVersion + "-3"
+		DefaultFlightplanVersion4 = DefaultFlightplanVersion + "-4"
 	)
 
 	gen := &generatorMockFlightplan{
 		id:       DefaultFlightplanID,
-		versions: []fpl.Version{DefaultFlightplanVersion1, DefaultFlightplanVersion2, DefaultFlightplanVersion3},
+		fleetID:  DefaultFlightplanFleetID,
+		versions: []fpl.Version{DefaultFlightplanVersion1, DefaultFlightplanVersion2, DefaultFlightplanVersion3, DefaultFlightplanVersion4},
 	}
 	repo := &flightplanRepositoryMock{}
 	repo.On("Save", mock.Anything).Return(nil)
@@ -290,28 +298,33 @@ func TestCreateFlightplanOperation(t *testing.T) {
 		psm:  nil,
 	}
 
-	req := &flightplanRequestMock{
-		Name:        DefaultFlightplanName,
-		Description: DefaultFlightplanDescription,
+	command := &flightplanCommandMock{
+		Flightplan: flightplanMock{
+			Name:        DefaultFlightplanName,
+			Description: DefaultFlightplanDescription,
+		},
 	}
-	var resID, resName, resDescription string
+	var resID, resFleetID string
 	ret := service.createFlightplanOperation(
 		nil,
 		pub,
-		req,
-		func(id, name, description string) {
+		command,
+		func(id string) {
 			resID = id
-			resName = name
-			resDescription = description
+		},
+		func(fleetID string) {
+			resFleetID = fleetID
 		},
 	)
 
-	expectEvent := fpl.CreatedEvent{ID: DefaultFlightplanID}
+	expectEvent := fpl.FleetIDGaveEvent{
+		FleetID:          DefaultFlightplanFleetID,
+		NumberOfVehicles: 0,
+	}
 
 	a.Nil(ret)
 	a.Equal(resID, string(DefaultFlightplanID))
-	a.Equal(resName, DefaultFlightplanName)
-	a.Equal(resDescription, DefaultFlightplanDescription)
+	a.Equal(resFleetID, string(DefaultFlightplanFleetID))
 	a.Len(pub.events, 1)
 	a.Equal(pub.events[0], expectEvent)
 }
@@ -363,15 +376,17 @@ func TestUpdateFlightplanTransaction(t *testing.T) {
 		psm:  psm,
 	}
 
-	req := &flightplanRequestMock{
-		ID:          string(DefaultFlightplanID),
-		Name:        AfterFlightplanName,
-		Description: AfterFlightplanDescription,
+	command := &flightplanCommandMock{
+		Flightplan: flightplanMock{
+			ID:          string(DefaultFlightplanID),
+			Name:        AfterFlightplanName,
+			Description: AfterFlightplanDescription,
+		},
 	}
 	var resCall bool
 	ret := service.UpdateFlightplan(
-		req,
-		func(id, name, description string) {
+		command,
+		func(fleetID string) {
 			resCall = true
 		},
 	)
@@ -403,11 +418,11 @@ func TestUpdateFlightplanOperation(t *testing.T) {
 	flightplan := fpl.AssembleFrom(
 		gen,
 		&flightplanComponentMock{
-			ID:           string(DefaultFlightplanID),
-			Name:         DefaultFlightplanName,
-			Description:  DefaultFlightplanDescription,
-			IsCarbonCopy: fpl.Original,
-			Version:      string(DefaultFlightplanVersion),
+			ID:          string(DefaultFlightplanID),
+			Name:        DefaultFlightplanName,
+			Description: DefaultFlightplanDescription,
+			FleetID:     string(DefaultFlightplanFleetID),
+			Version:     string(DefaultFlightplanVersion),
 		},
 	)
 
@@ -423,85 +438,25 @@ func TestUpdateFlightplanOperation(t *testing.T) {
 		psm:  nil,
 	}
 
-	req := &flightplanRequestMock{
-		ID:          string(DefaultFlightplanID),
-		Name:        AfterFlightplanName,
-		Description: AfterFlightplanDescription,
+	command := &flightplanCommandMock{
+		Flightplan: flightplanMock{
+			ID:          string(DefaultFlightplanID),
+			Name:        AfterFlightplanName,
+			Description: AfterFlightplanDescription,
+		},
 	}
-	var resID, resName, resDescription string
+	var resFleetID string
 	ret := service.updateFlightplanOperation(
 		nil,
 		pub,
-		req,
-		func(id, name, description string) {
-			resID = id
-			resName = name
-			resDescription = description
+		command,
+		func(fleetID string) {
+			resFleetID = fleetID
 		},
 	)
 
 	a.Nil(ret)
-	a.Equal(resID, string(DefaultFlightplanID))
-	a.Equal(resName, AfterFlightplanName)
-	a.Equal(resDescription, AfterFlightplanDescription)
-	a.Len(pub.events, 0)
-}
-
-func TestCannotChangeErrorWhenUpdateFlightplanOperation(t *testing.T) {
-	a := assert.New(t)
-
-	var (
-		AfterFlightplanName        = DefaultFlightplanName + "-after"
-		AfterFlightplanDescription = DefaultFlightplanDescription + "-after"
-		DefaultFlightplanVersion1  = DefaultFlightplanVersion + "-1"
-		DefaultFlightplanVersion2  = DefaultFlightplanVersion + "-2"
-	)
-
-	gen := &generatorMockFlightplan{
-		id:       DefaultFlightplanID,
-		versions: []fpl.Version{DefaultFlightplanVersion1, DefaultFlightplanVersion2},
-	}
-
-	flightplan := fpl.AssembleFrom(
-		gen,
-		&flightplanComponentMock{
-			ID:           string(DefaultFlightplanID),
-			Name:         DefaultFlightplanName,
-			Description:  DefaultFlightplanDescription,
-			IsCarbonCopy: fpl.CarbonCopy,
-			Version:      string(DefaultFlightplanVersion),
-		},
-	)
-
-	repo := &flightplanRepositoryMock{}
-	repo.On("GetByID", DefaultFlightplanID).Return(flightplan, nil)
-	repo.On("Save", mock.Anything).Return(nil)
-	pub := &publisherMock{}
-
-	service := &manageFlightplanService{
-		gen:  nil,
-		repo: repo,
-		txm:  nil,
-		psm:  nil,
-	}
-
-	req := &flightplanRequestMock{
-		ID:          string(DefaultFlightplanID),
-		Name:        AfterFlightplanName,
-		Description: AfterFlightplanDescription,
-	}
-	resCall := false
-	ret := service.updateFlightplanOperation(
-		nil,
-		pub,
-		req,
-		func(id, name, description string) {
-			resCall = true
-		},
-	)
-
-	a.Equal(ret, fpl.ErrCannotChange)
-	a.False(resCall)
+	a.Equal(resFleetID, string(DefaultFlightplanFleetID))
 	a.Len(pub.events, 0)
 }
 
@@ -511,12 +466,10 @@ func TestDeleteFlightplanTransaction(t *testing.T) {
 	var (
 		DefaultFlightplanVersion1 = DefaultFlightplanVersion + "-1"
 		DefaultFlightplanVersion2 = DefaultFlightplanVersion + "-2"
-		DefaultFlightplanVersion3 = DefaultFlightplanVersion + "-3"
 	)
 
 	gen := &generatorMockFlightplan{
-		id:       DefaultFlightplanID,
-		versions: []fpl.Version{DefaultFlightplanVersion1, DefaultFlightplanVersion2, DefaultFlightplanVersion3},
+		versions: []fpl.Version{DefaultFlightplanVersion2},
 	}
 
 	flightplan := fpl.AssembleFrom(
@@ -525,7 +478,8 @@ func TestDeleteFlightplanTransaction(t *testing.T) {
 			ID:          string(DefaultFlightplanID),
 			Name:        DefaultFlightplanName,
 			Description: DefaultFlightplanDescription,
-			Version:     string(DefaultFlightplanVersion),
+			FleetID:     string(DefaultFlightplanFleetID),
+			Version:     string(DefaultFlightplanVersion1),
 		},
 	)
 
@@ -551,10 +505,10 @@ func TestDeleteFlightplanTransaction(t *testing.T) {
 		psm:  psm,
 	}
 
-	req := &flightplanIDRequestMock{
+	command := &flightplanIDCommandMock{
 		ID: string(DefaultFlightplanID),
 	}
-	ret := service.DeleteFlightplan(req)
+	ret := service.DeleteFlightplan(command)
 
 	a.Nil(ret)
 	a.Len(pub.events, 1)
@@ -567,15 +521,22 @@ func TestDeleteFlightplanTransaction(t *testing.T) {
 func TestDeleteFlightplanOperation(t *testing.T) {
 	a := assert.New(t)
 
-	gen := &generatorMockFlightplan{}
+	var (
+		DefaultFlightplanVersion1 = DefaultFlightplanVersion + "-1"
+		DefaultFlightplanVersion2 = DefaultFlightplanVersion + "-2"
+	)
 
+	gen := &generatorMockFlightplan{
+		versions: []fpl.Version{DefaultFlightplanVersion2},
+	}
 	flightplan := fpl.AssembleFrom(
 		gen,
 		&flightplanComponentMock{
 			ID:          string(DefaultFlightplanID),
 			Name:        DefaultFlightplanName,
 			Description: DefaultFlightplanDescription,
-			Version:     string(DefaultFlightplanVersion),
+			FleetID:     string(DefaultFlightplanFleetID),
+			Version:     string(DefaultFlightplanVersion1),
 		},
 	)
 
@@ -591,126 +552,16 @@ func TestDeleteFlightplanOperation(t *testing.T) {
 		psm:  nil,
 	}
 
-	req := &flightplanIDRequestMock{
+	command := &flightplanIDCommandMock{
 		ID: string(DefaultFlightplanID),
 	}
 	ret := service.deleteFlightplanOperation(
 		nil,
 		pub,
-		req,
+		command,
 	)
 
-	expectEvent := fpl.DeletedEvent{ID: DefaultFlightplanID}
-
-	a.Nil(ret)
-	a.Len(pub.events, 1)
-	a.Equal(pub.events[0], expectEvent)
-}
-
-func TestCarbonCopyFlightplanTransaction(t *testing.T) {
-	a := assert.New(t)
-
-	var (
-		DefaultOriginalID = DefaultFlightplanID + "-original"
-		DefaultNewID      = DefaultFlightplanID + "-new"
-	)
-
-	gen := &generatorMockFlightplan{}
-
-	flightplan := fpl.AssembleFrom(
-		gen,
-		&flightplanComponentMock{
-			ID:          string(DefaultOriginalID),
-			Name:        DefaultFlightplanName,
-			Description: DefaultFlightplanDescription,
-			Version:     string(DefaultFlightplanVersion),
-		},
-	)
-
-	repo := &flightplanRepositoryMock{}
-	txm := &txManagerMock{}
-	pub := &publisherMock{}
-	psm := &pubSubManagerMock{}
-
-	var isClose bool
-	close := func() error {
-		isClose = true
-		return nil
-	}
-
-	psm.On("GetPublisher").Return(pub, close, nil)
-	repo.On("GetByID", DefaultNewID).Return(nil, fpl.ErrNotFound)
-	repo.On("GetByID", DefaultOriginalID).Return(flightplan, nil)
-	repo.On("Save", mock.Anything).Return(nil)
-
-	service := &manageFlightplanService{
-		gen:  gen,
-		repo: repo,
-		txm:  txm,
-		psm:  psm,
-	}
-
-	req := &carbonCopyRequestMock{
-		OriginalID: string(DefaultOriginalID),
-		NewID:      string(DefaultNewID),
-	}
-	ret := service.CarbonCopyFlightplan(req)
-
-	a.Nil(ret)
-	a.Len(pub.events, 1)
-	a.True(isClose)
-	a.True(pub.isFlush)
-	a.Nil(txm.isOpe)
-	a.Nil(txm.isEH)
-}
-
-func TestCarbonCopyFlightplanOperation(t *testing.T) {
-	a := assert.New(t)
-
-	var (
-		DefaultOriginalID = DefaultFlightplanID + "-original"
-		DefaultNewID      = DefaultFlightplanID + "-new"
-	)
-
-	gen := &generatorMockFlightplan{}
-
-	flightplan := fpl.AssembleFrom(
-		gen,
-		&flightplanComponentMock{
-			ID:          string(DefaultOriginalID),
-			Name:        DefaultFlightplanName,
-			Description: DefaultFlightplanDescription,
-			Version:     string(DefaultFlightplanVersion),
-		},
-	)
-
-	repo := &flightplanRepositoryMock{}
-	repo.On("GetByID", DefaultNewID).Return(nil, fpl.ErrNotFound)
-	repo.On("GetByID", DefaultOriginalID).Return(flightplan, nil)
-	repo.On("Save", mock.Anything).Return(nil)
-	pub := &publisherMock{}
-
-	service := &manageFlightplanService{
-		gen:  gen,
-		repo: repo,
-		txm:  nil,
-		psm:  nil,
-	}
-
-	req := &carbonCopyRequestMock{
-		OriginalID: string(DefaultOriginalID),
-		NewID:      string(DefaultNewID),
-	}
-	ret := service.carbonCopyFlightplanOperation(
-		nil,
-		pub,
-		req,
-	)
-
-	expectEvent := fpl.CopiedEvent{
-		OriginalID: DefaultOriginalID,
-		NewID:      DefaultNewID,
-	}
+	expectEvent := fpl.FleetIDRemovedEvent{FleetID: DefaultFlightplanFleetID}
 
 	a.Nil(ret)
 	a.Len(pub.events, 1)

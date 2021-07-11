@@ -110,13 +110,13 @@ func (h *EventHandler) HandleCopiedWhenFlightoperationCreatedEvent(
 
 	glog.Infof("RECEIVE , Event: %s, Message: %s", FlightplanCopiedWhenFlightoperationCreatedEventQueueName, eventPb.String())
 
-	requestDpo := copyRequestDpoHolder{
-		originalID: eventPb.GetOriginalFlightplanId(),
-		newID:      eventPb.GetNewFlightplanId(),
-	}
-	if ret := h.app.Services.ManageFlightplan.CarbonCopyFlightplan(&requestDpo); ret != nil {
-		return ret
-	}
+	// requestDpo := copyRequestDpoHolder{
+	// 	originalID: eventPb.GetOriginalFlightplanId(),
+	// 	newID:      eventPb.GetNewFlightplanId(),
+	// }
+	// if ret := h.app.Services.ManageFlightplan.CarbonCopyFlightplan(&requestDpo); ret != nil {
+	// 	return ret
+	// }
 	return nil
 }
 

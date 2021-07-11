@@ -23,8 +23,8 @@ func TestFlightplanRepositoryGetSingleWhenGetAll(t *testing.T) {
 		ExpectQuery(
 			regexp.QuoteMeta(`SELECT * FROM "flightplans"`)).
 		WillReturnRows(
-			sqlmock.NewRows([]string{"id", "name", "description", "is_carbon_copy", "version"}).
-				AddRow(DefaultFlightplanID, DefaultFlightplanName, DefaultFlightplanDescription, fpl.CarbonCopy, DefaultFlightplanVersion),
+			sqlmock.NewRows([]string{"id", "name", "description", "fleet_id", "version"}).
+				AddRow(DefaultFlightplanID, DefaultFlightplanName, DefaultFlightplanDescription, DefaultFlightplanFleetID, DefaultFlightplanVersion),
 		)
 
 	gen := uuid.NewFlightplanUUID()
@@ -36,11 +36,11 @@ func TestFlightplanRepositoryGetSingleWhenGetAll(t *testing.T) {
 		fpl.AssembleFrom(
 			gen,
 			&flightplanComponentMock{
-				id:           string(DefaultFlightplanID),
-				name:         DefaultFlightplanName,
-				description:  DefaultFlightplanDescription,
-				isCarbonCopy: fpl.CarbonCopy,
-				version:      string(DefaultFlightplanVersion),
+				id:          string(DefaultFlightplanID),
+				name:        DefaultFlightplanName,
+				description: DefaultFlightplanDescription,
+				fleetID:     string(DefaultFlightplanFleetID),
+				version:     string(DefaultFlightplanVersion),
 			},
 		),
 	}
@@ -63,14 +63,17 @@ func TestFlightplanRepositoryGetMultipleWhenGetAll(t *testing.T) {
 		DefaultFlightplanID1          = DefaultFlightplanID + "-1"
 		DefaultFlightplanName1        = DefaultFlightplanName + "-1"
 		DefaultFlightplanDescription1 = DefaultFlightplanDescription + "-1"
+		DefaultFlightplanFleetID1     = DefaultFlightplanFleetID + "-1"
 		DefaultFlightplanVersion1     = DefaultFlightplanVersion + "-1"
 		DefaultFlightplanID2          = DefaultFlightplanID + "-2"
 		DefaultFlightplanName2        = DefaultFlightplanName + "-2"
 		DefaultFlightplanDescription2 = DefaultFlightplanDescription + "-2"
+		DefaultFlightplanFleetID2     = DefaultFlightplanFleetID + "-2"
 		DefaultFlightplanVersion2     = DefaultFlightplanVersion + "-2"
 		DefaultFlightplanID3          = DefaultFlightplanID + "-3"
 		DefaultFlightplanName3        = DefaultFlightplanName + "-3"
 		DefaultFlightplanDescription3 = DefaultFlightplanDescription + "-3"
+		DefaultFlightplanFleetID3     = DefaultFlightplanFleetID + "-3"
 		DefaultFlightplanVersion3     = DefaultFlightplanVersion + "-3"
 	)
 
@@ -78,10 +81,10 @@ func TestFlightplanRepositoryGetMultipleWhenGetAll(t *testing.T) {
 		ExpectQuery(
 			regexp.QuoteMeta(`SELECT * FROM "flightplans"`)).
 		WillReturnRows(
-			sqlmock.NewRows([]string{"id", "name", "description", "is_carbon_copy", "version"}).
-				AddRow(DefaultFlightplanID1, DefaultFlightplanName1, DefaultFlightplanDescription1, fpl.CarbonCopy, DefaultFlightplanVersion1).
-				AddRow(DefaultFlightplanID2, DefaultFlightplanName2, DefaultFlightplanDescription2, fpl.CarbonCopy, DefaultFlightplanVersion2).
-				AddRow(DefaultFlightplanID3, DefaultFlightplanName3, DefaultFlightplanDescription3, fpl.CarbonCopy, DefaultFlightplanVersion3),
+			sqlmock.NewRows([]string{"id", "name", "description", "fleet_id", "version"}).
+				AddRow(DefaultFlightplanID1, DefaultFlightplanName1, DefaultFlightplanDescription1, DefaultFlightplanFleetID1, DefaultFlightplanVersion1).
+				AddRow(DefaultFlightplanID2, DefaultFlightplanName2, DefaultFlightplanDescription2, DefaultFlightplanFleetID2, DefaultFlightplanVersion2).
+				AddRow(DefaultFlightplanID3, DefaultFlightplanName3, DefaultFlightplanDescription3, DefaultFlightplanFleetID3, DefaultFlightplanVersion3),
 		)
 
 	gen := uuid.NewFlightplanUUID()
@@ -93,31 +96,31 @@ func TestFlightplanRepositoryGetMultipleWhenGetAll(t *testing.T) {
 		fpl.AssembleFrom(
 			gen,
 			&flightplanComponentMock{
-				id:           string(DefaultFlightplanID1),
-				name:         DefaultFlightplanName1,
-				description:  DefaultFlightplanDescription1,
-				isCarbonCopy: fpl.CarbonCopy,
-				version:      string(DefaultFlightplanVersion1),
+				id:          string(DefaultFlightplanID1),
+				name:        DefaultFlightplanName1,
+				description: DefaultFlightplanDescription1,
+				fleetID:     string(DefaultFlightplanFleetID1),
+				version:     string(DefaultFlightplanVersion1),
 			},
 		),
 		fpl.AssembleFrom(
 			gen,
 			&flightplanComponentMock{
-				id:           string(DefaultFlightplanID2),
-				name:         DefaultFlightplanName2,
-				description:  DefaultFlightplanDescription2,
-				isCarbonCopy: fpl.CarbonCopy,
-				version:      string(DefaultFlightplanVersion2),
+				id:          string(DefaultFlightplanID2),
+				name:        DefaultFlightplanName2,
+				description: DefaultFlightplanDescription2,
+				fleetID:     string(DefaultFlightplanFleetID2),
+				version:     string(DefaultFlightplanVersion2),
 			},
 		),
 		fpl.AssembleFrom(
 			gen,
 			&flightplanComponentMock{
-				id:           string(DefaultFlightplanID3),
-				name:         DefaultFlightplanName3,
-				description:  DefaultFlightplanDescription3,
-				isCarbonCopy: fpl.CarbonCopy,
-				version:      string(DefaultFlightplanVersion3),
+				id:          string(DefaultFlightplanID3),
+				name:        DefaultFlightplanName3,
+				description: DefaultFlightplanDescription3,
+				fleetID:     string(DefaultFlightplanFleetID3),
+				version:     string(DefaultFlightplanVersion3),
 			},
 		),
 	}
@@ -140,158 +143,13 @@ func TestFlightplanRepositoryGetNoneWhenGetAll(t *testing.T) {
 		ExpectQuery(
 			regexp.QuoteMeta(`SELECT * FROM "flightplans"`)).
 		WillReturnRows(
-			sqlmock.NewRows([]string{"id", "name", "description", "is_carbon_copy", "version"}),
+			sqlmock.NewRows([]string{"id", "name", "description", "fleet_id", "version"}),
 		)
 
 	gen := uuid.NewFlightplanUUID()
 	repository := NewFlightplanRepository(gen)
 
 	flightplans, err := repository.GetAll(db)
-
-	var expectFpls []*fpl.Flightplan
-
-	a.Nil(err)
-	a.Len(flightplans, 0)
-	a.Equal(flightplans, expectFpls)
-}
-
-func TestFlightplanRepositoryGetSingleWhenGetAllOrigin(t *testing.T) {
-	a := assert.New(t)
-
-	db, mock, err := GetNewDbMock()
-	if err != nil {
-		t.Errorf("failed to initialize mock DB: %v", err)
-		return
-	}
-
-	mock.
-		ExpectQuery(
-			regexp.QuoteMeta(`SELECT * FROM "flightplans" WHERE is_carbon_copy = false`)).
-		WillReturnRows(
-			sqlmock.NewRows([]string{"id", "name", "description", "is_carbon_copy", "version"}).
-				AddRow(DefaultFlightplanID, DefaultFlightplanName, DefaultFlightplanDescription, fpl.CarbonCopy, DefaultFlightplanVersion),
-		)
-
-	gen := uuid.NewFlightplanUUID()
-	repository := NewFlightplanRepository(gen)
-
-	flightplans, err := repository.GetAllOrigin(db)
-
-	expectFpls := []*fpl.Flightplan{
-		fpl.AssembleFrom(
-			gen,
-			&flightplanComponentMock{
-				id:           string(DefaultFlightplanID),
-				name:         DefaultFlightplanName,
-				description:  DefaultFlightplanDescription,
-				isCarbonCopy: fpl.CarbonCopy,
-				version:      string(DefaultFlightplanVersion),
-			},
-		),
-	}
-
-	a.Nil(err)
-	a.Len(flightplans, 1)
-	a.Equal(flightplans, expectFpls)
-}
-
-func TestFlightplanRepositoryGetMultipleWhenGetAllOrigin(t *testing.T) {
-	a := assert.New(t)
-
-	db, mock, err := GetNewDbMock()
-	if err != nil {
-		t.Errorf("failed to initialize mock DB: %v", err)
-		return
-	}
-
-	const (
-		DefaultFlightplanID1          = DefaultFlightplanID + "-1"
-		DefaultFlightplanName1        = DefaultFlightplanName + "-1"
-		DefaultFlightplanDescription1 = DefaultFlightplanDescription + "-1"
-		DefaultFlightplanVersion1     = DefaultFlightplanVersion + "-1"
-		DefaultFlightplanID2          = DefaultFlightplanID + "-2"
-		DefaultFlightplanName2        = DefaultFlightplanName + "-2"
-		DefaultFlightplanDescription2 = DefaultFlightplanDescription + "-2"
-		DefaultFlightplanVersion2     = DefaultFlightplanVersion + "-2"
-		DefaultFlightplanID3          = DefaultFlightplanID + "-3"
-		DefaultFlightplanName3        = DefaultFlightplanName + "-3"
-		DefaultFlightplanDescription3 = DefaultFlightplanDescription + "-3"
-		DefaultFlightplanVersion3     = DefaultFlightplanVersion + "-3"
-	)
-
-	mock.
-		ExpectQuery(
-			regexp.QuoteMeta(`SELECT * FROM "flightplans" WHERE is_carbon_copy = false`)).
-		WillReturnRows(
-			sqlmock.NewRows([]string{"id", "name", "description", "is_carbon_copy", "version"}).
-				AddRow(DefaultFlightplanID1, DefaultFlightplanName1, DefaultFlightplanDescription1, fpl.CarbonCopy, DefaultFlightplanVersion1).
-				AddRow(DefaultFlightplanID2, DefaultFlightplanName2, DefaultFlightplanDescription2, fpl.CarbonCopy, DefaultFlightplanVersion2).
-				AddRow(DefaultFlightplanID3, DefaultFlightplanName3, DefaultFlightplanDescription3, fpl.CarbonCopy, DefaultFlightplanVersion3),
-		)
-
-	gen := uuid.NewFlightplanUUID()
-	repository := NewFlightplanRepository(gen)
-
-	flightplans, err := repository.GetAllOrigin(db)
-
-	expectFpls := []*fpl.Flightplan{
-		fpl.AssembleFrom(
-			gen,
-			&flightplanComponentMock{
-				id:           string(DefaultFlightplanID1),
-				name:         DefaultFlightplanName1,
-				description:  DefaultFlightplanDescription1,
-				isCarbonCopy: fpl.CarbonCopy,
-				version:      string(DefaultFlightplanVersion1),
-			},
-		),
-		fpl.AssembleFrom(
-			gen,
-			&flightplanComponentMock{
-				id:           string(DefaultFlightplanID2),
-				name:         DefaultFlightplanName2,
-				description:  DefaultFlightplanDescription2,
-				isCarbonCopy: fpl.CarbonCopy,
-				version:      string(DefaultFlightplanVersion2),
-			},
-		),
-		fpl.AssembleFrom(
-			gen,
-			&flightplanComponentMock{
-				id:           string(DefaultFlightplanID3),
-				name:         DefaultFlightplanName3,
-				description:  DefaultFlightplanDescription3,
-				isCarbonCopy: fpl.CarbonCopy,
-				version:      string(DefaultFlightplanVersion3),
-			},
-		),
-	}
-
-	a.Nil(err)
-	a.Len(flightplans, 3)
-	a.Equal(flightplans, expectFpls)
-}
-
-func TestFlightplanRepositoryGetNoneWhenGetAllOrigin(t *testing.T) {
-	a := assert.New(t)
-
-	db, mock, err := GetNewDbMock()
-	if err != nil {
-		t.Errorf("failed to initialize mock DB: %v", err)
-		return
-	}
-
-	mock.
-		ExpectQuery(
-			regexp.QuoteMeta(`SELECT * FROM "flightplans" WHERE is_carbon_copy = false`)).
-		WillReturnRows(
-			sqlmock.NewRows([]string{"id", "name", "description", "is_carbon_copy", "version"}),
-		)
-
-	gen := uuid.NewFlightplanUUID()
-	repository := NewFlightplanRepository(gen)
-
-	flightplans, err := repository.GetAllOrigin(db)
 
 	var expectFpls []*fpl.Flightplan
 
@@ -314,8 +172,8 @@ func TestFlightplanRepositoryGetByID(t *testing.T) {
 			regexp.QuoteMeta(`SELECT * FROM "flightplans" WHERE id = $1`)).
 		WithArgs(DefaultFlightplanID).
 		WillReturnRows(
-			sqlmock.NewRows([]string{"id", "name", "description", "is_carbon_copy", "version"}).
-				AddRow(DefaultFlightplanID, DefaultFlightplanName, DefaultFlightplanDescription, fpl.CarbonCopy, DefaultFlightplanVersion),
+			sqlmock.NewRows([]string{"id", "name", "description", "fleet_id", "version"}).
+				AddRow(DefaultFlightplanID, DefaultFlightplanName, DefaultFlightplanDescription, DefaultFlightplanFleetID, DefaultFlightplanVersion),
 		)
 
 	gen := uuid.NewFlightplanUUID()
@@ -326,11 +184,11 @@ func TestFlightplanRepositoryGetByID(t *testing.T) {
 	expectFpl := fpl.AssembleFrom(
 		gen,
 		&flightplanComponentMock{
-			id:           string(DefaultFlightplanID),
-			name:         DefaultFlightplanName,
-			description:  DefaultFlightplanDescription,
-			isCarbonCopy: fpl.CarbonCopy,
-			version:      string(DefaultFlightplanVersion),
+			id:          string(DefaultFlightplanID),
+			name:        DefaultFlightplanName,
+			description: DefaultFlightplanDescription,
+			fleetID:     string(DefaultFlightplanFleetID),
+			version:     string(DefaultFlightplanVersion),
 		},
 	)
 
@@ -352,7 +210,7 @@ func TestFlightplanRepositoryNotFoundWhenGetByID(t *testing.T) {
 			regexp.QuoteMeta(`SELECT * FROM "flightplans" WHERE id = $1`)).
 		WithArgs(DefaultFlightplanID).
 		WillReturnRows(
-			sqlmock.NewRows([]string{"id", "name", "description", "is_carbon_copy", "version"}),
+			sqlmock.NewRows([]string{"id", "name", "description", "fleet_id", "version"}),
 		)
 
 	gen := uuid.NewFlightplanUUID()
@@ -378,13 +236,13 @@ func TestFlightplanRepositoryCreateSave(t *testing.T) {
 			regexp.QuoteMeta(`SELECT * FROM "flightplans" WHERE id = $1`)).
 		WithArgs(DefaultFlightplanID).
 		WillReturnRows(
-			sqlmock.NewRows([]string{"id", "name", "description", "is_carbon_copy", "version"}),
+			sqlmock.NewRows([]string{"id", "name", "description", "fleet_id", "version"}),
 		)
 
 	mock.
 		ExpectExec(
-			regexp.QuoteMeta(`INSERT INTO "flightplans" ("id","name","description","is_carbon_copy","version") VALUES ($1,$2,$3,$4,$5)`)).
-		WithArgs(DefaultFlightplanID, DefaultFlightplanName, DefaultFlightplanDescription, fpl.CarbonCopy, DefaultFlightplanVersion).
+			regexp.QuoteMeta(`INSERT INTO "flightplans" ("id","name","description","fleet_id","version") VALUES ($1,$2,$3,$4,$5)`)).
+		WithArgs(DefaultFlightplanID, DefaultFlightplanName, DefaultFlightplanDescription, DefaultFlightplanFleetID, DefaultFlightplanVersion).
 		WillReturnResult(
 			sqlmock.NewResult(1, 1),
 		)
@@ -395,11 +253,11 @@ func TestFlightplanRepositoryCreateSave(t *testing.T) {
 	flightplan := fpl.AssembleFrom(
 		gen,
 		&flightplanComponentMock{
-			id:           string(DefaultFlightplanID),
-			name:         DefaultFlightplanName,
-			description:  DefaultFlightplanDescription,
-			isCarbonCopy: fpl.CarbonCopy,
-			version:      string(DefaultFlightplanVersion),
+			id:          string(DefaultFlightplanID),
+			name:        DefaultFlightplanName,
+			description: DefaultFlightplanDescription,
+			fleetID:     string(DefaultFlightplanFleetID),
+			version:     string(DefaultFlightplanVersion),
 		},
 	)
 
@@ -418,9 +276,10 @@ func TestFlightplanRepositoryUpdateSave(t *testing.T) {
 	}
 
 	const (
-		AfterName        = DefaultFlightplanName + "-after"
-		AfterDescription = DefaultFlightplanDescription + "-after"
-		AfterVersion     = DefaultFlightplanVersion + "-after"
+		AfterName              = DefaultFlightplanName + "-after"
+		AfterDescription       = DefaultFlightplanDescription + "-after"
+		AfterFlightplanFleetID = DefaultFlightplanFleetID + "-after"
+		AfterVersion           = DefaultFlightplanVersion + "-after"
 	)
 
 	mock.
@@ -428,14 +287,14 @@ func TestFlightplanRepositoryUpdateSave(t *testing.T) {
 			regexp.QuoteMeta(`SELECT * FROM "flightplans" WHERE id = $1`)).
 		WithArgs(DefaultFlightplanID).
 		WillReturnRows(
-			sqlmock.NewRows([]string{"id", "name", "description", "is_carbon_copy", "version"}).
-				AddRow(DefaultFlightplanID, DefaultFlightplanName, DefaultFlightplanDescription, fpl.CarbonCopy, DefaultFlightplanVersion),
+			sqlmock.NewRows([]string{"id", "name", "description", "fleet_id", "version"}).
+				AddRow(DefaultFlightplanID, DefaultFlightplanName, DefaultFlightplanDescription, DefaultFlightplanFleetID, DefaultFlightplanVersion),
 		)
 
 	mock.
 		ExpectExec(
-			regexp.QuoteMeta(`UPDATE "flightplans" SET "name"=$1,"description"=$2,"is_carbon_copy"=$3,"version"=$4 WHERE "id" = $5`)).
-		WithArgs(AfterName, AfterDescription, fpl.CarbonCopy, AfterVersion, DefaultFlightplanID).
+			regexp.QuoteMeta(`UPDATE "flightplans" SET "name"=$1,"description"=$2,"fleet_id"=$3,"version"=$4 WHERE "id" = $5`)).
+		WithArgs(AfterName, AfterDescription, AfterFlightplanFleetID, AfterVersion, DefaultFlightplanID).
 		WillReturnResult(
 			sqlmock.NewResult(1, 1),
 		)
@@ -446,11 +305,11 @@ func TestFlightplanRepositoryUpdateSave(t *testing.T) {
 	flightplan := fpl.AssembleFrom(
 		gen,
 		&flightplanComponentMock{
-			id:           string(DefaultFlightplanID),
-			name:         AfterName,
-			description:  AfterDescription,
-			isCarbonCopy: fpl.CarbonCopy,
-			version:      string(AfterVersion),
+			id:          string(DefaultFlightplanID),
+			name:        AfterName,
+			description: AfterDescription,
+			fleetID:     string(AfterFlightplanFleetID),
+			version:     string(AfterVersion),
 		},
 	)
 
@@ -473,8 +332,8 @@ func TestFlightplanRepositoryDelete(t *testing.T) {
 			regexp.QuoteMeta(`SELECT * FROM "flightplans" WHERE id = $1`)).
 		WithArgs(DefaultFlightplanID).
 		WillReturnRows(
-			sqlmock.NewRows([]string{"id", "name", "description", "is_carbon_copy", "version"}).
-				AddRow(DefaultFlightplanID, DefaultFlightplanName, DefaultFlightplanDescription, fpl.CarbonCopy, DefaultFlightplanVersion),
+			sqlmock.NewRows([]string{"id", "name", "description", "fleet_id", "version"}).
+				AddRow(DefaultFlightplanID, DefaultFlightplanName, DefaultFlightplanDescription, DefaultFlightplanFleetID, DefaultFlightplanVersion),
 		)
 
 	mock.
@@ -507,7 +366,7 @@ func TestFlightplanRepositoryNotFoundWhenDelete(t *testing.T) {
 			regexp.QuoteMeta(`SELECT * FROM "flightplans" WHERE id = $1`)).
 		WithArgs(DefaultFlightplanID).
 		WillReturnRows(
-			sqlmock.NewRows([]string{"id", "name", "description", "is_carbon_copy", "version"}),
+			sqlmock.NewRows([]string{"id", "name", "description", "fleet_id", "version"}),
 		)
 
 	gen := uuid.NewFlightplanUUID()
