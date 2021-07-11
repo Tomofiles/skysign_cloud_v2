@@ -68,12 +68,7 @@ message TelemetryUpdatedEvent {
     Telemetry telemetry = 2;
 }
 
-message MissionCreatedEvent {
+message CopiedMissionCreatedEvent {
     string mission_id = 1;
     Mission mission = 2;
-}
-
-message MissionDeletedEvent {
-    string mission_id = 1;
-    string upload_mission_id = 2;
 }

@@ -11,70 +11,6 @@ import (
 
 // Missionを更新するドメインサービスをテストする。
 // 名前とNavigationを変更し、保存する。
-// Navigationがもともと存在しない場合、
-// Createdイベントのみ発行されることを検証する。
-func TestNoNavigationWhenUpdateMissionService(t *testing.T) {
-	a := assert.New(t)
-
-	ctx := context.Background()
-
-	var (
-		DefaultVersion1 = DefaultVersion + "-1"
-		DefaultVersion2 = DefaultVersion + "-2"
-		DefaultVersion3 = DefaultVersion + "-3"
-		NewName         = DefaultName + "-new"
-	)
-
-	gen := &generatorMock{
-		id:       DefaultID,
-		uploadID: DefaultUploadID,
-		versions: []Version{DefaultVersion2, DefaultVersion3},
-	}
-	testMission := Mission{
-		id:           DefaultID,
-		name:         DefaultName,
-		navigation:   nil,
-		isCarbonCopy: Original,
-		version:      DefaultVersion1,
-		newVersion:   DefaultVersion1,
-		gen:          gen,
-	}
-	repo := &repositoryMockUpdateService{}
-	repo.On("GetByID", DefaultID).Return(&testMission, nil)
-	repo.On("Save", mock.Anything).Return(nil)
-	pub := &publisherMock{}
-
-	navigation := NewNavigation(DefaultTakeoffPointGroundHeightWGS84EllipsoidM)
-
-	id, ret := UpdateMission(ctx, gen, repo, pub, DefaultID, NewName, navigation)
-
-	expectMission := Mission{
-		id:           DefaultID,
-		name:         NewName,
-		navigation:   navigation,
-		isCarbonCopy: Original,
-		version:      DefaultVersion1,
-		newVersion:   DefaultVersion3,
-		gen:          gen,
-		pub:          pub,
-	}
-	expectEvent := CreatedEvent{
-		ID:      DefaultID,
-		Mission: &expectMission,
-	}
-
-	a.Equal(id, string(DefaultUploadID))
-	a.Len(repo.saveMissions, 1)
-	a.Equal(repo.saveMissions[0], &expectMission)
-	a.Len(pub.events, 1)
-	a.Equal(pub.events, []interface{}{expectEvent})
-
-	a.Nil(ret)
-}
-
-// Missionを更新するドメインサービスをテストする。
-// 名前とNavigationを変更し、保存する。
-// DeletedイベントおよびCreatedイベントが発行されることを検証する。
 func TestUpdateMissionService(t *testing.T) {
 	a := assert.New(t)
 
@@ -123,20 +59,11 @@ func TestUpdateMissionService(t *testing.T) {
 		gen:          gen,
 		pub:          pub,
 	}
-	expectEvent1 := CreatedEvent{
-		ID:      DefaultID,
-		Mission: &expectMission,
-	}
-	expectEvent2 := DeletedEvent{
-		ID:       DefaultID,
-		UploadID: DefaultUploadID,
-	}
 
 	a.Equal(id, string(NewUploadID))
 	a.Len(repo.saveMissions, 1)
 	a.Equal(repo.saveMissions[0], &expectMission)
-	a.Len(pub.events, 2)
-	a.Equal(pub.events, []interface{}{expectEvent2, expectEvent1})
+	a.Len(pub.events, 0)
 
 	a.Nil(ret)
 }

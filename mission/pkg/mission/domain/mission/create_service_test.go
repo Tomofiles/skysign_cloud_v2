@@ -45,17 +45,12 @@ func TestCreateNewMissionService(t *testing.T) {
 		gen:          gen,
 		pub:          pub,
 	}
-	expectEvent := CreatedEvent{
-		ID:      DefaultID,
-		Mission: &expectMission,
-	}
 
 	a.Equal(id, string(DefaultID))
 	a.Equal(uploadID, string(DefaultUploadID))
 	a.Len(repo.saveMissions, 1)
 	a.Equal(repo.saveMissions[0], &expectMission)
-	a.Len(pub.events, 1)
-	a.Equal(pub.events, []interface{}{expectEvent})
+	a.Len(pub.events, 0)
 
 	a.Nil(ret)
 }

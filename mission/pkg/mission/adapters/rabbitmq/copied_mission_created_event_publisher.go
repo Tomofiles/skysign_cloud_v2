@@ -8,15 +8,15 @@ import (
 	"google.golang.org/protobuf/proto"
 )
 
-const missionCreatedEventExchangeName = "mission.mission_created_event"
+const copiedMissionCreatedEventExchangeName = "mission.copied_mission_created_event"
 
-// PublishMissionCreatedEvent .
-func PublishMissionCreatedEvent(
+// PublishCopiedMissionCreatedEvent .
+func PublishCopiedMissionCreatedEvent(
 	ch Channel,
-	event mission.CreatedEvent,
+	event mission.CopiedMissionCreatedEvent,
 ) error {
 	if err := ch.FanoutExchangeDeclare(
-		missionCreatedEventExchangeName,
+		copiedMissionCreatedEventExchangeName,
 	); err != nil {
 		return err
 	}
@@ -43,8 +43,8 @@ func PublishMissionCreatedEvent(
 			UploadId:                 string(event.GetMission().GetNavigation().GetUploadID()),
 		}
 	}
-	eventPb := skysign_proto.MissionCreatedEvent{
-		MissionId: event.GetMissionID(),
+	eventPb := skysign_proto.CopiedMissionCreatedEvent{
+		MissionId: string(event.GetID()),
 		Mission: &skysign_proto.Mission{
 			Id:         string(event.GetMission().GetID()),
 			Name:       event.GetMission().GetName(),
@@ -57,12 +57,12 @@ func PublishMissionCreatedEvent(
 	}
 
 	if err := ch.Publish(
-		missionCreatedEventExchangeName,
+		copiedMissionCreatedEventExchangeName,
 		eventBin,
 	); err != nil {
 		return err
 	}
 
-	glog.Infof("PUBLISH , Event: %s, Message: %s", missionCreatedEventExchangeName, eventPb.String())
+	glog.Infof("PUBLISH , Event: %s, Message: %s", copiedMissionCreatedEventExchangeName, eventPb.String())
 	return nil
 }

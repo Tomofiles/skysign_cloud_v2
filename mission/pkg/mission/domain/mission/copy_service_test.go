@@ -11,6 +11,7 @@ import (
 
 // Missionをカーボンコピーするドメインサービスをテストする。
 // 指定されたIDのMissionを、指定されたIDでコピーする。
+// コピーが成功するとイベントを発行されることを検証する。
 func TestCarbonCopyMissionService(t *testing.T) {
 	a := assert.New(t)
 
@@ -63,7 +64,7 @@ func TestCarbonCopyMissionService(t *testing.T) {
 		newVersion:   DefaultVersion,
 		gen:          gen,
 	}
-	expectEvent := CreatedEvent{
+	expectEvent := CopiedMissionCreatedEvent{
 		ID:      NewID,
 		Mission: &expectMission,
 	}
