@@ -10,10 +10,10 @@ import (
 )
 
 const (
-	// MissionCopiedWhenFlightplanCopiedEventExchangeName .
-	MissionCopiedWhenFlightplanCopiedEventExchangeName = "fleet.mission_copied_when_flightplan_copied_event"
-	// MissionCopiedWhenFlightplanCopiedEventQueueName .
-	MissionCopiedWhenFlightplanCopiedEventQueueName = "mission.mission_copied_when_flightplan_copied_event"
+	// MissionCopiedEventExchangeName .
+	MissionCopiedEventExchangeName = "fleet.mission_copied_event"
+	// MissionCopiedEventQueueName .
+	MissionCopiedEventQueueName = "mission.mission_copied_event"
 )
 
 // EventHandler .
@@ -26,17 +26,17 @@ func NewEventHandler(application app.Application) EventHandler {
 	return EventHandler{app: application}
 }
 
-// HandleMissionCopiedWhenFlightplanCopiedEvent .
-func (h *EventHandler) HandleMissionCopiedWhenFlightplanCopiedEvent(
+// HandleMissionCopiedEvent .
+func (h *EventHandler) HandleMissionCopiedEvent(
 	ctx context.Context,
 	event []byte,
 ) error {
-	eventPb := skysign_proto.MissionCopiedWhenFlightplanCopiedEvent{}
+	eventPb := skysign_proto.MissionCopiedEvent{}
 	if err := proto.Unmarshal(event, &eventPb); err != nil {
 		return err
 	}
 
-	glog.Infof("RECEIVE , Event: %s, Message: %s", MissionCopiedWhenFlightplanCopiedEventQueueName, eventPb.String())
+	glog.Infof("RECEIVE , Event: %s, Message: %s", MissionCopiedEventQueueName, eventPb.String())
 
 	command := &copyCommand{
 		originalID: eventPb.GetOriginalMissionId(),
