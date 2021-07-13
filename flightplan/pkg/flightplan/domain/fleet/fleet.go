@@ -2,7 +2,6 @@ package fleet
 
 import (
 	"errors"
-	"flightplan/pkg/flightplan/domain/flightplan"
 )
 
 // ID .
@@ -43,13 +42,12 @@ const (
 
 var (
 	// ErrCannotChange .
-	ErrCannotChange = errors.New("cannnot carbon copied fleet")
+	ErrCannotChange = errors.New("cannnot change carbon copied fleet")
 )
 
 // Fleet .
 type Fleet struct {
 	id                 ID
-	flightplanID       flightplan.ID
 	vehicleAssignments []*VehicleAssignment
 	eventPlannings     []*EventPlanning
 	isCarbonCopy       bool
@@ -74,11 +72,6 @@ type EventPlanning struct {
 // GetID .
 func (f *Fleet) GetID() ID {
 	return f.id
-}
-
-// GetFlightplanID .
-func (f *Fleet) GetFlightplanID() flightplan.ID {
-	return f.flightplanID
 }
 
 // GetNumberOfVehicles .
@@ -254,7 +247,6 @@ func (f *Fleet) ProvideAssignmentsInterest(
 
 // Generator .
 type Generator interface {
-	NewID() ID
 	NewAssignmentID() AssignmentID
 	NewEventID() EventID
 	NewVehicleID() VehicleID

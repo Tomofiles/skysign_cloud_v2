@@ -1,7 +1,6 @@
 package fleet
 
 import (
-	"flightplan/pkg/flightplan/domain/flightplan"
 	"flightplan/pkg/flightplan/domain/txmanager"
 )
 
@@ -10,16 +9,16 @@ func ChangeNumberOfVehicles(
 	tx txmanager.Tx,
 	gen Generator,
 	repo Repository,
-	id flightplan.ID,
-	numberOfVehicles int32,
+	id ID,
+	numberOfVehicles int,
 ) error {
-	if fleet, err := repo.GetByFlightplanID(tx, id); err != nil {
+	if fleet, err := repo.GetByID(tx, id); err != nil {
 		return err
 	} else if fleet.isCarbonCopy {
 		return ErrCannotChange
 	}
 
-	if ret := repo.DeleteByFlightplanID(tx, id); ret != nil {
+	if ret := repo.Delete(tx, id); ret != nil {
 		return ret
 	}
 

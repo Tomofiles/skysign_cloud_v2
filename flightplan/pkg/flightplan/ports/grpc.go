@@ -174,19 +174,19 @@ func (s *GrpcServer) GetAssignments(
 	response := &proto.GetAssignmentsResponse{
 		Id: request.Id,
 	}
-	requestDpo := &fleetIDRequestDpo{
-		flightplanID: request.Id,
+	command := &fleetIDCommand{
+		id: request.Id,
 	}
 	if ret := s.app.Services.AssignFleet.GetAssignments(
-		requestDpo,
-		func(id, assignmentID, vehicleID, missionID string) {
+		command,
+		func(model service.AssignmentPresentationModel) {
 			response.Assignments = append(
 				response.Assignments,
 				&proto.Assignment{
-					Id:           id,
-					AssignmentId: assignmentID,
-					VehicleId:    vehicleID,
-					MissionId:    missionID,
+					Id:           model.GetAssignment().GetEventID(),
+					AssignmentId: model.GetAssignment().GetAssignmentID(),
+					VehicleId:    model.GetAssignment().GetVehicleID(),
+					MissionId:    model.GetAssignment().GetMissionID(),
 				},
 			)
 		},
@@ -205,20 +205,20 @@ func (s *GrpcServer) UpdateAssignments(
 		Id: request.Id,
 	}
 	for _, assignment := range request.Assignments {
-		requestDpo := &updateAssignmentsRequestDpo{
-			flightplanID: request.Id,
-			assignment:   assignment,
+		command := &updateAssignmentsCommand{
+			id:         request.Id,
+			assignment: assignment,
 		}
 		if ret := s.app.Services.AssignFleet.UpdateAssignment(
-			requestDpo,
-			func(id, assignmentID, vehicleID, missionID string) {
+			command,
+			func(model service.AssignmentPresentationModel) {
 				response.Assignments = append(
 					response.Assignments,
 					&proto.Assignment{
-						Id:           id,
-						AssignmentId: assignmentID,
-						VehicleId:    vehicleID,
-						MissionId:    missionID,
+						Id:           model.GetAssignment().GetEventID(),
+						AssignmentId: model.GetAssignment().GetAssignmentID(),
+						VehicleId:    model.GetAssignment().GetVehicleID(),
+						MissionId:    model.GetAssignment().GetMissionID(),
 					},
 				)
 			},
@@ -281,12 +281,12 @@ func (f *flightplanIDCommand) GetID() string {
 	return f.id
 }
 
-type fleetIDRequestDpo struct {
-	flightplanID string
+type fleetIDCommand struct {
+	id string
 }
 
-func (f *fleetIDRequestDpo) GetFlightplanID() string {
-	return f.flightplanID
+func (f *fleetIDCommand) GetID() string {
+	return f.id
 }
 
 type changeNumberOfVehiclesCommand struct {
@@ -302,23 +302,23 @@ func (c *changeNumberOfVehiclesCommand) GetNumberOfVehicles() int {
 	return c.numberOfVehicles
 }
 
-type updateAssignmentsRequestDpo struct {
-	flightplanID string
-	assignment   *proto.Assignment
+type updateAssignmentsCommand struct {
+	id         string
+	assignment *proto.Assignment
 }
 
-func (r *updateAssignmentsRequestDpo) GetFlightplanID() string {
-	return r.flightplanID
+func (r *updateAssignmentsCommand) GetID() string {
+	return r.id
 }
-func (r *updateAssignmentsRequestDpo) GetEventID() string {
+func (r *updateAssignmentsCommand) GetEventID() string {
 	return r.assignment.Id
 }
-func (r *updateAssignmentsRequestDpo) GetAssignmentID() string {
+func (r *updateAssignmentsCommand) GetAssignmentID() string {
 	return r.assignment.AssignmentId
 }
-func (r *updateAssignmentsRequestDpo) GetVehicleID() string {
+func (r *updateAssignmentsCommand) GetVehicleID() string {
 	return r.assignment.VehicleId
 }
-func (r *updateAssignmentsRequestDpo) GetMissionID() string {
+func (r *updateAssignmentsCommand) GetMissionID() string {
 	return r.assignment.MissionId
 }

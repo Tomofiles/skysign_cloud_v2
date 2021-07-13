@@ -1,54 +1,51 @@
 package fleet
 
 import (
-	"flightplan/pkg/flightplan/domain/flightplan"
-	"flightplan/pkg/flightplan/domain/txmanager"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
 )
 
+// 機体数の変更によりFleetを再作成する。
 func TestChangeNumberOfVehicles(t *testing.T) {
 	a := assert.New(t)
 
 	var (
-		DefaultNumberOfVehicles int32 = 3
-		DefaultAssignmentID1          = DefaultAssignmentID + "-1"
-		DefaultAssignmentID2          = DefaultAssignmentID + "-2"
-		DefaultAssignmentID3          = DefaultAssignmentID + "-3"
-		DefaultEventID1               = DefaultEventID + "-1"
-		DefaultEventID2               = DefaultEventID + "-2"
-		DefaultEventID3               = DefaultEventID + "-3"
-		DefaultVersion1               = DefaultVersion + "-1"
-		DefaultVersion2               = DefaultVersion + "-2"
-		DefaultVersion3               = DefaultVersion + "-3"
-		DefaultVersion4               = DefaultVersion + "-4"
+		DefaultNumberOfVehicles = 3
+		DefaultAssignmentID1    = DefaultAssignmentID + "-1"
+		DefaultAssignmentID2    = DefaultAssignmentID + "-2"
+		DefaultAssignmentID3    = DefaultAssignmentID + "-3"
+		DefaultEventID1         = DefaultEventID + "-1"
+		DefaultEventID2         = DefaultEventID + "-2"
+		DefaultEventID3         = DefaultEventID + "-3"
+		DefaultVersion1         = DefaultVersion + "-1"
+		DefaultVersion2         = DefaultVersion + "-2"
+		DefaultVersion3         = DefaultVersion + "-3"
+		DefaultVersion4         = DefaultVersion + "-4"
 	)
 
 	fleet := AssembleFrom(
 		nil,
 		&fleetComponentMock{
 			id:           string(DefaultID),
-			flightplanID: string(DefaultFlightplanID),
 			isCarbonCopy: Original,
 			version:      string(DefaultVersion),
 		},
 	)
 
 	gen := &generatorMock{
-		id:            DefaultID,
 		assignmentIDs: []AssignmentID{DefaultAssignmentID1, DefaultAssignmentID2, DefaultAssignmentID3},
 		eventIDs:      []EventID{DefaultEventID1, DefaultEventID2, DefaultEventID3},
 		versions:      []Version{DefaultVersion1, DefaultVersion2, DefaultVersion3, DefaultVersion4},
 	}
 
 	repo := &repositoryMock{}
-	repo.On("GetByFlightplanID", DefaultFlightplanID).Return(fleet, nil)
-	repo.On("DeleteByFlightplanID", DefaultFlightplanID).Return(nil)
+	repo.On("GetByID", DefaultID).Return(fleet, nil)
+	repo.On("Delete", DefaultID).Return(nil)
 	repo.On("Save", mock.Anything).Return(nil)
 
-	ret := ChangeNumberOfVehicles(nil, gen, repo, DefaultFlightplanID, DefaultNumberOfVehicles)
+	ret := ChangeNumberOfVehicles(nil, gen, repo, DefaultID, DefaultNumberOfVehicles)
 
 	var actualAssignments []assignmentComponentMock
 	var actualEvents []eventComponentMock
@@ -105,37 +102,42 @@ func TestChangeNumberOfVehicles(t *testing.T) {
 	a.Equal(actualEvents, expectEvents)
 }
 
+// 機体数の変更によりFleetを再作成する。
+// 指定されたIDのFleetの取得がエラーとなった場合、
+// 再作成が失敗し、エラーが返却されることを検証する。
 func TestGetErrorWhenChangeNumberOfVehicles(t *testing.T) {
 	a := assert.New(t)
 
 	var (
-		DefaultNumberOfVehicles int32 = 3
+		DefaultNumberOfVehicles = 3
 	)
 
 	gen := &generatorMock{}
 
 	repo := &repositoryMock{}
-	repo.On("GetByFlightplanID", DefaultFlightplanID).Return(nil, ErrGet)
-	repo.On("DeleteByFlightplanID", DefaultFlightplanID).Return(nil)
+	repo.On("GetByID", DefaultID).Return(nil, ErrGet)
+	repo.On("Delete", DefaultID).Return(nil)
 	repo.On("Save", mock.Anything).Return(nil)
 
-	ret := ChangeNumberOfVehicles(nil, gen, repo, DefaultFlightplanID, DefaultNumberOfVehicles)
+	ret := ChangeNumberOfVehicles(nil, gen, repo, DefaultID, DefaultNumberOfVehicles)
 
 	a.Equal(ret, ErrGet)
 }
 
+// 機体数の変更によりFleetを再作成する。
+// カーボンコピーされたFleetの再作成となった場合、
+// 再作成が失敗し、エラーが返却されることを検証する。
 func TestCannotChangeErrorWhenChangeNumberOfVehicles(t *testing.T) {
 	a := assert.New(t)
 
 	var (
-		DefaultNumberOfVehicles int32 = 3
+		DefaultNumberOfVehicles = 3
 	)
 
 	fleet := AssembleFrom(
 		nil,
 		&fleetComponentMock{
 			id:           string(DefaultID),
-			flightplanID: string(DefaultFlightplanID),
 			isCarbonCopy: CarbonCopy,
 			version:      string(DefaultVersion),
 		},
@@ -144,27 +146,29 @@ func TestCannotChangeErrorWhenChangeNumberOfVehicles(t *testing.T) {
 	gen := &generatorMock{}
 
 	repo := &repositoryMock{}
-	repo.On("GetByFlightplanID", DefaultFlightplanID).Return(fleet, nil)
-	repo.On("DeleteByFlightplanID", DefaultFlightplanID).Return(nil)
+	repo.On("GetByID", DefaultID).Return(fleet, nil)
+	repo.On("Delete", DefaultID).Return(nil)
 	repo.On("Save", mock.Anything).Return(nil)
 
-	ret := ChangeNumberOfVehicles(nil, gen, repo, DefaultFlightplanID, DefaultNumberOfVehicles)
+	ret := ChangeNumberOfVehicles(nil, gen, repo, DefaultID, DefaultNumberOfVehicles)
 
 	a.Equal(ret, ErrCannotChange)
 }
 
+// 機体数の変更によりFleetを再作成する。
+// Fleetの削除がエラーとなった場合、
+// 再作成が失敗し、エラーが返却されることを検証する。
 func TestDeleteErrorWhenChangeNumberOfVehicles(t *testing.T) {
 	a := assert.New(t)
 
 	var (
-		DefaultNumberOfVehicles int32 = 3
+		DefaultNumberOfVehicles = 3
 	)
 
 	fleet := AssembleFrom(
 		nil,
 		&fleetComponentMock{
 			id:           string(DefaultID),
-			flightplanID: string(DefaultFlightplanID),
 			isCarbonCopy: Original,
 			version:      string(DefaultVersion),
 		},
@@ -173,93 +177,56 @@ func TestDeleteErrorWhenChangeNumberOfVehicles(t *testing.T) {
 	gen := &generatorMock{}
 
 	repo := &repositoryMock{}
-	repo.On("GetByFlightplanID", DefaultFlightplanID).Return(fleet, nil)
-	repo.On("DeleteByFlightplanID", DefaultFlightplanID).Return(ErrDelete)
+	repo.On("GetByID", DefaultID).Return(fleet, nil)
+	repo.On("Delete", DefaultID).Return(ErrDelete)
 	repo.On("Save", mock.Anything).Return(nil)
 
-	ret := ChangeNumberOfVehicles(nil, gen, repo, DefaultFlightplanID, DefaultNumberOfVehicles)
+	ret := ChangeNumberOfVehicles(nil, gen, repo, DefaultID, DefaultNumberOfVehicles)
 
 	a.Equal(ret, ErrDelete)
 }
 
+// 機体数の変更によりFleetを再作成する。
+// 再作成されたFleetの保存がエラーとなった場合、
+// 再作成が失敗し、エラーが返却されることを検証する。
 func TestSaveErrorWhenChangeNumberOfVehicles(t *testing.T) {
 	a := assert.New(t)
 
 	var (
-		DefaultNumberOfVehicles int32 = 3
-		DefaultAssignmentID1          = DefaultAssignmentID + "-1"
-		DefaultAssignmentID2          = DefaultAssignmentID + "-2"
-		DefaultAssignmentID3          = DefaultAssignmentID + "-3"
-		DefaultEventID1               = DefaultEventID + "-1"
-		DefaultEventID2               = DefaultEventID + "-2"
-		DefaultEventID3               = DefaultEventID + "-3"
-		DefaultVersion1               = DefaultVersion + "-1"
-		DefaultVersion2               = DefaultVersion + "-2"
-		DefaultVersion3               = DefaultVersion + "-3"
-		DefaultVersion4               = DefaultVersion + "-4"
+		DefaultNumberOfVehicles = 3
+		DefaultAssignmentID1    = DefaultAssignmentID + "-1"
+		DefaultAssignmentID2    = DefaultAssignmentID + "-2"
+		DefaultAssignmentID3    = DefaultAssignmentID + "-3"
+		DefaultEventID1         = DefaultEventID + "-1"
+		DefaultEventID2         = DefaultEventID + "-2"
+		DefaultEventID3         = DefaultEventID + "-3"
+		DefaultVersion1         = DefaultVersion + "-1"
+		DefaultVersion2         = DefaultVersion + "-2"
+		DefaultVersion3         = DefaultVersion + "-3"
+		DefaultVersion4         = DefaultVersion + "-4"
 	)
 
 	fleet := AssembleFrom(
 		nil,
 		&fleetComponentMock{
 			id:           string(DefaultID),
-			flightplanID: string(DefaultFlightplanID),
 			isCarbonCopy: Original,
 			version:      string(DefaultVersion),
 		},
 	)
 
 	gen := &generatorMock{
-		id:            DefaultID,
 		assignmentIDs: []AssignmentID{DefaultAssignmentID1, DefaultAssignmentID2, DefaultAssignmentID3},
 		eventIDs:      []EventID{DefaultEventID1, DefaultEventID2, DefaultEventID3},
 		versions:      []Version{DefaultVersion1, DefaultVersion2, DefaultVersion3, DefaultVersion4},
 	}
 
 	repo := &repositoryMock{}
-	repo.On("GetByFlightplanID", DefaultFlightplanID).Return(fleet, nil)
-	repo.On("DeleteByFlightplanID", DefaultFlightplanID).Return(nil)
+	repo.On("GetByID", DefaultID).Return(fleet, nil)
+	repo.On("Delete", DefaultID).Return(nil)
 	repo.On("Save", mock.Anything).Return(ErrSave)
 
-	ret := ChangeNumberOfVehicles(nil, gen, repo, DefaultFlightplanID, DefaultNumberOfVehicles)
+	ret := ChangeNumberOfVehicles(nil, gen, repo, DefaultID, DefaultNumberOfVehicles)
 
 	a.Equal(ret, ErrSave)
-}
-
-type repositoryMock struct {
-	mock.Mock
-	fleet    *Fleet
-	deleteID flightplan.ID
-}
-
-func (r *repositoryMock) GetByFlightplanID(
-	tx txmanager.Tx,
-	id flightplan.ID,
-) (*Fleet, error) {
-	ret := r.Called(id)
-	var f *Fleet
-	if ret.Get(0) == nil {
-		f = nil
-	} else {
-		f = ret.Get(0).(*Fleet)
-	}
-	return f, ret.Error(1)
-}
-
-func (r *repositoryMock) Save(
-	tx txmanager.Tx,
-	fleet *Fleet,
-) error {
-	ret := r.Called(fleet)
-	r.fleet = fleet
-	return ret.Error(0)
-}
-
-func (r *repositoryMock) DeleteByFlightplanID(
-	tx txmanager.Tx,
-	id flightplan.ID,
-) error {
-	ret := r.Called(id)
-	r.deleteID = id
-	return ret.Error(0)
 }

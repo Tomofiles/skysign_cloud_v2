@@ -393,10 +393,11 @@ func TestSingleAssignmentsGetAssignments(t *testing.T) {
 
 	assignments := []assignmentMock{
 		{
-			id:           DefaultFleetEventID,
-			assignmentID: DefaultFleetAssignmentID,
-			vehicleID:    DefaultFleetVehicleID,
-			missionID:    DefaultFleetMissionID,
+			ID:           DefaultFleetID,
+			EventID:      DefaultFleetEventID,
+			AssignmentID: DefaultFleetAssignmentID,
+			VehicleID:    DefaultFleetVehicleID,
+			MissionID:    DefaultFleetMissionID,
 		},
 	}
 
@@ -411,7 +412,7 @@ func TestSingleAssignmentsGetAssignments(t *testing.T) {
 	grpc := NewGrpcServer(app)
 
 	request := &skysign_proto.GetAssignmentsRequest{
-		Id: DefaultFlightplanID,
+		Id: DefaultFleetID,
 	}
 	response, err := grpc.GetAssignments(
 		nil,
@@ -419,7 +420,7 @@ func TestSingleAssignmentsGetAssignments(t *testing.T) {
 	)
 
 	expectResponse := &skysign_proto.GetAssignmentsResponse{
-		Id: DefaultFlightplanID,
+		Id: DefaultFleetID,
 		Assignments: []*skysign_proto.Assignment{
 			{
 				Id:           DefaultFleetEventID,
@@ -456,22 +457,25 @@ func TestMultipleAssignmentsGetAssignments(t *testing.T) {
 
 	assignments := []assignmentMock{
 		{
-			id:           DefaultFleetEventID1,
-			assignmentID: DefaultFleetAssignmentID1,
-			vehicleID:    DefaultFleetVehicleID1,
-			missionID:    DefaultFleetMissionID1,
+			ID:           DefaultFleetID,
+			EventID:      DefaultFleetEventID1,
+			AssignmentID: DefaultFleetAssignmentID1,
+			VehicleID:    DefaultFleetVehicleID1,
+			MissionID:    DefaultFleetMissionID1,
 		},
 		{
-			id:           DefaultFleetEventID2,
-			assignmentID: DefaultFleetAssignmentID2,
-			vehicleID:    DefaultFleetVehicleID2,
-			missionID:    DefaultFleetMissionID2,
+			ID:           DefaultFleetID,
+			EventID:      DefaultFleetEventID2,
+			AssignmentID: DefaultFleetAssignmentID2,
+			VehicleID:    DefaultFleetVehicleID2,
+			MissionID:    DefaultFleetMissionID2,
 		},
 		{
-			id:           DefaultFleetEventID3,
-			assignmentID: DefaultFleetAssignmentID3,
-			vehicleID:    DefaultFleetVehicleID3,
-			missionID:    DefaultFleetMissionID3,
+			ID:           DefaultFleetID,
+			EventID:      DefaultFleetEventID3,
+			AssignmentID: DefaultFleetAssignmentID3,
+			VehicleID:    DefaultFleetVehicleID3,
+			MissionID:    DefaultFleetMissionID3,
 		},
 	}
 
@@ -486,7 +490,7 @@ func TestMultipleAssignmentsGetAssignments(t *testing.T) {
 	grpc := NewGrpcServer(app)
 
 	request := &skysign_proto.GetAssignmentsRequest{
-		Id: DefaultFlightplanID,
+		Id: DefaultFleetID,
 	}
 	response, err := grpc.GetAssignments(
 		nil,
@@ -494,7 +498,7 @@ func TestMultipleAssignmentsGetAssignments(t *testing.T) {
 	)
 
 	expectResponse := &skysign_proto.GetAssignmentsResponse{
-		Id: DefaultFlightplanID,
+		Id: DefaultFleetID,
 		Assignments: []*skysign_proto.Assignment{
 			{
 				Id:           DefaultFleetEventID1,
@@ -539,7 +543,7 @@ func TestNoneAssignmentsGetAssignments(t *testing.T) {
 	grpc := NewGrpcServer(app)
 
 	request := &skysign_proto.GetAssignmentsRequest{
-		Id: DefaultFlightplanID,
+		Id: DefaultFleetID,
 	}
 	response, err := grpc.GetAssignments(
 		nil,
@@ -547,7 +551,7 @@ func TestNoneAssignmentsGetAssignments(t *testing.T) {
 	)
 
 	expectResponse := &skysign_proto.GetAssignmentsResponse{
-		Id: DefaultFlightplanID,
+		Id: DefaultFleetID,
 	}
 
 	a.Nil(err)
@@ -570,7 +574,7 @@ func TestSingleAssignmentsUpdateAssignments(t *testing.T) {
 	grpc := NewGrpcServer(app)
 
 	request := &skysign_proto.UpdateAssignmentsRequest{
-		Id: DefaultFlightplanID,
+		Id: DefaultFleetID,
 		Assignments: []*skysign_proto.Assignment{
 			{
 				Id:           DefaultFleetEventID,
@@ -586,7 +590,7 @@ func TestSingleAssignmentsUpdateAssignments(t *testing.T) {
 	)
 
 	expectResponse := &skysign_proto.UpdateAssignmentsResponse{
-		Id: DefaultFlightplanID,
+		Id: DefaultFleetID,
 		Assignments: []*skysign_proto.Assignment{
 			{
 				Id:           DefaultFleetEventID,
@@ -634,7 +638,7 @@ func TestMultipleAssignmentsUpdateAssignments(t *testing.T) {
 	grpc := NewGrpcServer(app)
 
 	request := &skysign_proto.UpdateAssignmentsRequest{
-		Id: DefaultFlightplanID,
+		Id: DefaultFleetID,
 		Assignments: []*skysign_proto.Assignment{
 			{
 				Id:           DefaultFleetEventID1,
@@ -662,7 +666,7 @@ func TestMultipleAssignmentsUpdateAssignments(t *testing.T) {
 	)
 
 	expectResponse := &skysign_proto.UpdateAssignmentsResponse{
-		Id: DefaultFlightplanID,
+		Id: DefaultFleetID,
 		Assignments: []*skysign_proto.Assignment{
 			{
 				Id:           DefaultFleetEventID1,
@@ -705,7 +709,7 @@ func TestNoneAssignmentsUpdateAssignments(t *testing.T) {
 	grpc := NewGrpcServer(app)
 
 	request := &skysign_proto.UpdateAssignmentsRequest{
-		Id:          DefaultFlightplanID,
+		Id:          DefaultFleetID,
 		Assignments: []*skysign_proto.Assignment{},
 	}
 	response, err := grpc.UpdateAssignments(
@@ -714,7 +718,7 @@ func TestNoneAssignmentsUpdateAssignments(t *testing.T) {
 	)
 
 	expectResponse := &skysign_proto.UpdateAssignmentsResponse{
-		Id: DefaultFlightplanID,
+		Id: DefaultFleetID,
 	}
 
 	a.Nil(err)

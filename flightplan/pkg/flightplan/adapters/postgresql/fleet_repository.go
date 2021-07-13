@@ -2,7 +2,6 @@ package postgresql
 
 import (
 	fl "flightplan/pkg/flightplan/domain/fleet"
-	"flightplan/pkg/flightplan/domain/flightplan"
 	"flightplan/pkg/flightplan/domain/txmanager"
 
 	"gorm.io/gorm"
@@ -20,10 +19,10 @@ func NewFleetRepository(gen fl.Generator) *FleetRepository {
 	}
 }
 
-// GetByFlightplanID .
-func (r *FleetRepository) GetByFlightplanID(
+// GetByID .
+func (r *FleetRepository) GetByID(
 	tx txmanager.Tx,
-	flightplanID flightplan.ID,
+	id fl.ID,
 ) (*fl.Fleet, error) {
 	txGorm, ok := tx.(*gorm.DB)
 	if !ok {
@@ -34,7 +33,7 @@ func (r *FleetRepository) GetByFlightplanID(
 	var assignmentRecords []*Assignment
 	var eventRecords []*Event
 
-	if err := txGorm.Limit(1).Find(&fleetRecord, "flightplan_id = ?", string(flightplanID)).Error; err != nil {
+	if err := txGorm.Limit(1).Find(&fleetRecord, "id = ?", string(id)).Error; err != nil {
 		return nil, err
 	}
 	if fleetRecord.ID == "" {
@@ -70,7 +69,7 @@ func (r *FleetRepository) Save(
 	eventRecords := []*Event{}
 
 	isCreate := false
-	if err := txGorm.Limit(1).Find(&fleetRecord, "flightplan_id = ?", string(fleet.GetFlightplanID())).Error; err != nil {
+	if err := txGorm.Limit(1).Find(&fleetRecord, "id = ?", string(fleet.GetID())).Error; err != nil {
 		return err
 	}
 
@@ -81,9 +80,8 @@ func (r *FleetRepository) Save(
 
 	fl.TakeApart(
 		fleet,
-		func(id, flightplanID, version string, isCarbonCopy bool) {
+		func(id, version string, isCarbonCopy bool) {
 			fleetRecord.ID = id
-			fleetRecord.FlightplanID = flightplanID
 			fleetRecord.Version = version
 			fleetRecord.IsCarbonCopy = isCarbonCopy
 		},
@@ -148,10 +146,10 @@ func (r *FleetRepository) Save(
 	return nil
 }
 
-// DeleteByFlightplanID .
-func (r *FleetRepository) DeleteByFlightplanID(
+// Delete .
+func (r *FleetRepository) Delete(
 	tx txmanager.Tx,
-	flightplanID flightplan.ID,
+	id fl.ID,
 ) error {
 	txGorm, ok := tx.(*gorm.DB)
 	if !ok {
@@ -162,7 +160,7 @@ func (r *FleetRepository) DeleteByFlightplanID(
 	assignmentRecord := Assignment{}
 	eventRecord := Event{}
 
-	if err := txGorm.Limit(1).Find(&fleetRecord, "flightplan_id = ?", string(flightplanID)).Error; err != nil {
+	if err := txGorm.Limit(1).Find(&fleetRecord, "id = ?", string(id)).Error; err != nil {
 		return err
 	}
 	if fleetRecord.ID == "" {

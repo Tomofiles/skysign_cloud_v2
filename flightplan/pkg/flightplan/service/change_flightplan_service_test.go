@@ -55,7 +55,7 @@ func TestFlightplanChangeNumberOfVehiclesTransaction(t *testing.T) {
 		psm:  psm,
 	}
 
-	command := &changeNumberOfVehiclesCommandMock{
+	command := &changeNumberOfVehiclesCommandFlightplanMock{
 		ID:               string(DefaultFlightplanID),
 		NumberOfVehicles: DefaultNumberOfVehicles,
 	}
@@ -106,7 +106,7 @@ func TestFlightplanChangeNumberOfVehiclesOperation(t *testing.T) {
 		psm:  nil,
 	}
 
-	command := &changeNumberOfVehiclesCommandMock{
+	command := &changeNumberOfVehiclesCommandFlightplanMock{
 		ID:               string(DefaultFlightplanID),
 		NumberOfVehicles: DefaultNumberOfVehicles,
 	}

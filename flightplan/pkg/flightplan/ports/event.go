@@ -10,22 +10,18 @@ import (
 )
 
 const (
-	// FlightplanCreatedEventExchangeName .
-	FlightplanCreatedEventExchangeName = "flightplan.flightplan_created_event"
-	// FlightplanCreatedEventQueueName .
-	FlightplanCreatedEventQueueName = "fleet.flightplan_created_event"
-	// FlightplanDeletedEventExchangeName .
-	FlightplanDeletedEventExchangeName = "flightplan.flightplan_deleted_event"
-	// FlightplanDeletedEventQueueName .
-	FlightplanDeletedEventQueueName = "fleet.flightplan_deleted_event"
-	// FlightplanCopiedEventExchangeName .
-	FlightplanCopiedEventExchangeName = "flightplan.flightplan_copied_event"
-	// FlightplanCopiedEventQueueName .
-	FlightplanCopiedEventQueueName = "fleet.flightplan_copied_event"
-	// FlightplanCopiedWhenFlightoperationCreatedEventExchangeName .
-	FlightplanCopiedWhenFlightoperationCreatedEventExchangeName = "flightoperation.flightplan_copied_when_flightoperation_created_event"
-	// FlightplanCopiedWhenFlightoperationCreatedEventQueueName .
-	FlightplanCopiedWhenFlightoperationCreatedEventQueueName = "flightplan.flightplan_copied_when_flightoperation_created_event"
+	// FleetIDGaveEventExchangeName .
+	FleetIDGaveEventExchangeName = "flightplan.fleet_id_gave_event"
+	// FleetIDGaveEventQueueName .
+	FleetIDGaveEventQueueName = "fleet.fleet_id_gave_event"
+	// FleetIDRemovedEventExchangeName .
+	FleetIDRemovedEventExchangeName = "flightplan.fleet_id_removed_event"
+	// FleetIDRemovedEventQueueName .
+	FleetIDRemovedEventQueueName = "fleet.fleet_id_removed_event"
+	// FleetCopiedEventExchangeName .
+	FleetCopiedEventExchangeName = "flightplan.fleet_copied_event"
+	// FleetCopiedEventQueueName .
+	FleetCopiedEventQueueName = "fleet.fleet_copied_event"
 )
 
 // EventHandler .
@@ -38,104 +34,98 @@ func NewEventHandler(application app.Application) EventHandler {
 	return EventHandler{app: application}
 }
 
-// HandleCreatedEvent .
-func (h *EventHandler) HandleCreatedEvent(
+// HandleFleetIDGaveEvent .
+func (h *EventHandler) HandleFleetIDGaveEvent(
 	ctx context.Context,
 	event []byte,
 ) error {
-	eventPb := skysign_proto.FlightplanCreatedEvent{}
+	eventPb := skysign_proto.FleetIDGaveEvent{}
 	if err := proto.Unmarshal(event, &eventPb); err != nil {
 		return err
 	}
 
-	glog.Infof("RECEIVE , Event: %s, Message: %s", FlightplanCreatedEventQueueName, eventPb.String())
+	glog.Infof("RECEIVE , Event: %s, Message: %s", FleetIDGaveEventQueueName, eventPb.String())
 
-	requestDpo := flightplanIDRequestDpoHolder{id: eventPb.GetFlightplanId()}
-	if ret := h.app.Services.ManageFleet.CreateFleet(&requestDpo); ret != nil {
+	command := createFleetCommandHolder{
+		event: &eventPb,
+	}
+	if ret := h.app.Services.ManageFleet.CreateFleet(&command); ret != nil {
 		return ret
 	}
 	return nil
 }
 
-// HandleDeletedEvent .
-func (h *EventHandler) HandleDeletedEvent(
+// HandleFleetIDRemovedEvent .
+func (h *EventHandler) HandleFleetIDRemovedEvent(
 	ctx context.Context,
 	event []byte,
 ) error {
-	eventPb := skysign_proto.FlightplanDeletedEvent{}
+	eventPb := skysign_proto.FleetIDRemovedEvent{}
 	if err := proto.Unmarshal(event, &eventPb); err != nil {
 		return err
 	}
 
-	glog.Infof("RECEIVE , Event: %s, Message: %s", FlightplanDeletedEventQueueName, eventPb.String())
+	glog.Infof("RECEIVE , Event: %s, Message: %s", FleetIDRemovedEventQueueName, eventPb.String())
 
-	requestDpo := flightplanIDRequestDpoHolder{id: eventPb.GetFlightplanId()}
-	if ret := h.app.Services.ManageFleet.DeleteFleet(&requestDpo); ret != nil {
+	command := deleteFleetCommandHolder{
+		event: &eventPb,
+	}
+	if ret := h.app.Services.ManageFleet.DeleteFleet(&command); ret != nil {
 		return ret
 	}
 	return nil
 }
 
-// HandleCopiedEvent .
-func (h *EventHandler) HandleCopiedEvent(
+// HandleFleetCopiedEvent .
+func (h *EventHandler) HandleFleetCopiedEvent(
 	ctx context.Context,
 	event []byte,
 ) error {
-	eventPb := skysign_proto.FlightplanCopiedEvent{}
+	eventPb := skysign_proto.FleetCopiedEvent{}
 	if err := proto.Unmarshal(event, &eventPb); err != nil {
 		return err
 	}
 
-	glog.Infof("RECEIVE , Event: %s, Message: %s", FlightplanCopiedEventQueueName, eventPb.String())
+	glog.Infof("RECEIVE , Event: %s, Message: %s", FleetCopiedEventQueueName, eventPb.String())
 
-	requestDpo := copyRequestDpoHolder{
-		originalID: eventPb.GetOriginalFlightplanId(),
-		newID:      eventPb.GetNewFlightplanId(),
+	command := copyCommandHolder{
+		originalID: eventPb.GetOriginalFleetId(),
+		newID:      eventPb.GetNewFleetId(),
 	}
-	if ret := h.app.Services.ManageFleet.CarbonCopyFleet(&requestDpo); ret != nil {
+	if ret := h.app.Services.ManageFleet.CarbonCopyFleet(&command); ret != nil {
 		return ret
 	}
 	return nil
 }
 
-// HandleCopiedWhenFlightoperationCreatedEvent .
-func (h *EventHandler) HandleCopiedWhenFlightoperationCreatedEvent(
-	ctx context.Context,
-	event []byte,
-) error {
-	eventPb := skysign_proto.FlightplanCopiedWhenFlightoperationCreatedEvent{}
-	if err := proto.Unmarshal(event, &eventPb); err != nil {
-		return err
-	}
-
-	glog.Infof("RECEIVE , Event: %s, Message: %s", FlightplanCopiedWhenFlightoperationCreatedEventQueueName, eventPb.String())
-
-	// requestDpo := copyRequestDpoHolder{
-	// 	originalID: eventPb.GetOriginalFlightplanId(),
-	// 	newID:      eventPb.GetNewFlightplanId(),
-	// }
-	// if ret := h.app.Services.ManageFlightplan.CarbonCopyFlightplan(&requestDpo); ret != nil {
-	// 	return ret
-	// }
-	return nil
+type createFleetCommandHolder struct {
+	event *skysign_proto.FleetIDGaveEvent
 }
 
-type flightplanIDRequestDpoHolder struct {
-	id string
+func (h *createFleetCommandHolder) GetID() string {
+	return h.event.FleetId
 }
 
-func (h *flightplanIDRequestDpoHolder) GetFlightplanID() string {
-	return h.id
+func (h *createFleetCommandHolder) GetNumberOfVehicles() int {
+	return int(h.event.NumberOfVehicles)
 }
 
-type copyRequestDpoHolder struct {
+type deleteFleetCommandHolder struct {
+	event *skysign_proto.FleetIDRemovedEvent
+}
+
+func (h *deleteFleetCommandHolder) GetID() string {
+	return h.event.FleetId
+}
+
+type copyCommandHolder struct {
 	originalID string
 	newID      string
 }
 
-func (h *copyRequestDpoHolder) GetOriginalID() string {
+func (h *copyCommandHolder) GetOriginalID() string {
 	return h.originalID
 }
-func (h *copyRequestDpoHolder) GetNewID() string {
+func (h *copyCommandHolder) GetNewID() string {
 	return h.newID
 }

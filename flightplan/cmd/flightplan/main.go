@@ -52,46 +52,37 @@ func run() error {
 
 	psm.SetConsumer(
 		ctx,
-		ports.FlightplanCreatedEventExchangeName,
-		ports.FlightplanCreatedEventQueueName,
+		ports.FleetIDGaveEventExchangeName,
+		ports.FleetIDGaveEventQueueName,
 		func(event []byte) {
-			if err := evt.HandleCreatedEvent(ctx, event); err != nil {
+			if err := evt.HandleFleetIDGaveEvent(ctx, event); err != nil {
 				glog.Error(err)
 			}
 		},
 	)
 	psm.SetConsumer(
 		ctx,
-		ports.FlightplanDeletedEventExchangeName,
-		ports.FlightplanDeletedEventQueueName,
+		ports.FleetIDRemovedEventExchangeName,
+		ports.FleetIDRemovedEventQueueName,
 		func(event []byte) {
-			if err := evt.HandleDeletedEvent(ctx, event); err != nil {
+			if err := evt.HandleFleetIDRemovedEvent(ctx, event); err != nil {
 				glog.Error(err)
 			}
 		},
 	)
 	psm.SetConsumer(
 		ctx,
-		ports.FlightplanCopiedEventExchangeName,
-		ports.FlightplanCopiedEventQueueName,
+		ports.FleetCopiedEventExchangeName,
+		ports.FleetCopiedEventQueueName,
 		func(event []byte) {
-			if err := evt.HandleCopiedEvent(ctx, event); err != nil {
-				glog.Error(err)
-			}
-		},
-	)
-	psm.SetConsumer(
-		ctx,
-		ports.FlightplanCopiedWhenFlightoperationCreatedEventExchangeName,
-		ports.FlightplanCopiedWhenFlightoperationCreatedEventQueueName,
-		func(event []byte) {
-			if err := evt.HandleCopiedWhenFlightoperationCreatedEvent(ctx, event); err != nil {
+			if err := evt.HandleFleetCopiedEvent(ctx, event); err != nil {
 				glog.Error(err)
 			}
 		},
 	)
 
 	proto.RegisterManageFlightplanServiceServer(s, &svc)
+	proto.RegisterChangeFlightplanServiceServer(s, &svc)
 	proto.RegisterAssignAssetsToFlightplanServiceServer(s, &svc)
 
 	glog.Info("start flightplan server")

@@ -17,11 +17,10 @@ func TestAssignVehicle(t *testing.T) {
 	)
 
 	gen := &generatorMock{
-		id:            DefaultID,
 		assignmentIDs: []AssignmentID{DefaultAssignmentID},
 		versions:      []Version{DefaultVersion1, DefaultVersion2},
 	}
-	fleet := NewInstance(gen, DefaultFlightplanID, 1)
+	fleet := NewInstance(gen, DefaultID, 1)
 
 	ret := fleet.AssignVehicle(DefaultAssignmentID, DefaultVehicleID)
 
@@ -43,18 +42,16 @@ func TestCannotChangeErrorWhenAssignVehicle(t *testing.T) {
 	a := assert.New(t)
 
 	var (
-		CopiedID        = DefaultFlightplanID + "-copied"
+		CopiedID        = DefaultID + "-copied"
 		DefaultVersion1 = DefaultVersion + "-1"
 		DefaultVersion2 = DefaultVersion + "-2"
 	)
 
 	gen := &generatorMock{
-		id:       DefaultID,
 		versions: []Version{DefaultVersion2},
 	}
 	original := &Fleet{
 		id:           DefaultID,
-		flightplanID: DefaultFlightplanID,
 		isCarbonCopy: Original,
 		version:      DefaultVersion1,
 		newVersion:   DefaultVersion1,
@@ -83,11 +80,10 @@ func TestVehicleHasAlreadyAssignedWhenAssignVehicle(t *testing.T) {
 	)
 
 	gen := &generatorMock{
-		id:            DefaultID,
 		assignmentIDs: []AssignmentID{DefaultAssignmentID1, DefaultAssignmentID2, DefaultAssignmentID3},
 		versions:      []Version{DefaultVersion1, DefaultVersion2},
 	}
-	fleet := NewInstance(gen, DefaultFlightplanID, 3)
+	fleet := NewInstance(gen, DefaultID, 3)
 	fleet.vehicleAssignments[2].vehicleID = DefaultVehicleID
 
 	ret := fleet.AssignVehicle(DefaultAssignmentID1, DefaultVehicleID)
@@ -118,11 +114,10 @@ func TestNotFoundErrorWhenAssignVehicle(t *testing.T) {
 	)
 
 	gen := &generatorMock{
-		id:            DefaultID,
 		assignmentIDs: []AssignmentID{DefaultAssignmentID1},
 		versions:      []Version{DefaultVersion1, DefaultVersion2},
 	}
-	fleet := NewInstance(gen, DefaultFlightplanID, 1)
+	fleet := NewInstance(gen, DefaultID, 1)
 
 	ret := fleet.AssignVehicle(DefaultAssignmentID2, DefaultVehicleID)
 
@@ -149,11 +144,10 @@ func TestCancelVehiclesAssignment(t *testing.T) {
 	)
 
 	gen := &generatorMock{
-		id:            DefaultID,
 		assignmentIDs: []AssignmentID{DefaultAssignmentID},
 		versions:      []Version{DefaultVersion1, DefaultVersion2},
 	}
-	fleet := NewInstance(gen, DefaultFlightplanID, 1)
+	fleet := NewInstance(gen, DefaultID, 1)
 	fleet.vehicleAssignments[0].vehicleID = DefaultVehicleID
 
 	ret := fleet.CancelVehiclesAssignment(DefaultAssignmentID)
@@ -176,18 +170,16 @@ func TestCannotChangeErrorWhenCancelVehiclesAssignment(t *testing.T) {
 	a := assert.New(t)
 
 	var (
-		CopiedID        = DefaultFlightplanID + "-copied"
+		CopiedID        = DefaultID + "-copied"
 		DefaultVersion1 = DefaultVersion + "-1"
 		DefaultVersion2 = DefaultVersion + "-2"
 	)
 
 	gen := &generatorMock{
-		id:       DefaultID,
 		versions: []Version{DefaultVersion2},
 	}
 	original := &Fleet{
 		id:           DefaultID,
-		flightplanID: DefaultFlightplanID,
 		isCarbonCopy: Original,
 		version:      DefaultVersion1,
 		newVersion:   DefaultVersion1,
@@ -215,11 +207,10 @@ func TestNotFoundErrorWhenCancelVehiclesAssignment(t *testing.T) {
 	)
 
 	gen := &generatorMock{
-		id:            DefaultID,
 		assignmentIDs: []AssignmentID{DefaultAssignmentID1},
 		versions:      []Version{DefaultVersion1, DefaultVersion2},
 	}
-	fleet := NewInstance(gen, DefaultFlightplanID, 1)
+	fleet := NewInstance(gen, DefaultID, 1)
 	fleet.vehicleAssignments[0].vehicleID = DefaultVehicleID
 
 	ret := fleet.CancelVehiclesAssignment(DefaultAssignmentID2)
@@ -247,12 +238,11 @@ func TestAddNewEvent(t *testing.T) {
 	)
 
 	gen := &generatorMock{
-		id:            DefaultID,
 		assignmentIDs: []AssignmentID{DefaultAssignmentID},
 		eventIDs:      []EventID{DefaultEventID},
 		versions:      []Version{DefaultVersion1, DefaultVersion2},
 	}
-	fleet := NewInstance(gen, DefaultFlightplanID, 1)
+	fleet := NewInstance(gen, DefaultID, 1)
 
 	eventID, ret := fleet.AddNewEvent(DefaultAssignmentID)
 
@@ -276,18 +266,16 @@ func TestCannotChangeErrorWhenAddNewEvent(t *testing.T) {
 	a := assert.New(t)
 
 	var (
-		CopiedID        = DefaultFlightplanID + "-copied"
+		CopiedID        = DefaultID + "-copied"
 		DefaultVersion1 = DefaultVersion + "-1"
 		DefaultVersion2 = DefaultVersion + "-2"
 	)
 
 	gen := &generatorMock{
-		id:       DefaultID,
 		versions: []Version{DefaultVersion2},
 	}
 	original := &Fleet{
 		id:           DefaultID,
-		flightplanID: DefaultFlightplanID,
 		isCarbonCopy: Original,
 		version:      DefaultVersion1,
 		newVersion:   DefaultVersion1,
@@ -316,12 +304,11 @@ func TestNotAssignedErrorWhenAddNewEvent(t *testing.T) {
 	)
 
 	gen := &generatorMock{
-		id:            DefaultID,
 		assignmentIDs: []AssignmentID{DefaultAssignmentID1},
 		eventIDs:      []EventID{DefaultEventID},
 		versions:      []Version{DefaultVersion1, DefaultVersion2},
 	}
-	fleet := NewInstance(gen, DefaultFlightplanID, 1)
+	fleet := NewInstance(gen, DefaultID, 1)
 
 	eventID, ret := fleet.AddNewEvent(DefaultAssignmentID2)
 
@@ -343,11 +330,10 @@ func TestRemoveEvent(t *testing.T) {
 	)
 
 	gen := &generatorMock{
-		id:            DefaultID,
 		assignmentIDs: []AssignmentID{DefaultAssignmentID},
 		versions:      []Version{DefaultVersion1, DefaultVersion2},
 	}
-	fleet := NewInstance(gen, DefaultFlightplanID, 1)
+	fleet := NewInstance(gen, DefaultID, 1)
 	fleet.eventPlannings = append(
 		fleet.eventPlannings,
 		&EventPlanning{
@@ -371,18 +357,16 @@ func TestCannotChangeErrorWhenRemoveEvent(t *testing.T) {
 	a := assert.New(t)
 
 	var (
-		CopiedID        = DefaultFlightplanID + "-copied"
+		CopiedID        = DefaultID + "-copied"
 		DefaultVersion1 = DefaultVersion + "-1"
 		DefaultVersion2 = DefaultVersion + "-2"
 	)
 
 	gen := &generatorMock{
-		id:       DefaultID,
 		versions: []Version{DefaultVersion2},
 	}
 	original := &Fleet{
 		id:           DefaultID,
-		flightplanID: DefaultFlightplanID,
 		isCarbonCopy: Original,
 		version:      DefaultVersion1,
 		newVersion:   DefaultVersion1,
@@ -410,11 +394,10 @@ func TestNotFoundWhenRemoveEvent(t *testing.T) {
 	)
 
 	gen := &generatorMock{
-		id:            DefaultID,
 		assignmentIDs: []AssignmentID{DefaultAssignmentID},
 		versions:      []Version{DefaultVersion1, DefaultVersion2},
 	}
-	fleet := NewInstance(gen, DefaultFlightplanID, 1)
+	fleet := NewInstance(gen, DefaultID, 1)
 	fleet.eventPlannings = append(
 		fleet.eventPlannings,
 		&EventPlanning{
@@ -443,11 +426,10 @@ func TestAssignMission(t *testing.T) {
 	)
 
 	gen := &generatorMock{
-		id:            DefaultID,
 		assignmentIDs: []AssignmentID{DefaultAssignmentID},
 		versions:      []Version{DefaultVersion1, DefaultVersion2},
 	}
-	fleet := NewInstance(gen, DefaultFlightplanID, 1)
+	fleet := NewInstance(gen, DefaultID, 1)
 	fleet.eventPlannings = append(
 		fleet.eventPlannings,
 		&EventPlanning{
@@ -478,18 +460,16 @@ func TestCannotChangeErrorWhenAssignMission(t *testing.T) {
 	a := assert.New(t)
 
 	var (
-		CopiedID        = DefaultFlightplanID + "-copied"
+		CopiedID        = DefaultID + "-copied"
 		DefaultVersion1 = DefaultVersion + "-1"
 		DefaultVersion2 = DefaultVersion + "-2"
 	)
 
 	gen := &generatorMock{
-		id:       DefaultID,
 		versions: []Version{DefaultVersion2},
 	}
 	original := &Fleet{
 		id:           DefaultID,
-		flightplanID: DefaultFlightplanID,
 		isCarbonCopy: Original,
 		version:      DefaultVersion1,
 		newVersion:   DefaultVersion1,
@@ -522,11 +502,10 @@ func TestMissionHasAlreadyAssignedWhenAssignMission(t *testing.T) {
 	)
 
 	gen := &generatorMock{
-		id:            DefaultID,
 		assignmentIDs: []AssignmentID{DefaultAssignmentID1, DefaultAssignmentID2, DefaultAssignmentID3},
 		versions:      []Version{DefaultVersion1, DefaultVersion2, DefaultVersion3},
 	}
-	fleet := NewInstance(gen, DefaultFlightplanID, 3)
+	fleet := NewInstance(gen, DefaultID, 3)
 	fleet.eventPlannings = append(
 		fleet.eventPlannings,
 		&EventPlanning{
@@ -581,11 +560,10 @@ func TestNotFoundErrorWhenAssignMission(t *testing.T) {
 	)
 
 	gen := &generatorMock{
-		id:            DefaultID,
 		assignmentIDs: []AssignmentID{DefaultAssignmentID},
 		versions:      []Version{DefaultVersion1, DefaultVersion2},
 	}
-	fleet := NewInstance(gen, DefaultFlightplanID, 1)
+	fleet := NewInstance(gen, DefaultID, 1)
 	fleet.eventPlannings = append(
 		fleet.eventPlannings,
 		&EventPlanning{
@@ -621,11 +599,10 @@ func TestCancelMission(t *testing.T) {
 	)
 
 	gen := &generatorMock{
-		id:            DefaultID,
 		assignmentIDs: []AssignmentID{DefaultAssignmentID},
 		versions:      []Version{DefaultVersion1, DefaultVersion2},
 	}
-	fleet := NewInstance(gen, DefaultFlightplanID, 1)
+	fleet := NewInstance(gen, DefaultID, 1)
 	fleet.eventPlannings = append(
 		fleet.eventPlannings,
 		&EventPlanning{
@@ -656,18 +633,16 @@ func TestCannotChangeErrorWhenCancelMission(t *testing.T) {
 	a := assert.New(t)
 
 	var (
-		CopiedID        = DefaultFlightplanID + "-copied"
+		CopiedID        = DefaultID + "-copied"
 		DefaultVersion1 = DefaultVersion + "-1"
 		DefaultVersion2 = DefaultVersion + "-2"
 	)
 
 	gen := &generatorMock{
-		id:       DefaultID,
 		versions: []Version{DefaultVersion2},
 	}
 	original := &Fleet{
 		id:           DefaultID,
-		flightplanID: DefaultFlightplanID,
 		isCarbonCopy: Original,
 		version:      DefaultVersion1,
 		newVersion:   DefaultVersion1,
@@ -695,11 +670,10 @@ func TestNotFoundErrorWhenCancelMission(t *testing.T) {
 	)
 
 	gen := &generatorMock{
-		id:            DefaultID,
 		assignmentIDs: []AssignmentID{DefaultAssignmentID},
 		versions:      []Version{DefaultVersion1, DefaultVersion2},
 	}
-	fleet := NewInstance(gen, DefaultFlightplanID, 1)
+	fleet := NewInstance(gen, DefaultID, 1)
 	fleet.eventPlannings = append(
 		fleet.eventPlannings,
 		&EventPlanning{
@@ -747,11 +721,10 @@ func TestProvideAssignmentsInterest(t *testing.T) {
 	)
 
 	gen := &generatorMock{
-		id:            DefaultID,
 		assignmentIDs: []AssignmentID{DefaultAssignmentID1, DefaultAssignmentID2, DefaultAssignmentID3},
 		versions:      []Version{DefaultVersion1, DefaultVersion2},
 	}
-	fleet := NewInstance(gen, DefaultFlightplanID, 3)
+	fleet := NewInstance(gen, DefaultID, 3)
 	fleet.vehicleAssignments[0].vehicleID = DefaultVehicleID1
 	fleet.vehicleAssignments[1].vehicleID = DefaultVehicleID2
 	fleet.vehicleAssignments[2].vehicleID = DefaultVehicleID3

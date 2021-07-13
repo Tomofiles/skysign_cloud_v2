@@ -39,7 +39,6 @@ func (f *Flightplan) GetVersion() string {
 // Fleet .
 type Fleet struct {
 	ID           string `gorm:"primaryKey"`
-	FlightplanID string
 	IsCarbonCopy bool
 	Assignments  []*Assignment `gorm:"-"`
 	Events       []*Event      `gorm:"-"`
@@ -49,11 +48,6 @@ type Fleet struct {
 // GetID .
 func (f *Fleet) GetID() string {
 	return f.ID
-}
-
-// GetFlightplanID .
-func (f *Fleet) GetFlightplanID() string {
-	return f.FlightplanID
 }
 
 // GetIsCarbonCopy .

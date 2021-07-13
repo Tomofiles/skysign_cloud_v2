@@ -2,11 +2,12 @@ package fleet
 
 import (
 	"errors"
-	"flightplan/pkg/flightplan/domain/flightplan"
+	"flightplan/pkg/flightplan/domain/txmanager"
+
+	"github.com/stretchr/testify/mock"
 )
 
 const DefaultID = ID("fleet-id")
-const DefaultFlightplanID = flightplan.ID("flightplan-id")
 const DefaultAssignmentID = AssignmentID("assignment-id")
 const DefaultEventID = EventID("event-id")
 const DefaultVehicleID = VehicleID("vehicle-id")
@@ -22,7 +23,6 @@ var (
 // Fleet用汎用ジェネレータモック
 type generatorMock struct {
 	Generator
-	id                ID
 	assignmentIDs     []AssignmentID
 	assignmentIDIndex int
 	eventIDs          []EventID
@@ -35,9 +35,6 @@ type generatorMock struct {
 	versionIndex      int
 }
 
-func (gen *generatorMock) NewID() ID {
-	return gen.id
-}
 func (gen *generatorMock) NewAssignmentID() AssignmentID {
 	assignmentID := gen.assignmentIDs[gen.assignmentIDIndex]
 	gen.assignmentIDIndex++
@@ -64,7 +61,7 @@ func (gen *generatorMock) NewVersion() Version {
 	return version
 }
 
-// Flightplan用汎用パブリッシャモック
+// Fleet用汎用パブリッシャモック
 type publisherMock struct {
 	events []interface{}
 }
@@ -77,10 +74,48 @@ func (rm *publisherMock) Flush() error {
 	return nil
 }
 
+// Fleet用リポジトリモック
+type repositoryMock struct {
+	mock.Mock
+	fleet    *Fleet
+	deleteID ID
+}
+
+func (r *repositoryMock) GetByID(
+	tx txmanager.Tx,
+	id ID,
+) (*Fleet, error) {
+	ret := r.Called(id)
+	var f *Fleet
+	if ret.Get(0) == nil {
+		f = nil
+	} else {
+		f = ret.Get(0).(*Fleet)
+	}
+	return f, ret.Error(1)
+}
+
+func (r *repositoryMock) Save(
+	tx txmanager.Tx,
+	fleet *Fleet,
+) error {
+	ret := r.Called(fleet)
+	r.fleet = fleet
+	return ret.Error(0)
+}
+
+func (r *repositoryMock) Delete(
+	tx txmanager.Tx,
+	id ID,
+) error {
+	ret := r.Called(id)
+	r.deleteID = id
+	return ret.Error(0)
+}
+
 // Fleet構成オブジェクトモック
 type fleetComponentMock struct {
 	id           string
-	flightplanID string
 	assignments  []assignmentComponentMock
 	events       []eventComponentMock
 	isCarbonCopy bool
@@ -89,10 +124,6 @@ type fleetComponentMock struct {
 
 func (f *fleetComponentMock) GetID() string {
 	return f.id
-}
-
-func (f *fleetComponentMock) GetFlightplanID() string {
-	return f.flightplanID
 }
 
 func (f *fleetComponentMock) GetIsCarbonCopy() bool {
