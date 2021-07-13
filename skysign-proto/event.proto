@@ -38,6 +38,11 @@ message FleetIDRemovedEvent {
     string fleet_id = 1;
 }
 
+message FleetCopiedEvent {
+    string original_fleet_id = 1;
+    string new_fleet_id = 2;
+}
+
 message VehicleCopiedWhenFlightplanCopiedEvent {
     string flightplan_id = 1;
     string original_vehicle_id = 2;
@@ -46,6 +51,18 @@ message VehicleCopiedWhenFlightplanCopiedEvent {
 
 message MissionCopiedWhenFlightplanCopiedEvent {
     string flightplan_id = 1;
+    string original_mission_id = 2;
+    string new_mission_id = 3;
+}
+
+message VehicleCopiedEvent {
+    string fleet_id = 1;
+    string original_vehicle_id = 2;
+    string new_vehicle_id = 3;
+}
+
+message MissionCopiedEvent {
+    string fleet_id = 1;
     string original_mission_id = 2;
     string new_mission_id = 3;
 }
