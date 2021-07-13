@@ -10,7 +10,7 @@ import (
 	"github.com/stretchr/testify/mock"
 )
 
-func TestHandleVehicleCopiedWhenFlightplanCopiedEvent(t *testing.T) {
+func TestHandleVehicleCopiedEvent(t *testing.T) {
 	a := assert.New(t)
 
 	var (
@@ -30,13 +30,13 @@ func TestHandleVehicleCopiedWhenFlightplanCopiedEvent(t *testing.T) {
 
 	handler := NewEventHandler(app)
 
-	requestPb := &skysign_proto.VehicleCopiedWhenFlightplanCopiedEvent{
+	requestPb := &skysign_proto.VehicleCopiedEvent{
 		OriginalVehicleId: DefaultOriginalID,
 		NewVehicleId:      DefaultNewID,
-		FlightplanId:      DefaultFlightplanID,
+		FleetId:           DefaultFleetID,
 	}
 	requestBin, _ := proto.Marshal(requestPb)
-	err := handler.HandleVehicleCopiedWhenFlightplanCopiedEvent(
+	err := handler.HandleVehicleCopiedEvent(
 		nil,
 		requestBin,
 	)
@@ -44,5 +44,5 @@ func TestHandleVehicleCopiedWhenFlightplanCopiedEvent(t *testing.T) {
 	a.Nil(err)
 	a.Equal(service.OriginalID, DefaultOriginalID)
 	a.Equal(service.NewID, DefaultNewID)
-	a.Equal(service.FlightplanID, DefaultFlightplanID)
+	a.Equal(service.FleetID, DefaultFleetID)
 }

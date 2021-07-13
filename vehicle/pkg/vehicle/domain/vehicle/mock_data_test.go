@@ -6,7 +6,7 @@ const DefaultID = ID("vehicle-id")
 const DefaultVersion = Version("version")
 const DefaultName = "vehicle-name"
 const DefaultCommunicationID = CommunicationID("communication-id")
-const DefaultFlightplanID = FlightplanID("flightplan-id")
+const DefaultFleetID = FleetID("fleet-id")
 
 var (
 	ErrSave   = errors.New("save error")

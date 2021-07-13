@@ -33,13 +33,13 @@ func TestGetVehicleTransaction(t *testing.T) {
 		psm:  nil,
 	}
 
-	req := &vehicleIDRequestMock{
+	command := &vehicleIDCommandMock{
 		ID: string(DefaultVehicleID),
 	}
 	var resCall bool
 	ret := service.GetVehicle(
-		req,
-		func(id, name, communicationID string) {
+		command,
+		func(model VehiclePresentationModel) {
 			resCall = true
 		},
 	)
@@ -72,17 +72,17 @@ func TestGetVehicleOperation(t *testing.T) {
 		psm:  nil,
 	}
 
-	req := &vehicleIDRequestMock{
+	command := &vehicleIDCommandMock{
 		ID: string(DefaultVehicleID),
 	}
 	var resID, resName, resCommunicationID string
 	ret := service.getVehicleOperation(
 		nil,
-		req,
-		func(id, name, communicationID string) {
-			resID = id
-			resName = name
-			resCommunicationID = communicationID
+		command,
+		func(model VehiclePresentationModel) {
+			resID = model.GetVehicle().GetID()
+			resName = model.GetVehicle().GetName()
+			resCommunicationID = model.GetVehicle().GetCommunicationID()
 		},
 	)
 
@@ -120,7 +120,7 @@ func TestListVehiclesTransaction(t *testing.T) {
 
 	var resCall bool
 	ret := service.ListVehicles(
-		func(id, name, communicationID string) {
+		func(model VehiclePresentationModel) {
 			resCall = true
 		},
 	)
@@ -191,10 +191,10 @@ func TestListVehiclesOperation(t *testing.T) {
 	var resID, resName, resCommunicationID []string
 	ret := service.listVehiclesOperation(
 		nil,
-		func(id, name, communicationID string) {
-			resID = append(resID, id)
-			resName = append(resName, name)
-			resCommunicationID = append(resCommunicationID, communicationID)
+		func(model VehiclePresentationModel) {
+			resID = append(resID, model.GetVehicle().GetID())
+			resName = append(resName, model.GetVehicle().GetName())
+			resCommunicationID = append(resCommunicationID, model.GetVehicle().GetCommunicationID())
 		},
 	)
 
@@ -238,14 +238,16 @@ func TestCreateVehicleTransaction(t *testing.T) {
 		psm:  psm,
 	}
 
-	req := &vehicleRequestMock{
-		Name:            DefaultVehicleName,
-		CommunicationID: string(DefaultVehicleCommunicationID),
+	command := &vehicleCommandMock{
+		vehicle: &vehicleMock{
+			Name:            DefaultVehicleName,
+			CommunicationID: string(DefaultVehicleCommunicationID),
+		},
 	}
 	var resCall bool
 	ret := service.CreateVehicle(
-		req,
-		func(id, name, communicationID string) {
+		command,
+		func(id string) {
 			resCall = true
 		},
 	)
@@ -283,19 +285,19 @@ func TestCreateVehicleOperation(t *testing.T) {
 		psm:  nil,
 	}
 
-	req := &vehicleRequestMock{
-		Name:            DefaultVehicleName,
-		CommunicationID: string(DefaultVehicleCommunicationID),
+	command := &vehicleCommandMock{
+		vehicle: &vehicleMock{
+			Name:            DefaultVehicleName,
+			CommunicationID: string(DefaultVehicleCommunicationID),
+		},
 	}
-	var resID, resName, resCommunicationID string
+	var resID string
 	ret := service.createVehicleOperation(
 		nil,
 		pub,
-		req,
-		func(id, name, communicationID string) {
+		command,
+		func(id string) {
 			resID = id
-			resName = name
-			resCommunicationID = communicationID
 		},
 	)
 
@@ -303,8 +305,6 @@ func TestCreateVehicleOperation(t *testing.T) {
 
 	a.Nil(ret)
 	a.Equal(resID, string(DefaultVehicleID))
-	a.Equal(resName, DefaultVehicleName)
-	a.Equal(resCommunicationID, string(DefaultVehicleCommunicationID))
 	a.Len(pub.events, 1)
 	a.Equal(pub.events[0], expectEvent)
 }
@@ -356,21 +356,16 @@ func TestUpdateVehicleTransaction(t *testing.T) {
 		psm:  psm,
 	}
 
-	req := &vehicleRequestMock{
-		ID:              string(DefaultVehicleID),
-		Name:            AfterVehicleName,
-		CommunicationID: string(AfterVehicleCommunicationID),
-	}
-	var resCall bool
-	ret := service.UpdateVehicle(
-		req,
-		func(id, name, communicationID string) {
-			resCall = true
+	command := &vehicleCommandMock{
+		vehicle: &vehicleMock{
+			ID:              string(DefaultVehicleID),
+			Name:            AfterVehicleName,
+			CommunicationID: string(AfterVehicleCommunicationID),
 		},
-	)
+	}
+	ret := service.UpdateVehicle(command)
 
 	a.Nil(ret)
-	a.True(resCall)
 	a.Len(pub.events, 2)
 	a.True(isClose)
 	a.True(pub.isFlush)
@@ -415,30 +410,23 @@ func TestUpdateVehicleOperation(t *testing.T) {
 		psm:  nil,
 	}
 
-	req := &vehicleRequestMock{
-		ID:              string(DefaultVehicleID),
-		Name:            AfterVehicleName,
-		CommunicationID: string(AfterVehicleCommunicationID),
+	command := &vehicleCommandMock{
+		vehicle: &vehicleMock{
+			ID:              string(DefaultVehicleID),
+			Name:            AfterVehicleName,
+			CommunicationID: string(AfterVehicleCommunicationID),
+		},
 	}
-	var resID, resName, resCommunicationID string
 	ret := service.updateVehicleOperation(
 		nil,
 		pub,
-		req,
-		func(id, name, communicationID string) {
-			resID = id
-			resName = name
-			resCommunicationID = communicationID
-		},
+		command,
 	)
 
 	expectEvent1 := v.CommunicationIDGaveEvent{CommunicationID: AfterVehicleCommunicationID}
 	expectEvent2 := v.CommunicationIDRemovedEvent{CommunicationID: DefaultVehicleCommunicationID}
 
 	a.Nil(ret)
-	a.Equal(resID, string(DefaultVehicleID))
-	a.Equal(resName, AfterVehicleName)
-	a.Equal(resCommunicationID, string(AfterVehicleCommunicationID))
 	a.Len(pub.events, 2)
 	a.Equal(pub.events, []interface{}{expectEvent2, expectEvent1})
 }
@@ -482,10 +470,10 @@ func TestDeleteVehicleTransaction(t *testing.T) {
 		psm:  psm,
 	}
 
-	req := &vehicleIDRequestMock{
+	command := &vehicleIDCommandMock{
 		ID: string(DefaultVehicleID),
 	}
-	ret := service.DeleteVehicle(req)
+	ret := service.DeleteVehicle(command)
 
 	a.Nil(ret)
 	a.Len(pub.events, 1)
@@ -524,13 +512,13 @@ func TestDeleteVehicleOperation(t *testing.T) {
 		psm:  nil,
 	}
 
-	req := &vehicleIDRequestMock{
+	command := &vehicleIDCommandMock{
 		ID: string(DefaultVehicleID),
 	}
 	ret := service.deleteVehicleOperation(
 		nil,
 		pub,
-		req,
+		command,
 	)
 
 	expectEvent := v.CommunicationIDRemovedEvent{
@@ -585,11 +573,12 @@ func TestCarbonCopyVehicleTransaction(t *testing.T) {
 		psm:  psm,
 	}
 
-	req := &carbonCopyRequestMock{
+	command := &carbonCopyCommandMock{
 		OriginalID: string(DefaultOriginalID),
 		NewID:      string(DefaultNewID),
+		FleetID:    string(DefaultFleetID),
 	}
-	ret := service.CarbonCopyVehicle(req)
+	ret := service.CarbonCopyVehicle(command)
 
 	a.Nil(ret)
 	a.Len(pub.events, 1)
@@ -632,21 +621,21 @@ func TestCarbonCopyVehicleOperation(t *testing.T) {
 		psm:  nil,
 	}
 
-	req := &carbonCopyRequestMock{
-		OriginalID:   string(DefaultOriginalID),
-		NewID:        string(DefaultNewID),
-		FlightplanID: string(DefaultFlightplanID),
+	command := &carbonCopyCommandMock{
+		OriginalID: string(DefaultOriginalID),
+		NewID:      string(DefaultNewID),
+		FleetID:    string(DefaultFleetID),
 	}
 	ret := service.carbonCopyVehicleOperation(
 		nil,
 		pub,
-		req,
+		command,
 	)
 
 	expectEvent := v.CopiedVehicleCreatedEvent{
 		ID:              DefaultNewID,
 		CommunicationID: DefaultVehicleCommunicationID,
-		FlightplanID:    DefaultFlightplanID,
+		FleetID:         DefaultFleetID,
 	}
 
 	a.Nil(ret)

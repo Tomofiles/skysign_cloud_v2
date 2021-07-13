@@ -86,7 +86,7 @@ message FlightplanCopiedWhenFlightoperationCreatedEvent {
 message CopiedVehicleCreatedEvent {
     string vehicle_id = 1;
     string communication_id = 2;
-    string flightplan_id = 3;
+    string fleet_id = 3;
 }
 
 message TelemetryUpdatedEvent {

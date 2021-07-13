@@ -1,7 +1,7 @@
 package vehicle
 
-// FlightplanID .
-type FlightplanID string
+// FleetID .
+type FleetID string
 
 // CommunicationIDGaveEvent .
 type CommunicationIDGaveEvent struct {
@@ -27,7 +27,7 @@ func (e *CommunicationIDRemovedEvent) GetCommunicationID() string {
 type CopiedVehicleCreatedEvent struct {
 	ID              ID
 	CommunicationID CommunicationID
-	FlightplanID    FlightplanID
+	FleetID         FleetID
 }
 
 // GetVehicleID .
@@ -40,7 +40,7 @@ func (e *CopiedVehicleCreatedEvent) GetCommunicationID() string {
 	return string(e.CommunicationID)
 }
 
-// GetFlightplanID .
-func (e *CopiedVehicleCreatedEvent) GetFlightplanID() string {
-	return string(e.FlightplanID)
+// GetFleetID .
+func (e *CopiedVehicleCreatedEvent) GetFleetID() string {
+	return string(e.FleetID)
 }

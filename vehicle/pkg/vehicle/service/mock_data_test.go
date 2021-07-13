@@ -13,7 +13,7 @@ const DefaultVehicleID = v.ID("vehicle-id")
 const DefaultVehicleVersion = v.Version("version")
 const DefaultVehicleName = "vehicle-name"
 const DefaultVehicleCommunicationID = v.CommunicationID("communication-id")
-const DefaultFlightplanID = v.FlightplanID("flightplan-id")
+const DefaultFleetID = v.FleetID("fleet-id")
 
 type vehicleRepositoryMock struct {
 	mock.Mock
@@ -169,46 +169,58 @@ func (v *vehicleComponentMock) GetVersion() string {
 	return v.Version
 }
 
-type vehicleRequestMock struct {
+type vehicleCommandMock struct {
+	vehicle *vehicleMock
+}
+
+func (f *vehicleCommandMock) GetID() string {
+	return f.vehicle.ID
+}
+
+func (f *vehicleCommandMock) GetVehicle() Vehicle {
+	return f.vehicle
+}
+
+type vehicleMock struct {
 	ID              string
 	Name            string
 	CommunicationID string
 }
 
-func (f *vehicleRequestMock) GetID() string {
+func (f *vehicleMock) GetID() string {
 	return f.ID
 }
 
-func (f *vehicleRequestMock) GetName() string {
+func (f *vehicleMock) GetName() string {
 	return f.Name
 }
 
-func (f *vehicleRequestMock) GetCommunicationID() string {
+func (f *vehicleMock) GetCommunicationID() string {
 	return f.CommunicationID
 }
 
-type vehicleIDRequestMock struct {
+type vehicleIDCommandMock struct {
 	ID string
 }
 
-func (f *vehicleIDRequestMock) GetID() string {
+func (f *vehicleIDCommandMock) GetID() string {
 	return f.ID
 }
 
-type carbonCopyRequestMock struct {
-	OriginalID   string
-	NewID        string
-	FlightplanID string
+type carbonCopyCommandMock struct {
+	OriginalID string
+	NewID      string
+	FleetID    string
 }
 
-func (f *carbonCopyRequestMock) GetOriginalID() string {
+func (f *carbonCopyCommandMock) GetOriginalID() string {
 	return f.OriginalID
 }
 
-func (f *carbonCopyRequestMock) GetNewID() string {
+func (f *carbonCopyCommandMock) GetNewID() string {
 	return f.NewID
 }
 
-func (f *carbonCopyRequestMock) GetFlightplanID() string {
-	return f.FlightplanID
+func (f *carbonCopyCommandMock) GetFleetID() string {
+	return f.FleetID
 }

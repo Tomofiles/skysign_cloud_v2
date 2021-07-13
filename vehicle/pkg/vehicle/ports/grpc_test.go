@@ -16,9 +16,9 @@ func TestSingleVehiclesListVehicles(t *testing.T) {
 
 	vehicles := []vehicleMock{
 		{
-			id:              DefaultVehicleID,
-			name:            DefaultVehicleName,
-			communicationID: DefaultCommunicationID,
+			ID:              DefaultVehicleID,
+			Name:            DefaultVehicleName,
+			CommunicationID: DefaultCommunicationID,
 		},
 	}
 	service.On("ListVehicles", mock.Anything).Return(vehicles, nil)
@@ -70,19 +70,19 @@ func TestMultipleVehiclesListVehicles(t *testing.T) {
 
 	vehicles := []vehicleMock{
 		{
-			id:              DefaultVehicleID1,
-			name:            DefaultVehicleName1,
-			communicationID: DefaultCommunicationID1,
+			ID:              DefaultVehicleID1,
+			Name:            DefaultVehicleName1,
+			CommunicationID: DefaultCommunicationID1,
 		},
 		{
-			id:              DefaultVehicleID2,
-			name:            DefaultVehicleName2,
-			communicationID: DefaultCommunicationID2,
+			ID:              DefaultVehicleID2,
+			Name:            DefaultVehicleName2,
+			CommunicationID: DefaultCommunicationID2,
 		},
 		{
-			id:              DefaultVehicleID3,
-			name:            DefaultVehicleName3,
-			communicationID: DefaultCommunicationID3,
+			ID:              DefaultVehicleID3,
+			Name:            DefaultVehicleName3,
+			CommunicationID: DefaultCommunicationID3,
 		},
 	}
 	service.On("ListVehicles", mock.Anything).Return(vehicles, nil)
@@ -159,9 +159,9 @@ func TestGetVehicle(t *testing.T) {
 	service := manageVehicleServiceMock{}
 
 	vehicle := vehicleMock{
-		id:              DefaultVehicleID,
-		name:            DefaultVehicleName,
-		communicationID: DefaultCommunicationID,
+		ID:              DefaultVehicleID,
+		Name:            DefaultVehicleName,
+		CommunicationID: DefaultCommunicationID,
 	}
 	service.On("GetVehicle", mock.Anything, mock.Anything).Return(vehicle, nil)
 
@@ -197,9 +197,9 @@ func TestCreateVehicle(t *testing.T) {
 	service := manageVehicleServiceMock{}
 
 	vehicle := vehicleMock{
-		id:              DefaultVehicleID,
-		name:            DefaultVehicleName,
-		communicationID: DefaultCommunicationID,
+		ID:              DefaultVehicleID,
+		Name:            DefaultVehicleName,
+		CommunicationID: DefaultCommunicationID,
 	}
 	service.On("CreateVehicle", mock.Anything, mock.Anything).Return(vehicle, nil)
 
@@ -235,12 +235,7 @@ func TestUpdateVehicle(t *testing.T) {
 
 	service := manageVehicleServiceMock{}
 
-	vehicle := vehicleMock{
-		id:              DefaultVehicleID,
-		name:            DefaultVehicleName,
-		communicationID: DefaultCommunicationID,
-	}
-	service.On("UpdateVehicle", mock.Anything, mock.Anything).Return(vehicle, nil)
+	service.On("UpdateVehicle", mock.Anything, mock.Anything).Return(nil)
 
 	app := app.Application{
 		Services: app.Services{
