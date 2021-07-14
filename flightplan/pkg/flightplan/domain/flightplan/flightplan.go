@@ -1,7 +1,6 @@
 package flightplan
 
 import (
-	"errors"
 	"flightplan/pkg/flightplan/domain/event"
 )
 
@@ -17,11 +16,6 @@ type Version string
 const (
 	// BlankFleetID .
 	BlankFleetID = FleetID("blank-fleet-id-@domain")
-)
-
-var (
-	// ErrCannotChange .
-	ErrCannotChange = errors.New("cannnot change carbon copied flightplan")
 )
 
 // Flightplan .
