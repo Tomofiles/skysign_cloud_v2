@@ -127,9 +127,6 @@ type repositoryMockDeleteService struct {
 func (rm *repositoryMockDeleteService) GetAll(tx txmanager.Tx) ([]*Flightplan, error) {
 	panic("implement me")
 }
-func (rm *repositoryMockDeleteService) GetAllOrigin(tx txmanager.Tx) ([]*Flightplan, error) {
-	panic("implement me")
-}
 func (rm *repositoryMockDeleteService) GetByID(tx txmanager.Tx, id ID) (*Flightplan, error) {
 	ret := rm.Called(id)
 	var f *Flightplan

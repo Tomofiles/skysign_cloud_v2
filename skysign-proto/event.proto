@@ -38,6 +38,11 @@ message FleetIDRemovedEvent {
     string fleet_id = 1;
 }
 
+message FlightplanExecutedEvent {
+    string flightplan_id = 1;
+    Flightplan flightplan = 2;
+}
+
 message FleetCopiedEvent {
     string original_fleet_id = 1;
     string new_fleet_id = 2;

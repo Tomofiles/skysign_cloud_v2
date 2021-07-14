@@ -229,6 +229,23 @@ func (s *GrpcServer) UpdateAssignments(
 	return response, nil
 }
 
+// ExecuteFlightplan .
+func (s *GrpcServer) ExecuteFlightplan(
+	ctx context.Context,
+	request *proto.ExecuteFlightplanRequest,
+) (*proto.ExecuteFlightplanResponse, error) {
+	response := &proto.ExecuteFlightplanResponse{
+		Id: request.Id,
+	}
+	command := &flightplanIDCommand{
+		id: request.Id,
+	}
+	if ret := s.app.Services.ExecuteFlightplan.ExecuteFlightplan(command); ret != nil {
+		return nil, ret
+	}
+	return response, nil
+}
+
 type createCommand struct {
 	request *proto.Flightplan
 }

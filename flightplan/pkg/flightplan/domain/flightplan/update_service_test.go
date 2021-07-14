@@ -142,9 +142,6 @@ type repositoryMockUpdateService struct {
 func (rm *repositoryMockUpdateService) GetAll(tx txmanager.Tx) ([]*Flightplan, error) {
 	panic("implement me")
 }
-func (rm *repositoryMockUpdateService) GetAllOrigin(tx txmanager.Tx) ([]*Flightplan, error) {
-	panic("implement me")
-}
 func (rm *repositoryMockUpdateService) GetByID(tx txmanager.Tx, id ID) (*Flightplan, error) {
 	ret := rm.Called(id)
 	var v *Flightplan

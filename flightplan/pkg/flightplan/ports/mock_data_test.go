@@ -126,6 +126,17 @@ func (s *changeFlightplanServiceMock) ChangeNumberOfVehicles(
 	return ret.Error(0)
 }
 
+type executeFlightplanServiceMock struct {
+	mock.Mock
+}
+
+func (s *executeFlightplanServiceMock) ExecuteFlightplan(
+	command service.ExecuteFlightplanCommand,
+) error {
+	ret := s.Called()
+	return ret.Error(0)
+}
+
 type assignFleetServiceMock struct {
 	mock.Mock
 }

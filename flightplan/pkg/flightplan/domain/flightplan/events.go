@@ -25,3 +25,31 @@ type FleetIDRemovedEvent struct {
 func (e *FleetIDRemovedEvent) GetFleetID() FleetID {
 	return e.FleetID
 }
+
+// FlightplanExecutedEvent .
+type FlightplanExecutedEvent struct {
+	ID          ID
+	Name        string
+	Description string
+	FleetID     FleetID
+}
+
+// GetID .
+func (e *FlightplanExecutedEvent) GetID() ID {
+	return e.ID
+}
+
+// GetName .
+func (e *FlightplanExecutedEvent) GetName() string {
+	return e.Name
+}
+
+// GetDescription .
+func (e *FlightplanExecutedEvent) GetDescription() string {
+	return e.Description
+}
+
+// GetFleetID .
+func (e *FlightplanExecutedEvent) GetFleetID() FleetID {
+	return e.FleetID
+}

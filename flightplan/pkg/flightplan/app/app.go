@@ -11,8 +11,9 @@ type Application struct {
 
 // Services .
 type Services struct {
-	ManageFlightplan service.ManageFlightplanService
-	ChangeFlightplan service.ChangeFlightplanService
-	ManageFleet      service.ManageFleetService
-	AssignFleet      service.AssignFleetService
+	ManageFlightplan  service.ManageFlightplanService
+	ChangeFlightplan  service.ChangeFlightplanService
+	ExecuteFlightplan service.ExecuteFlightplanService
+	ManageFleet       service.ManageFleetService
+	AssignFleet       service.AssignFleetService
 }

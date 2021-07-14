@@ -36,6 +36,11 @@ func (p *Publisher) Flush() error {
 				return err
 			}
 		}
+		if event, ok := e.(flightplan.FlightplanExecutedEvent); ok {
+			if err := PublishFlightplanExecutedEvent(p.ch, event); err != nil {
+				return err
+			}
+		}
 		if event, ok := e.(fleet.VehicleCopiedEvent); ok {
 			if err := PublishVehicleCopiedEvent(p.ch, event); err != nil {
 				return err

@@ -40,19 +40,6 @@ func (r *flightplanRepositoryMock) GetAll(
 	return f, ret.Error(1)
 }
 
-func (r *flightplanRepositoryMock) GetAllOrigin(
-	tx txmanager.Tx,
-) ([]*fpl.Flightplan, error) {
-	ret := r.Called()
-	var f []*fpl.Flightplan
-	if ret.Get(0) == nil {
-		f = nil
-	} else {
-		f = ret.Get(0).([]*fpl.Flightplan)
-	}
-	return f, ret.Error(1)
-}
-
 func (r *flightplanRepositoryMock) GetByID(
 	tx txmanager.Tx,
 	id fpl.ID,

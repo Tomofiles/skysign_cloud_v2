@@ -29,10 +29,11 @@ func newApplication(
 	fleetRepo := postgresql.NewFleetRepository(fleetGen)
 	return Application{
 		Services: Services{
-			ManageFlightplan: service.NewManageFlightplanService(flightplanGen, flightplanRepo, txm, psm),
-			ChangeFlightplan: service.NewChangeFlightplanService(flightplanGen, flightplanRepo, txm, psm),
-			ManageFleet:      service.NewManageFleetService(fleetGen, fleetRepo, txm, psm),
-			AssignFleet:      service.NewAssignFleetService(fleetGen, fleetRepo, txm),
+			ManageFlightplan:  service.NewManageFlightplanService(flightplanGen, flightplanRepo, txm, psm),
+			ChangeFlightplan:  service.NewChangeFlightplanService(flightplanGen, flightplanRepo, txm, psm),
+			ExecuteFlightplan: service.NewExecuteFlightplanService(flightplanGen, flightplanRepo, txm, psm),
+			ManageFleet:       service.NewManageFleetService(fleetGen, fleetRepo, txm, psm),
+			AssignFleet:       service.NewAssignFleetService(fleetGen, fleetRepo, txm),
 		},
 	}
 }

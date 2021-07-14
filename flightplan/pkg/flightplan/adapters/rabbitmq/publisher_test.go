@@ -59,6 +59,7 @@ func TestMultipleEventWhenPublish(t *testing.T) {
 	event2 := flightplan.FleetIDRemovedEvent{}
 	event3 := fleet.VehicleCopiedEvent{}
 	event4 := fleet.MissionCopiedEvent{}
+	event5 := flightplan.FlightplanExecutedEvent{}
 
 	connMock := &connectionMockCommon{}
 	chMock := &channelMockPublish{}
@@ -74,10 +75,11 @@ func TestMultipleEventWhenPublish(t *testing.T) {
 	pub.Publish(event2)
 	pub.Publish(event3)
 	pub.Publish(event4)
+	pub.Publish(event5)
 	ret := pub.Flush()
 
 	a.Nil(ret)
-	a.Equal(chMock.messageCallCount, 4)
+	a.Equal(chMock.messageCallCount, 5)
 }
 
 func TestFanoutExchangeDeclareErrorWhenFleetIDGaveEventPublish(t *testing.T) {
@@ -252,6 +254,54 @@ func TestPublishErrorWhenMissionCopiedEventPublish(t *testing.T) {
 	a := assert.New(t)
 
 	event := fleet.MissionCopiedEvent{}
+
+	errPub := errors.New("publish error")
+
+	connMock := &connectionMockCommon{}
+	chMock := &channelMockPublish{}
+	connMock.On("GetChannel").Return(chMock, nil)
+	chMock.On("FanoutExchangeDeclare", mock.Anything).Return(nil)
+	chMock.On("Publish", mock.Anything).Return(errPub)
+
+	psm := NewPubSubManager(connMock)
+
+	pub, _, _ := psm.GetPublisher()
+
+	pub.Publish(event)
+	ret := pub.Flush()
+
+	a.Equal(ret, errPub)
+	a.Equal(chMock.messageCallCount, 1)
+}
+
+func TestFanoutExchangeDeclareErrorWhenFlightplanExecutedEventPublish(t *testing.T) {
+	a := assert.New(t)
+
+	event := flightplan.FlightplanExecutedEvent{}
+
+	errPub := errors.New("publish error")
+
+	connMock := &connectionMockCommon{}
+	chMock := &channelMockPublish{}
+	connMock.On("GetChannel").Return(chMock, nil)
+	chMock.On("FanoutExchangeDeclare", mock.Anything).Return(errPub)
+	chMock.On("Publish", mock.Anything).Return(nil)
+
+	psm := NewPubSubManager(connMock)
+
+	pub, _, _ := psm.GetPublisher()
+
+	pub.Publish(event)
+	ret := pub.Flush()
+
+	a.Equal(ret, errPub)
+	a.Equal(chMock.messageCallCount, 0)
+}
+
+func TestPublishErrorWhenFlightplanExecutedEventPublish(t *testing.T) {
+	a := assert.New(t)
+
+	event := flightplan.FlightplanExecutedEvent{}
 
 	errPub := errors.New("publish error")
 

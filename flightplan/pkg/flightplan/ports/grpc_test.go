@@ -724,3 +724,34 @@ func TestNoneAssignmentsUpdateAssignments(t *testing.T) {
 	a.Nil(err)
 	a.Equal(response, expectResponse)
 }
+
+func TestExecuteFlightplan(t *testing.T) {
+	a := assert.New(t)
+
+	service := executeFlightplanServiceMock{}
+
+	service.On("ExecuteFlightplan", mock.Anything, mock.Anything).Return(nil)
+
+	app := app.Application{
+		Services: app.Services{
+			ExecuteFlightplan: &service,
+		},
+	}
+
+	grpc := NewGrpcServer(app)
+
+	request := &skysign_proto.ExecuteFlightplanRequest{
+		Id: DefaultFlightplanID,
+	}
+	response, err := grpc.ExecuteFlightplan(
+		nil,
+		request,
+	)
+
+	expectResponse := &skysign_proto.ExecuteFlightplanResponse{
+		Id: DefaultFlightplanID,
+	}
+
+	a.Nil(err)
+	a.Equal(response, expectResponse)
+}
