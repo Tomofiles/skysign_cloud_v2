@@ -7,40 +7,56 @@ import (
 	"github.com/stretchr/testify/mock"
 )
 
-const DefaultFlightoperationID = fope.ID("flightoperation-id")
-const DefaultFlightplanID = fope.FlightplanID("flightplan-id")
+const DefaultID = fope.ID("flightoperation-id")
+const DefaultName = "flightoperation-name"
+const DefaultDescription = "flightoperation-description"
+const DefaultFleetID = fope.FleetID("fleet-id")
+const DefaultIsCompleted = fope.Completed
+const DefaultVersion = fope.Version("version")
 
 type manageFlightoperationServiceMock struct {
 	mock.Mock
+	name, description, fleetID string
 }
 
 func (s *manageFlightoperationServiceMock) GetFlightoperation(
-	requestDpo service.GetFlightoperationRequestDpo,
-	responseDpo service.GetFlightoperationResponseDpo,
+	command service.GetFlightoperationCommand,
+	model service.RetrievedModel,
 ) error {
 	ret := s.Called()
 	if flightoperation := ret.Get(0); flightoperation != nil {
 		f := flightoperation.(flightoperationMock)
-		responseDpo(f.id, f.flightplanID)
+		model(
+			&flightoperationModelMock{
+				flightoperation: &f,
+			},
+		)
 	}
 	return ret.Error(1)
 }
 
 func (s *manageFlightoperationServiceMock) ListFlightoperations(
-	responseEachDpo service.ListFlightoperationsResponseDpo,
+	model service.RetrievedModel,
 ) error {
 	ret := s.Called()
 	if flightoperations := ret.Get(0); flightoperations != nil {
 		for _, f := range flightoperations.([]flightoperationMock) {
-			responseEachDpo(f.id, f.flightplanID)
+			model(
+				&flightoperationModelMock{
+					flightoperation: &f,
+				},
+			)
 		}
 	}
 	return ret.Error(1)
 }
 
 func (s *manageFlightoperationServiceMock) CreateFlightoperation(
-	requestDpo service.CreateFlightoperationRequestDpo,
+	command service.CreateFlightoperationCommand,
 ) error {
+	s.name = command.GetFlightoperation().GetName()
+	s.description = command.GetFlightoperation().GetDescription()
+	s.fleetID = command.GetFlightoperation().GetFleetID()
 	ret := s.Called()
 	return ret.Error(0)
 }
@@ -50,12 +66,39 @@ type operateFlightoperationServiceMock struct {
 }
 
 func (s *operateFlightoperationServiceMock) CompleteFlightoperation(
-	requestDpo service.CompleteFlightoperationRequestDpo,
+	command service.CompleteFlightoperationCommand,
 ) error {
 	ret := s.Called()
 	return ret.Error(0)
 }
 
+type flightoperationModelMock struct {
+	flightoperation *flightoperationMock
+}
+
+func (f *flightoperationModelMock) GetFlightoperation() service.Flightoperation {
+	return f.flightoperation
+}
+
 type flightoperationMock struct {
-	id, flightplanID string
+	id          string
+	name        string
+	description string
+	fleetID     string
+}
+
+func (f *flightoperationMock) GetID() string {
+	return f.id
+}
+
+func (f *flightoperationMock) GetName() string {
+	return f.name
+}
+
+func (f *flightoperationMock) GetDescription() string {
+	return f.description
+}
+
+func (f *flightoperationMock) GetFleetID() string {
+	return f.fleetID
 }

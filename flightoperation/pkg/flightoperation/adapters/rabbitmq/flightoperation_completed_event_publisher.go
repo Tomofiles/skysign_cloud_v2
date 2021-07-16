@@ -13,7 +13,7 @@ const flightoperationCompletedEventExchangeName = "flightoperation.flightoperati
 // PublishFlightoperationCompletedEvent .
 func PublishFlightoperationCompletedEvent(
 	ch Channel,
-	event fope.CompletedEvent,
+	event fope.FlightoperationCompletedEvent,
 ) error {
 	if err := ch.FanoutExchangeDeclare(
 		flightoperationCompletedEventExchangeName,
@@ -23,7 +23,12 @@ func PublishFlightoperationCompletedEvent(
 
 	eventPb := skysign_proto.FlightoperationCompletedEvent{
 		FlightoperationId: event.GetID(),
-		FlightplanId:      event.GetFlightplanID(),
+		Flightoperation: &skysign_proto.Flightoperation{
+			Id:          event.GetID(),
+			Name:        event.GetName(),
+			Description: event.GetDescription(),
+			FleetId:     event.GetFleetID(),
+		},
 	}
 	eventBin, err := proto.Marshal(&eventPb)
 	if err != nil {

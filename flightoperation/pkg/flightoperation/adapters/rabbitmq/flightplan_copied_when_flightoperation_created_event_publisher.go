@@ -8,23 +8,22 @@ import (
 	"google.golang.org/protobuf/proto"
 )
 
-const flightplanCopiedWhenFlightoperationCreatedEventExchangeName = "flightoperation.flightplan_copied_when_flightoperation_created_event"
+const fleetCopiedEventExchangeName = "flightoperation.fleet_copied_event"
 
-// PublishFlightplanCopiedWhenFlightoperationCreatedEvent .
-func PublishFlightplanCopiedWhenFlightoperationCreatedEvent(
+// PublishFleetCopiedEvent .
+func PublishFleetCopiedEvent(
 	ch Channel,
-	event fope.FlightplanCopiedWhenCreatedEvent,
+	event fope.FleetCopiedEvent,
 ) error {
 	if err := ch.FanoutExchangeDeclare(
-		flightplanCopiedWhenFlightoperationCreatedEventExchangeName,
+		fleetCopiedEventExchangeName,
 	); err != nil {
 		return err
 	}
 
-	eventPb := skysign_proto.FlightplanCopiedWhenFlightoperationCreatedEvent{
-		FlightoperationId:    event.GetFlightoperationID(),
-		OriginalFlightplanId: event.GetOriginalID(),
-		NewFlightplanId:      event.GetNewID(),
+	eventPb := skysign_proto.FleetCopiedEvent{
+		OriginalFleetId: event.GetOriginalID(),
+		NewFleetId:      event.GetNewID(),
 	}
 	eventBin, err := proto.Marshal(&eventPb)
 	if err != nil {
@@ -32,12 +31,12 @@ func PublishFlightplanCopiedWhenFlightoperationCreatedEvent(
 	}
 
 	if err := ch.Publish(
-		flightplanCopiedWhenFlightoperationCreatedEventExchangeName,
+		fleetCopiedEventExchangeName,
 		eventBin,
 	); err != nil {
 		return err
 	}
 
-	glog.Infof("PUBLISH , Event: %s, Message: %s", flightplanCopiedWhenFlightoperationCreatedEventExchangeName, eventPb.String())
+	glog.Infof("PUBLISH , Event: %s, Message: %s", fleetCopiedEventExchangeName, eventPb.String())
 	return nil
 }

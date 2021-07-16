@@ -12,21 +12,22 @@ func TestCompleteFlightoperationTransaction(t *testing.T) {
 	a := assert.New(t)
 
 	const (
-		OperatingIsCompleted = fope.Operating
-		NewVersion           = DefaultVersion + "-new"
+		NewVersion = DefaultVersion + "-new"
 	)
 
-	gen := &generatorMockFlightoperation{
+	gen := &generatorMock{
 		version: NewVersion,
 	}
 
 	flightoperation := fope.AssembleFrom(
 		gen,
 		&flightoperationComponentMock{
-			ID:           string(DefaultFlightoperationID),
-			FlightplanID: string(DefaultFlightplanID),
-			IsCompleted:  OperatingIsCompleted,
-			Version:      string(DefaultVersion),
+			ID:          string(DefaultID),
+			Name:        DefaultName,
+			Description: DefaultDescription,
+			FleetID:     string(DefaultFleetID),
+			IsCompleted: fope.Operating,
+			Version:     string(DefaultVersion),
 		},
 	)
 
@@ -42,7 +43,7 @@ func TestCompleteFlightoperationTransaction(t *testing.T) {
 	}
 
 	psm.On("GetPublisher").Return(pub, close, nil)
-	repo.On("GetByID", DefaultFlightoperationID).Return(flightoperation, nil)
+	repo.On("GetByID", DefaultID).Return(flightoperation, nil)
 	repo.On("Save", mock.Anything).Return(nil)
 
 	service := &operateFlightoperationService{
@@ -52,10 +53,10 @@ func TestCompleteFlightoperationTransaction(t *testing.T) {
 		psm:  psm,
 	}
 
-	req := &flightoperationIDRequestMock{
-		ID: string(DefaultFlightoperationID),
+	command := &flightoperationIDCommandMock{
+		ID: string(DefaultID),
 	}
-	ret := service.CompleteFlightoperation(req)
+	ret := service.CompleteFlightoperation(command)
 
 	a.Nil(ret)
 	a.Len(pub.events, 1)
@@ -69,26 +70,27 @@ func TestCompleteFlightoperationOperation(t *testing.T) {
 	a := assert.New(t)
 
 	const (
-		OperatingIsCompleted = fope.Operating
-		NewVersion           = DefaultVersion + "-new"
+		NewVersion = DefaultVersion + "-new"
 	)
 
-	gen := &generatorMockFlightoperation{
+	gen := &generatorMock{
 		version: NewVersion,
 	}
 
 	flightoperation := fope.AssembleFrom(
 		gen,
 		&flightoperationComponentMock{
-			ID:           string(DefaultFlightoperationID),
-			FlightplanID: string(DefaultFlightplanID),
-			IsCompleted:  OperatingIsCompleted,
-			Version:      string(DefaultVersion),
+			ID:          string(DefaultID),
+			Name:        DefaultName,
+			Description: DefaultDescription,
+			FleetID:     string(DefaultFleetID),
+			IsCompleted: fope.Operating,
+			Version:     string(DefaultVersion),
 		},
 	)
 
 	repo := &flightoperationRepositoryMock{}
-	repo.On("GetByID", DefaultFlightoperationID).Return(flightoperation, nil)
+	repo.On("GetByID", DefaultID).Return(flightoperation, nil)
 	repo.On("Save", mock.Anything).Return(nil)
 	pub := &publisherMock{}
 
@@ -99,67 +101,22 @@ func TestCompleteFlightoperationOperation(t *testing.T) {
 		psm:  nil,
 	}
 
-	req := &flightoperationIDRequestMock{
-		ID: string(DefaultFlightoperationID),
+	command := &flightoperationIDCommandMock{
+		ID: string(DefaultID),
 	}
 	ret := service.completeFlightoperationOperation(
 		nil,
 		pub,
-		req,
+		command,
 	)
 
-	expectEvent := fope.CompletedEvent{
-		ID:           DefaultFlightoperationID,
-		FlightplanID: DefaultFlightplanID,
+	expectEvent := fope.FlightoperationCompletedEvent{
+		ID:          DefaultID,
+		Name:        DefaultName,
+		Description: DefaultDescription,
+		FleetID:     DefaultFleetID,
 	}
 	a.Nil(ret)
 	a.Len(pub.events, 1)
 	a.Equal(pub.events, []interface{}{expectEvent})
-}
-
-func TestCannotChangeErrorWhenCompleteFlightoperationOperation(t *testing.T) {
-	a := assert.New(t)
-
-	const (
-		CompletedIsCompleted = fope.Completed
-		NewVersion           = DefaultVersion + "-new"
-	)
-
-	gen := &generatorMockFlightoperation{
-		version: NewVersion,
-	}
-
-	flightoperation := fope.AssembleFrom(
-		gen,
-		&flightoperationComponentMock{
-			ID:           string(DefaultFlightoperationID),
-			FlightplanID: string(DefaultFlightplanID),
-			IsCompleted:  CompletedIsCompleted,
-			Version:      string(DefaultVersion),
-		},
-	)
-
-	repo := &flightoperationRepositoryMock{}
-	repo.On("GetByID", DefaultFlightoperationID).Return(flightoperation, nil)
-	repo.On("Save", mock.Anything).Return(nil)
-	pub := &publisherMock{}
-
-	service := &operateFlightoperationService{
-		gen:  nil,
-		repo: repo,
-		txm:  nil,
-		psm:  nil,
-	}
-
-	req := &flightoperationIDRequestMock{
-		ID: string(DefaultFlightoperationID),
-	}
-	ret := service.completeFlightoperationOperation(
-		nil,
-		pub,
-		req,
-	)
-
-	a.Len(pub.events, 0)
-	a.Equal(ret, fope.ErrCannotChange)
 }

@@ -116,8 +116,10 @@ func (r *FlightoperationRepository) Save(
 
 	fope.TakeApart(
 		flightoperation,
-		func(id, flightplanID, version string, isCompleted bool) {
-			record.FlightplanID = flightplanID
+		func(id, name, description, fleetID, version string, isCompleted bool) {
+			record.Name = name
+			record.Description = description
+			record.FleetID = fleetID
 			record.IsCompleted = isCompleted
 			record.Version = version
 		},

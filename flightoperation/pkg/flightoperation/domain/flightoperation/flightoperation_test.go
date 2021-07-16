@@ -6,6 +6,66 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+// Flightoperationの名前を変更する。
+// バージョンが更新されていることを検証する。
+func TestChangeFlightoperationsName(t *testing.T) {
+	a := assert.New(t)
+
+	const (
+		NewVersion = DefaultVersion + "-new"
+	)
+
+	gen := &generatorMock{
+		version: NewVersion,
+	}
+
+	flightoperation := &Flightoperation{
+		id:          DefaultID,
+		fleetID:     DefaultFleetID,
+		isCompleted: Operating,
+		version:     DefaultVersion,
+		newVersion:  DefaultVersion,
+		gen:         gen,
+	}
+
+	err := flightoperation.NameFlightoperation(DefaultName)
+
+	a.Equal(flightoperation.GetName(), DefaultName)
+	a.Equal(flightoperation.GetVersion(), DefaultVersion)
+	a.Equal(flightoperation.GetNewVersion(), NewVersion)
+	a.Nil(err)
+}
+
+// Flightoperationの説明を変更する。
+// バージョンが更新されていることを検証する。
+func TestChangeFlightoperationsDescription(t *testing.T) {
+	a := assert.New(t)
+
+	const (
+		NewVersion = DefaultVersion + "-new"
+	)
+
+	gen := &generatorMock{
+		version: NewVersion,
+	}
+
+	flightoperation := &Flightoperation{
+		id:          DefaultID,
+		fleetID:     DefaultFleetID,
+		isCompleted: Operating,
+		version:     DefaultVersion,
+		newVersion:  DefaultVersion,
+		gen:         gen,
+	}
+
+	err := flightoperation.ChangeDescription(DefaultDescription)
+
+	a.Equal(flightoperation.GetDescription(), DefaultDescription)
+	a.Equal(flightoperation.GetVersion(), DefaultVersion)
+	a.Equal(flightoperation.GetNewVersion(), NewVersion)
+	a.Nil(err)
+}
+
 // FlightoperationをComplete状態に更新する。
 // Complete状態に更新されたことを検証する。
 func TestCompleteFlightoperation(t *testing.T) {
@@ -20,12 +80,14 @@ func TestCompleteFlightoperation(t *testing.T) {
 	}
 
 	flightoperation := &Flightoperation{
-		id:           DefaultID,
-		flightplanID: DefaultFlightplanID,
-		isCompleted:  Operating,
-		version:      DefaultVersion,
-		newVersion:   DefaultVersion,
-		gen:          gen,
+		id:          DefaultID,
+		name:        DefaultName,
+		description: DefaultDescription,
+		fleetID:     DefaultFleetID,
+		isCompleted: Operating,
+		version:     DefaultVersion,
+		newVersion:  DefaultVersion,
+		gen:         gen,
 	}
 
 	err := flightoperation.Complete()
@@ -54,21 +116,25 @@ func TestPublishCompletedEventWhenCompleteFlightoperation(t *testing.T) {
 	pub := &publisherMock{}
 
 	flightoperation := &Flightoperation{
-		id:           DefaultID,
-		flightplanID: DefaultFlightplanID,
-		isCompleted:  Operating,
-		version:      DefaultVersion,
-		newVersion:   DefaultVersion,
-		gen:          gen,
+		id:          DefaultID,
+		name:        DefaultName,
+		description: DefaultDescription,
+		fleetID:     DefaultFleetID,
+		isCompleted: Operating,
+		version:     DefaultVersion,
+		newVersion:  DefaultVersion,
+		gen:         gen,
 	}
 
 	flightoperation.SetPublisher(pub)
 
 	err := flightoperation.Complete()
 
-	expectEvent := CompletedEvent{
-		ID:           DefaultID,
-		FlightplanID: DefaultFlightplanID,
+	expectEvent := FlightoperationCompletedEvent{
+		ID:          DefaultID,
+		Name:        DefaultName,
+		Description: DefaultDescription,
+		FleetID:     DefaultFleetID,
 	}
 
 	a.Equal(flightoperation.isCompleted, Completed)
@@ -95,12 +161,14 @@ func TestNonePublishWhenCompleteFlightoperation(t *testing.T) {
 	pub := &publisherMock{}
 
 	flightoperation := &Flightoperation{
-		id:           DefaultID,
-		flightplanID: DefaultFlightplanID,
-		isCompleted:  Completed,
-		version:      DefaultVersion,
-		newVersion:   DefaultVersion,
-		gen:          gen,
+		id:          DefaultID,
+		name:        DefaultName,
+		description: DefaultDescription,
+		fleetID:     DefaultFleetID,
+		isCompleted: Completed,
+		version:     DefaultVersion,
+		newVersion:  DefaultVersion,
+		gen:         gen,
 	}
 
 	flightoperation.SetPublisher(pub)

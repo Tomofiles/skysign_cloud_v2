@@ -8,8 +8,8 @@ import (
 // ID .
 type ID string
 
-// FlightplanID .
-type FlightplanID string
+// FleetID .
+type FleetID string
 
 // Version .
 type Version string
@@ -28,13 +28,15 @@ var (
 
 // Flightoperation .
 type Flightoperation struct {
-	id           ID
-	flightplanID FlightplanID
-	isCompleted  bool
-	version      Version
-	newVersion   Version
-	gen          Generator
-	pub          event.Publisher
+	id          ID
+	name        string
+	description string
+	fleetID     FleetID
+	isCompleted bool
+	version     Version
+	newVersion  Version
+	gen         Generator
+	pub         event.Publisher
 }
 
 // SetPublisher .
@@ -47,9 +49,19 @@ func (f *Flightoperation) GetID() ID {
 	return f.id
 }
 
-// GetFlightplanID .
-func (f *Flightoperation) GetFlightplanID() FlightplanID {
-	return f.flightplanID
+// GetName .
+func (f *Flightoperation) GetName() string {
+	return f.name
+}
+
+// GetDescription .
+func (f *Flightoperation) GetDescription() string {
+	return f.description
+}
+
+// GetFleetID .
+func (f *Flightoperation) GetFleetID() FleetID {
+	return f.fleetID
 }
 
 // GetVersion .
@@ -62,15 +74,31 @@ func (f *Flightoperation) GetNewVersion() Version {
 	return f.newVersion
 }
 
+// NameFlightoperation .
+func (f *Flightoperation) NameFlightoperation(name string) error {
+	f.name = name
+	f.newVersion = f.gen.NewVersion()
+	return nil
+}
+
+// ChangeDescription .
+func (f *Flightoperation) ChangeDescription(description string) error {
+	f.description = description
+	f.newVersion = f.gen.NewVersion()
+	return nil
+}
+
 // Complete .
 func (f *Flightoperation) Complete() error {
 	if f.isCompleted {
 		return ErrCannotChange
 	}
 	if f.pub != nil {
-		f.pub.Publish(CompletedEvent{
-			ID:           f.id,
-			FlightplanID: f.flightplanID,
+		f.pub.Publish(FlightoperationCompletedEvent{
+			ID:          f.id,
+			Name:        f.name,
+			Description: f.description,
+			FleetID:     f.fleetID,
 		})
 	}
 	f.isCompleted = Completed
@@ -82,6 +110,6 @@ func (f *Flightoperation) Complete() error {
 // Generator .
 type Generator interface {
 	NewID() ID
-	NewFlightplanID() FlightplanID
+	NewFleetID() FleetID
 	NewVersion() Version
 }

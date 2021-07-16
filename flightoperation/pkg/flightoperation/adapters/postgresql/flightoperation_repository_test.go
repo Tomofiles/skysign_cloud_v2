@@ -23,8 +23,8 @@ func TestFlightoperationRepositoryGetSingleWhenGetAll(t *testing.T) {
 		ExpectQuery(
 			regexp.QuoteMeta(`SELECT * FROM "flightoperations"`)).
 		WillReturnRows(
-			sqlmock.NewRows([]string{"id", "flightplan_id", "is_completed", "version"}).
-				AddRow(DefaultFlightoperationID, DefaultFlightplanID, DefaultIsCompleted, DefaultVersion),
+			sqlmock.NewRows([]string{"id", "name", "description", "fleet_id", "is_completed", "version"}).
+				AddRow(DefaultID, DefaultName, DefaultDescription, DefaultFleetID, DefaultIsCompleted, DefaultVersion),
 		)
 
 	gen := uuid.NewFlightoperationUUID()
@@ -36,10 +36,12 @@ func TestFlightoperationRepositoryGetSingleWhenGetAll(t *testing.T) {
 		fope.AssembleFrom(
 			gen,
 			&flightoperationComponentMock{
-				id:           string(DefaultFlightoperationID),
-				flightplanID: string(DefaultFlightplanID),
-				isCompleted:  DefaultIsCompleted,
-				version:      string(DefaultVersion),
+				id:          string(DefaultID),
+				name:        DefaultName,
+				description: DefaultDescription,
+				fleetID:     string(DefaultFleetID),
+				isCompleted: DefaultIsCompleted,
+				version:     string(DefaultVersion),
 			},
 		),
 	}
@@ -59,25 +61,31 @@ func TestFlightoperationRepositoryGetMultipleWhenGetAll(t *testing.T) {
 	}
 
 	const (
-		DefaultFlightoperationID1 = DefaultFlightoperationID + "-1"
-		DefaultFlightoperationID2 = DefaultFlightoperationID + "-2"
-		DefaultFlightoperationID3 = DefaultFlightoperationID + "-3"
-		DefaultFlightplanID1      = DefaultFlightplanID + "-1"
-		DefaultFlightplanID2      = DefaultFlightplanID + "-2"
-		DefaultFlightplanID3      = DefaultFlightplanID + "-3"
-		DefaultVersion1           = DefaultVersion + "-1"
-		DefaultVersion2           = DefaultVersion + "-2"
-		DefaultVersion3           = DefaultVersion + "-3"
+		DefaultID1          = DefaultID + "-1"
+		DefaultID2          = DefaultID + "-2"
+		DefaultID3          = DefaultID + "-3"
+		DefaultName1        = DefaultName + "-1"
+		DefaultName2        = DefaultName + "-2"
+		DefaultName3        = DefaultName + "-3"
+		DefaultDescription1 = DefaultDescription + "-1"
+		DefaultDescription2 = DefaultDescription + "-2"
+		DefaultDescription3 = DefaultDescription + "-3"
+		DefaultFleetID1     = DefaultFleetID + "-1"
+		DefaultFleetID2     = DefaultFleetID + "-2"
+		DefaultFleetID3     = DefaultFleetID + "-3"
+		DefaultVersion1     = DefaultVersion + "-1"
+		DefaultVersion2     = DefaultVersion + "-2"
+		DefaultVersion3     = DefaultVersion + "-3"
 	)
 
 	mock.
 		ExpectQuery(
 			regexp.QuoteMeta(`SELECT * FROM "flightoperations"`)).
 		WillReturnRows(
-			sqlmock.NewRows([]string{"id", "flightplan_id", "is_completed", "version"}).
-				AddRow(DefaultFlightoperationID1, DefaultFlightplanID1, DefaultIsCompleted, DefaultVersion1).
-				AddRow(DefaultFlightoperationID2, DefaultFlightplanID2, DefaultIsCompleted, DefaultVersion2).
-				AddRow(DefaultFlightoperationID3, DefaultFlightplanID3, DefaultIsCompleted, DefaultVersion3),
+			sqlmock.NewRows([]string{"id", "name", "description", "fleet_id", "is_completed", "version"}).
+				AddRow(DefaultID1, DefaultName1, DefaultDescription1, DefaultFleetID1, DefaultIsCompleted, DefaultVersion1).
+				AddRow(DefaultID2, DefaultName2, DefaultDescription2, DefaultFleetID2, DefaultIsCompleted, DefaultVersion2).
+				AddRow(DefaultID3, DefaultName3, DefaultDescription3, DefaultFleetID3, DefaultIsCompleted, DefaultVersion3),
 		)
 
 	gen := uuid.NewFlightoperationUUID()
@@ -89,28 +97,34 @@ func TestFlightoperationRepositoryGetMultipleWhenGetAll(t *testing.T) {
 		fope.AssembleFrom(
 			gen,
 			&flightoperationComponentMock{
-				id:           string(DefaultFlightoperationID1),
-				flightplanID: string(DefaultFlightplanID1),
-				isCompleted:  DefaultIsCompleted,
-				version:      string(DefaultVersion1),
+				id:          string(DefaultID1),
+				name:        DefaultName1,
+				description: DefaultDescription1,
+				fleetID:     string(DefaultFleetID1),
+				isCompleted: DefaultIsCompleted,
+				version:     string(DefaultVersion1),
 			},
 		),
 		fope.AssembleFrom(
 			gen,
 			&flightoperationComponentMock{
-				id:           string(DefaultFlightoperationID2),
-				flightplanID: string(DefaultFlightplanID2),
-				isCompleted:  DefaultIsCompleted,
-				version:      string(DefaultVersion2),
+				id:          string(DefaultID2),
+				name:        DefaultName2,
+				description: DefaultDescription2,
+				fleetID:     string(DefaultFleetID2),
+				isCompleted: DefaultIsCompleted,
+				version:     string(DefaultVersion2),
 			},
 		),
 		fope.AssembleFrom(
 			gen,
 			&flightoperationComponentMock{
-				id:           string(DefaultFlightoperationID3),
-				flightplanID: string(DefaultFlightplanID3),
-				isCompleted:  DefaultIsCompleted,
-				version:      string(DefaultVersion3),
+				id:          string(DefaultID3),
+				name:        DefaultName3,
+				description: DefaultDescription3,
+				fleetID:     string(DefaultFleetID3),
+				isCompleted: DefaultIsCompleted,
+				version:     string(DefaultVersion3),
 			},
 		),
 	}
@@ -133,7 +147,7 @@ func TestFlightoperationRepositoryGetNoneWhenGetAll(t *testing.T) {
 		ExpectQuery(
 			regexp.QuoteMeta(`SELECT * FROM "flightoperations"`)).
 		WillReturnRows(
-			sqlmock.NewRows([]string{"id", "flightplan_id", "is_completed", "version"}),
+			sqlmock.NewRows([]string{"id", "name", "description", "fleet_id", "is_completed", "version"}),
 		)
 
 	gen := uuid.NewFlightoperationUUID()
@@ -161,8 +175,8 @@ func TestFlightoperationRepositoryGetSingleWhenGetAllOperating(t *testing.T) {
 		ExpectQuery(
 			regexp.QuoteMeta(`SELECT * FROM "flightoperations" WHERE is_completed = false`)).
 		WillReturnRows(
-			sqlmock.NewRows([]string{"id", "flightplan_id", "is_completed", "version"}).
-				AddRow(DefaultFlightoperationID, DefaultFlightplanID, DefaultIsCompleted, DefaultVersion),
+			sqlmock.NewRows([]string{"id", "name", "description", "fleet_id", "is_completed", "version"}).
+				AddRow(DefaultID, DefaultName, DefaultDescription, DefaultFleetID, DefaultIsCompleted, DefaultVersion),
 		)
 
 	gen := uuid.NewFlightoperationUUID()
@@ -174,10 +188,12 @@ func TestFlightoperationRepositoryGetSingleWhenGetAllOperating(t *testing.T) {
 		fope.AssembleFrom(
 			gen,
 			&flightoperationComponentMock{
-				id:           string(DefaultFlightoperationID),
-				flightplanID: string(DefaultFlightplanID),
-				isCompleted:  DefaultIsCompleted,
-				version:      string(DefaultVersion),
+				id:          string(DefaultID),
+				name:        DefaultName,
+				description: DefaultDescription,
+				fleetID:     string(DefaultFleetID),
+				isCompleted: DefaultIsCompleted,
+				version:     string(DefaultVersion),
 			},
 		),
 	}
@@ -197,25 +213,31 @@ func TestFlightoperationRepositoryGetMultipleWhenGetAllOperating(t *testing.T) {
 	}
 
 	const (
-		DefaultFlightoperationID1 = DefaultFlightoperationID + "-1"
-		DefaultFlightoperationID2 = DefaultFlightoperationID + "-2"
-		DefaultFlightoperationID3 = DefaultFlightoperationID + "-3"
-		DefaultFlightplanID1      = DefaultFlightplanID + "-1"
-		DefaultFlightplanID2      = DefaultFlightplanID + "-2"
-		DefaultFlightplanID3      = DefaultFlightplanID + "-3"
-		DefaultVersion1           = DefaultVersion + "-1"
-		DefaultVersion2           = DefaultVersion + "-2"
-		DefaultVersion3           = DefaultVersion + "-3"
+		DefaultID1          = DefaultID + "-1"
+		DefaultID2          = DefaultID + "-2"
+		DefaultID3          = DefaultID + "-3"
+		DefaultName1        = DefaultName + "-1"
+		DefaultName2        = DefaultName + "-2"
+		DefaultName3        = DefaultName + "-3"
+		DefaultDescription1 = DefaultDescription + "-1"
+		DefaultDescription2 = DefaultDescription + "-2"
+		DefaultDescription3 = DefaultDescription + "-3"
+		DefaultFleetID1     = DefaultFleetID + "-1"
+		DefaultFleetID2     = DefaultFleetID + "-2"
+		DefaultFleetID3     = DefaultFleetID + "-3"
+		DefaultVersion1     = DefaultVersion + "-1"
+		DefaultVersion2     = DefaultVersion + "-2"
+		DefaultVersion3     = DefaultVersion + "-3"
 	)
 
 	mock.
 		ExpectQuery(
 			regexp.QuoteMeta(`SELECT * FROM "flightoperations" WHERE is_completed = false`)).
 		WillReturnRows(
-			sqlmock.NewRows([]string{"id", "flightplan_id", "is_completed", "version"}).
-				AddRow(DefaultFlightoperationID1, DefaultFlightplanID1, DefaultIsCompleted, DefaultVersion1).
-				AddRow(DefaultFlightoperationID2, DefaultFlightplanID2, DefaultIsCompleted, DefaultVersion2).
-				AddRow(DefaultFlightoperationID3, DefaultFlightplanID3, DefaultIsCompleted, DefaultVersion3),
+			sqlmock.NewRows([]string{"id", "name", "description", "fleet_id", "is_completed", "version"}).
+				AddRow(DefaultID1, DefaultName1, DefaultDescription1, DefaultFleetID1, DefaultIsCompleted, DefaultVersion1).
+				AddRow(DefaultID2, DefaultName2, DefaultDescription2, DefaultFleetID2, DefaultIsCompleted, DefaultVersion2).
+				AddRow(DefaultID3, DefaultName3, DefaultDescription3, DefaultFleetID3, DefaultIsCompleted, DefaultVersion3),
 		)
 
 	gen := uuid.NewFlightoperationUUID()
@@ -227,28 +249,34 @@ func TestFlightoperationRepositoryGetMultipleWhenGetAllOperating(t *testing.T) {
 		fope.AssembleFrom(
 			gen,
 			&flightoperationComponentMock{
-				id:           string(DefaultFlightoperationID1),
-				flightplanID: string(DefaultFlightplanID1),
-				isCompleted:  DefaultIsCompleted,
-				version:      string(DefaultVersion1),
+				id:          string(DefaultID1),
+				name:        DefaultName1,
+				description: DefaultDescription1,
+				fleetID:     string(DefaultFleetID1),
+				isCompleted: DefaultIsCompleted,
+				version:     string(DefaultVersion1),
 			},
 		),
 		fope.AssembleFrom(
 			gen,
 			&flightoperationComponentMock{
-				id:           string(DefaultFlightoperationID2),
-				flightplanID: string(DefaultFlightplanID2),
-				isCompleted:  DefaultIsCompleted,
-				version:      string(DefaultVersion2),
+				id:          string(DefaultID2),
+				name:        DefaultName2,
+				description: DefaultDescription2,
+				fleetID:     string(DefaultFleetID2),
+				isCompleted: DefaultIsCompleted,
+				version:     string(DefaultVersion2),
 			},
 		),
 		fope.AssembleFrom(
 			gen,
 			&flightoperationComponentMock{
-				id:           string(DefaultFlightoperationID3),
-				flightplanID: string(DefaultFlightplanID3),
-				isCompleted:  DefaultIsCompleted,
-				version:      string(DefaultVersion3),
+				id:          string(DefaultID3),
+				name:        DefaultName3,
+				description: DefaultDescription3,
+				fleetID:     string(DefaultFleetID3),
+				isCompleted: DefaultIsCompleted,
+				version:     string(DefaultVersion3),
 			},
 		),
 	}
@@ -271,7 +299,7 @@ func TestFlightoperationRepositoryGetNoneWhenGetAllOperating(t *testing.T) {
 		ExpectQuery(
 			regexp.QuoteMeta(`SELECT * FROM "flightoperations" WHERE is_completed = false`)).
 		WillReturnRows(
-			sqlmock.NewRows([]string{"id", "flightplan_id", "is_completed", "version"}),
+			sqlmock.NewRows([]string{"id", "name", "description", "fleet_id", "is_completed", "version"}),
 		)
 
 	gen := uuid.NewFlightoperationUUID()
@@ -298,24 +326,26 @@ func TestFlightoperationRepositoryGetByID(t *testing.T) {
 	mock.
 		ExpectQuery(
 			regexp.QuoteMeta(`SELECT * FROM "flightoperations" WHERE id = $1`)).
-		WithArgs(DefaultFlightoperationID).
+		WithArgs(DefaultID).
 		WillReturnRows(
-			sqlmock.NewRows([]string{"id", "flightplan_id", "is_completed", "version"}).
-				AddRow(DefaultFlightoperationID, DefaultFlightplanID, DefaultIsCompleted, DefaultVersion),
+			sqlmock.NewRows([]string{"id", "name", "description", "fleet_id", "is_completed", "version"}).
+				AddRow(DefaultID, DefaultName, DefaultDescription, DefaultFleetID, DefaultIsCompleted, DefaultVersion),
 		)
 
 	gen := uuid.NewFlightoperationUUID()
 	repository := NewFlightoperationRepository(gen)
 
-	flightoperation, err := repository.GetByID(db, DefaultFlightoperationID)
+	flightoperation, err := repository.GetByID(db, DefaultID)
 
 	expectFope := fope.AssembleFrom(
 		gen,
 		&flightoperationComponentMock{
-			id:           string(DefaultFlightoperationID),
-			flightplanID: string(DefaultFlightplanID),
-			isCompleted:  DefaultIsCompleted,
-			version:      string(DefaultVersion),
+			id:          string(DefaultID),
+			name:        DefaultName,
+			description: DefaultDescription,
+			fleetID:     string(DefaultFleetID),
+			isCompleted: DefaultIsCompleted,
+			version:     string(DefaultVersion),
 		},
 	)
 
@@ -335,15 +365,15 @@ func TestFlightoperationRepositoryNotFoundWhenGetByID(t *testing.T) {
 	mock.
 		ExpectQuery(
 			regexp.QuoteMeta(`SELECT * FROM "flightoperations" WHERE id = $1`)).
-		WithArgs(DefaultFlightoperationID).
+		WithArgs(DefaultID).
 		WillReturnRows(
-			sqlmock.NewRows([]string{"id", "flightplan_id", "is_completed", "version"}),
+			sqlmock.NewRows([]string{"id", "name", "description", "fleet_id", "is_completed", "version"}),
 		)
 
 	gen := uuid.NewFlightoperationUUID()
 	repository := NewFlightoperationRepository(gen)
 
-	flightoperation, err := repository.GetByID(db, DefaultFlightoperationID)
+	flightoperation, err := repository.GetByID(db, DefaultID)
 
 	a.Nil(flightoperation)
 	a.Equal(err, fope.ErrNotFound)
@@ -361,15 +391,15 @@ func TestFlightoperationRepositoryCreateSave(t *testing.T) {
 	mock.
 		ExpectQuery(
 			regexp.QuoteMeta(`SELECT * FROM "flightoperations" WHERE id = $1`)).
-		WithArgs(DefaultFlightoperationID).
+		WithArgs(DefaultID).
 		WillReturnRows(
-			sqlmock.NewRows([]string{"id", "flightplan_id", "is_completed", "version"}),
+			sqlmock.NewRows([]string{"id", "name", "description", "fleet_id", "is_completed", "version"}),
 		)
 
 	mock.
 		ExpectExec(
-			regexp.QuoteMeta(`INSERT INTO "flightoperations" ("id","flightplan_id","is_completed","version") VALUES ($1,$2,$3,$4)`)).
-		WithArgs(DefaultFlightoperationID, DefaultFlightplanID, DefaultIsCompleted, DefaultVersion).
+			regexp.QuoteMeta(`INSERT INTO "flightoperations" ("id","name","description","fleet_id","is_completed","version") VALUES ($1,$2,$3,$4,$5,$6)`)).
+		WithArgs(DefaultID, DefaultName, DefaultDescription, DefaultFleetID, DefaultIsCompleted, DefaultVersion).
 		WillReturnResult(
 			sqlmock.NewResult(1, 1),
 		)
@@ -380,10 +410,12 @@ func TestFlightoperationRepositoryCreateSave(t *testing.T) {
 	flightoperation := fope.AssembleFrom(
 		gen,
 		&flightoperationComponentMock{
-			id:           string(DefaultFlightoperationID),
-			flightplanID: string(DefaultFlightplanID),
-			isCompleted:  DefaultIsCompleted,
-			version:      string(DefaultVersion),
+			id:          string(DefaultID),
+			name:        DefaultName,
+			description: DefaultDescription,
+			fleetID:     string(DefaultFleetID),
+			isCompleted: DefaultIsCompleted,
+			version:     string(DefaultVersion),
 		},
 	)
 
@@ -402,24 +434,26 @@ func TestFlightoperationRepositoryUpdateSave(t *testing.T) {
 	}
 
 	const (
-		AfterFlightplanID = DefaultFlightplanID + "-after"
-		AfterIsCompleted  = !DefaultIsCompleted
-		AfterVersion      = DefaultVersion + "-after"
+		AfterName        = DefaultName + "-after"
+		AfterDescription = DefaultDescription + "-after"
+		AfterFleetID     = DefaultFleetID + "-after"
+		AfterIsCompleted = !DefaultIsCompleted
+		AfterVersion     = DefaultVersion + "-after"
 	)
 
 	mock.
 		ExpectQuery(
 			regexp.QuoteMeta(`SELECT * FROM "flightoperations" WHERE id = $1`)).
-		WithArgs(DefaultFlightoperationID).
+		WithArgs(DefaultID).
 		WillReturnRows(
-			sqlmock.NewRows([]string{"id", "flightplan_id", "is_completed", "version"}).
-				AddRow(DefaultFlightoperationID, DefaultFlightplanID, DefaultIsCompleted, DefaultVersion),
+			sqlmock.NewRows([]string{"id", "name", "description", "fleet_id", "is_completed", "version"}).
+				AddRow(DefaultID, DefaultName, DefaultDescription, DefaultFleetID, DefaultIsCompleted, DefaultVersion),
 		)
 
 	mock.
 		ExpectExec(
-			regexp.QuoteMeta(`UPDATE "flightoperations" SET "flightplan_id"=$1,"is_completed"=$2,"version"=$3 WHERE "id" = $4`)).
-		WithArgs(AfterFlightplanID, AfterIsCompleted, AfterVersion, DefaultFlightoperationID).
+			regexp.QuoteMeta(`UPDATE "flightoperations" SET "name"=$1,"description"=$2,"fleet_id"=$3,"is_completed"=$4,"version"=$5 WHERE "id" = $6`)).
+		WithArgs(AfterName, AfterDescription, AfterFleetID, AfterIsCompleted, AfterVersion, DefaultID).
 		WillReturnResult(
 			sqlmock.NewResult(1, 1),
 		)
@@ -430,10 +464,12 @@ func TestFlightoperationRepositoryUpdateSave(t *testing.T) {
 	flightoperation := fope.AssembleFrom(
 		gen,
 		&flightoperationComponentMock{
-			id:           string(DefaultFlightoperationID),
-			flightplanID: string(AfterFlightplanID),
-			isCompleted:  AfterIsCompleted,
-			version:      string(AfterVersion),
+			id:          string(DefaultID),
+			name:        AfterName,
+			description: AfterDescription,
+			fleetID:     string(AfterFleetID),
+			isCompleted: AfterIsCompleted,
+			version:     string(AfterVersion),
 		},
 	)
 

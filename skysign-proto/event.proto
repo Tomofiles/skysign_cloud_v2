@@ -72,17 +72,12 @@ message MissionCopiedEvent {
     string new_mission_id = 3;
 }
 
-message FlightoperationCreatedEvent {
-    string flightoperation_id = 1;
-    string flightplan_id = 2;
-}
-
 message FlightoperationCompletedEvent {
     string flightoperation_id = 1;
-    string flightplan_id = 2;
+    Flightoperation flightoperation = 2;
 }
 
-message FlightplanCopiedWhenFlightoperationCreatedEvent {
+message FleetCopiedWhenFlightoperationCreatedEvent {
     string flightoperation_id = 1;
     string original_flightplan_id = 2;
     string new_flightplan_id = 3;

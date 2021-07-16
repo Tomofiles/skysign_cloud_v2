@@ -1,38 +1,42 @@
 package flightoperation
 
 // NewInstance .
-func NewInstance(gen Generator, flightplanID FlightplanID) *Flightoperation {
+func NewInstance(gen Generator, fleetID FleetID) *Flightoperation {
 	version := gen.NewVersion()
 	return &Flightoperation{
-		id:           gen.NewID(),
-		flightplanID: flightplanID,
-		isCompleted:  Operating,
-		version:      version,
-		newVersion:   version,
-		gen:          gen,
+		id:          gen.NewID(),
+		fleetID:     fleetID,
+		isCompleted: Operating,
+		version:     version,
+		newVersion:  version,
+		gen:         gen,
 	}
 }
 
 // AssembleFrom .
 func AssembleFrom(gen Generator, comp Component) *Flightoperation {
 	return &Flightoperation{
-		id:           ID(comp.GetID()),
-		flightplanID: FlightplanID(comp.GetFlightplanID()),
-		isCompleted:  comp.GetIsCompleted(),
-		version:      Version(comp.GetVersion()),
-		newVersion:   Version(comp.GetVersion()),
-		gen:          gen,
+		id:          ID(comp.GetID()),
+		name:        comp.GetName(),
+		description: comp.GetDescription(),
+		fleetID:     FleetID(comp.GetFleetID()),
+		isCompleted: comp.GetIsCompleted(),
+		version:     Version(comp.GetVersion()),
+		newVersion:  Version(comp.GetVersion()),
+		gen:         gen,
 	}
 }
 
 // TakeApart .
 func TakeApart(
 	flightoperation *Flightoperation,
-	component func(id, flightplanID, version string, isCompleted bool),
+	component func(id, name, description, fleetID, version string, isCompleted bool),
 ) {
 	component(
 		string(flightoperation.id),
-		string(flightoperation.flightplanID),
+		flightoperation.name,
+		flightoperation.description,
+		string(flightoperation.fleetID),
 		string(flightoperation.version),
 		flightoperation.isCompleted,
 	)
@@ -41,7 +45,9 @@ func TakeApart(
 // Component .
 type Component interface {
 	GetID() string
-	GetFlightplanID() string
+	GetName() string
+	GetDescription() string
+	GetFleetID() string
 	GetIsCompleted() bool
 	GetVersion() string
 }
