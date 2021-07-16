@@ -10,7 +10,7 @@ import (
 )
 
 // Flightreportを作成するドメインサービスをテストする。
-// あらかじめFlightoperationIDを与えられたFlightreportを作成し、保存する。
+// あらかじめ名前と説明とFleetIDを与えられたFlightreportを作成し、保存する。
 func TestCreateNewFlightreportService(t *testing.T) {
 	a := assert.New(t)
 
@@ -22,11 +22,13 @@ func TestCreateNewFlightreportService(t *testing.T) {
 	repo := &repositoryMockCreateService{}
 	repo.On("Save", mock.Anything).Return(nil)
 
-	ret := CreateNewFlightreport(ctx, gen, repo, DefaultFlightoperationID)
+	ret := CreateNewFlightreport(ctx, gen, repo, DefaultName, DefaultDescription, DefaultFleetID)
 
 	expectFlightreport := Flightreport{
-		id:                DefaultID,
-		flightoperationID: DefaultFlightoperationID,
+		id:          DefaultID,
+		name:        DefaultName,
+		description: DefaultDescription,
+		fleetID:     DefaultFleetID,
 	}
 
 	a.Len(repo.saveFlightreports, 1)
@@ -49,7 +51,7 @@ func TestSaveErrorWhenCreateNewFlightreportService(t *testing.T) {
 	repo := &repositoryMockCreateService{}
 	repo.On("Save", mock.Anything).Return(ErrSave)
 
-	ret := CreateNewFlightreport(ctx, gen, repo, DefaultFlightoperationID)
+	ret := CreateNewFlightreport(ctx, gen, repo, DefaultName, DefaultDescription, DefaultFleetID)
 
 	a.Len(repo.saveFlightreports, 0)
 	a.Equal(ret, ErrSave)

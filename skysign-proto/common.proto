@@ -83,5 +83,7 @@ message Flightoperation {
 
 message Flightreport {
     string id = 1;
-    string flightoperation_id = 2;
+    string name = 2;
+    string description = 3;
+    string fleet_id = 4;
 }

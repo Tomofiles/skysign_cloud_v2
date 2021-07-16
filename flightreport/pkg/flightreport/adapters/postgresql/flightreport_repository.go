@@ -90,9 +90,11 @@ func (r *FlightreportRepository) Save(
 
 	frep.TakeApart(
 		flightreport,
-		func(id, flightoperationID string) {
+		func(id, name, description, fleetID string) {
 			record.ID = id
-			record.FlightoperationID = flightoperationID
+			record.Name = name
+			record.Description = description
+			record.FleetID = fleetID
 		},
 	)
 

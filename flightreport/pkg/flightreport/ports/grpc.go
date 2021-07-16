@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"flightreport/pkg/flightreport/app"
+	"flightreport/pkg/flightreport/service"
 	proto "flightreport/pkg/skysign_proto"
 
 	"github.com/golang/glog"
@@ -44,12 +45,14 @@ func (s *GrpcServer) ListFlightreports(
 ) (*proto.ListFlightreportsResponses, error) {
 	response := &proto.ListFlightreportsResponses{}
 	if ret := s.app.Services.ManageFlightreport.ListFlightreports(
-		func(id, flightoperationID string) {
+		func(model service.FlightreportPresentationModel) {
 			response.Flightreports = append(
 				response.Flightreports,
 				&proto.Flightreport{
-					Id:                id,
-					FlightoperationId: flightoperationID,
+					Id:          model.GetFlightreport().GetID(),
+					Name:        model.GetFlightreport().GetName(),
+					Description: model.GetFlightreport().GetDescription(),
+					FleetId:     model.GetFlightreport().GetFleetID(),
 				},
 			)
 		},
@@ -65,14 +68,16 @@ func (s *GrpcServer) GetFlightreport(
 	request *proto.GetFlightreportRequest,
 ) (*proto.Flightreport, error) {
 	response := &proto.Flightreport{}
-	requestDpo := &flightreportIDRequestDpo{
+	command := &flightreportIDCommand{
 		id: request.Id,
 	}
 	if ret := s.app.Services.ManageFlightreport.GetFlightreport(
-		requestDpo,
-		func(id, flightoperationID string) {
-			response.Id = id
-			response.FlightoperationId = flightoperationID
+		command,
+		func(model service.FlightreportPresentationModel) {
+			response.Id = model.GetFlightreport().GetID()
+			response.Name = model.GetFlightreport().GetName()
+			response.Description = model.GetFlightreport().GetDescription()
+			response.FleetId = model.GetFlightreport().GetFleetID()
 		},
 	); ret != nil {
 		return nil, ret
@@ -80,10 +85,10 @@ func (s *GrpcServer) GetFlightreport(
 	return response, nil
 }
 
-type flightreportIDRequestDpo struct {
+type flightreportIDCommand struct {
 	id string
 }
 
-func (f *flightreportIDRequestDpo) GetID() string {
+func (f *flightreportIDCommand) GetID() string {
 	return f.id
 }

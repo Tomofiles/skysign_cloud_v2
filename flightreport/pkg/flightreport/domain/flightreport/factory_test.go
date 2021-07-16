@@ -10,17 +10,15 @@ import (
 func TestCreateNewFlightreport(t *testing.T) {
 	a := assert.New(t)
 
-	var (
-		NewID = DefaultFlightoperationID + "-new"
-	)
-
 	gen := &generatorMock{
 		id: DefaultID,
 	}
-	flightreport := NewInstance(gen, NewID)
+	flightreport := NewInstance(gen, DefaultName, DefaultDescription, DefaultFleetID)
 
 	a.Equal(flightreport.GetID(), DefaultID)
-	a.Equal(flightreport.GetFlightoperationID(), NewID)
+	a.Equal(flightreport.GetName(), DefaultName)
+	a.Equal(flightreport.GetDescription(), DefaultDescription)
+	a.Equal(flightreport.GetFleetID(), DefaultFleetID)
 }
 
 // Flightreportを構成オブジェクトから組み立て直し、
@@ -29,14 +27,18 @@ func TestFlightreportAssembleFromComponent(t *testing.T) {
 	a := assert.New(t)
 
 	comp := &flightreportComponentMock{
-		id:                string(DefaultID),
-		flightoperationID: string(DefaultFlightoperationID),
+		id:          string(DefaultID),
+		name:        DefaultName,
+		description: DefaultDescription,
+		fleetID:     string(DefaultFleetID),
 	}
 	gen := &generatorMock{}
 	flightreport := AssembleFrom(gen, comp)
 
 	a.Equal(flightreport.GetID(), DefaultID)
-	a.Equal(flightreport.GetFlightoperationID(), DefaultFlightoperationID)
+	a.Equal(flightreport.GetName(), DefaultName)
+	a.Equal(flightreport.GetDescription(), DefaultDescription)
+	a.Equal(flightreport.GetFleetID(), DefaultFleetID)
 }
 
 // Flightreportを構成オブジェクトに分解し、
@@ -45,21 +47,27 @@ func TestTakeApartFlightreport(t *testing.T) {
 	a := assert.New(t)
 
 	flightreport := &Flightreport{
-		id:                DefaultID,
-		flightoperationID: DefaultFlightoperationID,
+		id:          DefaultID,
+		name:        DefaultName,
+		description: DefaultDescription,
+		fleetID:     DefaultFleetID,
 	}
 	comp := &flightreportComponentMock{}
 	TakeApart(
 		flightreport,
-		func(id, flightoperationID string) {
+		func(id, name, description, fleetID string) {
 			comp.id = id
-			comp.flightoperationID = flightoperationID
+			comp.name = name
+			comp.description = description
+			comp.fleetID = fleetID
 		},
 	)
 
 	expectComp := &flightreportComponentMock{
-		id:                string(DefaultID),
-		flightoperationID: string(DefaultFlightoperationID),
+		id:          string(DefaultID),
+		name:        DefaultName,
+		description: DefaultDescription,
+		fleetID:     string(DefaultFleetID),
 	}
 	a.Equal(comp, expectComp)
 }

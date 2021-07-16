@@ -23,8 +23,8 @@ func TestFlightreportRepositoryGetSingleWhenGetAll(t *testing.T) {
 		ExpectQuery(
 			regexp.QuoteMeta(`SELECT * FROM "flightreports"`)).
 		WillReturnRows(
-			sqlmock.NewRows([]string{"id", "flightoperation_id"}).
-				AddRow(DefaultFlightreportID, DefaultFlightoperationID),
+			sqlmock.NewRows([]string{"id", "name", "description", "fleet_id"}).
+				AddRow(DefaultID, DefaultName, DefaultDescription, DefaultFleetID),
 		)
 
 	gen := uuid.NewFlightreportUUID()
@@ -36,8 +36,10 @@ func TestFlightreportRepositoryGetSingleWhenGetAll(t *testing.T) {
 		frep.AssembleFrom(
 			gen,
 			&flightreportComponentMock{
-				id:                string(DefaultFlightreportID),
-				flightoperationID: string(DefaultFlightoperationID),
+				id:          string(DefaultID),
+				name:        DefaultName,
+				description: DefaultDescription,
+				fleetID:     string(DefaultFleetID),
 			},
 		),
 	}
@@ -57,22 +59,28 @@ func TestFlightreportRepositoryGetMultipleWhenGetAll(t *testing.T) {
 	}
 
 	const (
-		DefaultFlightreportID1    = DefaultFlightreportID + "-1"
-		DefaultFlightreportID2    = DefaultFlightreportID + "-2"
-		DefaultFlightreportID3    = DefaultFlightreportID + "-3"
-		DefaultFlightoperationID1 = DefaultFlightoperationID + "-1"
-		DefaultFlightoperationID2 = DefaultFlightoperationID + "-2"
-		DefaultFlightoperationID3 = DefaultFlightoperationID + "-3"
+		DefaultID1          = DefaultID + "-1"
+		DefaultName1        = DefaultName + "-1"
+		DefaultDescription1 = DefaultDescription + "-1"
+		DefaultFleetID1     = DefaultFleetID + "-1"
+		DefaultID2          = DefaultID + "-2"
+		DefaultName2        = DefaultName + "-2"
+		DefaultDescription2 = DefaultDescription + "-2"
+		DefaultFleetID2     = DefaultFleetID + "-2"
+		DefaultID3          = DefaultID + "-3"
+		DefaultName3        = DefaultName + "-3"
+		DefaultDescription3 = DefaultDescription + "-3"
+		DefaultFleetID3     = DefaultFleetID + "-3"
 	)
 
 	mock.
 		ExpectQuery(
 			regexp.QuoteMeta(`SELECT * FROM "flightreports"`)).
 		WillReturnRows(
-			sqlmock.NewRows([]string{"id", "flightoperation_id"}).
-				AddRow(DefaultFlightreportID1, DefaultFlightoperationID1).
-				AddRow(DefaultFlightreportID2, DefaultFlightoperationID2).
-				AddRow(DefaultFlightreportID3, DefaultFlightoperationID3),
+			sqlmock.NewRows([]string{"id", "name", "description", "fleet_id"}).
+				AddRow(DefaultID1, DefaultName1, DefaultDescription1, DefaultFleetID1).
+				AddRow(DefaultID2, DefaultName2, DefaultDescription2, DefaultFleetID2).
+				AddRow(DefaultID3, DefaultName3, DefaultDescription3, DefaultFleetID3),
 		)
 
 	gen := uuid.NewFlightreportUUID()
@@ -84,22 +92,28 @@ func TestFlightreportRepositoryGetMultipleWhenGetAll(t *testing.T) {
 		frep.AssembleFrom(
 			gen,
 			&flightreportComponentMock{
-				id:                string(DefaultFlightreportID1),
-				flightoperationID: string(DefaultFlightoperationID1),
+				id:          string(DefaultID1),
+				name:        DefaultName1,
+				description: DefaultDescription1,
+				fleetID:     string(DefaultFleetID1),
 			},
 		),
 		frep.AssembleFrom(
 			gen,
 			&flightreportComponentMock{
-				id:                string(DefaultFlightreportID2),
-				flightoperationID: string(DefaultFlightoperationID2),
+				id:          string(DefaultID2),
+				name:        DefaultName2,
+				description: DefaultDescription2,
+				fleetID:     string(DefaultFleetID2),
 			},
 		),
 		frep.AssembleFrom(
 			gen,
 			&flightreportComponentMock{
-				id:                string(DefaultFlightreportID3),
-				flightoperationID: string(DefaultFlightoperationID3),
+				id:          string(DefaultID3),
+				name:        DefaultName3,
+				description: DefaultDescription3,
+				fleetID:     string(DefaultFleetID3),
 			},
 		),
 	}
@@ -122,7 +136,7 @@ func TestFlightreportRepositoryGetNoneWhenGetAll(t *testing.T) {
 		ExpectQuery(
 			regexp.QuoteMeta(`SELECT * FROM "flightreports"`)).
 		WillReturnRows(
-			sqlmock.NewRows([]string{"id", "flightoperation_id"}),
+			sqlmock.NewRows([]string{"id", "name", "description", "fleet_id"}),
 		)
 
 	gen := uuid.NewFlightreportUUID()
@@ -149,22 +163,24 @@ func TestFlightreportRepositoryGetByID(t *testing.T) {
 	mock.
 		ExpectQuery(
 			regexp.QuoteMeta(`SELECT * FROM "flightreports" WHERE id = $1`)).
-		WithArgs(DefaultFlightreportID).
+		WithArgs(DefaultID).
 		WillReturnRows(
-			sqlmock.NewRows([]string{"id", "flightoperation_id"}).
-				AddRow(DefaultFlightreportID, DefaultFlightoperationID),
+			sqlmock.NewRows([]string{"id", "name", "description", "fleet_id"}).
+				AddRow(DefaultID, DefaultName, DefaultDescription, DefaultFleetID),
 		)
 
 	gen := uuid.NewFlightreportUUID()
 	repository := NewFlightreportRepository(gen)
 
-	flightreport, err := repository.GetByID(db, DefaultFlightreportID)
+	flightreport, err := repository.GetByID(db, DefaultID)
 
 	expectFope := frep.AssembleFrom(
 		gen,
 		&flightreportComponentMock{
-			id:                string(DefaultFlightreportID),
-			flightoperationID: string(DefaultFlightoperationID),
+			id:          string(DefaultID),
+			name:        DefaultName,
+			description: DefaultDescription,
+			fleetID:     string(DefaultFleetID),
 		},
 	)
 
@@ -184,15 +200,15 @@ func TestFlightreportRepositoryNotFoundWhenGetByID(t *testing.T) {
 	mock.
 		ExpectQuery(
 			regexp.QuoteMeta(`SELECT * FROM "flightreports" WHERE id = $1`)).
-		WithArgs(DefaultFlightreportID).
+		WithArgs(DefaultID).
 		WillReturnRows(
-			sqlmock.NewRows([]string{"id", "flightoperation_id"}),
+			sqlmock.NewRows([]string{"id", "name", "description", "fleet_id"}),
 		)
 
 	gen := uuid.NewFlightreportUUID()
 	repository := NewFlightreportRepository(gen)
 
-	flightreport, err := repository.GetByID(db, DefaultFlightreportID)
+	flightreport, err := repository.GetByID(db, DefaultID)
 
 	a.Nil(flightreport)
 	a.Equal(err, frep.ErrNotFound)
@@ -210,15 +226,15 @@ func TestFlightreportRepositorySave(t *testing.T) {
 	mock.
 		ExpectQuery(
 			regexp.QuoteMeta(`SELECT * FROM "flightreports" WHERE id = $1`)).
-		WithArgs(DefaultFlightreportID).
+		WithArgs(DefaultID).
 		WillReturnRows(
-			sqlmock.NewRows([]string{"id", "flightoperation_id"}),
+			sqlmock.NewRows([]string{"id", "name", "description", "fleet_id"}),
 		)
 
 	mock.
 		ExpectExec(
-			regexp.QuoteMeta(`INSERT INTO "flightreports" ("id","flightoperation_id") VALUES ($1,$2)`)).
-		WithArgs(DefaultFlightreportID, DefaultFlightoperationID).
+			regexp.QuoteMeta(`INSERT INTO "flightreports" ("id","name","description","fleet_id") VALUES ($1,$2,$3,$4)`)).
+		WithArgs(DefaultID, DefaultName, DefaultDescription, DefaultFleetID).
 		WillReturnResult(
 			sqlmock.NewResult(1, 1),
 		)
@@ -229,8 +245,10 @@ func TestFlightreportRepositorySave(t *testing.T) {
 	flightreport := frep.AssembleFrom(
 		gen,
 		&flightreportComponentMock{
-			id:                string(DefaultFlightreportID),
-			flightoperationID: string(DefaultFlightoperationID),
+			id:          string(DefaultID),
+			name:        DefaultName,
+			description: DefaultDescription,
+			fleetID:     string(DefaultFleetID),
 		},
 	)
 
@@ -251,10 +269,10 @@ func TestFlightreportRepositoryUpdateSkipWhenAlreadyExistWhenSave(t *testing.T) 
 	mock.
 		ExpectQuery(
 			regexp.QuoteMeta(`SELECT * FROM "flightreports" WHERE id = $1`)).
-		WithArgs(DefaultFlightreportID).
+		WithArgs(DefaultID).
 		WillReturnRows(
-			sqlmock.NewRows([]string{"id", "flightoperation_id"}).
-				AddRow(DefaultFlightreportID, DefaultFlightoperationID),
+			sqlmock.NewRows([]string{"id", "name", "description", "fleet_id"}).
+				AddRow(DefaultID, DefaultName, DefaultDescription, DefaultFleetID),
 		)
 
 	gen := uuid.NewFlightreportUUID()
@@ -263,8 +281,10 @@ func TestFlightreportRepositoryUpdateSkipWhenAlreadyExistWhenSave(t *testing.T) 
 	flightreport := frep.AssembleFrom(
 		gen,
 		&flightreportComponentMock{
-			id:                string(DefaultFlightreportID),
-			flightoperationID: string(DefaultFlightoperationID),
+			id:          string(DefaultID),
+			name:        DefaultName,
+			description: DefaultDescription,
+			fleetID:     string(DefaultFleetID),
 		},
 	)
 
