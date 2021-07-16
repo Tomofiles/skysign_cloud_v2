@@ -14,7 +14,7 @@ func TestPushTelemetry_ReceiveArmedTelemetry(t *testing.T) {
 	action := &Action{
 		id:              DefaultID,
 		communicationID: DefaultCommunicationID,
-		flightplanID:    DefaultFlightplanID,
+		fleetID:         DefaultFleetID,
 		isCompleted:     Active,
 		trajectory: Trajectory{
 			numberOfPoints:   0,
@@ -43,7 +43,7 @@ func TestCannotChangeErrorWhenPushTelemetry_CompletedAction(t *testing.T) {
 	action := &Action{
 		id:              DefaultID,
 		communicationID: DefaultCommunicationID,
-		flightplanID:    DefaultFlightplanID,
+		fleetID:         DefaultFleetID,
 		isCompleted:     Completed,
 		trajectory: Trajectory{
 			numberOfPoints:   0,
@@ -70,7 +70,7 @@ func TestNoUpdateWhenPushTelemetry_ReceiveDisarmedTelemetry(t *testing.T) {
 	action := &Action{
 		id:              DefaultID,
 		communicationID: DefaultCommunicationID,
-		flightplanID:    DefaultFlightplanID,
+		fleetID:         DefaultFleetID,
 		isCompleted:     Active,
 		trajectory: Trajectory{
 			numberOfPoints:   0,
@@ -97,7 +97,7 @@ func TestComplete(t *testing.T) {
 	action := &Action{
 		id:              DefaultID,
 		communicationID: DefaultCommunicationID,
-		flightplanID:    DefaultFlightplanID,
+		fleetID:         DefaultFleetID,
 		isCompleted:     Active,
 		trajectory: Trajectory{
 			numberOfPoints:   0,
@@ -120,7 +120,7 @@ func TestCannotChangeErrorWhenComplete(t *testing.T) {
 	action := &Action{
 		id:              DefaultID,
 		communicationID: DefaultCommunicationID,
-		flightplanID:    DefaultFlightplanID,
+		fleetID:         DefaultFleetID,
 		isCompleted:     Completed,
 		trajectory: Trajectory{
 			numberOfPoints:   0,
@@ -142,7 +142,7 @@ func TestProvideTrajectoryInterest_NoTrajectory(t *testing.T) {
 	action := &Action{
 		id:              DefaultID,
 		communicationID: DefaultCommunicationID,
-		flightplanID:    DefaultFlightplanID,
+		fleetID:         DefaultFleetID,
 		isCompleted:     Active,
 		trajectory: Trajectory{
 			numberOfPoints:   0,
@@ -169,7 +169,7 @@ func TestProvideTrajectoryInterest_MultipleTrajectory(t *testing.T) {
 	action := &Action{
 		id:              DefaultID,
 		communicationID: DefaultCommunicationID,
-		flightplanID:    DefaultFlightplanID,
+		fleetID:         DefaultFleetID,
 		isCompleted:     Active,
 		trajectory: Trajectory{
 			numberOfPoints: 0,

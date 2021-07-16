@@ -6,7 +6,7 @@ import "action/pkg/action/domain/action"
 type Action struct {
 	ID               string `gorm:"primaryKey"`
 	CommunicationID  string
-	FlightplanID     string
+	FleetID          string
 	IsCompleted      bool
 	TrajectoryPoints []*TrajectoryPoint `gorm:"-"`
 }
@@ -21,9 +21,9 @@ func (a *Action) GetCommunicationID() string {
 	return a.CommunicationID
 }
 
-// GetFlightplanID .
-func (a *Action) GetFlightplanID() string {
-	return a.FlightplanID
+// GetFleetID .
+func (a *Action) GetFleetID() string {
+	return a.FleetID
 }
 
 // GetIsCompleted .

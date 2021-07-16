@@ -7,24 +7,24 @@ import (
 
 // ManageActionService .
 type ManageActionService interface {
-	CreateAction(requestDpo CreateActionRequestDpo) error
-	GetTrajectory(requestDpo GetTrajectoryRequestDpo, responseEachDpo GetTrajectoryResponseDpo) error
+	CreateAction(command CreateActionCommand) error
+	GetTrajectory(command GetTrajectoryCommand, telemetry TelemetrySnapshot) error
 }
 
-// CreateActionRequestDpo .
-type CreateActionRequestDpo interface {
+// CreateActionCommand .
+type CreateActionCommand interface {
 	GetID() string
 	GetCommunicationID() string
-	GetFlightplanID() string
+	GetFleetID() string
 }
 
-// GetTrajectoryRequestDpo .
-type GetTrajectoryRequestDpo interface {
+// GetTrajectoryCommand .
+type GetTrajectoryCommand interface {
 	GetID() string
 }
 
-// GetAssignmentsResponseDpo .
-type GetTrajectoryResponseDpo = func(snapshot action.TelemetrySnapshot)
+// TelemetrySnapshot .
+type TelemetrySnapshot = func(snapshot action.TelemetrySnapshot)
 
 // NewManageActionService .
 func NewManageActionService(
@@ -43,24 +43,24 @@ type manageActionService struct {
 }
 
 func (s *manageActionService) CreateAction(
-	requestDpo CreateActionRequestDpo,
+	command CreateActionCommand,
 ) error {
 	return s.txm.Do(func(tx txmanager.Tx) error {
 		return s.createActionOperation(
 			tx,
-			requestDpo,
+			command,
 		)
 	})
 }
 
 func (s *manageActionService) createActionOperation(
 	tx txmanager.Tx,
-	requestDpo CreateActionRequestDpo,
+	command CreateActionCommand,
 ) error {
 	aAction := action.NewInstance(
-		action.ID(requestDpo.GetID()),
-		action.CommunicationID(requestDpo.GetCommunicationID()),
-		action.FlightplanID(requestDpo.GetFlightplanID()),
+		action.ID(command.GetID()),
+		action.CommunicationID(command.GetCommunicationID()),
+		action.FleetID(command.GetFleetID()),
 	)
 	if ret := s.repo.Save(tx, aAction); ret != nil {
 		return ret
@@ -70,33 +70,33 @@ func (s *manageActionService) createActionOperation(
 }
 
 func (s *manageActionService) GetTrajectory(
-	requestDpo GetTrajectoryRequestDpo,
-	responseEachDpo GetTrajectoryResponseDpo,
+	command GetTrajectoryCommand,
+	telemetry TelemetrySnapshot,
 ) error {
 	return s.txm.Do(func(tx txmanager.Tx) error {
 		return s.getTrajectoryOperation(
 			tx,
-			requestDpo,
-			responseEachDpo,
+			command,
+			telemetry,
 		)
 	})
 }
 
 func (s *manageActionService) getTrajectoryOperation(
 	tx txmanager.Tx,
-	requestDpo GetTrajectoryRequestDpo,
-	responseEachDpo GetTrajectoryResponseDpo,
+	command GetTrajectoryCommand,
+	telemetry TelemetrySnapshot,
 ) error {
 	aAction, err := s.repo.GetByID(
 		tx,
-		action.ID(requestDpo.GetID()),
+		action.ID(command.GetID()),
 	)
 	if err != nil {
 		return err
 	}
 
 	aAction.ProvideTrajectoryInterest(
-		responseEachDpo,
+		telemetry,
 	)
 
 	return nil

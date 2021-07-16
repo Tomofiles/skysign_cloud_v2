@@ -9,7 +9,7 @@ import (
 
 const DefaultActionID = act.ID("action-id")
 const DefaultActionCommunicationID = act.CommunicationID("communication-id")
-const DefaultActionFlightplanID = act.FlightplanID("flightplan-id")
+const DefaultActionFleetID = act.FleetID("fleet-id")
 
 var DefaultTelemetrySnapshot = act.TelemetrySnapshot{
 	Latitude:         1.0,
@@ -44,11 +44,11 @@ func (r *actionRepositoryMock) GetByID(
 	return a, ret.Error(1)
 }
 
-func (r *actionRepositoryMock) GetAllActiveByFlightplanID(
+func (r *actionRepositoryMock) GetAllActiveByFleetID(
 	tx txmanager.Tx,
-	flightplanID act.FlightplanID,
+	fleet act.FleetID,
 ) ([]*act.Action, error) {
-	ret := r.Called(flightplanID)
+	ret := r.Called(fleet)
 	var a []*act.Action
 	if ret.Get(0) == nil {
 		a = nil
@@ -99,7 +99,7 @@ func (txm *txManagerMock) DoAndEndHook(operation func(txmanager.Tx) error, endHo
 type actionComponentMock struct {
 	ID               string
 	CommunicationID  string
-	FlightplanID     string
+	FleetID          string
 	IsCompleted      bool
 	TrajectoryPoints []act.TrajectoryPointComponent
 }
@@ -110,8 +110,8 @@ func (c *actionComponentMock) GetID() string {
 func (c *actionComponentMock) GetCommunicationID() string {
 	return c.CommunicationID
 }
-func (c *actionComponentMock) GetFlightplanID() string {
-	return c.FlightplanID
+func (c *actionComponentMock) GetFleetID() string {
+	return c.FleetID
 }
 func (c *actionComponentMock) GetIsCompleted() bool {
 	return c.IsCompleted
@@ -172,36 +172,36 @@ func (c *trajectoryPointComponentMock) GetOrientationW() float64 {
 	return c.OrientationW
 }
 
-type createRequestMock struct {
-	VehicleId, CommunicationId, FlightplanId string
+type createCommandMock struct {
+	VehicleId, CommunicationId, FleetId string
 }
 
-func (r *createRequestMock) GetID() string {
+func (r *createCommandMock) GetID() string {
 	return r.VehicleId
 }
 
-func (r *createRequestMock) GetCommunicationID() string {
+func (r *createCommandMock) GetCommunicationID() string {
 	return r.CommunicationId
 }
 
-func (r *createRequestMock) GetFlightplanID() string {
-	return r.FlightplanId
+func (r *createCommandMock) GetFleetID() string {
+	return r.FleetId
 }
 
-type idRequestMock struct {
-	VehicleId string
+type actionIDCommandMock struct {
+	ID string
 }
 
-func (r *idRequestMock) GetID() string {
-	return r.VehicleId
+func (r *actionIDCommandMock) GetID() string {
+	return r.ID
 }
 
-type flightplanIDRequestMock struct {
-	FlightplanID string
+type fleetIDCommandMock struct {
+	FleetID string
 }
 
-func (r *flightplanIDRequestMock) GetFlightplanID() string {
-	return r.FlightplanID
+func (r *fleetIDCommandMock) GetFleetID() string {
+	return r.FleetID
 }
 
 type telemetryRequestMock struct {

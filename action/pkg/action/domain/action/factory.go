@@ -4,12 +4,12 @@ package action
 func NewInstance(
 	id ID,
 	communicationID CommunicationID,
-	flightplanID FlightplanID,
+	fleetID FleetID,
 ) *Action {
 	return &Action{
 		id:              id,
 		communicationID: communicationID,
-		flightplanID:    flightplanID,
+		fleetID:         fleetID,
 		isCompleted:     Active,
 		trajectory:      newTrajectory(),
 	}
@@ -40,7 +40,7 @@ func AssembleFrom(comp Component) *Action {
 	return &Action{
 		id:              ID(comp.GetID()),
 		communicationID: CommunicationID(comp.GetCommunicationID()),
-		flightplanID:    FlightplanID(comp.GetFlightplanID()),
+		fleetID:         FleetID(comp.GetFleetID()),
 		isCompleted:     comp.GetIsCompleted(),
 		trajectory: Trajectory{
 			numberOfPoints:   len(trajectoryPoints),
@@ -79,7 +79,7 @@ type Component interface {
 type ActionComponent interface {
 	GetID() string
 	GetCommunicationID() string
-	GetFlightplanID() string
+	GetFleetID() string
 	GetIsCompleted() bool
 }
 
@@ -117,8 +117,8 @@ func (c *actionComponent) GetID() string {
 func (c *actionComponent) GetCommunicationID() string {
 	return string(c.action.communicationID)
 }
-func (c *actionComponent) GetFlightplanID() string {
-	return string(c.action.flightplanID)
+func (c *actionComponent) GetFleetID() string {
+	return string(c.action.fleetID)
 }
 func (c *actionComponent) GetIsCompleted() bool {
 	return c.action.isCompleted
