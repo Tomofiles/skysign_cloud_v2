@@ -16,19 +16,6 @@ message CommunicationIdRemovedEvent {
     string communication_id = 1;
 }
 
-message FlightplanCreatedEvent {
-    string flightplan_id = 1;
-}
-
-message FlightplanCopiedEvent {
-    string original_flightplan_id = 1;
-    string new_flightplan_id = 2;
-}
-
-message FlightplanDeletedEvent {
-    string flightplan_id = 1;
-}
-
 message FleetIDGaveEvent {
     string fleet_id = 1;
     int32 number_of_vehicles = 2;
@@ -48,18 +35,6 @@ message FleetCopiedEvent {
     string new_fleet_id = 2;
 }
 
-message VehicleCopiedWhenFlightplanCopiedEvent {
-    string flightplan_id = 1;
-    string original_vehicle_id = 2;
-    string new_vehicle_id = 3;
-}
-
-message MissionCopiedWhenFlightplanCopiedEvent {
-    string flightplan_id = 1;
-    string original_mission_id = 2;
-    string new_mission_id = 3;
-}
-
 message VehicleCopiedEvent {
     string fleet_id = 1;
     string original_vehicle_id = 2;
@@ -75,12 +50,6 @@ message MissionCopiedEvent {
 message FlightoperationCompletedEvent {
     string flightoperation_id = 1;
     Flightoperation flightoperation = 2;
-}
-
-message FleetCopiedWhenFlightoperationCreatedEvent {
-    string flightoperation_id = 1;
-    string original_flightplan_id = 2;
-    string new_flightplan_id = 3;
 }
 
 message CopiedVehicleCreatedEvent {

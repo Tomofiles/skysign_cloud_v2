@@ -31,76 +31,6 @@ var _ = runtime.String
 var _ = utilities.NewDoubleArray
 var _ = descriptor.ForMessage
 
-func request_AssignAssetsToFlightplanService_ChangeNumberOfVehicles_0(ctx context.Context, marshaler runtime.Marshaler, client AssignAssetsToFlightplanServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq ChangeNumberOfVehiclesRequest
-	var metadata runtime.ServerMetadata
-
-	newReader, berr := utilities.IOReaderFactory(req.Body)
-	if berr != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", berr)
-	}
-	if err := marshaler.NewDecoder(newReader()).Decode(&protoReq); err != nil && err != io.EOF {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
-	}
-
-	var (
-		val string
-		ok  bool
-		err error
-		_   = err
-	)
-
-	val, ok = pathParams["id"]
-	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "id")
-	}
-
-	protoReq.Id, err = runtime.String(val)
-
-	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "id", err)
-	}
-
-	msg, err := client.ChangeNumberOfVehicles(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
-	return msg, metadata, err
-
-}
-
-func local_request_AssignAssetsToFlightplanService_ChangeNumberOfVehicles_0(ctx context.Context, marshaler runtime.Marshaler, server AssignAssetsToFlightplanServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq ChangeNumberOfVehiclesRequest
-	var metadata runtime.ServerMetadata
-
-	newReader, berr := utilities.IOReaderFactory(req.Body)
-	if berr != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", berr)
-	}
-	if err := marshaler.NewDecoder(newReader()).Decode(&protoReq); err != nil && err != io.EOF {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
-	}
-
-	var (
-		val string
-		ok  bool
-		err error
-		_   = err
-	)
-
-	val, ok = pathParams["id"]
-	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "id")
-	}
-
-	protoReq.Id, err = runtime.String(val)
-
-	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "id", err)
-	}
-
-	msg, err := server.ChangeNumberOfVehicles(ctx, &protoReq)
-	return msg, metadata, err
-
-}
-
 func request_AssignAssetsToFlightplanService_GetAssignments_0(ctx context.Context, marshaler runtime.Marshaler, client AssignAssetsToFlightplanServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq GetAssignmentsRequest
 	var metadata runtime.ServerMetadata
@@ -231,26 +161,6 @@ func local_request_AssignAssetsToFlightplanService_UpdateAssignments_0(ctx conte
 // Note that using this registration option will cause many gRPC library features (such as grpc.SendHeader, etc) to stop working. Consider using RegisterAssignAssetsToFlightplanServiceHandlerFromEndpoint instead.
 func RegisterAssignAssetsToFlightplanServiceHandlerServer(ctx context.Context, mux *runtime.ServeMux, server AssignAssetsToFlightplanServiceServer) error {
 
-	mux.Handle("PUT", pattern_AssignAssetsToFlightplanService_ChangeNumberOfVehicles_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
-		ctx, cancel := context.WithCancel(req.Context())
-		defer cancel()
-		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req)
-		if err != nil {
-			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
-			return
-		}
-		resp, md, err := local_request_AssignAssetsToFlightplanService_ChangeNumberOfVehicles_0(rctx, inboundMarshaler, server, req, pathParams)
-		ctx = runtime.NewServerMetadataContext(ctx, md)
-		if err != nil {
-			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
-			return
-		}
-
-		forward_AssignAssetsToFlightplanService_ChangeNumberOfVehicles_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
-	})
-
 	mux.Handle("GET", pattern_AssignAssetsToFlightplanService_GetAssignments_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
@@ -332,26 +242,6 @@ func RegisterAssignAssetsToFlightplanServiceHandler(ctx context.Context, mux *ru
 // "AssignAssetsToFlightplanServiceClient" to call the correct interceptors.
 func RegisterAssignAssetsToFlightplanServiceHandlerClient(ctx context.Context, mux *runtime.ServeMux, client AssignAssetsToFlightplanServiceClient) error {
 
-	mux.Handle("PUT", pattern_AssignAssetsToFlightplanService_ChangeNumberOfVehicles_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
-		ctx, cancel := context.WithCancel(req.Context())
-		defer cancel()
-		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateContext(ctx, mux, req)
-		if err != nil {
-			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
-			return
-		}
-		resp, md, err := request_AssignAssetsToFlightplanService_ChangeNumberOfVehicles_0(rctx, inboundMarshaler, client, req, pathParams)
-		ctx = runtime.NewServerMetadataContext(ctx, md)
-		if err != nil {
-			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
-			return
-		}
-
-		forward_AssignAssetsToFlightplanService_ChangeNumberOfVehicles_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
-	})
-
 	mux.Handle("GET", pattern_AssignAssetsToFlightplanService_GetAssignments_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
@@ -396,16 +286,12 @@ func RegisterAssignAssetsToFlightplanServiceHandlerClient(ctx context.Context, m
 }
 
 var (
-	pattern_AssignAssetsToFlightplanService_ChangeNumberOfVehicles_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3, 2, 4}, []string{"api", "v1", "flightplans", "id", "numberofvehicles"}, "", runtime.AssumeColonVerbOpt(true)))
-
 	pattern_AssignAssetsToFlightplanService_GetAssignments_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3, 2, 4}, []string{"api", "v1", "flightplans", "id", "assignments"}, "", runtime.AssumeColonVerbOpt(true)))
 
 	pattern_AssignAssetsToFlightplanService_UpdateAssignments_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3, 2, 4}, []string{"api", "v1", "flightplans", "id", "assignments"}, "", runtime.AssumeColonVerbOpt(true)))
 )
 
 var (
-	forward_AssignAssetsToFlightplanService_ChangeNumberOfVehicles_0 = runtime.ForwardResponseMessage
-
 	forward_AssignAssetsToFlightplanService_GetAssignments_0 = runtime.ForwardResponseMessage
 
 	forward_AssignAssetsToFlightplanService_UpdateAssignments_0 = runtime.ForwardResponseMessage
