@@ -6,10 +6,10 @@ import (
 	"net"
 	"time"
 
-	"fleet-formation/pkg/fleet-formation/adapters/postgresql"
-	"fleet-formation/pkg/fleet-formation/adapters/rabbitmq"
-	"fleet-formation/pkg/fleet-formation/app"
-	"fleet-formation/pkg/fleet-formation/ports"
+	"fleet-formation/pkg/fleet/adapters/postgresql"
+	"fleet-formation/pkg/fleet/adapters/rabbitmq"
+	"fleet-formation/pkg/fleet/app"
+	"fleet-formation/pkg/fleet/ports"
 	proto "fleet-formation/pkg/skysign_proto"
 
 	"github.com/golang/glog"
