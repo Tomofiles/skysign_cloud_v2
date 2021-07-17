@@ -16,7 +16,6 @@ import {
 
 import { getFlights } from './FlightUtils'
 import Refresh from '@material-ui/icons/Refresh';
-import { getFlightplan } from '../../plans/flightplans/FlightplansUtils';
 
 const FlightsList = (props) => {
   const [ rows, setRows ] = useState([]);
@@ -25,18 +24,7 @@ const FlightsList = (props) => {
     if (props.open) {
       getFlights()
         .then(data => {
-          data.flightoperations
-            .forEach(flight => {
-              getFlightplan(flight.flightplan_id)
-                .then(flightplan => {
-                  flight.flightplan_name = flightplan.name;
-                  setRows(rows => {
-                    const newRows = [ ...rows ];
-                    newRows.push(flight);
-                    return newRows;
-                  });
-                });
-            });
+          setRows(data.flightoperations);
         })
     }
   }, [ props.open ])
@@ -45,18 +33,7 @@ const FlightsList = (props) => {
     setRows([]);
     getFlights()
       .then(data => {
-        data.flightoperations
-          .forEach(flight => {
-            getFlightplan(flight.flightplan_id)
-              .then(flightplan => {
-                flight.flightplan_name = flightplan.name;
-                setRows(rows => {
-                  const newRows = [ ...rows ];
-                  newRows.push(flight);
-                  return newRows;
-                });
-              });
-          });
+        setRows(data.flightoperations);
       })
   }
 
@@ -84,14 +61,16 @@ const FlightsList = (props) => {
               <TableHead>
                 <TableRow>
                   <TableCell>Name</TableCell>
+                  <TableCell>Description</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
                 {rows.map((row) => (
                   <TableRow key={row.id} onClick={() => onSelect(row.id)}>
                     <TableCell component="th" scope="row">
-                      {row.flightplan_name}
+                      {row.name}
                     </TableCell>
+                    <TableCell>{row.description}</TableCell>
                   </TableRow>
                 ))}
               </TableBody>

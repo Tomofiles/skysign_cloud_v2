@@ -17,7 +17,7 @@ import {
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import { grey } from '@material-ui/core/colors';
 
-import { getAssignments } from './FlightplansUtils';
+import { getFlightplan, getAssignments } from './FlightplansUtils';
 import { getVehicles } from '../../assets/vehicles/VehicleUtils';
 import { getMissions } from '../../missions/missions/MissionUtils';
 
@@ -30,16 +30,19 @@ const AssignAssetsDetail = (props) => {
         getVehicles(),
         getMissions(),
       ]).then(vm => {
-        getAssignments(props.id)
+        getFlightplan(props.id)
           .then(data => {
-            let rows = data.assignments.slice(0, data.assignments.length);
-            rows.forEach(row => {
-              let vehicle = vm[0].vehicles.find(v => v.id === row.vehicle_id);
-              let mission = vm[1].missions.find(m => m.id === row.mission_id);
-              row.vehicleName = vehicle === undefined ? "-" : vehicle.name;
-              row.missionName = mission === undefined ? "-" : mission.name;
-            });
-            setRows(data.assignments);
+            getAssignments(data.fleet_id)
+              .then(data => {
+                let rows = data.assignments.slice(0, data.assignments.length);
+                rows.forEach(row => {
+                  let vehicle = vm[0].vehicles.find(v => v.id === row.vehicle_id);
+                  let mission = vm[1].missions.find(m => m.id === row.mission_id);
+                  row.vehicleName = vehicle === undefined ? "-" : vehicle.name;
+                  row.missionName = mission === undefined ? "-" : mission.name;
+                });
+                setRows(data.assignments);
+              })
           })
       })
     }

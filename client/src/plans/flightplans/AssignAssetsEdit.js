@@ -20,20 +20,25 @@ import {
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import { grey } from '@material-ui/core/colors';
 
-import { getAssignments, updateAssignments } from './FlightplansUtils';
+import { getFlightplan, getAssignments, updateAssignments } from './FlightplansUtils';
 import { getVehicles } from '../../assets/vehicles/VehicleUtils';
 import { getMissions } from '../../missions/missions/MissionUtils';
 
 const AssignAssetsEdit = (props) => {
   const [ rows, setRows ] = useState([]);
+  const [ fleetId, setFleetId ] = useState("");
   const [ vehicles, setVehicles ] = useState([]);
   const [ missions, setMissions ] = useState([]);
 
   useEffect(() => {
     if (props.open) {
-      getAssignments(props.id)
+      getFlightplan(props.id)
         .then(data => {
-          setRows(data.assignments);
+          setFleetId(data.fleet_id);
+          getAssignments(data.fleet_id)
+            .then(data => {
+              setRows(data.assignments);
+            })
         })
       getVehicles()
         .then(data => {
@@ -52,7 +57,7 @@ const AssignAssetsEdit = (props) => {
 
   const onClickSave = () => {
     let assignments = { assignments: rows };
-    updateAssignments(props.id, assignments)
+    updateAssignments(fleetId, assignments)
     .then(ret => {
       props.openList();
     });

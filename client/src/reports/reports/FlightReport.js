@@ -11,19 +11,25 @@ import { grey } from '@material-ui/core/colors';
 
 import { AppContext } from '../../context/Context';
 import FlightReportAssignment from './FlightReportAssignment';
+import { getReport } from './ReportUtils';
 
 const FlightReport = (props) => {
-  const { dispatchOperationMode, flightplan, assignments, dispatchFlightreport } = useContext(AppContext);
+  const { dispatchOperationMode, assignments, dispatchFleet } = useContext(AppContext);
+  const [ name, setName ] = useState("-");
   const [ listsize, setListsize ] = useState("0vh");
 
   useEffect(() => {
-    dispatchFlightreport({ type: 'ID', id: props.id });
-    dispatchOperationMode({ type: 'REPORT' });
+    getReport(props.id)
+      .then(data => {
+        setName(data.name);
+        dispatchFleet({ type: 'ID', id: data.fleet_id });
+        dispatchOperationMode({ type: 'REPORT' });
+      })
     return () => {
-      dispatchFlightreport({ type: 'NONE' });
+      dispatchFleet({ type: 'NONE' });
       dispatchOperationMode({ type: 'NONE' });
     }
-  }, [ props.id, dispatchOperationMode, dispatchFlightreport ])
+  }, [ props.id, dispatchOperationMode, dispatchFleet ])
 
   useLayoutEffect(() => {
     // 仮画面サイズ調整
@@ -45,7 +51,7 @@ const FlightReport = (props) => {
         </Box>
         <Box m={2} style={{display: 'flex', justifyContent: 'space-between'}}>
           <Box>
-            <Typography>{flightplan.name}</Typography>
+            <Typography>{name}</Typography>
           </Box>
         </Box>
       </Box>

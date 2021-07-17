@@ -11,20 +11,25 @@ import { grey } from '@material-ui/core/colors';
 
 import { AppContext } from '../../context/Context';
 import FlightOperationAssignment from './FlightOperationAssignment';
-import { completeFlight } from './FlightUtils';
+import { getFlight, completeFlight } from './FlightUtils';
 
 const FlightOperation = (props) => {
-  const { dispatchOperationMode, flightplan, assignments, dispatchFlightoperation, dispatchFuncMode } = useContext(AppContext);
+  const { dispatchOperationMode, assignments, dispatchFleet, dispatchFuncMode } = useContext(AppContext);
+  const [ name, setName ] = useState("-");
   const [ listsize, setListsize ] = useState("0vh");
 
   useEffect(() => {
-    dispatchFlightoperation({ type: 'ID', id: props.id });
-    dispatchOperationMode({ type: 'OPERATION' });
+    getFlight(props.id)
+      .then(data => {
+        setName(data.name);
+        dispatchFleet({ type: 'ID', id: data.fleet_id });
+        dispatchOperationMode({ type: 'OPERATION' });
+      })
     return () => {
-      dispatchFlightoperation({ type: 'NONE' });
+      dispatchFleet({ type: 'NONE' });
       dispatchOperationMode({ type: 'NONE' });
     }
-  }, [ props.id, dispatchOperationMode, dispatchFlightoperation ])
+  }, [ props.id, dispatchOperationMode, dispatchFleet, setName ])
 
   useLayoutEffect(() => {
     // 仮画面サイズ調整
@@ -51,7 +56,7 @@ const FlightOperation = (props) => {
         </Box>
         <Box m={2} style={{display: 'flex', justifyContent: 'space-between'}}>
           <Box>
-            <Typography>{flightplan.name}</Typography>
+            <Typography>{name}</Typography>
           </Box>
           <Box px={1}>
             <Button className={props.classes.funcImportantButton} onClick={onClickComplete}>Complete</Button>
