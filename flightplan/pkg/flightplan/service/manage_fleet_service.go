@@ -72,6 +72,9 @@ func (s *manageFleetService) createFleetOperation(
 		s.gen,
 		f.ID(command.GetID()),
 		command.GetNumberOfVehicles())
+	for _, assignmentID := range fleet.GetAllAssignmentID() {
+		fleet.AddNewEvent(assignmentID)
+	}
 	if ret := s.repo.Save(tx, fleet); ret != nil {
 		return ret
 	}

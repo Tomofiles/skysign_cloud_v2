@@ -15,15 +15,22 @@ func TestCreateFleetTransaction(t *testing.T) {
 		DefaultAssignmentID1    = DefaultFleetAssignmentID + "-1"
 		DefaultAssignmentID2    = DefaultFleetAssignmentID + "-2"
 		DefaultAssignmentID3    = DefaultFleetAssignmentID + "-3"
+		DefaultFleetEventID1    = DefaultFleetEventID + "-1"
+		DefaultFleetEventID2    = DefaultFleetEventID + "-2"
+		DefaultFleetEventID3    = DefaultFleetEventID + "-3"
 		DefaultFleetVersion1    = DefaultFleetVersion + "-1"
 		DefaultFleetVersion2    = DefaultFleetVersion + "-2"
 		DefaultFleetVersion3    = DefaultFleetVersion + "-3"
+		DefaultFleetVersion4    = DefaultFleetVersion + "-4"
+		DefaultFleetVersion5    = DefaultFleetVersion + "-5"
+		DefaultFleetVersion6    = DefaultFleetVersion + "-6"
 		DefaultNumberOfVehicles = 3
 	)
 
 	gen := &generatorMockFleet{
 		assignmentIDs: []fl.AssignmentID{DefaultAssignmentID1, DefaultAssignmentID2, DefaultAssignmentID3},
-		versions:      []fl.Version{DefaultFleetVersion1, DefaultFleetVersion2, DefaultFleetVersion3},
+		eventIDs:      []fl.EventID{DefaultFleetEventID1, DefaultFleetEventID2, DefaultFleetEventID3},
+		versions:      []fl.Version{DefaultFleetVersion1, DefaultFleetVersion2, DefaultFleetVersion3, DefaultFleetVersion4, DefaultFleetVersion5, DefaultFleetVersion6},
 	}
 
 	repo := &fleetRepositoryMock{}
@@ -54,15 +61,22 @@ func TestCreateFleetOperation(t *testing.T) {
 		DefaultAssignmentID1    = DefaultFleetAssignmentID + "-1"
 		DefaultAssignmentID2    = DefaultFleetAssignmentID + "-2"
 		DefaultAssignmentID3    = DefaultFleetAssignmentID + "-3"
+		DefaultFleetEventID1    = DefaultFleetEventID + "-1"
+		DefaultFleetEventID2    = DefaultFleetEventID + "-2"
+		DefaultFleetEventID3    = DefaultFleetEventID + "-3"
 		DefaultFleetVersion1    = DefaultFleetVersion + "-1"
 		DefaultFleetVersion2    = DefaultFleetVersion + "-2"
 		DefaultFleetVersion3    = DefaultFleetVersion + "-3"
+		DefaultFleetVersion4    = DefaultFleetVersion + "-4"
+		DefaultFleetVersion5    = DefaultFleetVersion + "-5"
+		DefaultFleetVersion6    = DefaultFleetVersion + "-6"
 		DefaultNumberOfVehicles = 3
 	)
 
 	gen := &generatorMockFleet{
 		assignmentIDs: []fl.AssignmentID{DefaultAssignmentID1, DefaultAssignmentID2, DefaultAssignmentID3},
-		versions:      []fl.Version{DefaultFleetVersion1, DefaultFleetVersion2, DefaultFleetVersion3},
+		eventIDs:      []fl.EventID{DefaultFleetEventID1, DefaultFleetEventID2, DefaultFleetEventID3},
+		versions:      []fl.Version{DefaultFleetVersion1, DefaultFleetVersion2, DefaultFleetVersion3, DefaultFleetVersion4, DefaultFleetVersion5, DefaultFleetVersion6},
 	}
 
 	repo := &fleetRepositoryMock{}
@@ -80,9 +94,21 @@ func TestCreateFleetOperation(t *testing.T) {
 	}
 	ret := service.createFleetOperation(nil, command)
 
+	var resAssignmentIDs []string
+	var resEventIDs []string
+	repo.fleet.ProvideAssignmentsInterest(
+		func(assignmentID, vehicleID string) {
+			resAssignmentIDs = append(resAssignmentIDs, assignmentID)
+		},
+		func(eventID, assignmentID, missionID string) {
+			resEventIDs = append(resEventIDs, eventID)
+		},
+	)
+
 	a.Nil(ret)
 	a.Equal(repo.fleet.GetID(), DefaultFleetID)
-	a.Len(repo.fleet.GetAllAssignmentID(), 3)
+	a.Equal(resAssignmentIDs, []string{string(DefaultAssignmentID1), string(DefaultAssignmentID2), string(DefaultAssignmentID3)})
+	a.Equal(resEventIDs, []string{string(DefaultFleetEventID1), string(DefaultFleetEventID2), string(DefaultFleetEventID3)})
 }
 
 func TestDeleteFleetTransaction(t *testing.T) {

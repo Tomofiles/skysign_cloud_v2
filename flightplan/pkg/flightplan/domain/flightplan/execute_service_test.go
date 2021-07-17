@@ -40,7 +40,7 @@ func TestExecuteFlightplanService(t *testing.T) {
 	}
 
 	a.Len(pub.events, 1)
-	a.Equal(pub.events[0], &expectEvent)
+	a.Equal(pub.events[0], expectEvent)
 
 	a.Nil(ret)
 }

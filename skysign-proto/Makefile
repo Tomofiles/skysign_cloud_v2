@@ -3,7 +3,7 @@ GOBIN := $(GOPATH)/bin
 
 all: compile_http-gateway compile_gw_http-gateway compile_helper-api compile_flightplan compile_flightoperation compile_action compile_flightreport compile_vehicle compile_mission cp_communication
 
-compile_http-gateway: common.proto communication_edge.proto communication_user.proto mission.proto vehicle.proto helper_user.proto flightplan.proto flightplan_change.proto flightplan_execute.proto flightplan_assignments.proto flightoperation.proto flightreport.proto action.proto upload_mission_edge.proto
+compile_http-gateway: common.proto communication_edge.proto communication_user.proto mission.proto vehicle.proto helper_user.proto flightplan.proto flightplan_change.proto flightplan_execute.proto fleet_assignments.proto flightoperation.proto flightreport.proto action.proto upload_mission_edge.proto
 	protoc -I/usr/local/include -I.   -I$(GOPATH)/src   -I$(GOPATH)/pkg/mod/github.com/grpc-ecosystem/grpc-gateway@v1.9.6/third_party/googleapis   --go_out=plugins=grpc:../http-gateway/pkg/skysign_proto common.proto
 	protoc -I/usr/local/include -I.   -I$(GOPATH)/src   -I$(GOPATH)/pkg/mod/github.com/grpc-ecosystem/grpc-gateway@v1.9.6/third_party/googleapis   --go_out=plugins=grpc:../http-gateway/pkg/skysign_proto communication_edge.proto
 	protoc -I/usr/local/include -I.   -I$(GOPATH)/src   -I$(GOPATH)/pkg/mod/github.com/grpc-ecosystem/grpc-gateway@v1.9.6/third_party/googleapis   --go_out=plugins=grpc:../http-gateway/pkg/skysign_proto communication_user.proto
@@ -13,13 +13,13 @@ compile_http-gateway: common.proto communication_edge.proto communication_user.p
 	protoc -I/usr/local/include -I.   -I$(GOPATH)/src   -I$(GOPATH)/pkg/mod/github.com/grpc-ecosystem/grpc-gateway@v1.9.6/third_party/googleapis   --go_out=plugins=grpc:../http-gateway/pkg/skysign_proto flightplan.proto
 	protoc -I/usr/local/include -I.   -I$(GOPATH)/src   -I$(GOPATH)/pkg/mod/github.com/grpc-ecosystem/grpc-gateway@v1.9.6/third_party/googleapis   --go_out=plugins=grpc:../http-gateway/pkg/skysign_proto flightplan_change.proto
 	protoc -I/usr/local/include -I.   -I$(GOPATH)/src   -I$(GOPATH)/pkg/mod/github.com/grpc-ecosystem/grpc-gateway@v1.9.6/third_party/googleapis   --go_out=plugins=grpc:../http-gateway/pkg/skysign_proto flightplan_execute.proto
-	protoc -I/usr/local/include -I.   -I$(GOPATH)/src   -I$(GOPATH)/pkg/mod/github.com/grpc-ecosystem/grpc-gateway@v1.9.6/third_party/googleapis   --go_out=plugins=grpc:../http-gateway/pkg/skysign_proto flightplan_assignments.proto
+	protoc -I/usr/local/include -I.   -I$(GOPATH)/src   -I$(GOPATH)/pkg/mod/github.com/grpc-ecosystem/grpc-gateway@v1.9.6/third_party/googleapis   --go_out=plugins=grpc:../http-gateway/pkg/skysign_proto fleet_assignments.proto
 	protoc -I/usr/local/include -I.   -I$(GOPATH)/src   -I$(GOPATH)/pkg/mod/github.com/grpc-ecosystem/grpc-gateway@v1.9.6/third_party/googleapis   --go_out=plugins=grpc:../http-gateway/pkg/skysign_proto flightoperation.proto
 	protoc -I/usr/local/include -I.   -I$(GOPATH)/src   -I$(GOPATH)/pkg/mod/github.com/grpc-ecosystem/grpc-gateway@v1.9.6/third_party/googleapis   --go_out=plugins=grpc:../http-gateway/pkg/skysign_proto flightreport.proto
 	protoc -I/usr/local/include -I.   -I$(GOPATH)/src   -I$(GOPATH)/pkg/mod/github.com/grpc-ecosystem/grpc-gateway@v1.9.6/third_party/googleapis   --go_out=plugins=grpc:../http-gateway/pkg/skysign_proto action.proto
 	protoc -I/usr/local/include -I.   -I$(GOPATH)/src   -I$(GOPATH)/pkg/mod/github.com/grpc-ecosystem/grpc-gateway@v1.9.6/third_party/googleapis   --go_out=plugins=grpc:../http-gateway/pkg/skysign_proto upload_mission_edge.proto
 
-compile_gw_http-gateway: common.proto communication_edge.proto communication_user.proto mission.proto vehicle.proto helper_user.proto flightplan.proto flightplan_change.proto flightplan_execute.proto flightplan_assignments.proto flightoperation.proto flightreport.proto action.proto upload_mission_edge.proto
+compile_gw_http-gateway: common.proto communication_edge.proto communication_user.proto mission.proto vehicle.proto helper_user.proto flightplan.proto flightplan_change.proto flightplan_execute.proto fleet_assignments.proto flightoperation.proto flightreport.proto action.proto upload_mission_edge.proto
 	protoc -I/usr/local/include -I.   -I$(GOPATH)/src   -I$(GOPATH)/pkg/mod/github.com/grpc-ecosystem/grpc-gateway@v1.9.6/third_party/googleapis   --grpc-gateway_out=logtostderr=true,allow_delete_body=true:../http-gateway/pkg/skysign_proto common.proto
 	protoc -I/usr/local/include -I.   -I$(GOPATH)/src   -I$(GOPATH)/pkg/mod/github.com/grpc-ecosystem/grpc-gateway@v1.9.6/third_party/googleapis   --grpc-gateway_out=logtostderr=true,allow_delete_body=true:../http-gateway/pkg/skysign_proto communication_edge.proto
 	protoc -I/usr/local/include -I.   -I$(GOPATH)/src   -I$(GOPATH)/pkg/mod/github.com/grpc-ecosystem/grpc-gateway@v1.9.6/third_party/googleapis   --grpc-gateway_out=logtostderr=true,allow_delete_body=true:../http-gateway/pkg/skysign_proto communication_user.proto
@@ -29,7 +29,7 @@ compile_gw_http-gateway: common.proto communication_edge.proto communication_use
 	protoc -I/usr/local/include -I.   -I$(GOPATH)/src   -I$(GOPATH)/pkg/mod/github.com/grpc-ecosystem/grpc-gateway@v1.9.6/third_party/googleapis   --grpc-gateway_out=logtostderr=true,allow_delete_body=true:../http-gateway/pkg/skysign_proto flightplan.proto
 	protoc -I/usr/local/include -I.   -I$(GOPATH)/src   -I$(GOPATH)/pkg/mod/github.com/grpc-ecosystem/grpc-gateway@v1.9.6/third_party/googleapis   --grpc-gateway_out=logtostderr=true,allow_delete_body=true:../http-gateway/pkg/skysign_proto flightplan_change.proto
 	protoc -I/usr/local/include -I.   -I$(GOPATH)/src   -I$(GOPATH)/pkg/mod/github.com/grpc-ecosystem/grpc-gateway@v1.9.6/third_party/googleapis   --grpc-gateway_out=logtostderr=true,allow_delete_body=true:../http-gateway/pkg/skysign_proto flightplan_execute.proto
-	protoc -I/usr/local/include -I.   -I$(GOPATH)/src   -I$(GOPATH)/pkg/mod/github.com/grpc-ecosystem/grpc-gateway@v1.9.6/third_party/googleapis   --grpc-gateway_out=logtostderr=true,allow_delete_body=true:../http-gateway/pkg/skysign_proto flightplan_assignments.proto
+	protoc -I/usr/local/include -I.   -I$(GOPATH)/src   -I$(GOPATH)/pkg/mod/github.com/grpc-ecosystem/grpc-gateway@v1.9.6/third_party/googleapis   --grpc-gateway_out=logtostderr=true,allow_delete_body=true:../http-gateway/pkg/skysign_proto fleet_assignments.proto
 	protoc -I/usr/local/include -I.   -I$(GOPATH)/src   -I$(GOPATH)/pkg/mod/github.com/grpc-ecosystem/grpc-gateway@v1.9.6/third_party/googleapis   --grpc-gateway_out=logtostderr=true,allow_delete_body=true:../http-gateway/pkg/skysign_proto flightoperation.proto
 	protoc -I/usr/local/include -I.   -I$(GOPATH)/src   -I$(GOPATH)/pkg/mod/github.com/grpc-ecosystem/grpc-gateway@v1.9.6/third_party/googleapis   --grpc-gateway_out=logtostderr=true,allow_delete_body=true:../http-gateway/pkg/skysign_proto flightreport.proto
 	protoc -I/usr/local/include -I.   -I$(GOPATH)/src   -I$(GOPATH)/pkg/mod/github.com/grpc-ecosystem/grpc-gateway@v1.9.6/third_party/googleapis   --grpc-gateway_out=logtostderr=true,allow_delete_body=true:../http-gateway/pkg/skysign_proto action.proto
@@ -38,12 +38,12 @@ compile_gw_http-gateway: common.proto communication_edge.proto communication_use
 compile_helper-api: helper_user.proto
 	protoc -I/usr/local/include -I.   -I$(GOPATH)/src   -I$(GOPATH)/pkg/mod/github.com/grpc-ecosystem/grpc-gateway@v1.9.6/third_party/googleapis   --go_out=plugins=grpc:../helper-api/pkg/skysign_proto helper_user.proto
 
-compile_flightplan: common.proto flightplan.proto flightplan_change.proto flightplan_execute.proto flightplan_assignments.proto event.proto
+compile_flightplan: common.proto flightplan.proto flightplan_change.proto flightplan_execute.proto fleet_assignments.proto event.proto
 	protoc -I/usr/local/include -I.   -I$(GOPATH)/src   -I$(GOPATH)/pkg/mod/github.com/grpc-ecosystem/grpc-gateway@v1.9.6/third_party/googleapis   --go_out=plugins=grpc:../flightplan/pkg/skysign_proto common.proto
 	protoc -I/usr/local/include -I.   -I$(GOPATH)/src   -I$(GOPATH)/pkg/mod/github.com/grpc-ecosystem/grpc-gateway@v1.9.6/third_party/googleapis   --go_out=plugins=grpc:../flightplan/pkg/skysign_proto flightplan.proto
 	protoc -I/usr/local/include -I.   -I$(GOPATH)/src   -I$(GOPATH)/pkg/mod/github.com/grpc-ecosystem/grpc-gateway@v1.9.6/third_party/googleapis   --go_out=plugins=grpc:../flightplan/pkg/skysign_proto flightplan_change.proto
 	protoc -I/usr/local/include -I.   -I$(GOPATH)/src   -I$(GOPATH)/pkg/mod/github.com/grpc-ecosystem/grpc-gateway@v1.9.6/third_party/googleapis   --go_out=plugins=grpc:../flightplan/pkg/skysign_proto flightplan_execute.proto
-	protoc -I/usr/local/include -I.   -I$(GOPATH)/src   -I$(GOPATH)/pkg/mod/github.com/grpc-ecosystem/grpc-gateway@v1.9.6/third_party/googleapis   --go_out=plugins=grpc:../flightplan/pkg/skysign_proto flightplan_assignments.proto
+	protoc -I/usr/local/include -I.   -I$(GOPATH)/src   -I$(GOPATH)/pkg/mod/github.com/grpc-ecosystem/grpc-gateway@v1.9.6/third_party/googleapis   --go_out=plugins=grpc:../flightplan/pkg/skysign_proto fleet_assignments.proto
 	protoc -I/usr/local/include -I.   -I$(GOPATH)/src   -I$(GOPATH)/pkg/mod/github.com/grpc-ecosystem/grpc-gateway@v1.9.6/third_party/googleapis   --go_out=plugins=grpc:../flightplan/pkg/skysign_proto event.proto
 
 compile_flightoperation: common.proto flightoperation.proto event.proto

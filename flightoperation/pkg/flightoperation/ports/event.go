@@ -14,7 +14,7 @@ const (
 	// FlightplanExecutedEventExchangeName .
 	FlightplanExecutedEventExchangeName = "flightplan.flightplan_executed_event"
 	// FlightplanExecutedEventQueueName .
-	FlightplanExecutedEventQueueName = "flightplan.flightplan_executed_event"
+	FlightplanExecutedEventQueueName = "flightoperation.flightplan_executed_event"
 )
 
 // EventHandler .

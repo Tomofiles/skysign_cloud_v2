@@ -89,7 +89,7 @@ func TestFlightplanExecuteFlightplanOperation(t *testing.T) {
 		command,
 	)
 
-	expectEvent := &fpl.FlightplanExecutedEvent{
+	expectEvent := fpl.FlightplanExecutedEvent{
 		ID:          DefaultFlightplanID,
 		Name:        DefaultFlightplanName,
 		Description: DefaultFlightplanDescription,

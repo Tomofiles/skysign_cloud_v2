@@ -19,7 +19,7 @@ const (
 	// FleetIDRemovedEventQueueName .
 	FleetIDRemovedEventQueueName = "fleet.fleet_id_removed_event"
 	// FleetCopiedEventExchangeName .
-	FleetCopiedEventExchangeName = "flightplan.fleet_copied_event"
+	FleetCopiedEventExchangeName = "flightoperation.fleet_copied_event"
 	// FleetCopiedEventQueueName .
 	FleetCopiedEventQueueName = "fleet.fleet_copied_event"
 )

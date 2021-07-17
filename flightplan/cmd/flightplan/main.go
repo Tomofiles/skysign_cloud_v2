@@ -84,7 +84,7 @@ func run() error {
 	proto.RegisterManageFlightplanServiceServer(s, &svc)
 	proto.RegisterChangeFlightplanServiceServer(s, &svc)
 	proto.RegisterExecuteFlightplanServiceServer(s, &svc)
-	proto.RegisterAssignAssetsToFlightplanServiceServer(s, &svc)
+	proto.RegisterAssignAssetsToFleetServiceServer(s, &svc)
 
 	glog.Info("start flightplan server")
 	return s.Serve(listen)

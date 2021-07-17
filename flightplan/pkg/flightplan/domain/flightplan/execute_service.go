@@ -17,7 +17,7 @@ func ExecuteFlightplan(
 		return err
 	}
 
-	pub.Publish(&FlightplanExecutedEvent{
+	pub.Publish(FlightplanExecutedEvent{
 		ID:          flightplan.GetID(),
 		Name:        flightplan.GetName(),
 		Description: flightplan.GetDescription(),

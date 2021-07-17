@@ -9,16 +9,16 @@ option java_package = "proto.skysign";
 option java_multiple_files = true;
 option go_package = ".;skysign_proto";
 
-service AssignAssetsToFlightplanService {
+service AssignAssetsToFleetService {
     rpc GetAssignments (GetAssignmentsRequest) returns (GetAssignmentsResponse) {
         option (google.api.http) = {
-            get: "/api/v1/flightplans/{id}/assignments"
+            get: "/api/v1/fleets/{id}/assignments"
         };
     };
 
     rpc UpdateAssignments (UpdateAssignmentsRequest) returns (UpdateAssignmentsResponse) {
         option (google.api.http) = {
-            put: "/api/v1/flightplans/{id}/assignments"
+            put: "/api/v1/fleets/{id}/assignments"
             body: "*"
         };
     };
