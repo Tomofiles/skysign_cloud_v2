@@ -23,8 +23,8 @@ func TestActionRepositoryGetByID(t *testing.T) {
 			regexp.QuoteMeta(`SELECT * FROM "actions" WHERE id = $1`)).
 		WithArgs(DefaultActionID).
 		WillReturnRows(
-			sqlmock.NewRows([]string{"id", "communication_id", "flightplan_id", "is_completed"}).
-				AddRow(DefaultActionID, DefaultActionCommunicationID, DefaultActionFlightplanID, act.Completed),
+			sqlmock.NewRows([]string{"id", "communication_id", "fleet_id", "is_completed"}).
+				AddRow(DefaultActionID, DefaultActionCommunicationID, DefaultActionFleetID, act.Completed),
 		)
 	mock.
 		ExpectQuery(
@@ -84,7 +84,7 @@ func TestActionRepositoryGetByID(t *testing.T) {
 	actionComp := actionComponentMock{
 		ID:               string(DefaultActionID),
 		CommunicationID:  string(DefaultActionCommunicationID),
-		FlightplanID:     string(DefaultActionFlightplanID),
+		FleetID:          string(DefaultActionFleetID),
 		IsCompleted:      act.Completed,
 		TrajectoryPoints: trajectoryPointComps,
 	}
@@ -110,7 +110,7 @@ func TestActionRepositoryNotFoundWhenGetByID(t *testing.T) {
 			regexp.QuoteMeta(`SELECT * FROM "actions" WHERE id = $1`)).
 		WithArgs(DefaultActionID).
 		WillReturnRows(
-			sqlmock.NewRows([]string{"id", "communication_id", "flightplan_id", "is_completed"}),
+			sqlmock.NewRows([]string{"id", "communication_id", "fleet_id", "is_completed"}),
 		)
 
 	repository := NewActionRepository()
@@ -121,7 +121,7 @@ func TestActionRepositoryNotFoundWhenGetByID(t *testing.T) {
 	a.Equal(err, act.ErrNotFound)
 }
 
-func TestActionRepositoryGetSingleWhenGetAllActiveByFlightplanID(t *testing.T) {
+func TestActionRepositoryGetSingleWhenGetAllActiveByFleetID(t *testing.T) {
 	a := assert.New(t)
 
 	db, mock, err := GetNewDbMock()
@@ -132,11 +132,11 @@ func TestActionRepositoryGetSingleWhenGetAllActiveByFlightplanID(t *testing.T) {
 
 	mock.
 		ExpectQuery(
-			regexp.QuoteMeta(`SELECT * FROM "actions" WHERE flightplan_id = $1 AND is_completed = false`)).
-		WithArgs(DefaultActionFlightplanID).
+			regexp.QuoteMeta(`SELECT * FROM "actions" WHERE fleet_id = $1 AND is_completed = false`)).
+		WithArgs(DefaultActionFleetID).
 		WillReturnRows(
-			sqlmock.NewRows([]string{"id", "communication_id", "flightplan_id", "is_completed"}).
-				AddRow(DefaultActionID, DefaultActionCommunicationID, DefaultActionFlightplanID, act.Completed),
+			sqlmock.NewRows([]string{"id", "communication_id", "fleet_id", "is_completed"}).
+				AddRow(DefaultActionID, DefaultActionCommunicationID, DefaultActionFleetID, act.Completed),
 		)
 	mock.
 		ExpectQuery(
@@ -175,7 +175,7 @@ func TestActionRepositoryGetSingleWhenGetAllActiveByFlightplanID(t *testing.T) {
 
 	repository := NewActionRepository()
 
-	actions, err := repository.GetAllActiveByFlightplanID(db, DefaultActionFlightplanID)
+	actions, err := repository.GetAllActiveByFleetID(db, DefaultActionFleetID)
 
 	trajectoryPointComps := []act.TrajectoryPointComponent{
 		&trajectoryPointComponentMock{
@@ -196,7 +196,7 @@ func TestActionRepositoryGetSingleWhenGetAllActiveByFlightplanID(t *testing.T) {
 	actionComp := actionComponentMock{
 		ID:               string(DefaultActionID),
 		CommunicationID:  string(DefaultActionCommunicationID),
-		FlightplanID:     string(DefaultActionFlightplanID),
+		FleetID:          string(DefaultActionFleetID),
 		IsCompleted:      act.Completed,
 		TrajectoryPoints: trajectoryPointComps,
 	}
@@ -209,7 +209,7 @@ func TestActionRepositoryGetSingleWhenGetAllActiveByFlightplanID(t *testing.T) {
 	a.Equal(actions, expectActs)
 }
 
-func TestActionRepositoryGetMultipleWhenGetAllActiveByFlightplanID(t *testing.T) {
+func TestActionRepositoryGetMultipleWhenGetAllActiveByFleetID(t *testing.T) {
 	a := assert.New(t)
 
 	var (
@@ -226,13 +226,13 @@ func TestActionRepositoryGetMultipleWhenGetAllActiveByFlightplanID(t *testing.T)
 
 	mock.
 		ExpectQuery(
-			regexp.QuoteMeta(`SELECT * FROM "actions" WHERE flightplan_id = $1 AND is_completed = false`)).
-		WithArgs(DefaultActionFlightplanID).
+			regexp.QuoteMeta(`SELECT * FROM "actions" WHERE fleet_id = $1 AND is_completed = false`)).
+		WithArgs(DefaultActionFleetID).
 		WillReturnRows(
-			sqlmock.NewRows([]string{"id", "communication_id", "flightplan_id", "is_completed"}).
-				AddRow(DefaultActionID1, DefaultActionCommunicationID, DefaultActionFlightplanID, act.Completed).
-				AddRow(DefaultActionID2, DefaultActionCommunicationID, DefaultActionFlightplanID, act.Completed).
-				AddRow(DefaultActionID3, DefaultActionCommunicationID, DefaultActionFlightplanID, act.Completed),
+			sqlmock.NewRows([]string{"id", "communication_id", "fleet_id", "is_completed"}).
+				AddRow(DefaultActionID1, DefaultActionCommunicationID, DefaultActionFleetID, act.Completed).
+				AddRow(DefaultActionID2, DefaultActionCommunicationID, DefaultActionFleetID, act.Completed).
+				AddRow(DefaultActionID3, DefaultActionCommunicationID, DefaultActionFleetID, act.Completed),
 		)
 	mock.
 		ExpectQuery(
@@ -339,14 +339,14 @@ func TestActionRepositoryGetMultipleWhenGetAllActiveByFlightplanID(t *testing.T)
 
 	repository := NewActionRepository()
 
-	actions, err := repository.GetAllActiveByFlightplanID(db, DefaultActionFlightplanID)
+	actions, err := repository.GetAllActiveByFleetID(db, DefaultActionFleetID)
 
 	expectActs := []*act.Action{
 		act.AssembleFrom(
 			&actionComponentMock{
 				ID:              string(DefaultActionID1),
 				CommunicationID: string(DefaultActionCommunicationID),
-				FlightplanID:    string(DefaultActionFlightplanID),
+				FleetID:         string(DefaultActionFleetID),
 				IsCompleted:     act.Completed,
 				TrajectoryPoints: []act.TrajectoryPointComponent{
 					&trajectoryPointComponentMock{
@@ -370,7 +370,7 @@ func TestActionRepositoryGetMultipleWhenGetAllActiveByFlightplanID(t *testing.T)
 			&actionComponentMock{
 				ID:              string(DefaultActionID2),
 				CommunicationID: string(DefaultActionCommunicationID),
-				FlightplanID:    string(DefaultActionFlightplanID),
+				FleetID:         string(DefaultActionFleetID),
 				IsCompleted:     act.Completed,
 				TrajectoryPoints: []act.TrajectoryPointComponent{
 					&trajectoryPointComponentMock{
@@ -394,7 +394,7 @@ func TestActionRepositoryGetMultipleWhenGetAllActiveByFlightplanID(t *testing.T)
 			&actionComponentMock{
 				ID:              string(DefaultActionID3),
 				CommunicationID: string(DefaultActionCommunicationID),
-				FlightplanID:    string(DefaultActionFlightplanID),
+				FleetID:         string(DefaultActionFleetID),
 				IsCompleted:     act.Completed,
 				TrajectoryPoints: []act.TrajectoryPointComponent{
 					&trajectoryPointComponentMock{
@@ -420,7 +420,7 @@ func TestActionRepositoryGetMultipleWhenGetAllActiveByFlightplanID(t *testing.T)
 	a.Equal(actions, expectActs)
 }
 
-func TestActionRepositoryGetNoneWhenGetAllActiveByFlightplanID(t *testing.T) {
+func TestActionRepositoryGetNoneWhenGetAllActiveByFleetID(t *testing.T) {
 	a := assert.New(t)
 
 	db, mock, err := GetNewDbMock()
@@ -431,15 +431,15 @@ func TestActionRepositoryGetNoneWhenGetAllActiveByFlightplanID(t *testing.T) {
 
 	mock.
 		ExpectQuery(
-			regexp.QuoteMeta(`SELECT * FROM "actions" WHERE flightplan_id = $1 AND is_completed = false`)).
-		WithArgs(DefaultActionFlightplanID).
+			regexp.QuoteMeta(`SELECT * FROM "actions" WHERE fleet_id = $1 AND is_completed = false`)).
+		WithArgs(DefaultActionFleetID).
 		WillReturnRows(
-			sqlmock.NewRows([]string{"id", "communication_id", "flightplan_id", "is_completed"}),
+			sqlmock.NewRows([]string{"id", "communication_id", "fleet_id", "is_completed"}),
 		)
 
 	repository := NewActionRepository()
 
-	actions, err := repository.GetAllActiveByFlightplanID(db, DefaultActionFlightplanID)
+	actions, err := repository.GetAllActiveByFleetID(db, DefaultActionFleetID)
 
 	var expectActs []*act.Action
 
@@ -461,8 +461,8 @@ func TestActionRepositoryGetActiveByCommunicationID(t *testing.T) {
 			regexp.QuoteMeta(`SELECT * FROM "actions" WHERE communication_id = $1 AND is_completed = false`)).
 		WithArgs(DefaultActionCommunicationID).
 		WillReturnRows(
-			sqlmock.NewRows([]string{"id", "communication_id", "flightplan_id", "is_completed"}).
-				AddRow(DefaultActionID, DefaultActionCommunicationID, DefaultActionFlightplanID, act.Completed),
+			sqlmock.NewRows([]string{"id", "communication_id", "fleet_id", "is_completed"}).
+				AddRow(DefaultActionID, DefaultActionCommunicationID, DefaultActionFleetID, act.Completed),
 		)
 	mock.
 		ExpectQuery(
@@ -522,7 +522,7 @@ func TestActionRepositoryGetActiveByCommunicationID(t *testing.T) {
 	actionComp := actionComponentMock{
 		ID:               string(DefaultActionID),
 		CommunicationID:  string(DefaultActionCommunicationID),
-		FlightplanID:     string(DefaultActionFlightplanID),
+		FleetID:          string(DefaultActionFleetID),
 		IsCompleted:      act.Completed,
 		TrajectoryPoints: trajectoryPointComps,
 	}
@@ -548,7 +548,7 @@ func TestActionRepositoryNotFoundWhenGetActiveByCommunicationID(t *testing.T) {
 			regexp.QuoteMeta(`SELECT * FROM "actions" WHERE communication_id = $1 AND is_completed = false`)).
 		WithArgs(DefaultActionCommunicationID).
 		WillReturnRows(
-			sqlmock.NewRows([]string{"id", "communication_id", "flightplan_id", "is_completed"}),
+			sqlmock.NewRows([]string{"id", "communication_id", "fleet_id", "is_completed"}),
 		)
 
 	repository := NewActionRepository()
@@ -573,7 +573,7 @@ func TestActionRepositorySingleTrajectoryPointDataCreateSave(t *testing.T) {
 			regexp.QuoteMeta(`SELECT * FROM "actions" WHERE id = $1`)).
 		WithArgs(DefaultActionID).
 		WillReturnRows(
-			sqlmock.NewRows([]string{"id", "communication_id", "flightplan_id", "is_completed"}),
+			sqlmock.NewRows([]string{"id", "communication_id", "fleet_id", "is_completed"}),
 		)
 
 	mock.
@@ -587,8 +587,8 @@ func TestActionRepositorySingleTrajectoryPointDataCreateSave(t *testing.T) {
 
 	mock.
 		ExpectExec(
-			regexp.QuoteMeta(`INSERT INTO "actions" ("id","communication_id","flightplan_id","is_completed") VALUES ($1,$2,$3,$4)`)).
-		WithArgs(DefaultActionID, DefaultActionCommunicationID, DefaultActionFlightplanID, act.Completed).
+			regexp.QuoteMeta(`INSERT INTO "actions" ("id","communication_id","fleet_id","is_completed") VALUES ($1,$2,$3,$4)`)).
+		WithArgs(DefaultActionID, DefaultActionCommunicationID, DefaultActionFleetID, act.Completed).
 		WillReturnResult(
 			sqlmock.NewResult(1, 1),
 		)
@@ -635,7 +635,7 @@ func TestActionRepositorySingleTrajectoryPointDataCreateSave(t *testing.T) {
 	actionComp := actionComponentMock{
 		ID:               string(DefaultActionID),
 		CommunicationID:  string(DefaultActionCommunicationID),
-		FlightplanID:     string(DefaultActionFlightplanID),
+		FleetID:          string(DefaultActionFleetID),
 		IsCompleted:      act.Completed,
 		TrajectoryPoints: trajectoryPointComps,
 	}
@@ -662,7 +662,7 @@ func TestActionRepositoryNoneTrajectoryPointDataCreateSave(t *testing.T) {
 			regexp.QuoteMeta(`SELECT * FROM "actions" WHERE id = $1`)).
 		WithArgs(DefaultActionID).
 		WillReturnRows(
-			sqlmock.NewRows([]string{"id", "communication_id", "flightplan_id", "is_completed"}),
+			sqlmock.NewRows([]string{"id", "communication_id", "fleet_id", "is_completed"}),
 		)
 
 	mock.
@@ -676,8 +676,8 @@ func TestActionRepositoryNoneTrajectoryPointDataCreateSave(t *testing.T) {
 
 	mock.
 		ExpectExec(
-			regexp.QuoteMeta(`INSERT INTO "actions" ("id","communication_id","flightplan_id","is_completed") VALUES ($1,$2,$3,$4)`)).
-		WithArgs(DefaultActionID, DefaultActionCommunicationID, DefaultActionFlightplanID, act.Completed).
+			regexp.QuoteMeta(`INSERT INTO "actions" ("id","communication_id","fleet_id","is_completed") VALUES ($1,$2,$3,$4)`)).
+		WithArgs(DefaultActionID, DefaultActionCommunicationID, DefaultActionFleetID, act.Completed).
 		WillReturnResult(
 			sqlmock.NewResult(1, 1),
 		)
@@ -688,7 +688,7 @@ func TestActionRepositoryNoneTrajectoryPointDataCreateSave(t *testing.T) {
 	actionComp := actionComponentMock{
 		ID:               string(DefaultActionID),
 		CommunicationID:  string(DefaultActionCommunicationID),
-		FlightplanID:     string(DefaultActionFlightplanID),
+		FleetID:          string(DefaultActionFleetID),
 		IsCompleted:      act.Completed,
 		TrajectoryPoints: trajectoryPointComps,
 	}
@@ -715,7 +715,7 @@ func TestActionRepositoryMultipleTrajectoryPointDataCreateSave(t *testing.T) {
 			regexp.QuoteMeta(`SELECT * FROM "actions" WHERE id = $1`)).
 		WithArgs(DefaultActionID).
 		WillReturnRows(
-			sqlmock.NewRows([]string{"id", "communication_id", "flightplan_id", "is_completed"}),
+			sqlmock.NewRows([]string{"id", "communication_id", "fleet_id", "is_completed"}),
 		)
 
 	mock.
@@ -729,8 +729,8 @@ func TestActionRepositoryMultipleTrajectoryPointDataCreateSave(t *testing.T) {
 
 	mock.
 		ExpectExec(
-			regexp.QuoteMeta(`INSERT INTO "actions" ("id","communication_id","flightplan_id","is_completed") VALUES ($1,$2,$3,$4)`)).
-		WithArgs(DefaultActionID, DefaultActionCommunicationID, DefaultActionFlightplanID, act.Completed).
+			regexp.QuoteMeta(`INSERT INTO "actions" ("id","communication_id","fleet_id","is_completed") VALUES ($1,$2,$3,$4)`)).
+		WithArgs(DefaultActionID, DefaultActionCommunicationID, DefaultActionFleetID, act.Completed).
 		WillReturnResult(
 			sqlmock.NewResult(1, 1),
 		)
@@ -804,7 +804,7 @@ func TestActionRepositoryMultipleTrajectoryPointDataCreateSave(t *testing.T) {
 	actionComp := actionComponentMock{
 		ID:               string(DefaultActionID),
 		CommunicationID:  string(DefaultActionCommunicationID),
-		FlightplanID:     string(DefaultActionFlightplanID),
+		FleetID:          string(DefaultActionFleetID),
 		IsCompleted:      act.Completed,
 		TrajectoryPoints: trajectoryPointComps,
 	}
@@ -831,8 +831,8 @@ func TestActionRepositorySingleTrajectoryPointDataUpdateSave_NonePreTrajectoryPo
 			regexp.QuoteMeta(`SELECT * FROM "actions" WHERE id = $1`)).
 		WithArgs(DefaultActionID).
 		WillReturnRows(
-			sqlmock.NewRows([]string{"id", "communication_id", "flightplan_id", "is_completed"}).
-				AddRow(DefaultActionID, DefaultActionCommunicationID, DefaultActionFlightplanID, act.Completed),
+			sqlmock.NewRows([]string{"id", "communication_id", "fleet_id", "is_completed"}).
+				AddRow(DefaultActionID, DefaultActionCommunicationID, DefaultActionFleetID, act.Completed),
 		)
 
 	mock.
@@ -846,8 +846,8 @@ func TestActionRepositorySingleTrajectoryPointDataUpdateSave_NonePreTrajectoryPo
 
 	mock.
 		ExpectExec(
-			regexp.QuoteMeta(`UPDATE "actions" SET "communication_id"=$1,"flightplan_id"=$2,"is_completed"=$3 WHERE "id" = $4`)).
-		WithArgs(DefaultActionCommunicationID, DefaultActionFlightplanID, act.Completed, DefaultActionID).
+			regexp.QuoteMeta(`UPDATE "actions" SET "communication_id"=$1,"fleet_id"=$2,"is_completed"=$3 WHERE "id" = $4`)).
+		WithArgs(DefaultActionCommunicationID, DefaultActionFleetID, act.Completed, DefaultActionID).
 		WillReturnResult(
 			sqlmock.NewResult(1, 1),
 		)
@@ -894,7 +894,7 @@ func TestActionRepositorySingleTrajectoryPointDataUpdateSave_NonePreTrajectoryPo
 	actionComp := actionComponentMock{
 		ID:               string(DefaultActionID),
 		CommunicationID:  string(DefaultActionCommunicationID),
-		FlightplanID:     string(DefaultActionFlightplanID),
+		FleetID:          string(DefaultActionFleetID),
 		IsCompleted:      act.Completed,
 		TrajectoryPoints: trajectoryPointComps,
 	}
@@ -921,8 +921,8 @@ func TestActionRepositorySingleTrajectoryPointDataUpdateSave_ExistPreTrajectoryP
 			regexp.QuoteMeta(`SELECT * FROM "actions" WHERE id = $1`)).
 		WithArgs(DefaultActionID).
 		WillReturnRows(
-			sqlmock.NewRows([]string{"id", "communication_id", "flightplan_id", "is_completed"}).
-				AddRow(DefaultActionID, DefaultActionCommunicationID, DefaultActionFlightplanID, act.Completed),
+			sqlmock.NewRows([]string{"id", "communication_id", "fleet_id", "is_completed"}).
+				AddRow(DefaultActionID, DefaultActionCommunicationID, DefaultActionFleetID, act.Completed),
 		)
 
 	mock.
@@ -936,8 +936,8 @@ func TestActionRepositorySingleTrajectoryPointDataUpdateSave_ExistPreTrajectoryP
 
 	mock.
 		ExpectExec(
-			regexp.QuoteMeta(`UPDATE "actions" SET "communication_id"=$1,"flightplan_id"=$2,"is_completed"=$3 WHERE "id" = $4`)).
-		WithArgs(DefaultActionCommunicationID, DefaultActionFlightplanID, act.Completed, DefaultActionID).
+			regexp.QuoteMeta(`UPDATE "actions" SET "communication_id"=$1,"fleet_id"=$2,"is_completed"=$3 WHERE "id" = $4`)).
+		WithArgs(DefaultActionCommunicationID, DefaultActionFleetID, act.Completed, DefaultActionID).
 		WillReturnResult(
 			sqlmock.NewResult(1, 1),
 		)
@@ -963,7 +963,7 @@ func TestActionRepositorySingleTrajectoryPointDataUpdateSave_ExistPreTrajectoryP
 	actionComp := actionComponentMock{
 		ID:               string(DefaultActionID),
 		CommunicationID:  string(DefaultActionCommunicationID),
-		FlightplanID:     string(DefaultActionFlightplanID),
+		FleetID:          string(DefaultActionFleetID),
 		IsCompleted:      act.Completed,
 		TrajectoryPoints: trajectoryPointComps,
 	}
@@ -990,8 +990,8 @@ func TestActionRepositoryMultipeTrajectoryPointDataUpdateSave_NonePreTrajectoryP
 			regexp.QuoteMeta(`SELECT * FROM "actions" WHERE id = $1`)).
 		WithArgs(DefaultActionID).
 		WillReturnRows(
-			sqlmock.NewRows([]string{"id", "communication_id", "flightplan_id", "is_completed"}).
-				AddRow(DefaultActionID, DefaultActionCommunicationID, DefaultActionFlightplanID, act.Completed),
+			sqlmock.NewRows([]string{"id", "communication_id", "fleet_id", "is_completed"}).
+				AddRow(DefaultActionID, DefaultActionCommunicationID, DefaultActionFleetID, act.Completed),
 		)
 
 	mock.
@@ -1005,8 +1005,8 @@ func TestActionRepositoryMultipeTrajectoryPointDataUpdateSave_NonePreTrajectoryP
 
 	mock.
 		ExpectExec(
-			regexp.QuoteMeta(`UPDATE "actions" SET "communication_id"=$1,"flightplan_id"=$2,"is_completed"=$3 WHERE "id" = $4`)).
-		WithArgs(DefaultActionCommunicationID, DefaultActionFlightplanID, act.Completed, DefaultActionID).
+			regexp.QuoteMeta(`UPDATE "actions" SET "communication_id"=$1,"fleet_id"=$2,"is_completed"=$3 WHERE "id" = $4`)).
+		WithArgs(DefaultActionCommunicationID, DefaultActionFleetID, act.Completed, DefaultActionID).
 		WillReturnResult(
 			sqlmock.NewResult(1, 1),
 		)
@@ -1080,7 +1080,7 @@ func TestActionRepositoryMultipeTrajectoryPointDataUpdateSave_NonePreTrajectoryP
 	actionComp := actionComponentMock{
 		ID:               string(DefaultActionID),
 		CommunicationID:  string(DefaultActionCommunicationID),
-		FlightplanID:     string(DefaultActionFlightplanID),
+		FleetID:          string(DefaultActionFleetID),
 		IsCompleted:      act.Completed,
 		TrajectoryPoints: trajectoryPointComps,
 	}
@@ -1107,8 +1107,8 @@ func TestActionRepositoryMultipeTrajectoryPointDataUpdateSave_ExistPreTrajectory
 			regexp.QuoteMeta(`SELECT * FROM "actions" WHERE id = $1`)).
 		WithArgs(DefaultActionID).
 		WillReturnRows(
-			sqlmock.NewRows([]string{"id", "communication_id", "flightplan_id", "is_completed"}).
-				AddRow(DefaultActionID, DefaultActionCommunicationID, DefaultActionFlightplanID, act.Completed),
+			sqlmock.NewRows([]string{"id", "communication_id", "fleet_id", "is_completed"}).
+				AddRow(DefaultActionID, DefaultActionCommunicationID, DefaultActionFleetID, act.Completed),
 		)
 
 	mock.
@@ -1122,8 +1122,8 @@ func TestActionRepositoryMultipeTrajectoryPointDataUpdateSave_ExistPreTrajectory
 
 	mock.
 		ExpectExec(
-			regexp.QuoteMeta(`UPDATE "actions" SET "communication_id"=$1,"flightplan_id"=$2,"is_completed"=$3 WHERE "id" = $4`)).
-		WithArgs(DefaultActionCommunicationID, DefaultActionFlightplanID, act.Completed, DefaultActionID).
+			regexp.QuoteMeta(`UPDATE "actions" SET "communication_id"=$1,"fleet_id"=$2,"is_completed"=$3 WHERE "id" = $4`)).
+		WithArgs(DefaultActionCommunicationID, DefaultActionFleetID, act.Completed, DefaultActionID).
 		WillReturnResult(
 			sqlmock.NewResult(1, 1),
 		)
@@ -1184,7 +1184,7 @@ func TestActionRepositoryMultipeTrajectoryPointDataUpdateSave_ExistPreTrajectory
 	actionComp := actionComponentMock{
 		ID:               string(DefaultActionID),
 		CommunicationID:  string(DefaultActionCommunicationID),
-		FlightplanID:     string(DefaultActionFlightplanID),
+		FleetID:          string(DefaultActionFleetID),
 		IsCompleted:      act.Completed,
 		TrajectoryPoints: trajectoryPointComps,
 	}

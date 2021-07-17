@@ -3,7 +3,9 @@ package flightreport
 import "errors"
 
 const DefaultID = ID("flightreport-id")
-const DefaultFlightoperationID = FlightoperationID("flightoperation-id")
+const DefaultName = "flightreport-name"
+const DefaultDescription = "flightreport-description"
+const DefaultFleetID = FleetID("fleet-id")
 
 var (
 	ErrSave = errors.New("save error")
@@ -21,14 +23,24 @@ func (gen *generatorMock) NewID() ID {
 
 // Flightreport構成オブジェクトモック
 type flightreportComponentMock struct {
-	id                string
-	flightoperationID string
+	id          string
+	name        string
+	description string
+	fleetID     string
 }
 
 func (f *flightreportComponentMock) GetID() string {
 	return f.id
 }
 
-func (f *flightreportComponentMock) GetFlightoperationID() string {
-	return f.flightoperationID
+func (f *flightreportComponentMock) GetName() string {
+	return f.name
+}
+
+func (f *flightreportComponentMock) GetDescription() string {
+	return f.description
+}
+
+func (f *flightreportComponentMock) GetFleetID() string {
+	return f.fleetID
 }

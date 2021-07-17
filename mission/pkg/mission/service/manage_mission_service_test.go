@@ -285,7 +285,7 @@ func TestCreateMissionTransaction(t *testing.T) {
 	a.Nil(ret)
 	a.True(resCall1)
 	a.True(resCall2)
-	a.Len(pub.events, 1)
+	a.Len(pub.events, 0)
 	a.True(isClose)
 	a.True(pub.isFlush)
 	a.Nil(txm.isOpe)
@@ -342,7 +342,7 @@ func TestCreateMissionOperation(t *testing.T) {
 	a.Nil(ret)
 	a.Equal(resID, string(DefaultMissionID))
 	a.Equal(resUploadID, string(DefaultMissionUploadID))
-	a.Len(pub.events, 1)
+	a.Len(pub.events, 0)
 }
 
 func TestUpdateMissionTransaction(t *testing.T) {
@@ -416,7 +416,7 @@ func TestUpdateMissionTransaction(t *testing.T) {
 
 	a.Nil(ret)
 	a.True(resCall)
-	a.Len(pub.events, 2)
+	a.Len(pub.events, 0)
 	a.True(isClose)
 	a.True(pub.isFlush)
 	a.Nil(txm.isOpe)
@@ -486,7 +486,7 @@ func TestUpdateMissionOperation(t *testing.T) {
 
 	a.Nil(ret)
 	a.Equal(resUploadID, string(DefaultMissionUploadID))
-	a.Len(pub.events, 2)
+	a.Len(pub.events, 0)
 }
 
 func TestDeleteMissionTransaction(t *testing.T) {
@@ -538,7 +538,7 @@ func TestDeleteMissionTransaction(t *testing.T) {
 	ret := service.DeleteMission(command)
 
 	a.Nil(ret)
-	a.Len(pub.events, 1)
+	a.Len(pub.events, 0)
 	a.True(isClose)
 	a.True(pub.isFlush)
 	a.Nil(txm.isOpe)
@@ -588,7 +588,7 @@ func TestDeleteMissionOperation(t *testing.T) {
 	)
 
 	a.Nil(ret)
-	a.Len(pub.events, 1)
+	a.Len(pub.events, 0)
 }
 
 func TestCarbonCopyMissionTransaction(t *testing.T) {

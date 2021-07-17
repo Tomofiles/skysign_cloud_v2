@@ -26,9 +26,5 @@ func CreateNewMission(
 		return "", "", err
 	}
 
-	pub.Publish(CreatedEvent{
-		ID:      mission.GetID(),
-		Mission: mission,
-	})
 	return string(mission.GetID()), string(mission.GetNavigation().GetUploadID()), nil
 }

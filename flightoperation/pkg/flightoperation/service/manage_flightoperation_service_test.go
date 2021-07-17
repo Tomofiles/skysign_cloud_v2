@@ -14,17 +14,19 @@ func TestGetFlightoperationTransaction(t *testing.T) {
 	flightoperation := fope.AssembleFrom(
 		nil,
 		&flightoperationComponentMock{
-			ID:           string(DefaultFlightoperationID),
-			FlightplanID: string(DefaultFlightplanID),
-			IsCompleted:  DefaultIsCompleted,
-			Version:      string(DefaultVersion),
+			ID:          string(DefaultID),
+			Name:        DefaultName,
+			Description: DefaultDescription,
+			FleetID:     string(DefaultFleetID),
+			IsCompleted: DefaultIsCompleted,
+			Version:     string(DefaultVersion),
 		},
 	)
 
 	repo := &flightoperationRepositoryMock{}
 	txm := &txManagerMock{}
 
-	repo.On("GetByID", DefaultFlightoperationID).Return(flightoperation, nil)
+	repo.On("GetByID", DefaultID).Return(flightoperation, nil)
 
 	service := &manageFlightoperationService{
 		gen:  nil,
@@ -33,13 +35,13 @@ func TestGetFlightoperationTransaction(t *testing.T) {
 		psm:  nil,
 	}
 
-	req := &flightoperationIDRequestMock{
-		ID: string(DefaultFlightoperationID),
+	command := &flightoperationIDCommandMock{
+		ID: string(DefaultID),
 	}
 	var resCall bool
 	ret := service.GetFlightoperation(
-		req,
-		func(id, flightplanID string) {
+		command,
+		func(model FlightoperationPresentationModel) {
 			resCall = true
 		},
 	)
@@ -55,15 +57,17 @@ func TestGetFlightoperationOperation(t *testing.T) {
 	flightoperation := fope.AssembleFrom(
 		nil,
 		&flightoperationComponentMock{
-			ID:           string(DefaultFlightoperationID),
-			FlightplanID: string(DefaultFlightplanID),
-			IsCompleted:  DefaultIsCompleted,
-			Version:      string(DefaultVersion),
+			ID:          string(DefaultID),
+			Name:        DefaultName,
+			Description: DefaultDescription,
+			FleetID:     string(DefaultFleetID),
+			IsCompleted: DefaultIsCompleted,
+			Version:     string(DefaultVersion),
 		},
 	)
 
 	repo := &flightoperationRepositoryMock{}
-	repo.On("GetByID", DefaultFlightoperationID).Return(flightoperation, nil)
+	repo.On("GetByID", DefaultID).Return(flightoperation, nil)
 
 	service := &manageFlightoperationService{
 		gen:  nil,
@@ -72,22 +76,23 @@ func TestGetFlightoperationOperation(t *testing.T) {
 		psm:  nil,
 	}
 
-	req := &flightoperationIDRequestMock{
-		ID: string(DefaultFlightoperationID),
+	command := &flightoperationIDCommandMock{
+		ID: string(DefaultID),
 	}
-	var resID, resFlightplanID string
+	var resModel FlightoperationPresentationModel
 	ret := service.getFlightoperationOperation(
 		nil,
-		req,
-		func(id, flightplanID string) {
-			resID = id
-			resFlightplanID = flightplanID
+		command,
+		func(model FlightoperationPresentationModel) {
+			resModel = model
 		},
 	)
 
 	a.Nil(ret)
-	a.Equal(resID, string(DefaultFlightoperationID))
-	a.Equal(resFlightplanID, string(DefaultFlightplanID))
+	a.Equal(resModel.GetFlightoperation().GetID(), string(DefaultID))
+	a.Equal(resModel.GetFlightoperation().GetName(), DefaultName)
+	a.Equal(resModel.GetFlightoperation().GetDescription(), DefaultDescription)
+	a.Equal(resModel.GetFlightoperation().GetFleetID(), string(DefaultFleetID))
 }
 
 func TestListFlightoperationsTransaction(t *testing.T) {
@@ -97,10 +102,12 @@ func TestListFlightoperationsTransaction(t *testing.T) {
 		fope.AssembleFrom(
 			nil,
 			&flightoperationComponentMock{
-				ID:           string(DefaultFlightoperationID),
-				FlightplanID: string(DefaultFlightplanID),
-				IsCompleted:  DefaultIsCompleted,
-				Version:      string(DefaultVersion),
+				ID:          string(DefaultID),
+				Name:        DefaultName,
+				Description: DefaultDescription,
+				FleetID:     string(DefaultFleetID),
+				IsCompleted: DefaultIsCompleted,
+				Version:     string(DefaultVersion),
 			},
 		),
 	}
@@ -118,7 +125,7 @@ func TestListFlightoperationsTransaction(t *testing.T) {
 
 	var resCall bool
 	ret := service.ListFlightoperations(
-		func(id, flightplanID string) {
+		func(model FlightoperationPresentationModel) {
 			resCall = true
 		},
 	)
@@ -132,43 +139,55 @@ func TestListFlightoperationsOperation(t *testing.T) {
 	a := assert.New(t)
 
 	const (
-		DefaultFlightoperationID1 = DefaultFlightoperationID + "-1"
-		DefaultFlightoperationID2 = DefaultFlightoperationID + "-2"
-		DefaultFlightoperationID3 = DefaultFlightoperationID + "-3"
-		DefaultFlightplanID1      = DefaultFlightplanID + "-1"
-		DefaultFlightplanID2      = DefaultFlightplanID + "-2"
-		DefaultFlightplanID3      = DefaultFlightplanID + "-3"
-		DefaultVersion1           = DefaultVersion + "-1"
-		DefaultVersion2           = DefaultVersion + "-2"
-		DefaultVersion3           = DefaultVersion + "-3"
+		DefaultID1          = DefaultID + "-1"
+		DefaultID2          = DefaultID + "-2"
+		DefaultID3          = DefaultID + "-3"
+		DefaultName1        = DefaultName + "-1"
+		DefaultName2        = DefaultName + "-2"
+		DefaultName3        = DefaultName + "-3"
+		DefaultDescription1 = DefaultDescription + "-1"
+		DefaultDescription2 = DefaultDescription + "-2"
+		DefaultDescription3 = DefaultDescription + "-3"
+		DefaultFleetID1     = DefaultFleetID + "-1"
+		DefaultFleetID2     = DefaultFleetID + "-2"
+		DefaultFleetID3     = DefaultFleetID + "-3"
+		DefaultVersion1     = DefaultVersion + "-1"
+		DefaultVersion2     = DefaultVersion + "-2"
+		DefaultVersion3     = DefaultVersion + "-3"
 	)
 
 	flightoperations := []*fope.Flightoperation{
 		fope.AssembleFrom(
 			nil,
 			&flightoperationComponentMock{
-				ID:           string(DefaultFlightoperationID1),
-				FlightplanID: string(DefaultFlightplanID1),
-				IsCompleted:  DefaultIsCompleted,
-				Version:      string(DefaultVersion1),
+				ID:          string(DefaultID1),
+				Name:        DefaultName1,
+				Description: DefaultDescription1,
+				FleetID:     string(DefaultFleetID1),
+				IsCompleted: DefaultIsCompleted,
+				Version:     string(DefaultVersion1),
 			},
 		),
 		fope.AssembleFrom(
 			nil,
 			&flightoperationComponentMock{
-				ID:           string(DefaultFlightoperationID2),
-				FlightplanID: string(DefaultFlightplanID2),
-				IsCompleted:  DefaultIsCompleted,
-				Version:      string(DefaultVersion2),
+				ID:          string(DefaultID2),
+				Name:        DefaultName2,
+				Description: DefaultDescription2,
+				FleetID:     string(DefaultFleetID2),
+				IsCompleted: DefaultIsCompleted,
+				Version:     string(DefaultVersion2),
 			},
 		),
 		fope.AssembleFrom(
 			nil,
 			&flightoperationComponentMock{
-				ID:           string(DefaultFlightoperationID3),
-				FlightplanID: string(DefaultFlightplanID3),
-				IsCompleted:  DefaultIsCompleted,
-				Version:      string(DefaultVersion3),
+				ID:          string(DefaultID3),
+				Name:        DefaultName3,
+				Description: DefaultDescription3,
+				FleetID:     string(DefaultFleetID3),
+				IsCompleted: DefaultIsCompleted,
+				Version:     string(DefaultVersion3),
 			},
 		),
 	}
@@ -183,35 +202,30 @@ func TestListFlightoperationsOperation(t *testing.T) {
 		psm:  nil,
 	}
 
-	var resID, resFlightplanID []string
+	var resModels []FlightoperationPresentationModel
 	ret := service.listFlightoperationsOperation(
 		nil,
-		func(id, flightplanID string) {
-			resID = append(resID, id)
-			resFlightplanID = append(resFlightplanID, flightplanID)
+		func(model FlightoperationPresentationModel) {
+			resModels = append(resModels, model)
 		},
 	)
 
 	a.Nil(ret)
-	a.Equal(resID[0], string(DefaultFlightoperationID1))
-	a.Equal(resFlightplanID[0], string(DefaultFlightplanID1))
-	a.Equal(resID[1], string(DefaultFlightoperationID2))
-	a.Equal(resFlightplanID[1], string(DefaultFlightplanID2))
-	a.Equal(resID[2], string(DefaultFlightoperationID3))
-	a.Equal(resFlightplanID[2], string(DefaultFlightplanID3))
+	a.Len(resModels, 3)
 }
 
 func TestCreateFlightoperationTransaction(t *testing.T) {
 	a := assert.New(t)
 
 	var (
-		OriginalID = DefaultFlightplanID + "-original"
-		NewID      = DefaultFlightplanID + "-new"
+		OriginalID = DefaultFleetID + "-original"
+		NewID      = DefaultFleetID + "-new"
 	)
 
-	gen := &generatorMockFlightoperation{
-		id:           DefaultFlightoperationID,
-		flightplanID: NewID,
+	gen := &generatorMock{
+		id:      DefaultID,
+		fleetID: NewID,
+		version: DefaultVersion,
 	}
 	repo := &flightoperationRepositoryMock{}
 	repo.On("Save", mock.Anything).Return(nil)
@@ -235,13 +249,18 @@ func TestCreateFlightoperationTransaction(t *testing.T) {
 		psm:  psm,
 	}
 
-	req := &flightplanIDRequestMock{
-		FlightplanID: string(OriginalID),
+	command := &flightoperationCommandMock{
+		Flightoperation: flightoperationMock{
+			ID:          string(DefaultID),
+			Name:        DefaultName,
+			Description: DefaultDescription,
+			FleetID:     string(OriginalID),
+		},
 	}
-	ret := service.CreateFlightoperation(req)
+	ret := service.CreateFlightoperation(command)
 
 	a.Nil(ret)
-	a.Len(pub.events, 2)
+	a.Len(pub.events, 1)
 	a.True(isClose)
 	a.True(pub.isFlush)
 	a.Nil(txm.isOpe)
@@ -252,14 +271,14 @@ func TestCreateFlightoperationOperation(t *testing.T) {
 	a := assert.New(t)
 
 	var (
-		OriginalID = DefaultFlightplanID + "-original"
-		NewID      = DefaultFlightplanID + "-new"
+		OriginalID = DefaultFleetID + "-original"
+		NewID      = DefaultFleetID + "-new"
 	)
 
-	gen := &generatorMockFlightoperation{
-		id:           DefaultFlightoperationID,
-		flightplanID: NewID,
-		version:      DefaultVersion,
+	gen := &generatorMock{
+		id:      DefaultID,
+		fleetID: NewID,
+		version: DefaultVersion,
 	}
 	repo := &flightoperationRepositoryMock{}
 	repo.On("Save", mock.Anything).Return(nil)
@@ -272,26 +291,26 @@ func TestCreateFlightoperationOperation(t *testing.T) {
 		psm:  nil,
 	}
 
-	req := &flightplanIDRequestMock{
-		FlightplanID: string(OriginalID),
+	command := &flightoperationCommandMock{
+		Flightoperation: flightoperationMock{
+			ID:          string(DefaultID),
+			Name:        DefaultName,
+			Description: DefaultDescription,
+			FleetID:     string(OriginalID),
+		},
 	}
 	ret := service.createFlightoperationOperation(
 		nil,
 		pub,
-		req,
+		command,
 	)
 
-	expectEvent1 := fope.CreatedEvent{
-		ID:           DefaultFlightoperationID,
-		FlightplanID: NewID,
-	}
-	expectEvent2 := fope.FlightplanCopiedWhenCreatedEvent{
-		ID:         DefaultFlightoperationID,
+	expectEvent := fope.FleetCopiedEvent{
 		OriginalID: OriginalID,
 		NewID:      NewID,
 	}
 
 	a.Nil(ret)
-	a.Len(pub.events, 2)
-	a.Equal(pub.events, []interface{}{expectEvent1, expectEvent2})
+	a.Len(pub.events, 1)
+	a.Equal(pub.events, []interface{}{expectEvent})
 }

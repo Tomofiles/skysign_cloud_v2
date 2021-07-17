@@ -26,7 +26,13 @@ func TestHandleFlightoperationCompletedEvent(t *testing.T) {
 	handler := NewEventHandler(app)
 
 	requestPb := &skysign_proto.FlightoperationCompletedEvent{
-		FlightoperationId: string(DefaultFlightoperationID),
+		FlightoperationId: string(DefaultID),
+		Flightoperation: &skysign_proto.Flightoperation{
+			Id:          string(DefaultID),
+			Name:        DefaultName,
+			Description: DefaultDescription,
+			FleetId:     string(DefaultFleetID),
+		},
 	}
 	requestBin, _ := proto.Marshal(requestPb)
 	err := handler.HandleFlightoperationCompletedEvent(
@@ -35,5 +41,7 @@ func TestHandleFlightoperationCompletedEvent(t *testing.T) {
 	)
 
 	a.Nil(err)
-	a.Equal(service.ID, string(DefaultFlightoperationID))
+	a.Equal(service.name, DefaultName)
+	a.Equal(service.description, DefaultDescription)
+	a.Equal(service.fleetID, string(DefaultFleetID))
 }

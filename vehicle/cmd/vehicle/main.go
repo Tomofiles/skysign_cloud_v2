@@ -51,10 +51,10 @@ func run() error {
 
 	psm.SetConsumer(
 		ctx,
-		ports.VehicleCopiedWhenFlightplanCopiedEventExchangeName,
-		ports.VehicleCopiedWhenFlightplanCopiedEventQueueName,
+		ports.VehicleCopiedEventExchangeName,
+		ports.VehicleCopiedEventQueueName,
 		func(event []byte) {
-			if err := evt.HandleVehicleCopiedWhenFlightplanCopiedEvent(ctx, event); err != nil {
+			if err := evt.HandleVehicleCopiedEvent(ctx, event); err != nil {
 				glog.Error(err)
 			}
 		},

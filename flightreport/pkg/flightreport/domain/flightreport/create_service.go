@@ -9,9 +9,11 @@ func CreateNewFlightreport(
 	tx txmanager.Tx,
 	gen Generator,
 	repo Repository,
-	originalID FlightoperationID,
+	name string,
+	description string,
+	fleetID FleetID,
 ) error {
-	flightreport := NewInstance(gen, originalID)
+	flightreport := NewInstance(gen, name, description, fleetID)
 
 	if err := repo.Save(tx, flightreport); err != nil {
 		return err

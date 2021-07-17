@@ -11,8 +11,8 @@ import (
 
 // Flightplanを作成するドメインサービスをテストする。
 // 名前と説明をあらかじめ与えられたFlightplanを作成し、保存する。
-// 保存が成功すると、Flightplanが作成されたことを表す
-// ドメインイベントを発行する。
+// 機体数を変更する際に、FleetIDが付与されたイベントが発行される
+// ことを検証する。
 func TestCreateNewFlightplanService(t *testing.T) {
 	a := assert.New(t)
 
@@ -22,30 +22,37 @@ func TestCreateNewFlightplanService(t *testing.T) {
 		DefaultVersion1 = DefaultVersion + "-1"
 		DefaultVersion2 = DefaultVersion + "-2"
 		DefaultVersion3 = DefaultVersion + "-3"
+		DefaultVersion4 = DefaultVersion + "-4"
 	)
 
 	gen := &generatorMock{
 		id:       DefaultID,
-		versions: []Version{DefaultVersion1, DefaultVersion2, DefaultVersion3},
+		fleetID:  DefaultFleetID,
+		versions: []Version{DefaultVersion1, DefaultVersion2, DefaultVersion3, DefaultVersion4},
 	}
 	repo := &repositoryMockCreateService{}
 	repo.On("Save", mock.Anything).Return(nil)
 	pub := &publisherMock{}
 
-	id, ret := CreateNewFlightplan(ctx, gen, repo, pub, DefaultName, DefaultDescription)
+	id, fleetID, ret := CreateNewFlightplan(ctx, gen, repo, pub, DefaultName, DefaultDescription)
 
 	expectFlightplan := Flightplan{
-		id:           DefaultID,
-		name:         DefaultName,
-		description:  DefaultDescription,
-		isCarbonCopy: Original,
-		version:      DefaultVersion1,
-		newVersion:   DefaultVersion3,
-		gen:          gen,
+		id:          DefaultID,
+		name:        DefaultName,
+		description: DefaultDescription,
+		fleetID:     DefaultFleetID,
+		version:     DefaultVersion1,
+		newVersion:  DefaultVersion4,
+		gen:         gen,
+		pub:         pub,
 	}
-	expectEvent := CreatedEvent{ID: DefaultID}
+	expectEvent := FleetIDGaveEvent{
+		FleetID:          DefaultFleetID,
+		NumberOfVehicles: 0,
+	}
 
-	a.Equal(id, string(DefaultID))
+	a.Equal(id, DefaultID)
+	a.Equal(fleetID, DefaultFleetID)
 	a.Len(repo.saveFlightplans, 1)
 	a.Equal(repo.saveFlightplans[0], &expectFlightplan)
 	a.Len(pub.events, 1)
@@ -67,21 +74,23 @@ func TestSaveErrorWhenCreateNewFlightplanService(t *testing.T) {
 		DefaultVersion1 = DefaultVersion + "-1"
 		DefaultVersion2 = DefaultVersion + "-2"
 		DefaultVersion3 = DefaultVersion + "-3"
+		DefaultVersion4 = DefaultVersion + "-4"
 	)
 
 	gen := &generatorMock{
 		id:       DefaultID,
-		versions: []Version{DefaultVersion1, DefaultVersion2, DefaultVersion3},
+		versions: []Version{DefaultVersion1, DefaultVersion2, DefaultVersion3, DefaultVersion4},
 	}
 	repo := &repositoryMockCreateService{}
 	repo.On("Save", mock.Anything).Return(ErrSave)
 	pub := &publisherMock{}
 
-	id, ret := CreateNewFlightplan(ctx, gen, repo, pub, DefaultName, DefaultDescription)
+	id, fleetID, ret := CreateNewFlightplan(ctx, gen, repo, pub, DefaultName, DefaultDescription)
 
 	a.Empty(id)
+	a.Empty(fleetID)
 	a.Len(repo.saveFlightplans, 0)
-	a.Len(pub.events, 0)
+	// a.Len(pub.events, 0) // 1件PublishされるがFlushされない想定
 	a.Equal(ret, ErrSave)
 }
 
@@ -93,9 +102,6 @@ type repositoryMockCreateService struct {
 }
 
 func (rm *repositoryMockCreateService) GetAll(tx txmanager.Tx) ([]*Flightplan, error) {
-	panic("implement me")
-}
-func (rm *repositoryMockCreateService) GetAllOrigin(tx txmanager.Tx) ([]*Flightplan, error) {
 	panic("implement me")
 }
 func (rm *repositoryMockCreateService) GetByID(tx txmanager.Tx, id ID) (*Flightplan, error) {

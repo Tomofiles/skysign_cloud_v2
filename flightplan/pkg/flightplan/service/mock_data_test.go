@@ -14,9 +14,10 @@ const DefaultFlightplanID = fpl.ID("flightplan-id")
 const DefaultFlightplanVersion = fpl.Version("version")
 const DefaultFlightplanName = "flightplan-name"
 const DefaultFlightplanDescription = "flightplan-description"
+const DefaultFlightplanFleetID = fpl.FleetID("fleet-id")
 const DefaultFleetID = fl.ID("fleet-id")
 const DefaultFleetVersion = fl.Version("version")
-const DefaultFleetNumberOfVehicles int32 = 3
+const DefaultFleetNumberOfVehicles = 3
 const DefaultFleetAssignmentID = fl.AssignmentID("assignment-id")
 const DefaultFleetEventID = fl.EventID("event-id")
 const DefaultFleetVehicleID = fl.VehicleID("vehicle-id")
@@ -27,19 +28,6 @@ type flightplanRepositoryMock struct {
 }
 
 func (r *flightplanRepositoryMock) GetAll(
-	tx txmanager.Tx,
-) ([]*fpl.Flightplan, error) {
-	ret := r.Called()
-	var f []*fpl.Flightplan
-	if ret.Get(0) == nil {
-		f = nil
-	} else {
-		f = ret.Get(0).([]*fpl.Flightplan)
-	}
-	return f, ret.Error(1)
-}
-
-func (r *flightplanRepositoryMock) GetAllOrigin(
 	tx txmanager.Tx,
 ) ([]*fpl.Flightplan, error) {
 	ret := r.Called()
@@ -85,12 +73,12 @@ func (r *flightplanRepositoryMock) Delete(
 type fleetRepositoryMock struct {
 	mock.Mock
 	fleet    *fl.Fleet
-	deleteID fpl.ID
+	deleteID fl.ID
 }
 
-func (r *fleetRepositoryMock) GetByFlightplanID(
+func (r *fleetRepositoryMock) GetByID(
 	tx txmanager.Tx,
-	id fpl.ID,
+	id fl.ID,
 ) (*fl.Fleet, error) {
 	ret := r.Called(id)
 	var f *fl.Fleet
@@ -111,9 +99,9 @@ func (r *fleetRepositoryMock) Save(
 	return ret.Error(0)
 }
 
-func (r *fleetRepositoryMock) DeleteByFlightplanID(
+func (r *fleetRepositoryMock) Delete(
 	tx txmanager.Tx,
-	id fpl.ID,
+	id fl.ID,
 ) error {
 	ret := r.Called(id)
 	r.deleteID = id
@@ -123,12 +111,16 @@ func (r *fleetRepositoryMock) DeleteByFlightplanID(
 type generatorMockFlightplan struct {
 	fpl.Generator
 	id           fpl.ID
+	fleetID      fpl.FleetID
 	versions     []fpl.Version
 	versionIndex int
 }
 
 func (gen *generatorMockFlightplan) NewID() fpl.ID {
 	return gen.id
+}
+func (gen *generatorMockFlightplan) NewFleetID() fpl.FleetID {
+	return gen.fleetID
 }
 func (gen *generatorMockFlightplan) NewVersion() fpl.Version {
 	version := gen.versions[gen.versionIndex]
@@ -138,7 +130,6 @@ func (gen *generatorMockFlightplan) NewVersion() fpl.Version {
 
 type generatorMockFleet struct {
 	fpl.Generator
-	id                fl.ID
 	assignmentIDs     []fl.AssignmentID
 	assignmentIDIndex int
 	eventIDs          []fl.EventID
@@ -151,9 +142,6 @@ type generatorMockFleet struct {
 	versionIndex      int
 }
 
-func (gen *generatorMockFleet) NewID() fl.ID {
-	return gen.id
-}
 func (gen *generatorMockFleet) NewAssignmentID() fl.AssignmentID {
 	assignmentID := gen.assignmentIDs[gen.assignmentIDIndex]
 	gen.assignmentIDIndex++
@@ -231,11 +219,11 @@ func (txm *txManagerMock) DoAndEndHook(operation func(txmanager.Tx) error, endHo
 }
 
 type flightplanComponentMock struct {
-	ID           string
-	Name         string
-	Description  string
-	IsCarbonCopy bool
-	Version      string
+	ID          string
+	Name        string
+	Description string
+	FleetID     string
+	Version     string
 }
 
 func (f *flightplanComponentMock) GetID() string {
@@ -250,8 +238,8 @@ func (f *flightplanComponentMock) GetDescription() string {
 	return f.Description
 }
 
-func (f *flightplanComponentMock) GetIsCarbonCopy() bool {
-	return f.IsCarbonCopy
+func (f *flightplanComponentMock) GetFleetID() string {
+	return f.FleetID
 }
 
 func (f *flightplanComponentMock) GetVersion() string {
@@ -260,7 +248,6 @@ func (f *flightplanComponentMock) GetVersion() string {
 
 type fleetComponentMock struct {
 	ID           string
-	FlightplanID string
 	Assignments  []*assignmentComponentMock
 	Events       []*eventComponentMock
 	IsCarbonCopy bool
@@ -269,10 +256,6 @@ type fleetComponentMock struct {
 
 func (f *fleetComponentMock) GetID() string {
 	return f.ID
-}
-
-func (f *fleetComponentMock) GetFlightplanID() string {
-	return f.FlightplanID
 }
 
 func (f *fleetComponentMock) GetIsCarbonCopy() bool {
@@ -340,38 +323,55 @@ func (e *eventComponentMock) GetMissionID() string {
 	return e.MissionID
 }
 
-type flightplanRequestMock struct {
+type flightplanCommandMock struct {
+	Flightplan flightplanMock
+}
+
+func (f *flightplanCommandMock) GetID() string {
+	return f.Flightplan.ID
+}
+
+func (f *flightplanCommandMock) GetFlightplan() Flightplan {
+	return &f.Flightplan
+}
+
+type flightplanMock struct {
 	ID          string
 	Name        string
 	Description string
+	FleetID     string
 }
 
-func (f *flightplanRequestMock) GetID() string {
+func (f *flightplanMock) GetID() string {
 	return f.ID
 }
 
-func (f *flightplanRequestMock) GetName() string {
+func (f *flightplanMock) GetName() string {
 	return f.Name
 }
 
-func (f *flightplanRequestMock) GetDescription() string {
+func (f *flightplanMock) GetDescription() string {
 	return f.Description
 }
 
-type flightplanIDRequestMock struct {
+func (f *flightplanMock) GetFleetID() string {
+	return f.FleetID
+}
+
+type flightplanIDCommandMock struct {
 	ID string
 }
 
-func (f *flightplanIDRequestMock) GetID() string {
+func (f *flightplanIDCommandMock) GetID() string {
 	return f.ID
 }
 
-type fleetIDRequestMock struct {
-	FlightplanID string
+type fleetIDCommandMock struct {
+	FleetID string
 }
 
-func (f *fleetIDRequestMock) GetFlightplanID() string {
-	return f.FlightplanID
+func (f *fleetIDCommandMock) GetID() string {
+	return f.FleetID
 }
 
 type carbonCopyRequestMock struct {
@@ -387,44 +387,57 @@ func (f *carbonCopyRequestMock) GetNewID() string {
 	return f.NewID
 }
 
-type changeNumberOfVehiclesRequestMock struct {
-	FlightplanID     string
-	NumberOfVehicles int32
+type changeNumberOfVehiclesCommandFleetMock struct {
+	FleetID          string
+	NumberOfVehicles int
 }
 
-func (c *changeNumberOfVehiclesRequestMock) GetFlightplanID() string {
-	return c.FlightplanID
+func (c *changeNumberOfVehiclesCommandFleetMock) GetID() string {
+	return c.FleetID
 }
 
-func (c *changeNumberOfVehiclesRequestMock) GetNumberOfVehicles() int32 {
+func (c *changeNumberOfVehiclesCommandFleetMock) GetNumberOfVehicles() int {
 	return c.NumberOfVehicles
 }
 
-// UpdateAssignmentRequestDpo .
-type updateAssignmentRequestMock struct {
-	FlightplanID string
+type changeNumberOfVehiclesCommandFlightplanMock struct {
+	ID               string
+	NumberOfVehicles int
+}
+
+func (c *changeNumberOfVehiclesCommandFlightplanMock) GetID() string {
+	return c.ID
+}
+
+func (c *changeNumberOfVehiclesCommandFlightplanMock) GetNumberOfVehicles() int {
+	return c.NumberOfVehicles
+}
+
+// updateAssignmentCommandMock .
+type updateAssignmentCommandMock struct {
+	ID           string
 	EventID      string
 	AssignmentID string
 	VehicleID    string
 	MissionID    string
 }
 
-func (u *updateAssignmentRequestMock) GetFlightplanID() string {
-	return u.FlightplanID
+func (u *updateAssignmentCommandMock) GetID() string {
+	return u.ID
 }
 
-func (u *updateAssignmentRequestMock) GetEventID() string {
+func (u *updateAssignmentCommandMock) GetEventID() string {
 	return u.EventID
 }
 
-func (u *updateAssignmentRequestMock) GetAssignmentID() string {
+func (u *updateAssignmentCommandMock) GetAssignmentID() string {
 	return u.AssignmentID
 }
 
-func (u *updateAssignmentRequestMock) GetVehicleID() string {
+func (u *updateAssignmentCommandMock) GetVehicleID() string {
 	return u.VehicleID
 }
 
-func (u *updateAssignmentRequestMock) GetMissionID() string {
+func (u *updateAssignmentCommandMock) GetMissionID() string {
 	return u.MissionID
 }

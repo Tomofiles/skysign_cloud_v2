@@ -8,55 +8,59 @@ import (
 
 // ManageVehicleService .
 type ManageVehicleService interface {
-	GetVehicle(requestDpo GetVehicleRequestDpo, responseDpo GetVehicleResponseDpo) error
-	ListVehicles(responseEachDpo ListVehiclesResponseDpo) error
-	CreateVehicle(requestDpo CreateVehicleRequestDpo, responseDpo CreateVehicleResponseDpo) error
-	UpdateVehicle(requestDpo UpdateVehicleRequestDpo, responseDpo UpdateVehicleResponseDpo) error
-	DeleteVehicle(requestDpo DeleteVehicleRequestDpo) error
-	CarbonCopyVehicle(requestDpo CarbonCopyVehicleRequestDpo) error
+	GetVehicle(command GetVehicleCommand, retrievedModel RetrievedModel) error
+	ListVehicles(retrievedModel RetrievedModel) error
+	CreateVehicle(command CreateVehicleCommand, createdID CreatedID) error
+	UpdateVehicle(command UpdateVehicleCommand) error
+	DeleteVehicle(command DeleteVehicleCommand) error
+	CarbonCopyVehicle(command CarbonCopyVehicleCommand) error
 }
 
-// CreateVehicleRequestDpo .
-type CreateVehicleRequestDpo interface {
-	GetName() string
-	GetCommunicationID() string
+// CreateVehicleCommand .
+type CreateVehicleCommand interface {
+	GetVehicle() Vehicle
 }
 
-// CreateVehicleResponseDpo .
-type CreateVehicleResponseDpo = func(id, name, communicationID string)
-
-// UpdateVehicleRequestDpo .
-type UpdateVehicleRequestDpo interface {
+// UpdateVehicleCommand .
+type UpdateVehicleCommand interface {
 	GetID() string
-	GetName() string
-	GetCommunicationID() string
+	GetVehicle() Vehicle
 }
 
-// UpdateVehicleResponseDpo .
-type UpdateVehicleResponseDpo = func(id, name, communicationID string)
-
-// GetVehicleRequestDpo .
-type GetVehicleRequestDpo interface {
+// GetVehicleCommand .
+type GetVehicleCommand interface {
 	GetID() string
 }
 
-// GetVehicleResponseDpo .
-type GetVehicleResponseDpo = func(id, name, communicationID string)
-
-// ListVehiclesResponseDpo .
-type ListVehiclesResponseDpo = func(id, name, communicationID string)
-
-// DeleteVehicleRequestDpo .
-type DeleteVehicleRequestDpo interface {
+// DeleteVehicleCommand .
+type DeleteVehicleCommand interface {
 	GetID() string
 }
 
-// CarbonCopyVehicleRequestDpo .
-type CarbonCopyVehicleRequestDpo interface {
+// CarbonCopyVehicleCommand .
+type CarbonCopyVehicleCommand interface {
 	GetOriginalID() string
 	GetNewID() string
-	GetFlightplanID() string
+	GetFleetID() string
 }
+
+// VehiclePresentationModel .
+type VehiclePresentationModel interface {
+	GetVehicle() Vehicle
+}
+
+// Vehicle .
+type Vehicle interface {
+	GetID() string
+	GetName() string
+	GetCommunicationID() string
+}
+
+// CreatedID .
+type CreatedID = func(id string)
+
+// RetrievedModel .
+type RetrievedModel = func(model VehiclePresentationModel)
 
 // NewManageVehicleService .
 func NewManageVehicleService(
@@ -81,50 +85,50 @@ type manageVehicleService struct {
 }
 
 func (s *manageVehicleService) GetVehicle(
-	requestDpo GetVehicleRequestDpo,
-	responseDpo GetVehicleResponseDpo,
+	command GetVehicleCommand,
+	retrievedModel RetrievedModel,
 ) error {
 	return s.txm.Do(func(tx txmanager.Tx) error {
 		return s.getVehicleOperation(
 			tx,
-			requestDpo,
-			responseDpo,
+			command,
+			retrievedModel,
 		)
 	})
 }
 
 func (s *manageVehicleService) getVehicleOperation(
 	tx txmanager.Tx,
-	requestDpo GetVehicleRequestDpo,
-	responseDpo GetVehicleResponseDpo,
+	command GetVehicleCommand,
+	retrievedModel RetrievedModel,
 ) error {
-	vehicle, err := s.repo.GetByID(tx, v.ID(requestDpo.GetID()))
+	vehicle, err := s.repo.GetByID(tx, v.ID(command.GetID()))
 	if err != nil {
 		return err
 	}
 
-	responseDpo(
-		string(vehicle.GetID()),
-		vehicle.GetName(),
-		string(vehicle.GetCommunicationID()),
+	retrievedModel(
+		&vehicleModel{
+			vehicle: vehicle,
+		},
 	)
 	return nil
 }
 
 func (s *manageVehicleService) ListVehicles(
-	responseEachDpo ListVehiclesResponseDpo,
+	retrievedModel RetrievedModel,
 ) error {
 	return s.txm.Do(func(tx txmanager.Tx) error {
 		return s.listVehiclesOperation(
 			tx,
-			responseEachDpo,
+			retrievedModel,
 		)
 	})
 }
 
 func (s *manageVehicleService) listVehiclesOperation(
 	tx txmanager.Tx,
-	responseEachDpo ListVehiclesResponseDpo,
+	retrievedModel RetrievedModel,
 ) error {
 	vehicles, err := s.repo.GetAllOrigin(tx)
 	if err != nil {
@@ -132,18 +136,18 @@ func (s *manageVehicleService) listVehiclesOperation(
 	}
 
 	for _, v := range vehicles {
-		responseEachDpo(
-			string(v.GetID()),
-			v.GetName(),
-			string(v.GetCommunicationID()),
+		retrievedModel(
+			&vehicleModel{
+				vehicle: v,
+			},
 		)
 	}
 	return nil
 }
 
 func (s *manageVehicleService) CreateVehicle(
-	requestDpo CreateVehicleRequestDpo,
-	responseDpo CreateVehicleResponseDpo,
+	command CreateVehicleCommand,
+	createdID CreatedID,
 ) error {
 	pub, chClose, err := s.psm.GetPublisher()
 	if err != nil {
@@ -156,8 +160,8 @@ func (s *manageVehicleService) CreateVehicle(
 			return s.createVehicleOperation(
 				tx,
 				pub,
-				requestDpo,
-				responseDpo,
+				command,
+				createdID,
 			)
 		},
 		func() error {
@@ -169,27 +173,26 @@ func (s *manageVehicleService) CreateVehicle(
 func (s *manageVehicleService) createVehicleOperation(
 	tx txmanager.Tx,
 	pub event.Publisher,
-	requestDpo CreateVehicleRequestDpo,
-	responseDpo CreateVehicleResponseDpo,
+	command CreateVehicleCommand,
+	createdID CreatedID,
 ) error {
 	id, ret := v.CreateNewVehicle(
 		tx,
 		s.gen,
 		s.repo,
 		pub,
-		requestDpo.GetName(),
-		v.CommunicationID(requestDpo.GetCommunicationID()))
+		command.GetVehicle().GetName(),
+		v.CommunicationID(command.GetVehicle().GetCommunicationID()))
 	if ret != nil {
 		return ret
 	}
 
-	responseDpo(id, requestDpo.GetName(), requestDpo.GetCommunicationID())
+	createdID(id)
 	return nil
 }
 
 func (s *manageVehicleService) UpdateVehicle(
-	requestDpo UpdateVehicleRequestDpo,
-	responseDpo UpdateVehicleResponseDpo,
+	command UpdateVehicleCommand,
 ) error {
 	pub, chClose, err := s.psm.GetPublisher()
 	if err != nil {
@@ -202,8 +205,7 @@ func (s *manageVehicleService) UpdateVehicle(
 			return s.updateVehicleOperation(
 				tx,
 				pub,
-				requestDpo,
-				responseDpo,
+				command,
 			)
 		},
 		func() error {
@@ -215,27 +217,25 @@ func (s *manageVehicleService) UpdateVehicle(
 func (s *manageVehicleService) updateVehicleOperation(
 	tx txmanager.Tx,
 	pub event.Publisher,
-	requestDpo UpdateVehicleRequestDpo,
-	responseDpo UpdateVehicleResponseDpo,
+	command UpdateVehicleCommand,
 ) error {
 	ret := v.UpdateVehicle(
 		tx,
 		s.gen,
 		s.repo,
 		pub,
-		v.ID(requestDpo.GetID()),
-		requestDpo.GetName(),
-		v.CommunicationID(requestDpo.GetCommunicationID()))
+		v.ID(command.GetID()),
+		command.GetVehicle().GetName(),
+		v.CommunicationID(command.GetVehicle().GetCommunicationID()))
 	if ret != nil {
 		return ret
 	}
 
-	responseDpo(requestDpo.GetID(), requestDpo.GetName(), requestDpo.GetCommunicationID())
 	return nil
 }
 
 func (s *manageVehicleService) DeleteVehicle(
-	requestDpo DeleteVehicleRequestDpo,
+	command DeleteVehicleCommand,
 ) error {
 	pub, chClose, err := s.psm.GetPublisher()
 	if err != nil {
@@ -248,7 +248,7 @@ func (s *manageVehicleService) DeleteVehicle(
 			return s.deleteVehicleOperation(
 				tx,
 				pub,
-				requestDpo,
+				command,
 			)
 		},
 		func() error {
@@ -260,13 +260,13 @@ func (s *manageVehicleService) DeleteVehicle(
 func (s *manageVehicleService) deleteVehicleOperation(
 	tx txmanager.Tx,
 	pub event.Publisher,
-	requestDpo DeleteVehicleRequestDpo,
+	command DeleteVehicleCommand,
 ) error {
 	if ret := v.DeleteVehicle(
 		tx,
 		s.repo,
 		pub,
-		v.ID(requestDpo.GetID()),
+		v.ID(command.GetID()),
 	); ret != nil {
 		return ret
 	}
@@ -275,7 +275,7 @@ func (s *manageVehicleService) deleteVehicleOperation(
 }
 
 func (s *manageVehicleService) CarbonCopyVehicle(
-	requestDpo CarbonCopyVehicleRequestDpo,
+	command CarbonCopyVehicleCommand,
 ) error {
 	pub, chClose, err := s.psm.GetPublisher()
 	if err != nil {
@@ -288,7 +288,7 @@ func (s *manageVehicleService) CarbonCopyVehicle(
 			return s.carbonCopyVehicleOperation(
 				tx,
 				pub,
-				requestDpo,
+				command,
 			)
 		},
 		func() error {
@@ -300,19 +300,45 @@ func (s *manageVehicleService) CarbonCopyVehicle(
 func (s *manageVehicleService) carbonCopyVehicleOperation(
 	tx txmanager.Tx,
 	pub event.Publisher,
-	requestDpo CarbonCopyVehicleRequestDpo,
+	command CarbonCopyVehicleCommand,
 ) error {
 	if ret := v.CarbonCopyVehicle(
 		tx,
 		s.gen,
 		s.repo,
 		pub,
-		v.ID(requestDpo.GetOriginalID()),
-		v.ID(requestDpo.GetNewID()),
-		v.FlightplanID(requestDpo.GetFlightplanID()),
+		v.ID(command.GetOriginalID()),
+		v.ID(command.GetNewID()),
+		v.FleetID(command.GetFleetID()),
 	); ret != nil {
 		return ret
 	}
 
 	return nil
+}
+
+type vehicleModel struct {
+	vehicle *v.Vehicle
+}
+
+func (f *vehicleModel) GetVehicle() Vehicle {
+	return &vehicle{
+		vehicle: f.vehicle,
+	}
+}
+
+type vehicle struct {
+	vehicle *v.Vehicle
+}
+
+func (f *vehicle) GetID() string {
+	return string(f.vehicle.GetID())
+}
+
+func (f *vehicle) GetName() string {
+	return f.vehicle.GetName()
+}
+
+func (f *vehicle) GetCommunicationID() string {
+	return string(f.vehicle.GetCommunicationID())
 }

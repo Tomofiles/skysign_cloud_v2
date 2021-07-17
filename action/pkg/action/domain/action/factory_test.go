@@ -11,11 +11,11 @@ import (
 func TestCreateNewAction(t *testing.T) {
 	a := assert.New(t)
 
-	action := NewInstance(DefaultID, DefaultCommunicationID, DefaultFlightplanID)
+	action := NewInstance(DefaultID, DefaultCommunicationID, DefaultFleetID)
 
 	a.Equal(action.GetID(), DefaultID)
 	a.Equal(action.GetCommunicationID(), DefaultCommunicationID)
-	a.Equal(action.GetFlightplanID(), DefaultFlightplanID)
+	a.Equal(action.GetFleetID(), DefaultFleetID)
 	a.Equal(action.isCompleted, Active)
 	a.Equal(action.trajectory.numberOfPoints, 0)
 	a.Len(action.trajectory.trajectoryPoints, 0)
@@ -30,7 +30,7 @@ func TestActionAssembleFromComponent(t *testing.T) {
 		&componentMock{
 			ID:              string(DefaultID),
 			CommunicationID: string(DefaultCommunicationID),
-			FlightplanID:    string(DefaultFlightplanID),
+			FleetID:         string(DefaultFleetID),
 			IsCompleted:     Completed,
 			TrajectoryPoints: []TrajectoryPointComponent{
 				&trajectoryPointComponentMock{
@@ -48,7 +48,7 @@ func TestActionAssembleFromComponent(t *testing.T) {
 
 	a.Equal(action.GetID(), DefaultID)
 	a.Equal(action.GetCommunicationID(), DefaultCommunicationID)
-	a.Equal(action.GetFlightplanID(), DefaultFlightplanID)
+	a.Equal(action.GetFleetID(), DefaultFleetID)
 	a.Equal(action.isCompleted, Completed)
 	a.Equal(action.trajectory.numberOfPoints, 3)
 	a.Len(action.trajectory.trajectoryPoints, 3)
@@ -65,7 +65,7 @@ func TestTakeApartAction(t *testing.T) {
 	action := &Action{
 		id:              DefaultID,
 		communicationID: DefaultCommunicationID,
-		flightplanID:    DefaultFlightplanID,
+		fleetID:         DefaultFleetID,
 		isCompleted:     Completed,
 		trajectory: Trajectory{
 			numberOfPoints: 3,
@@ -91,7 +91,7 @@ func TestTakeApartAction(t *testing.T) {
 
 	a.Equal(retComp.GetID(), string(DefaultID))
 	a.Equal(retComp.GetCommunicationID(), string(DefaultCommunicationID))
-	a.Equal(retComp.GetFlightplanID(), string(DefaultFlightplanID))
+	a.Equal(retComp.GetFleetID(), string(DefaultFleetID))
 	a.Equal(retComp.GetIsCompleted(), Completed)
 	a.Len(retTPComps, 3)
 	a.EqualValues(retTPComps[0], &trajectoryPointComponentMock{trajectoryPoint: DefaultTrajectoryPoint})

@@ -23,18 +23,13 @@ func (p *Publisher) Publish(event interface{}) {
 // Flush .
 func (p *Publisher) Flush() error {
 	for _, e := range p.events {
-		if event, ok := e.(fope.CreatedEvent); ok {
-			if err := PublishFlightoperationCreatedEvent(p.ch, event); err != nil {
-				return err
-			}
-		}
-		if event, ok := e.(fope.CompletedEvent); ok {
+		if event, ok := e.(fope.FlightoperationCompletedEvent); ok {
 			if err := PublishFlightoperationCompletedEvent(p.ch, event); err != nil {
 				return err
 			}
 		}
-		if event, ok := e.(fope.FlightplanCopiedWhenCreatedEvent); ok {
-			if err := PublishFlightplanCopiedWhenFlightoperationCreatedEvent(p.ch, event); err != nil {
+		if event, ok := e.(fope.FleetCopiedEvent); ok {
+			if err := PublishFleetCopiedEvent(p.ch, event); err != nil {
 				return err
 			}
 		}

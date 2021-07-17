@@ -4,7 +4,7 @@ import "errors"
 
 const DefaultID = ID("action-id")
 const DefaultCommunicationID = CommunicationID("communication-id")
-const DefaultFlightplanID = FlightplanID("flightplan-id")
+const DefaultFleetID = FleetID("fleet-id")
 
 var DefaultTelemetrySnapshot = TelemetrySnapshot{
 	Latitude:         1.0,
@@ -43,7 +43,7 @@ var (
 type componentMock struct {
 	ID               string
 	CommunicationID  string
-	FlightplanID     string
+	FleetID          string
 	IsCompleted      bool
 	TrajectoryPoints []TrajectoryPointComponent
 }
@@ -54,8 +54,8 @@ func (c *componentMock) GetID() string {
 func (c *componentMock) GetCommunicationID() string {
 	return c.CommunicationID
 }
-func (c *componentMock) GetFlightplanID() string {
-	return c.FlightplanID
+func (c *componentMock) GetFleetID() string {
+	return c.FleetID
 }
 func (c *componentMock) GetIsCompleted() bool {
 	return c.IsCompleted

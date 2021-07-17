@@ -9,80 +9,109 @@ import (
 const DefaultVehicleID = "vehicle-id"
 const DefaultVehicleName = "vehicle-name"
 const DefaultCommunicationID = "communication-id"
-const DefaultFlightplanID = "flightplan-id"
+const DefaultFleetID = "fleet-id"
 
 type manageVehicleServiceMock struct {
 	mock.Mock
-	OriginalID   string
-	NewID        string
-	FlightplanID string
+	OriginalID string
+	NewID      string
+	FleetID    string
 }
 
 func (s *manageVehicleServiceMock) GetVehicle(
-	requestDpo service.GetVehicleRequestDpo,
-	responseDpo service.GetVehicleResponseDpo,
+	command service.GetVehicleCommand,
+	model service.RetrievedModel,
 ) error {
 	ret := s.Called()
 	if vehicle := ret.Get(0); vehicle != nil {
 		f := vehicle.(vehicleMock)
-		responseDpo(f.id, f.name, f.communicationID)
+		model(
+			&vehicleModelMock{
+				vehicle: &f,
+			},
+		)
 	}
 	return ret.Error(1)
 }
 
 func (s *manageVehicleServiceMock) ListVehicles(
-	responseEachDpo service.ListVehiclesResponseDpo,
+	model service.RetrievedModel,
 ) error {
 	ret := s.Called()
 	if vehicles := ret.Get(0); vehicles != nil {
 		for _, f := range vehicles.([]vehicleMock) {
-			responseEachDpo(f.id, f.name, f.communicationID)
+			model(
+				&vehicleModelMock{
+					vehicle: &f,
+				},
+			)
 		}
 	}
 	return ret.Error(1)
 }
 
 func (s *manageVehicleServiceMock) CreateVehicle(
-	requestDpo service.CreateVehicleRequestDpo,
-	responseDpo service.CreateVehicleResponseDpo,
+	command service.CreateVehicleCommand,
+	createdID service.CreatedID,
 ) error {
 	ret := s.Called()
 	if vehicle := ret.Get(0); vehicle != nil {
 		f := vehicle.(vehicleMock)
-		responseDpo(f.id, f.name, f.communicationID)
+		createdID(f.ID)
 	}
 	return ret.Error(1)
 }
 
 func (s *manageVehicleServiceMock) UpdateVehicle(
-	requestDpo service.UpdateVehicleRequestDpo,
-	responseDpo service.UpdateVehicleResponseDpo,
+	command service.UpdateVehicleCommand,
 ) error {
 	ret := s.Called()
-	if vehicle := ret.Get(0); vehicle != nil {
-		f := vehicle.(vehicleMock)
-		responseDpo(f.id, f.name, f.communicationID)
-	}
-	return ret.Error(1)
+	return ret.Error(0)
 }
 
 func (s *manageVehicleServiceMock) DeleteVehicle(
-	requestDpo service.DeleteVehicleRequestDpo,
+	command service.DeleteVehicleCommand,
 ) error {
 	ret := s.Called()
 	return ret.Error(0)
 }
 
 func (s *manageVehicleServiceMock) CarbonCopyVehicle(
-	requestDpo service.CarbonCopyVehicleRequestDpo,
+	command service.CarbonCopyVehicleCommand,
 ) error {
 	ret := s.Called()
-	s.OriginalID = requestDpo.GetOriginalID()
-	s.NewID = requestDpo.GetNewID()
-	s.FlightplanID = requestDpo.GetFlightplanID()
+	s.OriginalID = command.GetOriginalID()
+	s.NewID = command.GetNewID()
+	s.FleetID = command.GetFleetID()
 	return ret.Error(0)
 }
 
+type vehicleModelMock struct {
+	vehicle *vehicleMock
+}
+
+func (f *vehicleModelMock) GetVehicle() service.Vehicle {
+	return &vehicleMock{
+		ID:              f.vehicle.ID,
+		Name:            f.vehicle.Name,
+		CommunicationID: f.vehicle.CommunicationID,
+	}
+}
+
 type vehicleMock struct {
-	id, name, communicationID string
+	ID              string
+	Name            string
+	CommunicationID string
+}
+
+func (f *vehicleMock) GetID() string {
+	return f.ID
+}
+
+func (f *vehicleMock) GetName() string {
+	return f.Name
+}
+
+func (f *vehicleMock) GetCommunicationID() string {
+	return f.CommunicationID
 }

@@ -20,11 +20,6 @@ func UpdateMission(
 		return "", err
 	}
 
-	var uploadID UploadID
-	if mission.GetNavigation() != nil {
-		uploadID = mission.GetNavigation().GetUploadID()
-	}
-
 	mission.SetPublisher(pub)
 
 	if err := mission.NameMission(name); err != nil {
@@ -38,15 +33,5 @@ func UpdateMission(
 		return "", ret
 	}
 
-	if uploadID != "" {
-		pub.Publish(DeletedEvent{
-			ID:       mission.GetID(),
-			UploadID: uploadID,
-		})
-	}
-	pub.Publish(CreatedEvent{
-		ID:      mission.GetID(),
-		Mission: mission,
-	})
 	return string(mission.GetNavigation().GetUploadID()), nil
 }

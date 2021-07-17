@@ -1,37 +1,55 @@
 package flightplan
 
-// CreatedEvent .
-type CreatedEvent struct {
-	ID ID
+// FleetIDGaveEvent .
+type FleetIDGaveEvent struct {
+	FleetID          FleetID
+	NumberOfVehicles int
 }
 
-// GetFlightplanID .
-func (e *CreatedEvent) GetFlightplanID() string {
-	return string(e.ID)
+// GetFleetID .
+func (e *FleetIDGaveEvent) GetFleetID() FleetID {
+	return e.FleetID
 }
 
-// CopiedEvent .
-type CopiedEvent struct {
-	OriginalID ID
-	NewID      ID
+// GetNumberOfVehicles .
+func (e *FleetIDGaveEvent) GetNumberOfVehicles() int {
+	return e.NumberOfVehicles
 }
 
-// GetOriginalID .
-func (e *CopiedEvent) GetOriginalID() string {
-	return string(e.OriginalID)
+// FleetIDRemovedEvent .
+type FleetIDRemovedEvent struct {
+	FleetID FleetID
 }
 
-// GetNewID .
-func (e *CopiedEvent) GetNewID() string {
-	return string(e.NewID)
+// GetFleetID .
+func (e *FleetIDRemovedEvent) GetFleetID() FleetID {
+	return e.FleetID
 }
 
-// DeletedEvent .
-type DeletedEvent struct {
-	ID ID
+// FlightplanExecutedEvent .
+type FlightplanExecutedEvent struct {
+	ID          ID
+	Name        string
+	Description string
+	FleetID     FleetID
 }
 
-// GetFlightplanID .
-func (e *DeletedEvent) GetFlightplanID() string {
-	return string(e.ID)
+// GetID .
+func (e *FlightplanExecutedEvent) GetID() ID {
+	return e.ID
+}
+
+// GetName .
+func (e *FlightplanExecutedEvent) GetName() string {
+	return e.Name
+}
+
+// GetDescription .
+func (e *FlightplanExecutedEvent) GetDescription() string {
+	return e.Description
+}
+
+// GetFleetID .
+func (e *FlightplanExecutedEvent) GetFleetID() FleetID {
+	return e.FleetID
 }

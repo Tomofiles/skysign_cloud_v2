@@ -32,7 +32,7 @@ func TestNoneEventWhenPublish(t *testing.T) {
 func TestSingleEventWhenPublish(t *testing.T) {
 	a := assert.New(t)
 
-	event := mission.CreatedEvent{Mission: &mission.Mission{}}
+	event := mission.CopiedMissionCreatedEvent{Mission: &mission.Mission{}}
 
 	connMock := &connectionMockCommon{}
 	chMock := &channelMockPublish{}
@@ -54,8 +54,7 @@ func TestSingleEventWhenPublish(t *testing.T) {
 func TestMultipleEventWhenPublish(t *testing.T) {
 	a := assert.New(t)
 
-	event1 := mission.CreatedEvent{Mission: &mission.Mission{}}
-	event2 := mission.DeletedEvent{}
+	event1 := mission.CopiedMissionCreatedEvent{Mission: &mission.Mission{}}
 
 	connMock := &connectionMockCommon{}
 	chMock := &channelMockPublish{}
@@ -68,65 +67,16 @@ func TestMultipleEventWhenPublish(t *testing.T) {
 	pub, _, _ := psm.GetPublisher()
 
 	pub.Publish(event1)
-	pub.Publish(event2)
 	ret := pub.Flush()
 
 	a.Nil(ret)
-	a.Equal(chMock.messageCallCount, 2)
-}
-
-func TestFanoutExchangeDeclareErrorWhenCreatedEventPublish(t *testing.T) {
-	a := assert.New(t)
-
-	event := mission.CreatedEvent{Mission: &mission.Mission{}}
-
-	errPub := errors.New("publish error")
-
-	connMock := &connectionMockCommon{}
-	chMock := &channelMockPublish{}
-	connMock.On("GetChannel").Return(chMock, nil)
-	chMock.On("FanoutExchangeDeclare", mock.Anything).Return(errPub)
-	chMock.On("Publish", mock.Anything).Return(nil)
-
-	psm := NewPubSubManager(connMock)
-
-	pub, _, _ := psm.GetPublisher()
-
-	pub.Publish(event)
-	ret := pub.Flush()
-
-	a.Equal(ret, errPub)
-	a.Equal(chMock.messageCallCount, 0)
-}
-
-func TestPublishErrorWhenCreatedEventPublish(t *testing.T) {
-	a := assert.New(t)
-
-	event := mission.CreatedEvent{Mission: &mission.Mission{}}
-
-	errPub := errors.New("publish error")
-
-	connMock := &connectionMockCommon{}
-	chMock := &channelMockPublish{}
-	connMock.On("GetChannel").Return(chMock, nil)
-	chMock.On("FanoutExchangeDeclare", mock.Anything).Return(nil)
-	chMock.On("Publish", mock.Anything).Return(errPub)
-
-	psm := NewPubSubManager(connMock)
-
-	pub, _, _ := psm.GetPublisher()
-
-	pub.Publish(event)
-	ret := pub.Flush()
-
-	a.Equal(ret, errPub)
 	a.Equal(chMock.messageCallCount, 1)
 }
 
-func TestFanoutExchangeDeclareErrorWhenDeletedEventPublish(t *testing.T) {
+func TestFanoutExchangeDeclareErrorWhenCopiedMissionCreatedEventPublish(t *testing.T) {
 	a := assert.New(t)
 
-	event := mission.DeletedEvent{}
+	event := mission.CopiedMissionCreatedEvent{Mission: &mission.Mission{}}
 
 	errPub := errors.New("publish error")
 
@@ -147,10 +97,10 @@ func TestFanoutExchangeDeclareErrorWhenDeletedEventPublish(t *testing.T) {
 	a.Equal(chMock.messageCallCount, 0)
 }
 
-func TestPublishErrorWhenDeletedEventPublish(t *testing.T) {
+func TestPublishErrorWhenCopiedMissionCreatedEventPublish(t *testing.T) {
 	a := assert.New(t)
 
-	event := mission.DeletedEvent{}
+	event := mission.CopiedMissionCreatedEvent{Mission: &mission.Mission{}}
 
 	errPub := errors.New("publish error")
 

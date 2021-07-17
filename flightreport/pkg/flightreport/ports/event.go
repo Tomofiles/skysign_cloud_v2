@@ -3,6 +3,7 @@ package ports
 import (
 	"context"
 	"flightreport/pkg/flightreport/app"
+	"flightreport/pkg/flightreport/service"
 	"flightreport/pkg/skysign_proto"
 
 	"github.com/golang/glog"
@@ -38,17 +39,45 @@ func (h *EventHandler) HandleFlightoperationCompletedEvent(
 
 	glog.Infof("RECEIVE , Event: %s, Message: %s", FlightoperationCompletedEventQueueName, eventPb.String())
 
-	requestDpo := flightoperationIDRequestDpoHolder{id: eventPb.GetFlightoperationId()}
-	if ret := h.app.Services.ManageFlightreport.CreateFlightreport(&requestDpo); ret != nil {
+	command := createFlightreportCommandHolder{
+		event: &eventPb,
+	}
+	if ret := h.app.Services.ManageFlightreport.CreateFlightreport(&command); ret != nil {
 		return ret
 	}
 	return nil
 }
 
-type flightoperationIDRequestDpoHolder struct {
-	id string
+type createFlightreportCommandHolder struct {
+	event *skysign_proto.FlightoperationCompletedEvent
 }
 
-func (h *flightoperationIDRequestDpoHolder) GetFlightoperationID() string {
-	return h.id
+func (h *createFlightreportCommandHolder) GetFlightreport() service.Flightreport {
+	return &flightreport{
+		event: h.event,
+	}
+}
+
+type flightreport struct {
+	event *skysign_proto.FlightoperationCompletedEvent
+}
+
+// GetID .
+func (f *flightreport) GetID() string {
+	return f.event.Flightoperation.Id
+}
+
+// GetName .
+func (f *flightreport) GetName() string {
+	return f.event.Flightoperation.Name
+}
+
+// GetDescription .
+func (f *flightreport) GetDescription() string {
+	return f.event.Flightoperation.Description
+}
+
+// GetFleetID .
+func (f *flightreport) GetFleetID() string {
+	return f.event.Flightoperation.FleetId
 }

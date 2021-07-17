@@ -2,10 +2,12 @@ package postgresql
 
 // Flightoperation .
 type Flightoperation struct {
-	ID           string `gorm:"primaryKey"`
-	FlightplanID string
-	IsCompleted  bool
-	Version      string
+	ID          string `gorm:"primaryKey"`
+	Name        string
+	Description string
+	FleetID     string
+	IsCompleted bool
+	Version     string
 }
 
 // GetID .
@@ -13,9 +15,19 @@ func (f *Flightoperation) GetID() string {
 	return f.ID
 }
 
-// GetFlightplanID .
-func (f *Flightoperation) GetFlightplanID() string {
-	return f.FlightplanID
+// GetName .
+func (f *Flightoperation) GetName() string {
+	return f.Name
+}
+
+// GetDescription .
+func (f *Flightoperation) GetDescription() string {
+	return f.Description
+}
+
+// GetFleetID .
+func (f *Flightoperation) GetFleetID() string {
+	return f.FleetID
 }
 
 // GetIsCompleted .

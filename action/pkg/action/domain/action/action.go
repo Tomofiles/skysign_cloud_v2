@@ -5,8 +5,8 @@ import "errors"
 // ID .
 type ID string
 
-// FlightplanID .
-type FlightplanID string
+// FleetID .
+type FleetID string
 
 // CommunicationID .
 type CommunicationID string
@@ -27,7 +27,7 @@ var (
 type Action struct {
 	id              ID
 	communicationID CommunicationID
-	flightplanID    FlightplanID
+	fleetID         FleetID
 	isCompleted     bool
 	trajectory      Trajectory
 }
@@ -42,9 +42,9 @@ func (a *Action) GetCommunicationID() CommunicationID {
 	return a.communicationID
 }
 
-// GetFlightplanID .
-func (a *Action) GetFlightplanID() FlightplanID {
-	return a.flightplanID
+// GetFleetID .
+func (a *Action) GetFleetID() FleetID {
+	return a.fleetID
 }
 
 // PushTelemetry .

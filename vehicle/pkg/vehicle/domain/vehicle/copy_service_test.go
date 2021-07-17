@@ -39,7 +39,7 @@ func TestCarbonCopyVehicleService(t *testing.T) {
 
 	pub := &publisherMock{}
 
-	ret := CarbonCopyVehicle(ctx, gen, repo, pub, DefaultID, NewID, DefaultFlightplanID)
+	ret := CarbonCopyVehicle(ctx, gen, repo, pub, DefaultID, NewID, DefaultFleetID)
 
 	expectVehicle := Vehicle{
 		id:              NewID,
@@ -53,7 +53,7 @@ func TestCarbonCopyVehicleService(t *testing.T) {
 	expectEvent := CopiedVehicleCreatedEvent{
 		ID:              NewID,
 		CommunicationID: DefaultCommunicationID,
-		FlightplanID:    DefaultFlightplanID,
+		FleetID:         DefaultFleetID,
 	}
 
 	a.Len(repo.saveVehicles, 1)
@@ -91,7 +91,7 @@ func TestCopySuccessWhenAlreadyExistsVehicleWhenCarbonCopyVehicleService(t *test
 
 	pub := &publisherMock{}
 
-	ret := CarbonCopyVehicle(ctx, gen, repo, pub, DefaultID, NewID, DefaultFlightplanID)
+	ret := CarbonCopyVehicle(ctx, gen, repo, pub, DefaultID, NewID, DefaultFleetID)
 
 	a.Len(repo.saveVehicles, 0)
 	a.Len(pub.events, 0)
@@ -119,7 +119,7 @@ func TestGetErrorWhenCarbonCopyVehicleService(t *testing.T) {
 
 	pub := &publisherMock{}
 
-	ret := CarbonCopyVehicle(ctx, gen, repo, pub, DefaultID, NewID, DefaultFlightplanID)
+	ret := CarbonCopyVehicle(ctx, gen, repo, pub, DefaultID, NewID, DefaultFleetID)
 
 	a.Len(pub.events, 0)
 	a.Equal(ret, ErrGet)
@@ -146,7 +146,7 @@ func TestGetError2WhenCarbonCopyVehicleService(t *testing.T) {
 
 	pub := &publisherMock{}
 
-	ret := CarbonCopyVehicle(ctx, gen, repo, pub, DefaultID, NewID, DefaultFlightplanID)
+	ret := CarbonCopyVehicle(ctx, gen, repo, pub, DefaultID, NewID, DefaultFleetID)
 
 	a.Len(pub.events, 0)
 	a.Equal(ret, ErrGet)
@@ -182,7 +182,7 @@ func TestSaveErrorWhenCarbonCopyVehicleService(t *testing.T) {
 
 	pub := &publisherMock{}
 
-	ret := CarbonCopyVehicle(ctx, gen, repo, pub, DefaultID, NewID, DefaultFlightplanID)
+	ret := CarbonCopyVehicle(ctx, gen, repo, pub, DefaultID, NewID, DefaultFleetID)
 
 	a.Len(pub.events, 0)
 	a.Equal(ret, ErrSave)

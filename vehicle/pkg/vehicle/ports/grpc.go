@@ -5,6 +5,7 @@ import (
 
 	proto "vehicle/pkg/skysign_proto"
 	"vehicle/pkg/vehicle/app"
+	"vehicle/pkg/vehicle/service"
 
 	"github.com/golang/glog"
 	"google.golang.org/grpc"
@@ -44,13 +45,13 @@ func (s *GrpcServer) ListVehicles(
 ) (*proto.ListVehiclesResponses, error) {
 	response := &proto.ListVehiclesResponses{}
 	if ret := s.app.Services.ManageVehicle.ListVehicles(
-		func(id, name, communicationID string) {
+		func(model service.VehiclePresentationModel) {
 			response.Vehicles = append(
 				response.Vehicles,
 				&proto.Vehicle{
-					Id:              id,
-					Name:            name,
-					CommunicationId: communicationID,
+					Id:              model.GetVehicle().GetID(),
+					Name:            model.GetVehicle().GetName(),
+					CommunicationId: model.GetVehicle().GetCommunicationID(),
 				},
 			)
 		},
@@ -66,15 +67,15 @@ func (s *GrpcServer) GetVehicle(
 	request *proto.GetVehicleRequest,
 ) (*proto.Vehicle, error) {
 	response := &proto.Vehicle{}
-	requestDpo := &vehicleIDRequestDpo{
+	command := &vehicleIDCommand{
 		id: request.Id,
 	}
 	if ret := s.app.Services.ManageVehicle.GetVehicle(
-		requestDpo,
-		func(id, name, communicationID string) {
-			response.Id = id
-			response.Name = name
-			response.CommunicationId = communicationID
+		command,
+		func(model service.VehiclePresentationModel) {
+			response.Id = model.GetVehicle().GetID()
+			response.Name = model.GetVehicle().GetName()
+			response.CommunicationId = model.GetVehicle().GetCommunicationID()
 		},
 	); ret != nil {
 		return nil, ret
@@ -88,20 +89,19 @@ func (s *GrpcServer) CreateVehicle(
 	request *proto.Vehicle,
 ) (*proto.Vehicle, error) {
 	response := &proto.Vehicle{}
-	requestDpo := &vehicleRequestDpo{
-		name:            request.Name,
-		communicationID: request.CommunicationId,
+	command := &createCommand{
+		request: request,
 	}
 	if ret := s.app.Services.ManageVehicle.CreateVehicle(
-		requestDpo,
-		func(id, name, communicationID string) {
+		command,
+		func(id string) {
 			response.Id = id
-			response.Name = name
-			response.CommunicationId = communicationID
 		},
 	); ret != nil {
 		return nil, ret
 	}
+	response.Name = request.Name
+	response.CommunicationId = request.CommunicationId
 	return response, nil
 }
 
@@ -110,20 +110,15 @@ func (s *GrpcServer) UpdateVehicle(
 	ctx context.Context,
 	request *proto.Vehicle,
 ) (*proto.Vehicle, error) {
-	response := &proto.Vehicle{}
-	requestDpo := &vehicleRequestDpo{
-		id:              request.Id,
-		name:            request.Name,
-		communicationID: request.CommunicationId,
+	response := &proto.Vehicle{
+		Id:              request.Id,
+		Name:            request.Name,
+		CommunicationId: request.CommunicationId,
 	}
-	if ret := s.app.Services.ManageVehicle.UpdateVehicle(
-		requestDpo,
-		func(id, name, communicationID string) {
-			response.Id = id
-			response.Name = name
-			response.CommunicationId = communicationID
-		},
-	); ret != nil {
+	command := &updateCommand{
+		request: request,
+	}
+	if ret := s.app.Services.ManageVehicle.UpdateVehicle(command); ret != nil {
 		return nil, ret
 	}
 	return response, nil
@@ -135,39 +130,59 @@ func (s *GrpcServer) DeleteVehicle(
 	request *proto.DeleteVehicleRequest,
 ) (*proto.Empty, error) {
 	response := &proto.Empty{}
-	requestDpo := &vehicleIDRequestDpo{
+	command := &vehicleIDCommand{
 		id: request.Id,
 	}
-	if ret := s.app.Services.ManageVehicle.DeleteVehicle(
-		requestDpo,
-	); ret != nil {
+	if ret := s.app.Services.ManageVehicle.DeleteVehicle(command); ret != nil {
 		return nil, ret
 	}
 	return response, nil
 }
 
-type vehicleRequestDpo struct {
-	id              string
-	name            string
-	communicationID string
-}
-
-func (f *vehicleRequestDpo) GetID() string {
-	return f.id
-}
-
-func (f *vehicleRequestDpo) GetName() string {
-	return f.name
-}
-
-func (f *vehicleRequestDpo) GetCommunicationID() string {
-	return f.communicationID
-}
-
-type vehicleIDRequestDpo struct {
+type vehicleIDCommand struct {
 	id string
 }
 
-func (f *vehicleIDRequestDpo) GetID() string {
+func (f *vehicleIDCommand) GetID() string {
 	return f.id
+}
+
+type createCommand struct {
+	request *proto.Vehicle
+}
+
+func (f *createCommand) GetVehicle() service.Vehicle {
+	return &vehicle{
+		request: f.request,
+	}
+}
+
+type updateCommand struct {
+	request *proto.Vehicle
+}
+
+func (f *updateCommand) GetID() string {
+	return f.request.Id
+}
+
+func (f *updateCommand) GetVehicle() service.Vehicle {
+	return &vehicle{
+		request: f.request,
+	}
+}
+
+type vehicle struct {
+	request *proto.Vehicle
+}
+
+func (f *vehicle) GetID() string {
+	return f.request.Id
+}
+
+func (f *vehicle) GetName() string {
+	return f.request.Name
+}
+
+func (f *vehicle) GetCommunicationID() string {
+	return f.request.CommunicationId
 }

@@ -8,185 +8,6 @@ import (
 	"github.com/stretchr/testify/mock"
 )
 
-func TestChangeNumberOfVehiclesTransaction(t *testing.T) {
-	a := assert.New(t)
-
-	var (
-		DefaultFleetAssignmentID1 = DefaultFleetAssignmentID + "-1"
-		DefaultFleetAssignmentID2 = DefaultFleetAssignmentID + "-2"
-		DefaultFleetAssignmentID3 = DefaultFleetAssignmentID + "-3"
-		DefaultFleetEventID1      = DefaultFleetEventID + "-1"
-		DefaultFleetEventID2      = DefaultFleetEventID + "-2"
-		DefaultFleetEventID3      = DefaultFleetEventID + "-3"
-		DefaultFleetVersion1      = DefaultFleetVersion + "-1"
-		DefaultFleetVersion2      = DefaultFleetVersion + "-2"
-		DefaultFleetVersion3      = DefaultFleetVersion + "-3"
-		DefaultFleetVersion4      = DefaultFleetVersion + "-4"
-	)
-
-	fleet := fl.AssembleFrom(
-		nil,
-		&fleetComponentMock{
-			ID:           string(DefaultFleetID),
-			FlightplanID: string(DefaultFlightplanID),
-			IsCarbonCopy: fl.Original,
-			Version:      string(DefaultFleetVersion),
-		},
-	)
-
-	gen := &generatorMockFleet{
-		id:            DefaultFleetID,
-		assignmentIDs: []fl.AssignmentID{DefaultFleetAssignmentID1, DefaultFleetAssignmentID2, DefaultFleetAssignmentID3},
-		eventIDs:      []fl.EventID{DefaultFleetEventID1, DefaultFleetEventID2, DefaultFleetEventID3},
-		versions:      []fl.Version{DefaultFleetVersion1, DefaultFleetVersion2, DefaultFleetVersion3, DefaultFleetVersion4},
-	}
-
-	repo := &fleetRepositoryMock{}
-	txm := &txManagerMock{}
-
-	repo.On("GetByFlightplanID", DefaultFlightplanID).Return(fleet, nil)
-	repo.On("DeleteByFlightplanID", DefaultFlightplanID).Return(nil)
-	repo.On("Save", mock.Anything).Return(nil)
-
-	service := &assignFleetService{
-		gen:  gen,
-		repo: repo,
-		txm:  txm,
-	}
-
-	req := &changeNumberOfVehiclesRequestMock{
-		FlightplanID:     string(DefaultFlightplanID),
-		NumberOfVehicles: DefaultFleetNumberOfVehicles,
-	}
-	var resCall bool
-	ret := service.ChangeNumberOfVehicles(
-		req,
-		func(id string, numberOfVehicles int32) {
-			resCall = true
-		},
-	)
-
-	a.Nil(ret)
-	a.True(resCall)
-	a.Nil(txm.isOpe)
-}
-
-func TestChangeNumberOfVehiclesOperation(t *testing.T) {
-	a := assert.New(t)
-
-	var (
-		DefaultFleetAssignmentID1 = DefaultFleetAssignmentID + "-1"
-		DefaultFleetAssignmentID2 = DefaultFleetAssignmentID + "-2"
-		DefaultFleetAssignmentID3 = DefaultFleetAssignmentID + "-3"
-		DefaultFleetEventID1      = DefaultFleetEventID + "-1"
-		DefaultFleetEventID2      = DefaultFleetEventID + "-2"
-		DefaultFleetEventID3      = DefaultFleetEventID + "-3"
-		DefaultFleetVersion1      = DefaultFleetVersion + "-1"
-		DefaultFleetVersion2      = DefaultFleetVersion + "-2"
-		DefaultFleetVersion3      = DefaultFleetVersion + "-3"
-		DefaultFleetVersion4      = DefaultFleetVersion + "-4"
-	)
-
-	fleet := fl.AssembleFrom(
-		nil,
-		&fleetComponentMock{
-			ID:           string(DefaultFleetID),
-			FlightplanID: string(DefaultFlightplanID),
-			IsCarbonCopy: fl.Original,
-			Version:      string(DefaultFleetVersion),
-		},
-	)
-
-	gen := &generatorMockFleet{
-		id:            DefaultFleetID,
-		assignmentIDs: []fl.AssignmentID{DefaultFleetAssignmentID1, DefaultFleetAssignmentID2, DefaultFleetAssignmentID3},
-		eventIDs:      []fl.EventID{DefaultFleetEventID1, DefaultFleetEventID2, DefaultFleetEventID3},
-		versions:      []fl.Version{DefaultFleetVersion1, DefaultFleetVersion2, DefaultFleetVersion3, DefaultFleetVersion4},
-	}
-
-	repo := &fleetRepositoryMock{}
-	repo.On("GetByFlightplanID", DefaultFlightplanID).Return(fleet, nil)
-	repo.On("DeleteByFlightplanID", DefaultFlightplanID).Return(nil)
-	repo.On("Save", mock.Anything).Return(nil)
-
-	service := &assignFleetService{
-		gen:  gen,
-		repo: repo,
-		txm:  nil,
-	}
-
-	req := &changeNumberOfVehiclesRequestMock{
-		FlightplanID:     string(DefaultFlightplanID),
-		NumberOfVehicles: DefaultFleetNumberOfVehicles,
-	}
-	var resFlightplanID string
-	var resNumberOfVehicles int32
-	ret := service.changeNumberOfVehiclesOperation(
-		nil,
-		req,
-		func(id string, numberOfVehicles int32) {
-			resFlightplanID = id
-			resNumberOfVehicles = numberOfVehicles
-		},
-	)
-
-	var actualAssignments []assignmentComponentMock
-	var actualEvents []eventComponentMock
-	repo.fleet.ProvideAssignmentsInterest(
-		func(assignmentID string, vehicleID string) {
-			actualAssignments = append(
-				actualAssignments,
-				assignmentComponentMock{
-					ID:        assignmentID,
-					VehicleID: vehicleID,
-				},
-			)
-		},
-		func(eventID string, assignmentID string, missionID string) {
-			actualEvents = append(
-				actualEvents,
-				eventComponentMock{
-					ID:           eventID,
-					AssignmentID: assignmentID,
-					MissionID:    missionID,
-				},
-			)
-		},
-	)
-
-	expectAssignments := []assignmentComponentMock{
-		{
-			ID: string(DefaultFleetAssignmentID1),
-		},
-		{
-			ID: string(DefaultFleetAssignmentID2),
-		},
-		{
-			ID: string(DefaultFleetAssignmentID3),
-		},
-	}
-	expectEvents := []eventComponentMock{
-		{
-			ID:           string(DefaultFleetEventID1),
-			AssignmentID: string(DefaultFleetAssignmentID1),
-		},
-		{
-			ID:           string(DefaultFleetEventID2),
-			AssignmentID: string(DefaultFleetAssignmentID2),
-		},
-		{
-			ID:           string(DefaultFleetEventID3),
-			AssignmentID: string(DefaultFleetAssignmentID3),
-		},
-	}
-
-	a.Nil(ret)
-	a.Equal(resFlightplanID, string(DefaultFlightplanID))
-	a.Equal(resNumberOfVehicles, DefaultFleetNumberOfVehicles)
-	a.Equal(actualAssignments, expectAssignments)
-	a.Equal(actualEvents, expectEvents)
-}
-
 func TestGetAssignmentsTransaction(t *testing.T) {
 	a := assert.New(t)
 
@@ -195,8 +16,7 @@ func TestGetAssignmentsTransaction(t *testing.T) {
 	fleet := fl.AssembleFrom(
 		gen,
 		&fleetComponentMock{
-			ID:           string(DefaultFleetID),
-			FlightplanID: string(DefaultFlightplanID),
+			ID: string(DefaultFleetID),
 			Assignments: []*assignmentComponentMock{
 				{
 					ID:        string(DefaultFleetAssignmentID),
@@ -217,7 +37,7 @@ func TestGetAssignmentsTransaction(t *testing.T) {
 	repo := &fleetRepositoryMock{}
 	txm := &txManagerMock{}
 
-	repo.On("GetByFlightplanID", DefaultFlightplanID).Return(fleet, nil)
+	repo.On("GetByID", DefaultFleetID).Return(fleet, nil)
 
 	service := &assignFleetService{
 		gen:  gen,
@@ -225,13 +45,13 @@ func TestGetAssignmentsTransaction(t *testing.T) {
 		txm:  txm,
 	}
 
-	req := &fleetIDRequestMock{
-		FlightplanID: string(DefaultFlightplanID),
+	command := &fleetIDCommandMock{
+		FleetID: string(DefaultFleetID),
 	}
 	var resCall bool
 	ret := service.GetAssignments(
-		req,
-		func(id, assignmentID, vehicleID, missionID string) {
+		command,
+		func(model AssignmentPresentationModel) {
 			resCall = true
 		},
 	)
@@ -264,8 +84,7 @@ func TestGetAssignmentsOperation(t *testing.T) {
 	fleet := fl.AssembleFrom(
 		gen,
 		&fleetComponentMock{
-			ID:           string(DefaultFleetID),
-			FlightplanID: string(DefaultFlightplanID),
+			ID: string(DefaultFleetID),
 			Assignments: []*assignmentComponentMock{
 				{
 					ID:        string(DefaultFleetAssignmentID1),
@@ -302,7 +121,7 @@ func TestGetAssignmentsOperation(t *testing.T) {
 	)
 
 	repo := &fleetRepositoryMock{}
-	repo.On("GetByFlightplanID", DefaultFlightplanID).Return(fleet, nil)
+	repo.On("GetByID", DefaultFleetID).Return(fleet, nil)
 
 	service := &assignFleetService{
 		gen:  gen,
@@ -310,34 +129,50 @@ func TestGetAssignmentsOperation(t *testing.T) {
 		txm:  nil,
 	}
 
-	req := &fleetIDRequestMock{
-		FlightplanID: string(DefaultFlightplanID),
+	command := &fleetIDCommandMock{
+		FleetID: string(DefaultFleetID),
 	}
-	var resIDs []string
-	var resAssignmentIDs []string
-	var resVehicleIDs []string
-	var resMissionIDs []string
+	var resModels []AssignmentPresentationModel
 	ret := service.getAssignmentsOperation(
 		nil,
-		req,
-		func(id, assignmentID, vehicleID, missionID string) {
-			resIDs = append(resIDs, id)
-			resAssignmentIDs = append(resAssignmentIDs, assignmentID)
-			resVehicleIDs = append(resVehicleIDs, vehicleID)
-			resMissionIDs = append(resMissionIDs, missionID)
+		command,
+		func(model AssignmentPresentationModel) {
+			resModels = append(resModels, model)
 		},
 	)
 
-	expectIDs := []string{string(DefaultFleetEventID1), string(DefaultFleetEventID2), string(DefaultFleetEventID3)}
-	expectAssignmentIDs := []string{string(DefaultFleetAssignmentID1), string(DefaultFleetAssignmentID2), string(DefaultFleetAssignmentID3)}
-	expectVehicleIDs := []string{string(DefaultFleetVehicleID1), string(DefaultFleetVehicleID2), string(DefaultFleetVehicleID3)}
-	expectMissionIDs := []string{string(DefaultFleetMissionID1), string(DefaultFleetMissionID2), string(DefaultFleetMissionID3)}
+	expectModels := []AssignmentPresentationModel{
+		&assignmentModel{
+			assignment: &assignment{
+				ID:           string(DefaultFleetID),
+				EventID:      string(DefaultFleetEventID1),
+				AssignmentID: string(DefaultFleetAssignmentID1),
+				VehicleID:    string(DefaultFleetVehicleID1),
+				MissionID:    string(DefaultFleetMissionID1),
+			},
+		},
+		&assignmentModel{
+			assignment: &assignment{
+				ID:           string(DefaultFleetID),
+				EventID:      string(DefaultFleetEventID2),
+				AssignmentID: string(DefaultFleetAssignmentID2),
+				VehicleID:    string(DefaultFleetVehicleID2),
+				MissionID:    string(DefaultFleetMissionID2),
+			},
+		},
+		&assignmentModel{
+			assignment: &assignment{
+				ID:           string(DefaultFleetID),
+				EventID:      string(DefaultFleetEventID3),
+				AssignmentID: string(DefaultFleetAssignmentID3),
+				VehicleID:    string(DefaultFleetVehicleID3),
+				MissionID:    string(DefaultFleetMissionID3),
+			},
+		},
+	}
 
 	a.Nil(ret)
-	a.Equal(resIDs, expectIDs)
-	a.Equal(resAssignmentIDs, expectAssignmentIDs)
-	a.Equal(resVehicleIDs, expectVehicleIDs)
-	a.Equal(resMissionIDs, expectMissionIDs)
+	a.Equal(resModels, expectModels)
 }
 
 func TestUpdateAssignmentTransaction(t *testing.T) {
@@ -354,15 +189,13 @@ func TestUpdateAssignmentTransaction(t *testing.T) {
 	)
 
 	gen := &generatorMockFleet{
-		id:       DefaultFleetID,
 		versions: []fl.Version{DefaultFleetVersion1, DefaultFleetVersion2, DefaultFleetVersion3, DefaultFleetVersion4},
 	}
 
 	fleet := fl.AssembleFrom(
 		gen,
 		&fleetComponentMock{
-			ID:           string(DefaultFleetID),
-			FlightplanID: string(DefaultFlightplanID),
+			ID: string(DefaultFleetID),
 			Assignments: []*assignmentComponentMock{
 				{
 					ID:        string(DefaultFleetAssignmentID),
@@ -383,7 +216,7 @@ func TestUpdateAssignmentTransaction(t *testing.T) {
 	repo := &fleetRepositoryMock{}
 	txm := &txManagerMock{}
 
-	repo.On("GetByFlightplanID", DefaultFlightplanID).Return(fleet, nil)
+	repo.On("GetByID", DefaultFleetID).Return(fleet, nil)
 	repo.On("Save", mock.Anything).Return(nil)
 
 	service := &assignFleetService{
@@ -392,8 +225,8 @@ func TestUpdateAssignmentTransaction(t *testing.T) {
 		txm:  txm,
 	}
 
-	req := &updateAssignmentRequestMock{
-		FlightplanID: string(DefaultFlightplanID),
+	command := &updateAssignmentCommandMock{
+		ID:           string(DefaultFleetID),
 		EventID:      string(DefaultFleetEventID),
 		AssignmentID: string(DefaultFleetAssignmentID),
 		VehicleID:    string(AfterFleetVehicleID),
@@ -401,8 +234,8 @@ func TestUpdateAssignmentTransaction(t *testing.T) {
 	}
 	var resCall bool
 	ret := service.UpdateAssignment(
-		req,
-		func(id, assignmentID, vehicleID, missionID string) {
+		command,
+		func(model AssignmentPresentationModel) {
 			resCall = true
 		},
 	)
@@ -424,15 +257,13 @@ func TestUpdateAssignmentOperationAssign(t *testing.T) {
 	)
 
 	gen := &generatorMockFleet{
-		id:       DefaultFleetID,
 		versions: []fl.Version{DefaultFleetVersion1, DefaultFleetVersion2},
 	}
 
 	fleet := fl.AssembleFrom(
 		gen,
 		&fleetComponentMock{
-			ID:           string(DefaultFleetID),
-			FlightplanID: string(DefaultFlightplanID),
+			ID: string(DefaultFleetID),
 			Assignments: []*assignmentComponentMock{
 				{
 					ID:        string(DefaultFleetAssignmentID),
@@ -451,7 +282,7 @@ func TestUpdateAssignmentOperationAssign(t *testing.T) {
 	)
 
 	repo := &fleetRepositoryMock{}
-	repo.On("GetByFlightplanID", DefaultFlightplanID).Return(fleet, nil)
+	repo.On("GetByID", DefaultFleetID).Return(fleet, nil)
 	repo.On("Save", mock.Anything).Return(nil)
 
 	service := &assignFleetService{
@@ -460,25 +291,19 @@ func TestUpdateAssignmentOperationAssign(t *testing.T) {
 		txm:  nil,
 	}
 
-	req := &updateAssignmentRequestMock{
-		FlightplanID: string(DefaultFlightplanID),
+	command := &updateAssignmentCommandMock{
+		ID:           string(DefaultFleetID),
 		EventID:      string(DefaultFleetEventID),
 		AssignmentID: string(DefaultFleetAssignmentID),
 		VehicleID:    string(AfterFleetVehicleID),
 		MissionID:    string(AfterFleetMissionID),
 	}
-	var resID string
-	var resAssignmentID string
-	var resVehicleID string
-	var resMissionID string
+	var resModel AssignmentPresentationModel
 	ret := service.updateAssignmentOperation(
 		nil,
-		req,
-		func(id, assignmentID, vehicleID, missionID string) {
-			resID = id
-			resAssignmentID = assignmentID
-			resVehicleID = vehicleID
-			resMissionID = missionID
+		command,
+		func(model AssignmentPresentationModel) {
+			resModel = model
 		},
 	)
 
@@ -521,10 +346,11 @@ func TestUpdateAssignmentOperationAssign(t *testing.T) {
 	}
 
 	a.Nil(ret)
-	a.Equal(resID, string(DefaultFleetEventID))
-	a.Equal(resAssignmentID, string(DefaultFleetAssignmentID))
-	a.Equal(resVehicleID, string(AfterFleetVehicleID))
-	a.Equal(resMissionID, string(AfterFleetMissionID))
+	a.Equal(resModel.GetAssignment().GetID(), string(DefaultFleetID))
+	a.Equal(resModel.GetAssignment().GetEventID(), string(DefaultFleetEventID))
+	a.Equal(resModel.GetAssignment().GetAssignmentID(), string(DefaultFleetAssignmentID))
+	a.Equal(resModel.GetAssignment().GetVehicleID(), string(AfterFleetVehicleID))
+	a.Equal(resModel.GetAssignment().GetMissionID(), string(AfterFleetMissionID))
 	a.Equal(actualAssignments, expectAssignments)
 	a.Equal(actualEvents, expectEvents)
 }
@@ -538,15 +364,13 @@ func TestUpdateAssignmentOperationCancel(t *testing.T) {
 	)
 
 	gen := &generatorMockFleet{
-		id:       DefaultFleetID,
 		versions: []fl.Version{DefaultFleetVersion1, DefaultFleetVersion2},
 	}
 
 	fleet := fl.AssembleFrom(
 		gen,
 		&fleetComponentMock{
-			ID:           string(DefaultFleetID),
-			FlightplanID: string(DefaultFlightplanID),
+			ID: string(DefaultFleetID),
 			Assignments: []*assignmentComponentMock{
 				{
 					ID:        string(DefaultFleetAssignmentID),
@@ -565,7 +389,7 @@ func TestUpdateAssignmentOperationCancel(t *testing.T) {
 	)
 
 	repo := &fleetRepositoryMock{}
-	repo.On("GetByFlightplanID", DefaultFlightplanID).Return(fleet, nil)
+	repo.On("GetByID", DefaultFleetID).Return(fleet, nil)
 	repo.On("Save", mock.Anything).Return(nil)
 
 	service := &assignFleetService{
@@ -574,25 +398,19 @@ func TestUpdateAssignmentOperationCancel(t *testing.T) {
 		txm:  nil,
 	}
 
-	req := &updateAssignmentRequestMock{
-		FlightplanID: string(DefaultFlightplanID),
+	command := &updateAssignmentCommandMock{
+		ID:           string(DefaultFleetID),
 		EventID:      string(DefaultFleetEventID),
 		AssignmentID: string(DefaultFleetAssignmentID),
 		VehicleID:    "",
 		MissionID:    "",
 	}
-	var resID string
-	var resAssignmentID string
-	var resVehicleID string
-	var resMissionID string
+	var resModel AssignmentPresentationModel
 	ret := service.updateAssignmentOperation(
 		nil,
-		req,
-		func(id, assignmentID, vehicleID, missionID string) {
-			resID = id
-			resAssignmentID = assignmentID
-			resVehicleID = vehicleID
-			resMissionID = missionID
+		command,
+		func(model AssignmentPresentationModel) {
+			resModel = model
 		},
 	)
 
@@ -633,10 +451,11 @@ func TestUpdateAssignmentOperationCancel(t *testing.T) {
 	}
 
 	a.Nil(ret)
-	a.Equal(resID, string(DefaultFleetEventID))
-	a.Equal(resAssignmentID, string(DefaultFleetAssignmentID))
-	a.Empty(resVehicleID)
-	a.Empty(resMissionID)
+	a.Equal(resModel.GetAssignment().GetID(), string(DefaultFleetID))
+	a.Equal(resModel.GetAssignment().GetEventID(), string(DefaultFleetEventID))
+	a.Equal(resModel.GetAssignment().GetAssignmentID(), string(DefaultFleetAssignmentID))
+	a.Empty(resModel.GetAssignment().GetVehicleID())
+	a.Empty(resModel.GetAssignment().GetMissionID())
 	a.Equal(actualAssignments, expectAssignments)
 	a.Equal(actualEvents, expectEvents)
 }

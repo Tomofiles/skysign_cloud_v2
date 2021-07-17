@@ -15,7 +15,7 @@ func TestCompleteActionTransaction(t *testing.T) {
 	actionComp := actionComponentMock{
 		ID:               string(DefaultActionID),
 		CommunicationID:  string(DefaultActionCommunicationID),
-		FlightplanID:     string(DefaultActionFlightplanID),
+		FleetID:          string(DefaultActionFleetID),
 		IsCompleted:      act.Active,
 		TrajectoryPoints: trajectoryPointComps,
 	}
@@ -25,7 +25,7 @@ func TestCompleteActionTransaction(t *testing.T) {
 	actions := []*act.Action{action}
 
 	repo := &actionRepositoryMock{}
-	repo.On("GetAllActiveByFlightplanID", DefaultActionFlightplanID).Return(actions, nil)
+	repo.On("GetAllActiveByFleetID", DefaultActionFleetID).Return(actions, nil)
 	repo.On("Save", mock.Anything).Return(nil)
 	txm := &txManagerMock{}
 
@@ -34,10 +34,10 @@ func TestCompleteActionTransaction(t *testing.T) {
 		txm:  txm,
 	}
 
-	req := &flightplanIDRequestMock{
-		FlightplanID: string(DefaultActionFlightplanID),
+	command := &fleetIDCommandMock{
+		FleetID: string(DefaultActionFleetID),
 	}
-	ret := service.CompleteAction(req)
+	ret := service.CompleteAction(command)
 
 	a.Nil(ret)
 	a.Nil(txm.isOpe)
@@ -51,7 +51,7 @@ func TestCompleteActionOperation(t *testing.T) {
 	actionComp := actionComponentMock{
 		ID:               string(DefaultActionID),
 		CommunicationID:  string(DefaultActionCommunicationID),
-		FlightplanID:     string(DefaultActionFlightplanID),
+		FleetID:          string(DefaultActionFleetID),
 		IsCompleted:      act.Active,
 		TrajectoryPoints: trajectoryPointComps,
 	}
@@ -61,7 +61,7 @@ func TestCompleteActionOperation(t *testing.T) {
 	actions := []*act.Action{action}
 
 	repo := &actionRepositoryMock{}
-	repo.On("GetAllActiveByFlightplanID", DefaultActionFlightplanID).Return(actions, nil)
+	repo.On("GetAllActiveByFleetID", DefaultActionFleetID).Return(actions, nil)
 	repo.On("Save", mock.Anything).Return(nil)
 
 	service := &operateActionService{
@@ -69,19 +69,19 @@ func TestCompleteActionOperation(t *testing.T) {
 		txm:  nil,
 	}
 
-	req := &flightplanIDRequestMock{
-		FlightplanID: string(DefaultActionFlightplanID),
+	command := &fleetIDCommandMock{
+		FleetID: string(DefaultActionFleetID),
 	}
 	ret := service.completeActionOperation(
 		nil,
-		req,
+		command,
 	)
 
 	expectTrajectoryPointComps := []act.TrajectoryPointComponent{}
 	expectActionComp := actionComponentMock{
 		ID:               string(DefaultActionID),
 		CommunicationID:  string(DefaultActionCommunicationID),
-		FlightplanID:     string(DefaultActionFlightplanID),
+		FleetID:          string(DefaultActionFleetID),
 		IsCompleted:      act.Completed,
 		TrajectoryPoints: expectTrajectoryPointComps,
 	}
@@ -99,19 +99,19 @@ func TestNoActionWhenCompleteActionOperation(t *testing.T) {
 	actions := []*act.Action{}
 
 	repo := &actionRepositoryMock{}
-	repo.On("GetAllActiveByFlightplanID", DefaultActionFlightplanID).Return(actions, nil)
+	repo.On("GetAllActiveByFleetID", DefaultActionFleetID).Return(actions, nil)
 
 	service := &operateActionService{
 		repo: repo,
 		txm:  nil,
 	}
 
-	req := &flightplanIDRequestMock{
-		FlightplanID: string(DefaultActionFlightplanID),
+	command := &fleetIDCommandMock{
+		FleetID: string(DefaultActionFleetID),
 	}
 	ret := service.completeActionOperation(
 		nil,
-		req,
+		command,
 	)
 
 	a.Nil(ret)
@@ -125,7 +125,7 @@ func TestPushTelemetryTransaction(t *testing.T) {
 	actionComp := actionComponentMock{
 		ID:               string(DefaultActionID),
 		CommunicationID:  string(DefaultActionCommunicationID),
-		FlightplanID:     string(DefaultActionFlightplanID),
+		FleetID:          string(DefaultActionFleetID),
 		IsCompleted:      act.Active,
 		TrajectoryPoints: trajectoryPointComps,
 	}
@@ -171,7 +171,7 @@ func TestPushTelemetryOperation(t *testing.T) {
 	actionComp := actionComponentMock{
 		ID:               string(DefaultActionID),
 		CommunicationID:  string(DefaultActionCommunicationID),
-		FlightplanID:     string(DefaultActionFlightplanID),
+		FleetID:          string(DefaultActionFleetID),
 		IsCompleted:      act.Active,
 		TrajectoryPoints: trajectoryPointComps,
 	}
@@ -226,7 +226,7 @@ func TestPushTelemetryOperation(t *testing.T) {
 	expectActionComp := actionComponentMock{
 		ID:               string(DefaultActionID),
 		CommunicationID:  string(DefaultActionCommunicationID),
-		FlightplanID:     string(DefaultActionFlightplanID),
+		FleetID:          string(DefaultActionFleetID),
 		IsCompleted:      act.Active,
 		TrajectoryPoints: expectTrajectoryPointComps,
 	}

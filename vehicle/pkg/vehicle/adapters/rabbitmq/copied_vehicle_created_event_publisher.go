@@ -24,7 +24,7 @@ func PublishCopiedVehicleCreatedEvent(
 	eventPb := skysign_proto.CopiedVehicleCreatedEvent{
 		VehicleId:       event.GetVehicleID(),
 		CommunicationId: event.GetCommunicationID(),
-		FlightplanId:    event.GetFlightplanID(),
+		FleetId:         event.GetFleetID(),
 	}
 	eventBin, err := proto.Marshal(&eventPb)
 	if err != nil {

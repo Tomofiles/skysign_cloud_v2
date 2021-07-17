@@ -7,17 +7,17 @@ import (
 
 // OperateActionService .
 type OperateActionService interface {
-	CompleteAction(requestDpo CompleteActionRequestDpo) error
-	PushTelemetry(requestDpo PushTelemetryRequestDpo) error
+	CompleteAction(command CompleteActionCommand) error
+	PushTelemetry(command PushTelemetryCommand) error
 }
 
-// CompleteActionRequestDpo .
-type CompleteActionRequestDpo interface {
-	GetFlightplanID() string
+// CompleteActionCommand .
+type CompleteActionCommand interface {
+	GetFleetID() string
 }
 
-// PushTelemetryRequestDpo .
-type PushTelemetryRequestDpo interface {
+// PushTelemetryCommand .
+type PushTelemetryCommand interface {
 	GetCommunicationID() string
 	GetLatitude() float64
 	GetLongitude() float64
@@ -49,13 +49,13 @@ type operateActionService struct {
 }
 
 func (s *operateActionService) CompleteAction(
-	requestDpo CompleteActionRequestDpo,
+	command CompleteActionCommand,
 ) error {
 	return s.txm.Do(
 		func(tx txmanager.Tx) error {
 			return s.completeActionOperation(
 				tx,
-				requestDpo,
+				command,
 			)
 		},
 	)
@@ -63,9 +63,9 @@ func (s *operateActionService) CompleteAction(
 
 func (s *operateActionService) completeActionOperation(
 	tx txmanager.Tx,
-	requestDpo CompleteActionRequestDpo,
+	command CompleteActionCommand,
 ) error {
-	actions, err := s.repo.GetAllActiveByFlightplanID(tx, action.FlightplanID(requestDpo.GetFlightplanID()))
+	actions, err := s.repo.GetAllActiveByFleetID(tx, action.FleetID(command.GetFleetID()))
 	if err != nil {
 		return err
 	}
@@ -83,13 +83,13 @@ func (s *operateActionService) completeActionOperation(
 }
 
 func (s *operateActionService) PushTelemetry(
-	requestDpo PushTelemetryRequestDpo,
+	command PushTelemetryCommand,
 ) error {
 	return s.txm.Do(
 		func(tx txmanager.Tx) error {
 			return s.pushTelemetryOperation(
 				tx,
-				requestDpo,
+				command,
 			)
 		},
 	)
@@ -97,25 +97,25 @@ func (s *operateActionService) PushTelemetry(
 
 func (s *operateActionService) pushTelemetryOperation(
 	tx txmanager.Tx,
-	requestDpo PushTelemetryRequestDpo,
+	command PushTelemetryCommand,
 ) error {
-	aAction, err := s.repo.GetActiveByCommunicationID(tx, action.CommunicationID(requestDpo.GetCommunicationID()))
+	aAction, err := s.repo.GetActiveByCommunicationID(tx, action.CommunicationID(command.GetCommunicationID()))
 	if err != nil {
 		return err
 	}
 
 	snapshot := action.TelemetrySnapshot{
-		Latitude:         requestDpo.GetLatitude(),
-		Longitude:        requestDpo.GetLongitude(),
-		Altitude:         requestDpo.GetAltitude(),
-		RelativeAltitude: requestDpo.GetRelativeAltitude(),
-		Speed:            requestDpo.GetSpeed(),
-		Armed:            requestDpo.GetArmed(),
-		FlightMode:       requestDpo.GetFlightMode(),
-		OrientationX:     requestDpo.GetOrientationX(),
-		OrientationY:     requestDpo.GetOrientationY(),
-		OrientationZ:     requestDpo.GetOrientationZ(),
-		OrientationW:     requestDpo.GetOrientationW(),
+		Latitude:         command.GetLatitude(),
+		Longitude:        command.GetLongitude(),
+		Altitude:         command.GetAltitude(),
+		RelativeAltitude: command.GetRelativeAltitude(),
+		Speed:            command.GetSpeed(),
+		Armed:            command.GetArmed(),
+		FlightMode:       command.GetFlightMode(),
+		OrientationX:     command.GetOrientationX(),
+		OrientationY:     command.GetOrientationY(),
+		OrientationZ:     command.GetOrientationZ(),
+		OrientationW:     command.GetOrientationW(),
 	}
 
 	if err := aAction.PushTelemetry(snapshot); err != nil {

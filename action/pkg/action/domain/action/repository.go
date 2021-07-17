@@ -13,7 +13,7 @@ var (
 // Repository .
 type Repository interface {
 	GetByID(txmanager.Tx, ID) (*Action, error)
-	GetAllActiveByFlightplanID(txmanager.Tx, FlightplanID) ([]*Action, error)
+	GetAllActiveByFleetID(txmanager.Tx, FleetID) ([]*Action, error)
 	GetActiveByCommunicationID(txmanager.Tx, CommunicationID) (*Action, error)
 	Save(txmanager.Tx, *Action) error
 }

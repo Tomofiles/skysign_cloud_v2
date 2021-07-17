@@ -2,13 +2,12 @@ package fleet
 
 import (
 	"flightplan/pkg/flightplan/domain/event"
-	"flightplan/pkg/flightplan/domain/flightplan"
 )
 
 // NewInstance .
-func NewInstance(gen Generator, flightplanID flightplan.ID, numberOfVehicles int32) *Fleet {
+func NewInstance(gen Generator, id ID, numberOfVehicles int) *Fleet {
 	var vehicleAssignments []*VehicleAssignment
-	var vaIndex int32
+	var vaIndex int
 	for vaIndex < numberOfVehicles {
 		vehicleAssignments = append(vehicleAssignments, &VehicleAssignment{
 			assignmentID: gen.NewAssignmentID(),
@@ -17,8 +16,7 @@ func NewInstance(gen Generator, flightplanID flightplan.ID, numberOfVehicles int
 	}
 	version := gen.NewVersion()
 	return &Fleet{
-		id:                 gen.NewID(),
-		flightplanID:       flightplanID,
+		id:                 id,
 		vehicleAssignments: vehicleAssignments,
 		isCarbonCopy:       Original,
 		version:            version,
@@ -31,7 +29,7 @@ func NewInstance(gen Generator, flightplanID flightplan.ID, numberOfVehicles int
 func Copy(
 	gen Generator,
 	pub event.Publisher,
-	id flightplan.ID,
+	id ID,
 	original *Fleet,
 ) *Fleet {
 	var vehicleAssignments []*VehicleAssignment
@@ -72,10 +70,10 @@ func Copy(
 			if k == "" {
 				continue
 			}
-			event := VehicleCopiedWhenFlightplanCopiedEvent{
-				FlightplanID: id,
-				OriginalID:   k,
-				NewID:        v,
+			event := VehicleCopiedEvent{
+				FleetID:    id,
+				OriginalID: k,
+				NewID:      v,
 			}
 			pub.Publish(event)
 		}
@@ -83,18 +81,17 @@ func Copy(
 			if k == "" {
 				continue
 			}
-			event := MissionCopiedWhenFlightplanCopiedEvent{
-				FlightplanID: id,
-				OriginalID:   k,
-				NewID:        v,
+			event := MissionCopiedEvent{
+				FleetID:    id,
+				OriginalID: k,
+				NewID:      v,
 			}
 			pub.Publish(event)
 		}
 	}
 
 	return &Fleet{
-		id:                 gen.NewID(),
-		flightplanID:       id,
+		id:                 id,
 		vehicleAssignments: vehicleAssignments,
 		eventPlannings:     eventPlannings,
 		isCarbonCopy:       CarbonCopy,
@@ -129,7 +126,6 @@ func AssembleFrom(gen Generator, comp Component) *Fleet {
 	}
 	return &Fleet{
 		id:                 ID(comp.GetID()),
-		flightplanID:       flightplan.ID(comp.GetFlightplanID()),
 		vehicleAssignments: vehicleAssignments,
 		eventPlannings:     eventPlannings,
 		isCarbonCopy:       comp.GetIsCarbonCopy(),
@@ -142,13 +138,12 @@ func AssembleFrom(gen Generator, comp Component) *Fleet {
 // TakeApart .
 func TakeApart(
 	fleet *Fleet,
-	fleetComp func(id, flightplanID, version string, isCarbonCopy bool),
+	fleetComp func(id, version string, isCarbonCopy bool),
 	assignmentComp func(id, fleetID, vehicleID string),
 	eventComp func(id, fleetID, assignmentID, missionID string),
 ) {
 	fleetComp(
 		string(fleet.id),
-		string(fleet.flightplanID),
 		string(fleet.version),
 		fleet.isCarbonCopy,
 	)
@@ -172,7 +167,6 @@ func TakeApart(
 // Component .
 type Component interface {
 	GetID() string
-	GetFlightplanID() string
 	GetIsCarbonCopy() bool
 	GetVersion() string
 	GetAssignments() []AssignmentComponent

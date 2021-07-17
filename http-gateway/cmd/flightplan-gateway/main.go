@@ -35,7 +35,15 @@ func run() error {
 	if err != nil {
 		return err
 	}
-	err = gw.RegisterAssignAssetsToFlightplanServiceHandlerFromEndpoint(ctx, mux, endpoint, opts)
+	err = gw.RegisterChangeFlightplanServiceHandlerFromEndpoint(ctx, mux, endpoint, opts)
+	if err != nil {
+		return err
+	}
+	err = gw.RegisterExecuteFlightplanServiceHandlerFromEndpoint(ctx, mux, endpoint, opts)
+	if err != nil {
+		return err
+	}
+	err = gw.RegisterAssignAssetsToFleetServiceHandlerFromEndpoint(ctx, mux, endpoint, opts)
 	if err != nil {
 		return err
 	}

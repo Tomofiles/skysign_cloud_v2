@@ -2,7 +2,6 @@ package fleet
 
 import (
 	"errors"
-	"flightplan/pkg/flightplan/domain/flightplan"
 	"flightplan/pkg/flightplan/domain/txmanager"
 )
 
@@ -13,7 +12,7 @@ var (
 
 // Repository .
 type Repository interface {
-	GetByFlightplanID(txmanager.Tx, flightplan.ID) (*Fleet, error)
+	GetByID(txmanager.Tx, ID) (*Fleet, error)
 	Save(txmanager.Tx, *Fleet) error
-	DeleteByFlightplanID(txmanager.Tx, flightplan.ID) error
+	Delete(txmanager.Tx, ID) error
 }

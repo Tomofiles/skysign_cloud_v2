@@ -3,37 +3,38 @@ package service
 import (
 	"flightplan/pkg/flightplan/domain/event"
 	"flightplan/pkg/flightplan/domain/fleet"
-	"flightplan/pkg/flightplan/domain/flightplan"
+	f "flightplan/pkg/flightplan/domain/fleet"
 	"flightplan/pkg/flightplan/domain/txmanager"
 )
 
 // ManageFleetService .
 type ManageFleetService interface {
-	CreateFleet(requestDpo CreateFleetRequestDpo) error
-	DeleteFleet(requestDpo DeleteFleetRequestDpo) error
-	CarbonCopyFleet(requestDpo CarbonCopyFleetRequestDpo) error
+	CreateFleet(command CreateFleetCommand) error
+	DeleteFleet(command DeleteFleetCommand) error
+	CarbonCopyFleet(command CarbonCopyFleetCommand) error
 }
 
-// CreateFleetRequestDpo .
-type CreateFleetRequestDpo interface {
-	GetFlightplanID() string
+// CreateFleetCommand .
+type CreateFleetCommand interface {
+	GetID() string
+	GetNumberOfVehicles() int
 }
 
-// DeleteFleetRequestDpo .
-type DeleteFleetRequestDpo interface {
-	GetFlightplanID() string
+// DeleteFleetCommand .
+type DeleteFleetCommand interface {
+	GetID() string
 }
 
-// CarbonCopyFleetRequestDpo .
-type CarbonCopyFleetRequestDpo interface {
+// CarbonCopyFleetCommand .
+type CarbonCopyFleetCommand interface {
 	GetOriginalID() string
 	GetNewID() string
 }
 
 // NewManageFleetService .
 func NewManageFleetService(
-	gen fleet.Generator,
-	repo fleet.Repository,
+	gen f.Generator,
+	repo f.Repository,
 	txm txmanager.TransactionManager,
 	psm event.PubSubManager,
 ) ManageFleetService {
@@ -46,31 +47,34 @@ func NewManageFleetService(
 }
 
 type manageFleetService struct {
-	gen  fleet.Generator
-	repo fleet.Repository
+	gen  f.Generator
+	repo f.Repository
 	txm  txmanager.TransactionManager
 	psm  event.PubSubManager
 }
 
 func (s *manageFleetService) CreateFleet(
-	requestDpo CreateFleetRequestDpo,
+	command CreateFleetCommand,
 ) error {
 	return s.txm.Do(func(tx txmanager.Tx) error {
 		return s.createFleetOperation(
 			tx,
-			requestDpo,
+			command,
 		)
 	})
 }
 
 func (s *manageFleetService) createFleetOperation(
 	tx txmanager.Tx,
-	requestDpo CreateFleetRequestDpo,
+	command CreateFleetCommand,
 ) error {
-	fleet := fleet.NewInstance(
+	fleet := f.NewInstance(
 		s.gen,
-		flightplan.ID(requestDpo.GetFlightplanID()),
-		0)
+		f.ID(command.GetID()),
+		command.GetNumberOfVehicles())
+	for _, assignmentID := range fleet.GetAllAssignmentID() {
+		fleet.AddNewEvent(assignmentID)
+	}
 	if ret := s.repo.Save(tx, fleet); ret != nil {
 		return ret
 	}
@@ -79,23 +83,23 @@ func (s *manageFleetService) createFleetOperation(
 }
 
 func (s *manageFleetService) DeleteFleet(
-	requestDpo DeleteFleetRequestDpo,
+	command DeleteFleetCommand,
 ) error {
 	return s.txm.Do(func(tx txmanager.Tx) error {
 		return s.deleteFleetOperation(
 			tx,
-			requestDpo,
+			command,
 		)
 	})
 }
 
 func (s *manageFleetService) deleteFleetOperation(
 	tx txmanager.Tx,
-	requestDpo DeleteFleetRequestDpo,
+	command DeleteFleetCommand,
 ) error {
-	if ret := s.repo.DeleteByFlightplanID(
+	if ret := s.repo.Delete(
 		tx,
-		flightplan.ID(requestDpo.GetFlightplanID()),
+		f.ID(command.GetID()),
 	); ret != nil {
 		return ret
 	}
@@ -104,7 +108,7 @@ func (s *manageFleetService) deleteFleetOperation(
 }
 
 func (s *manageFleetService) CarbonCopyFleet(
-	requestDpo CarbonCopyFleetRequestDpo,
+	command CarbonCopyFleetCommand,
 ) error {
 	pub, chClose, err := s.psm.GetPublisher()
 	if err != nil {
@@ -117,7 +121,7 @@ func (s *manageFleetService) CarbonCopyFleet(
 			return s.carbonCopyFleetOperation(
 				tx,
 				pub,
-				requestDpo,
+				command,
 			)
 		},
 		func() error {
@@ -129,15 +133,15 @@ func (s *manageFleetService) CarbonCopyFleet(
 func (s *manageFleetService) carbonCopyFleetOperation(
 	tx txmanager.Tx,
 	pub event.Publisher,
-	requestDpo CarbonCopyFleetRequestDpo,
+	command CarbonCopyFleetCommand,
 ) error {
 	if ret := fleet.CarbonCopyFleet(
 		tx,
 		s.gen,
 		s.repo,
 		pub,
-		flightplan.ID(requestDpo.GetOriginalID()),
-		flightplan.ID(requestDpo.GetNewID()),
+		f.ID(command.GetOriginalID()),
+		f.ID(command.GetNewID()),
 	); ret != nil {
 		return ret
 	}

@@ -20,10 +20,10 @@ func (g *FlightoperationUUID) NewID() flightoperation.ID {
 	return flightoperation.ID(uuid.String())
 }
 
-// NewFlightplanID .
-func (g *FlightoperationUUID) NewFlightplanID() flightoperation.FlightplanID {
+// NewFleetID .
+func (g *FlightoperationUUID) NewFleetID() flightoperation.FleetID {
 	uuid, _ := uuid.NewRandom()
-	return flightoperation.FlightplanID(uuid.String())
+	return flightoperation.FleetID(uuid.String())
 }
 
 // NewVersion .

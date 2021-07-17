@@ -11,43 +11,6 @@ import (
 
 // Missionを削除するドメインサービスをテストする。
 // 指定されたIDのMissionを削除する。
-// Navigationがもともと存在しない場合、
-// Deletedイベントが発行されないことを検証する。
-func TestNoNavigationWhenDeleteMissionService(t *testing.T) {
-	a := assert.New(t)
-
-	ctx := context.Background()
-
-	gen := &generatorMock{
-		versions: []Version{DefaultVersion},
-	}
-	testMission := Mission{
-		id:           DefaultID,
-		name:         DefaultName,
-		navigation:   nil,
-		isCarbonCopy: Original,
-		version:      DefaultVersion,
-		newVersion:   DefaultVersion,
-		gen:          gen,
-	}
-	repo := &repositoryMockDeleteService{}
-	repo.On("GetByID", DefaultID).Return(&testMission, nil)
-	repo.On("Delete", mock.Anything).Return(nil)
-
-	pub := &publisherMock{}
-
-	ret := DeleteMission(ctx, repo, pub, DefaultID)
-
-	a.Len(repo.deleteIDs, 1)
-	a.Equal(repo.deleteIDs[0], DefaultID)
-	a.Len(pub.events, 0)
-
-	a.Nil(ret)
-}
-
-// Missionを削除するドメインサービスをテストする。
-// 指定されたIDのMissionを削除する。
-// Deletedイベントが発行されることを検証する。
 func TestDeleteMissionService(t *testing.T) {
 	a := assert.New(t)
 
@@ -75,15 +38,9 @@ func TestDeleteMissionService(t *testing.T) {
 
 	ret := DeleteMission(ctx, repo, pub, DefaultID)
 
-	expectEvent := DeletedEvent{
-		ID:       DefaultID,
-		UploadID: DefaultUploadID,
-	}
-
 	a.Len(repo.deleteIDs, 1)
 	a.Equal(repo.deleteIDs[0], DefaultID)
-	a.Len(pub.events, 1)
-	a.Equal(pub.events, []interface{}{expectEvent})
+	a.Len(pub.events, 0)
 
 	a.Nil(ret)
 }

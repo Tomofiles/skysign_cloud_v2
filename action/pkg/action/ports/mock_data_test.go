@@ -9,29 +9,29 @@ import (
 
 const DefaultActionID = act.ID("action-id")
 const DefaultActionCommunicationID = act.CommunicationID("communication-id")
-const DefaultActionFlightplanID = act.FlightplanID("flightplan-id")
+const DefaultActionFleetID = act.FleetID("fleet-id")
 
 type manageActionServiceMock struct {
 	mock.Mock
-	requestDpo service.CreateActionRequestDpo
+	command service.CreateActionCommand
 }
 
 func (s *manageActionServiceMock) CreateAction(
-	requestDpo service.CreateActionRequestDpo,
+	command service.CreateActionCommand,
 ) error {
 	ret := s.Called()
-	s.requestDpo = requestDpo
+	s.command = command
 	return ret.Error(0)
 }
 
 func (s *manageActionServiceMock) GetTrajectory(
-	requestDpo service.GetTrajectoryRequestDpo,
-	responseEachDpo service.GetTrajectoryResponseDpo,
+	command service.GetTrajectoryCommand,
+	telemetry service.TelemetrySnapshot,
 ) error {
 	ret := s.Called()
 	if snapshots := ret.Get(0); snapshots != nil {
 		for _, s := range snapshots.([]act.TelemetrySnapshot) {
-			responseEachDpo(s)
+			telemetry(s)
 		}
 	}
 	return ret.Error(1)
@@ -39,22 +39,22 @@ func (s *manageActionServiceMock) GetTrajectory(
 
 type operateActionServiceMock struct {
 	mock.Mock
-	completeRequestDpo  service.CompleteActionRequestDpo
-	telemetryRequestDpo service.PushTelemetryRequestDpo
+	completeCommand  service.CompleteActionCommand
+	telemetryCommand service.PushTelemetryCommand
 }
 
 func (s *operateActionServiceMock) CompleteAction(
-	requestDpo service.CompleteActionRequestDpo,
+	command service.CompleteActionCommand,
 ) error {
 	ret := s.Called()
-	s.completeRequestDpo = requestDpo
+	s.completeCommand = command
 	return ret.Error(0)
 }
 
 func (s *operateActionServiceMock) PushTelemetry(
-	requestDpo service.PushTelemetryRequestDpo,
+	command service.PushTelemetryCommand,
 ) error {
 	ret := s.Called()
-	s.telemetryRequestDpo = requestDpo
+	s.telemetryCommand = command
 	return ret.Error(0)
 }

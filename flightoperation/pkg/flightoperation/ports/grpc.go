@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"flightoperation/pkg/flightoperation/app"
+	"flightoperation/pkg/flightoperation/service"
 	proto "flightoperation/pkg/skysign_proto"
 
 	"github.com/golang/glog"
@@ -44,12 +45,14 @@ func (s *GrpcServer) ListFlightoperations(
 ) (*proto.ListFlightoperationsResponses, error) {
 	response := &proto.ListFlightoperationsResponses{}
 	if ret := s.app.Services.ManageFlightoperation.ListFlightoperations(
-		func(id, flightplanID string) {
+		func(model service.FlightoperationPresentationModel) {
 			response.Flightoperations = append(
 				response.Flightoperations,
 				&proto.Flightoperation{
-					Id:           id,
-					FlightplanId: flightplanID,
+					Id:          model.GetFlightoperation().GetID(),
+					Name:        model.GetFlightoperation().GetName(),
+					Description: model.GetFlightoperation().GetDescription(),
+					FleetId:     model.GetFlightoperation().GetFleetID(),
 				},
 			)
 		},
@@ -65,35 +68,21 @@ func (s *GrpcServer) GetFlightoperation(
 	request *proto.GetFlightoperationRequest,
 ) (*proto.Flightoperation, error) {
 	response := &proto.Flightoperation{}
-	requestDpo := &flightoperationIDRequestDpo{
+	command := &flightoperationIDCommand{
 		id: request.Id,
 	}
 	if ret := s.app.Services.ManageFlightoperation.GetFlightoperation(
-		requestDpo,
-		func(id, flightplanID string) {
-			response.Id = id
-			response.FlightplanId = flightplanID
+		command,
+		func(model service.FlightoperationPresentationModel) {
+			response.Id = model.GetFlightoperation().GetID()
+			response.Name = model.GetFlightoperation().GetName()
+			response.Description = model.GetFlightoperation().GetDescription()
+			response.FleetId = model.GetFlightoperation().GetFleetID()
 		},
 	); ret != nil {
 		return nil, ret
 	}
 	return response, nil
-}
-
-// CreateFlightoperation .
-func (s *GrpcServer) CreateFlightoperation(
-	ctx context.Context,
-	request *proto.CreateFlightoperationRequest,
-) (*proto.Empty, error) {
-	requestDpo := &flightplanIDRequestDpo{
-		flightplanID: request.FlightplanId,
-	}
-	if ret := s.app.Services.ManageFlightoperation.CreateFlightoperation(
-		requestDpo,
-	); ret != nil {
-		return nil, ret
-	}
-	return &proto.Empty{}, nil
 }
 
 // CompleteFlightoperation .
@@ -102,29 +91,19 @@ func (s *GrpcServer) CompleteFlightoperation(
 	request *proto.CompleteFlightoperationRequest,
 ) (*proto.Empty, error) {
 	response := &proto.Empty{}
-	requestDpo := &flightoperationIDRequestDpo{
+	command := &flightoperationIDCommand{
 		id: request.Id,
 	}
-	if ret := s.app.Services.OperateFlightoperation.CompleteFlightoperation(
-		requestDpo,
-	); ret != nil {
+	if ret := s.app.Services.OperateFlightoperation.CompleteFlightoperation(command); ret != nil {
 		return nil, ret
 	}
 	return response, nil
 }
 
-type flightoperationIDRequestDpo struct {
+type flightoperationIDCommand struct {
 	id string
 }
 
-func (f *flightoperationIDRequestDpo) GetID() string {
+func (f *flightoperationIDCommand) GetID() string {
 	return f.id
-}
-
-type flightplanIDRequestDpo struct {
-	flightplanID string
-}
-
-func (f *flightplanIDRequestDpo) GetFlightplanID() string {
-	return f.flightplanID
 }

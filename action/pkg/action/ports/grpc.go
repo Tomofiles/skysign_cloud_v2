@@ -44,11 +44,11 @@ func (s *GrpcServer) GetTrajectory(
 	request *proto.GetTrajectoryRequest,
 ) (*proto.GetTrajectoryResponse, error) {
 	response := &proto.GetTrajectoryResponse{}
-	requestDpo := &actionIDRequestDpo{
+	command := &actionIDCommand{
 		id: request.VehicleId,
 	}
 	if ret := s.app.Services.ManageAction.GetTrajectory(
-		requestDpo,
+		command,
 		func(snapshot action.TelemetrySnapshot) {
 			response.Telemetries = append(
 				response.Telemetries,
@@ -73,10 +73,10 @@ func (s *GrpcServer) GetTrajectory(
 	return response, nil
 }
 
-type actionIDRequestDpo struct {
+type actionIDCommand struct {
 	id string
 }
 
-func (f *actionIDRequestDpo) GetID() string {
+func (f *actionIDCommand) GetID() string {
 	return f.id
 }

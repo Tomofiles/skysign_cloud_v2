@@ -3,13 +3,15 @@ package flightreport
 // ID .
 type ID string
 
-// FlightoperationID .
-type FlightoperationID string
+// FleetID .
+type FleetID string
 
 // Flightreport .
 type Flightreport struct {
-	id                ID
-	flightoperationID FlightoperationID
+	id          ID
+	name        string
+	description string
+	fleetID     FleetID
 }
 
 // GetID .
@@ -17,9 +19,19 @@ func (f *Flightreport) GetID() ID {
 	return f.id
 }
 
-// GetFlightoperationID .
-func (f *Flightreport) GetFlightoperationID() FlightoperationID {
-	return f.flightoperationID
+// GetName .
+func (f *Flightreport) GetName() string {
+	return f.name
+}
+
+// GetDescription .
+func (f *Flightreport) GetDescription() string {
+	return f.description
+}
+
+// GetFleetID .
+func (f *Flightreport) GetFleetID() FleetID {
+	return f.fleetID
 }
 
 // Generator .

@@ -11,22 +11,25 @@ func CreateNewFlightoperation(
 	gen Generator,
 	repo Repository,
 	pub event.Publisher,
-	originalID FlightplanID,
+	name string,
+	description string,
+	originalID FleetID,
 ) error {
-	newID := gen.NewFlightplanID()
+	newID := gen.NewFleetID()
 
 	flightoperation := NewInstance(gen, newID)
+
+	flightoperation.SetPublisher(pub)
+
+	// 生成直後のためエラーは発生しない想定
+	flightoperation.NameFlightoperation(name)
+	flightoperation.ChangeDescription(description)
 
 	if err := repo.Save(tx, flightoperation); err != nil {
 		return err
 	}
 
-	pub.Publish(CreatedEvent{
-		ID:           flightoperation.GetID(),
-		FlightplanID: newID,
-	})
-	pub.Publish(FlightplanCopiedWhenCreatedEvent{
-		ID:         flightoperation.GetID(),
+	pub.Publish(FleetCopiedEvent{
 		OriginalID: originalID,
 		NewID:      newID,
 	})

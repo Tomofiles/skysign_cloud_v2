@@ -13,6 +13,7 @@ const DefaultFlightplanID = flightplan.ID("flightplan-id")
 const DefaultFlightplanVersion = flightplan.Version("version")
 const DefaultFlightplanName = "flightplan-name"
 const DefaultFlightplanDescription = "flightplan-description"
+const DefaultFlightplanFleetID = flightplan.FleetID("fleet-id")
 const DefaultFleetID = fleet.ID("fleet-id")
 const DefaultFleetAssignmentID = fleet.AssignmentID("assignment-id")
 const DefaultFleetEventID = fleet.EventID("event-id")
@@ -41,11 +42,11 @@ func GetNewDbMock() (*gorm.DB, sqlmock.Sqlmock, error) {
 
 // Flightplan構成オブジェクトモック
 type flightplanComponentMock struct {
-	id           string
-	name         string
-	description  string
-	isCarbonCopy bool
-	version      string
+	id          string
+	name        string
+	description string
+	fleetID     string
+	version     string
 }
 
 func (f *flightplanComponentMock) GetID() string {
@@ -60,8 +61,8 @@ func (f *flightplanComponentMock) GetDescription() string {
 	return f.description
 }
 
-func (f *flightplanComponentMock) GetIsCarbonCopy() bool {
-	return f.isCarbonCopy
+func (f *flightplanComponentMock) GetFleetID() string {
+	return f.fleetID
 }
 
 func (f *flightplanComponentMock) GetVersion() string {
@@ -71,7 +72,6 @@ func (f *flightplanComponentMock) GetVersion() string {
 // Fleet構成オブジェクトモック
 type fleetComponentMock struct {
 	id           string
-	flightplanID string
 	isCarbonCopy bool
 	assignments  []assignmentComponentMock
 	events       []eventComponentMock
@@ -80,10 +80,6 @@ type fleetComponentMock struct {
 
 func (f *fleetComponentMock) GetID() string {
 	return f.id
-}
-
-func (f *fleetComponentMock) GetFlightplanID() string {
-	return f.flightplanID
 }
 
 func (f *fleetComponentMock) GetIsCarbonCopy() bool {

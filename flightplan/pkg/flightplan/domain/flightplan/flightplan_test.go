@@ -30,41 +30,6 @@ func TestChangeFlightplansName(t *testing.T) {
 	a.Nil(err)
 }
 
-// Flightplanの名前を変更する。
-// カーボンコピーされたFlightplanの変更がエラーとなることを検証する。
-func TestCannotChangeErrorWhenChangeFlightplansName(t *testing.T) {
-	a := assert.New(t)
-
-	var (
-		CopiedID        = DefaultID + "-copied"
-		DefaultName1    = DefaultName + "-1"
-		DefaultName2    = DefaultName + "-2"
-		DefaultVersion1 = DefaultVersion + "-1"
-		DefaultVersion2 = DefaultVersion + "-2"
-	)
-
-	gen := &generatorMock{
-		id:       DefaultID,
-		versions: []Version{DefaultVersion2},
-	}
-	original := &Flightplan{
-		id:           DefaultID,
-		name:         DefaultName1,
-		description:  DefaultDescription,
-		isCarbonCopy: Original,
-		version:      DefaultVersion1,
-		newVersion:   DefaultVersion1,
-	}
-	flightplan := Copy(gen, CopiedID, original)
-
-	err := flightplan.NameFlightplan(DefaultName2)
-
-	a.Equal(flightplan.GetName(), DefaultName1)
-	a.Equal(flightplan.GetVersion(), DefaultVersion1)
-	a.Equal(flightplan.GetNewVersion(), DefaultVersion1)
-	a.Equal(err, ErrCannotChange)
-}
-
 // Flightplanの説明を変更する。
 // バージョンが更新されていることを検証する。
 func TestChangeFlightplansDescription(t *testing.T) {
@@ -89,37 +54,214 @@ func TestChangeFlightplansDescription(t *testing.T) {
 	a.Nil(err)
 }
 
-// Flightplanの説明を変更する。
-// カーボンコピーされたFlightplanの変更がエラーとなることを検証する。
-func TestCannotChangeErrorWhenChangeFlightplansDescription(t *testing.T) {
+// Flightplanの機体数を変更する。
+// バージョンが更新されていることを検証する。
+// イベントパブリッシャを設定していないため、イベント発行がスキップされること。
+func TestNoEventsWhenChangeFlightplansNumberOfVehicles(t *testing.T) {
 	a := assert.New(t)
 
 	var (
-		CopiedID            = DefaultID + "-copied"
-		DefaultDescription1 = DefaultDescription + "-1"
-		DefaultDescription2 = DefaultDescription + "-2"
-		DefaultVersion1     = DefaultVersion + "-1"
-		DefaultVersion2     = DefaultVersion + "-2"
+		DefaultVersion1 = DefaultVersion + "-1"
+		DefaultVersion2 = DefaultVersion + "-2"
 	)
 
 	gen := &generatorMock{
 		id:       DefaultID,
+		fleetID:  DefaultFleetID,
+		versions: []Version{DefaultVersion1, DefaultVersion2},
+	}
+	flightplan := NewInstance(gen)
+
+	err := flightplan.ChangeNumberOfVehicles(DefaultNumberOfVehicles)
+
+	a.Equal(flightplan.GetFleetID(), DefaultFleetID)
+	a.Equal(flightplan.GetVersion(), DefaultVersion1)
+	a.Equal(flightplan.GetNewVersion(), DefaultVersion2)
+	a.Nil(err)
+}
+
+// Flightplanの機体数を変更する。
+// バージョンが更新されていることを検証する。
+// 古いFleetIDが存在しないため、FleetIDが付与されたイベントのみ
+// 発行されることを検証する。
+func TestOldFleetNotExistsWhenChangeFlightplansNumberOfVehicles(t *testing.T) {
+	a := assert.New(t)
+
+	var (
+		DefaultVersion1 = DefaultVersion + "-1"
+		DefaultVersion2 = DefaultVersion + "-2"
+	)
+
+	gen := &generatorMock{
+		id:       DefaultID,
+		fleetID:  DefaultFleetID,
+		versions: []Version{DefaultVersion1, DefaultVersion2},
+	}
+	pub := &publisherMock{}
+	flightplan := NewInstance(gen)
+	flightplan.SetPublisher(pub)
+
+	err := flightplan.ChangeNumberOfVehicles(DefaultNumberOfVehicles)
+
+	expectEvent := FleetIDGaveEvent{
+		FleetID:          DefaultFleetID,
+		NumberOfVehicles: DefaultNumberOfVehicles,
+	}
+
+	a.Equal(flightplan.GetFleetID(), DefaultFleetID)
+	a.Equal(flightplan.GetVersion(), DefaultVersion1)
+	a.Equal(flightplan.GetNewVersion(), DefaultVersion2)
+	a.Len(pub.events, 1)
+	a.Equal(pub.events, []interface{}{expectEvent})
+	a.Nil(err)
+}
+
+// Flightplanの機体数を変更する。
+// バージョンが更新されていることを検証する。
+// 古いFleetIDが存在するため、FleetIDが付与されたイベントと
+// FleetIDが削除されたイベントの両方が発行されることを検証する。
+func TestChangeFlightplansNumberOfVehicles(t *testing.T) {
+	a := assert.New(t)
+
+	var (
+		DefaultVersion1 = DefaultVersion + "-1"
+		DefaultVersion2 = DefaultVersion + "-2"
+		NewFleetID      = DefaultFleetID + "-new"
+	)
+
+	gen := &generatorMock{
+		id:       DefaultID,
+		fleetID:  NewFleetID,
 		versions: []Version{DefaultVersion2},
 	}
-	original := &Flightplan{
-		id:           DefaultID,
-		name:         DefaultName,
-		description:  DefaultDescription1,
-		isCarbonCopy: Original,
-		version:      DefaultVersion1,
-		newVersion:   DefaultVersion1,
+	pub := &publisherMock{}
+	flightplan := &Flightplan{
+		id:          DefaultID,
+		name:        DefaultName,
+		description: DefaultDescription,
+		fleetID:     DefaultFleetID,
+		version:     DefaultVersion1,
+		newVersion:  DefaultVersion1,
+		gen:         gen,
 	}
-	flightplan := Copy(gen, CopiedID, original)
+	flightplan.SetPublisher(pub)
 
-	err := flightplan.ChangeDescription(DefaultDescription2)
+	err := flightplan.ChangeNumberOfVehicles(DefaultNumberOfVehicles)
 
-	a.Equal(flightplan.GetDescription(), DefaultDescription1)
+	expectEvent1 := FleetIDRemovedEvent{
+		FleetID: DefaultFleetID,
+	}
+	expectEvent2 := FleetIDGaveEvent{
+		FleetID:          NewFleetID,
+		NumberOfVehicles: DefaultNumberOfVehicles,
+	}
+
+	a.Equal(flightplan.GetFleetID(), NewFleetID)
+	a.Equal(flightplan.GetVersion(), DefaultVersion1)
+	a.Equal(flightplan.GetNewVersion(), DefaultVersion2)
+	a.Len(pub.events, 2)
+	a.Equal(pub.events, []interface{}{expectEvent1, expectEvent2})
+	a.Nil(err)
+}
+
+// FlightplanのFleetIDを削除する。
+// バージョンが更新されていることを検証する。
+// イベントパブリッシャを設定していないため、イベント発行がスキップされること。
+func TestNoPublisherWhenRemoveFlightplansFleetID(t *testing.T) {
+	a := assert.New(t)
+
+	var (
+		DefaultVersion1 = DefaultVersion + "-1"
+		DefaultVersion2 = DefaultVersion + "-2"
+	)
+
+	gen := &generatorMock{
+		versions: []Version{DefaultVersion2},
+	}
+	flightplan := &Flightplan{
+		id:          DefaultID,
+		name:        DefaultName,
+		description: DefaultDescription,
+		fleetID:     DefaultFleetID,
+		version:     DefaultVersion1,
+		newVersion:  DefaultVersion1,
+		gen:         gen,
+	}
+
+	err := flightplan.RemoveFleetID()
+
+	a.Equal(flightplan.GetFleetID(), BlankFleetID)
+	a.Equal(flightplan.GetVersion(), DefaultVersion1)
+	a.Equal(flightplan.GetNewVersion(), DefaultVersion2)
+	a.Nil(err)
+}
+
+// FlightplanのFleetIDを削除する。
+// バージョンが更新されていないことを検証する。
+// 古いFleetIDが存在しないため、ドメインイベントが発行されないことを検証する。
+func TestOldFleetNotExistsWhenRemoveFlightplansFleetID(t *testing.T) {
+	a := assert.New(t)
+
+	var (
+		DefaultVersion1 = DefaultVersion + "-1"
+		DefaultVersion2 = DefaultVersion + "-2"
+	)
+
+	gen := &generatorMock{
+		id:       DefaultID,
+		fleetID:  DefaultFleetID,
+		versions: []Version{DefaultVersion1, DefaultVersion2},
+	}
+	pub := &publisherMock{}
+	flightplan := NewInstance(gen)
+	flightplan.SetPublisher(pub)
+
+	err := flightplan.RemoveFleetID()
+
+	a.Equal(flightplan.GetFleetID(), BlankFleetID)
 	a.Equal(flightplan.GetVersion(), DefaultVersion1)
 	a.Equal(flightplan.GetNewVersion(), DefaultVersion1)
-	a.Equal(err, ErrCannotChange)
+	a.Len(pub.events, 0)
+	a.Nil(err)
+}
+
+// FlightplanのFleetIDを削除する。
+// バージョンが更新されていることを検証する。
+// 古いFleetIDが存在するため、FleetIDが削除されたイベントが
+// 発行されることを検証する。
+func TestRemoveFlightplansFleetID(t *testing.T) {
+	a := assert.New(t)
+
+	var (
+		DefaultVersion1 = DefaultVersion + "-1"
+		DefaultVersion2 = DefaultVersion + "-2"
+	)
+
+	gen := &generatorMock{
+		versions: []Version{DefaultVersion2},
+	}
+	pub := &publisherMock{}
+	flightplan := &Flightplan{
+		id:          DefaultID,
+		name:        DefaultName,
+		description: DefaultDescription,
+		fleetID:     DefaultFleetID,
+		version:     DefaultVersion1,
+		newVersion:  DefaultVersion1,
+		gen:         gen,
+		pub:         pub,
+	}
+
+	err := flightplan.RemoveFleetID()
+
+	expectEvent := FleetIDRemovedEvent{
+		FleetID: DefaultFleetID,
+	}
+
+	a.Equal(flightplan.GetFleetID(), BlankFleetID)
+	a.Equal(flightplan.GetVersion(), DefaultVersion1)
+	a.Equal(flightplan.GetNewVersion(), DefaultVersion2)
+	a.Len(pub.events, 1)
+	a.Equal(pub.events, []interface{}{expectEvent})
+	a.Nil(err)
 }

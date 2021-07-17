@@ -14,15 +14,17 @@ func TestGetFlightreportTransaction(t *testing.T) {
 	flightreport := frep.AssembleFrom(
 		nil,
 		&flightreportComponentMock{
-			ID:                string(DefaultFlightreportID),
-			FlightoperationID: string(DefaultFlightoperationID),
+			ID:          string(DefaultID),
+			Name:        DefaultName,
+			Description: DefaultDescription,
+			FleetID:     string(DefaultFleetID),
 		},
 	)
 
 	repo := &flightreportRepositoryMock{}
 	txm := &txManagerMock{}
 
-	repo.On("GetByID", DefaultFlightreportID).Return(flightreport, nil)
+	repo.On("GetByID", DefaultID).Return(flightreport, nil)
 
 	service := &manageFlightreportService{
 		gen:  nil,
@@ -31,13 +33,13 @@ func TestGetFlightreportTransaction(t *testing.T) {
 		psm:  nil,
 	}
 
-	req := &flightreportIDRequestMock{
-		ID: string(DefaultFlightreportID),
+	command := &flightreportIDCommandMock{
+		ID: string(DefaultID),
 	}
 	var resCall bool
 	ret := service.GetFlightreport(
-		req,
-		func(id, flightoperationID string) {
+		command,
+		func(model FlightreportPresentationModel) {
 			resCall = true
 		},
 	)
@@ -53,13 +55,15 @@ func TestGetFlightreportOperation(t *testing.T) {
 	flightreport := frep.AssembleFrom(
 		nil,
 		&flightreportComponentMock{
-			ID:                string(DefaultFlightreportID),
-			FlightoperationID: string(DefaultFlightoperationID),
+			ID:          string(DefaultID),
+			Name:        DefaultName,
+			Description: DefaultDescription,
+			FleetID:     string(DefaultFleetID),
 		},
 	)
 
 	repo := &flightreportRepositoryMock{}
-	repo.On("GetByID", DefaultFlightreportID).Return(flightreport, nil)
+	repo.On("GetByID", DefaultID).Return(flightreport, nil)
 
 	service := &manageFlightreportService{
 		gen:  nil,
@@ -68,22 +72,23 @@ func TestGetFlightreportOperation(t *testing.T) {
 		psm:  nil,
 	}
 
-	req := &flightreportIDRequestMock{
-		ID: string(DefaultFlightreportID),
+	command := &flightreportIDCommandMock{
+		ID: string(DefaultID),
 	}
-	var resID, resFlightoperationID string
+	var resModel FlightreportPresentationModel
 	ret := service.getFlightreportOperation(
 		nil,
-		req,
-		func(id, flightoperationID string) {
-			resID = id
-			resFlightoperationID = flightoperationID
+		command,
+		func(model FlightreportPresentationModel) {
+			resModel = model
 		},
 	)
 
 	a.Nil(ret)
-	a.Equal(resID, string(DefaultFlightreportID))
-	a.Equal(resFlightoperationID, string(DefaultFlightoperationID))
+	a.Equal(resModel.GetFlightreport().GetID(), string(DefaultID))
+	a.Equal(resModel.GetFlightreport().GetName(), DefaultName)
+	a.Equal(resModel.GetFlightreport().GetDescription(), DefaultDescription)
+	a.Equal(resModel.GetFlightreport().GetFleetID(), string(DefaultFleetID))
 }
 
 func TestListFlightreportsTransaction(t *testing.T) {
@@ -93,8 +98,10 @@ func TestListFlightreportsTransaction(t *testing.T) {
 		frep.AssembleFrom(
 			nil,
 			&flightreportComponentMock{
-				ID:                string(DefaultFlightreportID),
-				FlightoperationID: string(DefaultFlightoperationID),
+				ID:          string(DefaultID),
+				Name:        DefaultName,
+				Description: DefaultDescription,
+				FleetID:     string(DefaultFleetID),
 			},
 		),
 	}
@@ -112,7 +119,7 @@ func TestListFlightreportsTransaction(t *testing.T) {
 
 	var resCall bool
 	ret := service.ListFlightreports(
-		func(id, flightoperationID string) {
+		func(model FlightreportPresentationModel) {
 			resCall = true
 		},
 	)
@@ -126,34 +133,46 @@ func TestListFlightreportsOperation(t *testing.T) {
 	a := assert.New(t)
 
 	const (
-		DefaultFlightreportID1    = DefaultFlightreportID + "-1"
-		DefaultFlightreportID2    = DefaultFlightreportID + "-2"
-		DefaultFlightreportID3    = DefaultFlightreportID + "-3"
-		DefaultFlightoperationID1 = DefaultFlightoperationID + "-1"
-		DefaultFlightoperationID2 = DefaultFlightoperationID + "-2"
-		DefaultFlightoperationID3 = DefaultFlightoperationID + "-3"
+		DefaultID1          = string(DefaultID) + "-1"
+		DefaultName1        = DefaultName + "-1"
+		DefaultDescription1 = DefaultDescription + "-1"
+		DefaultFleetID1     = string(DefaultFleetID) + "-1"
+		DefaultID2          = string(DefaultID) + "-2"
+		DefaultName2        = DefaultName + "-2"
+		DefaultDescription2 = DefaultDescription + "-2"
+		DefaultFleetID2     = string(DefaultFleetID) + "-2"
+		DefaultID3          = string(DefaultID) + "-3"
+		DefaultName3        = DefaultName + "-3"
+		DefaultDescription3 = DefaultDescription + "-3"
+		DefaultFleetID3     = string(DefaultFleetID) + "-3"
 	)
 
 	flightreports := []*frep.Flightreport{
 		frep.AssembleFrom(
 			nil,
 			&flightreportComponentMock{
-				ID:                string(DefaultFlightreportID1),
-				FlightoperationID: string(DefaultFlightoperationID1),
+				ID:          DefaultID1,
+				Name:        DefaultName1,
+				Description: DefaultDescription1,
+				FleetID:     DefaultFleetID1,
 			},
 		),
 		frep.AssembleFrom(
 			nil,
 			&flightreportComponentMock{
-				ID:                string(DefaultFlightreportID2),
-				FlightoperationID: string(DefaultFlightoperationID2),
+				ID:          DefaultID2,
+				Name:        DefaultName2,
+				Description: DefaultDescription2,
+				FleetID:     DefaultFleetID2,
 			},
 		),
 		frep.AssembleFrom(
 			nil,
 			&flightreportComponentMock{
-				ID:                string(DefaultFlightreportID3),
-				FlightoperationID: string(DefaultFlightoperationID3),
+				ID:          DefaultID3,
+				Name:        DefaultName3,
+				Description: DefaultDescription3,
+				FleetID:     DefaultFleetID3,
 			},
 		),
 	}
@@ -168,35 +187,23 @@ func TestListFlightreportsOperation(t *testing.T) {
 		psm:  nil,
 	}
 
-	var resID, resFlightoperationID []string
+	var resModels []FlightreportPresentationModel
 	ret := service.listFlightreportsOperation(
 		nil,
-		func(id, flightoperationID string) {
-			resID = append(resID, id)
-			resFlightoperationID = append(resFlightoperationID, flightoperationID)
+		func(model FlightreportPresentationModel) {
+			resModels = append(resModels, model)
 		},
 	)
 
 	a.Nil(ret)
-	a.Equal(resID[0], string(DefaultFlightreportID1))
-	a.Equal(resFlightoperationID[0], string(DefaultFlightoperationID1))
-	a.Equal(resID[1], string(DefaultFlightreportID2))
-	a.Equal(resFlightoperationID[1], string(DefaultFlightoperationID2))
-	a.Equal(resID[2], string(DefaultFlightreportID3))
-	a.Equal(resFlightoperationID[2], string(DefaultFlightoperationID3))
+	a.Len(resModels, 3)
 }
 
 func TestCreateFlightreportTransaction(t *testing.T) {
 	a := assert.New(t)
 
-	var (
-		OriginalID = DefaultFlightoperationID + "-original"
-		NewID      = DefaultFlightoperationID + "-new"
-	)
-
 	gen := &generatorMockFlightreport{
-		id:                DefaultFlightreportID,
-		flightoperationID: NewID,
+		id: DefaultID,
 	}
 	repo := &flightreportRepositoryMock{}
 	repo.On("Save", mock.Anything).Return(nil)
@@ -211,10 +218,15 @@ func TestCreateFlightreportTransaction(t *testing.T) {
 		psm:  nil,
 	}
 
-	req := &flightoperationIDRequestMock{
-		FlightoperationID: string(OriginalID),
+	command := &flightreportCommandMock{
+		Flightreport: flightreportMock{
+			ID:          string(DefaultID),
+			Name:        DefaultName,
+			Description: DefaultDescription,
+			FleetID:     string(DefaultFleetID),
+		},
 	}
-	ret := service.CreateFlightreport(req)
+	ret := service.CreateFlightreport(command)
 
 	a.Nil(ret)
 	a.Nil(txm.isOpe)
@@ -223,14 +235,8 @@ func TestCreateFlightreportTransaction(t *testing.T) {
 func TestCreateFlightreportOperation(t *testing.T) {
 	a := assert.New(t)
 
-	var (
-		OriginalID = DefaultFlightoperationID + "-original"
-		NewID      = DefaultFlightoperationID + "-new"
-	)
-
 	gen := &generatorMockFlightreport{
-		id:                DefaultFlightreportID,
-		flightoperationID: NewID,
+		id: DefaultID,
 	}
 	repo := &flightreportRepositoryMock{}
 	repo.On("Save", mock.Anything).Return(nil)
@@ -242,12 +248,17 @@ func TestCreateFlightreportOperation(t *testing.T) {
 		psm:  nil,
 	}
 
-	req := &flightoperationIDRequestMock{
-		FlightoperationID: string(OriginalID),
+	command := &flightreportCommandMock{
+		Flightreport: flightreportMock{
+			ID:          string(DefaultID),
+			Name:        DefaultName,
+			Description: DefaultDescription,
+			FleetID:     string(DefaultFleetID),
+		},
 	}
 	ret := service.createFlightreportOperation(
 		nil,
-		req,
+		command,
 	)
 
 	a.Nil(ret)

@@ -13,16 +13,19 @@ func CreateNewFlightplan(
 	pub event.Publisher,
 	name string,
 	description string,
-) (string, error) {
+) (ID, FleetID, error) {
 	flightplan := NewInstance(gen)
 
+	flightplan.SetPublisher(pub)
+
+	// 生成直後のためエラーは発生しない想定
 	flightplan.NameFlightplan(name)
 	flightplan.ChangeDescription(description)
+	flightplan.ChangeNumberOfVehicles(0) // デフォルト機体数は0
 
 	if err := repo.Save(tx, flightplan); err != nil {
-		return "", err
+		return ID(""), FleetID(""), err
 	}
 
-	pub.Publish(CreatedEvent{ID: flightplan.GetID()})
-	return string(flightplan.GetID()), nil
+	return flightplan.GetID(), flightplan.GetFleetID(), nil
 }

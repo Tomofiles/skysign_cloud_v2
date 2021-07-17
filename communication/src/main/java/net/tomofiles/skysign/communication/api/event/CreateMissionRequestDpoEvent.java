@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import lombok.RequiredArgsConstructor;
-import net.tomofiles.skysign.communication.api.event.event.MissionCreatedEvent;
+import net.tomofiles.skysign.communication.api.event.event.CopiedMissionCreatedEvent;
 import net.tomofiles.skysign.communication.domain.mission.MissionId;
 import net.tomofiles.skysign.communication.service.dpo.CreateMissionRequestDpo;
 import net.tomofiles.skysign.communication.service.dpo.WaypointDpo;
@@ -12,7 +12,7 @@ import net.tomofiles.skysign.communication.service.dpo.WaypointDpo;
 @RequiredArgsConstructor
 public class CreateMissionRequestDpoEvent implements CreateMissionRequestDpo {
 
-    private final MissionCreatedEvent event;
+    private final CopiedMissionCreatedEvent event;
 
     @Override
     public MissionId getMissionId() {

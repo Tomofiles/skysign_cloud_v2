@@ -9,8 +9,10 @@ import (
 	"github.com/stretchr/testify/mock"
 )
 
-const DefaultFlightoperationID = fope.ID("flightoperation-id")
-const DefaultFlightplanID = fope.FlightplanID("flightplan-id")
+const DefaultID = fope.ID("flightoperation-id")
+const DefaultName = "flightoperation-name"
+const DefaultDescription = "flightoperation-description"
+const DefaultFleetID = fope.FleetID("fleet-id")
 const DefaultIsCompleted = fope.Completed
 const DefaultVersion = fope.Version("version")
 
@@ -66,20 +68,20 @@ func (r *flightoperationRepositoryMock) Save(
 	return ret.Error(0)
 }
 
-type generatorMockFlightoperation struct {
+type generatorMock struct {
 	fope.Generator
-	id           fope.ID
-	flightplanID fope.FlightplanID
-	version      fope.Version
+	id      fope.ID
+	fleetID fope.FleetID
+	version fope.Version
 }
 
-func (gen *generatorMockFlightoperation) NewID() fope.ID {
+func (gen *generatorMock) NewID() fope.ID {
 	return gen.id
 }
-func (gen *generatorMockFlightoperation) NewFlightplanID() fope.FlightplanID {
-	return gen.flightplanID
+func (gen *generatorMock) NewFleetID() fope.FleetID {
+	return gen.fleetID
 }
-func (gen *generatorMockFlightoperation) NewVersion() fope.Version {
+func (gen *generatorMock) NewVersion() fope.Version {
 	return gen.version
 }
 
@@ -134,18 +136,28 @@ func (txm *txManagerMock) DoAndEndHook(operation func(txmanager.Tx) error, endHo
 }
 
 type flightoperationComponentMock struct {
-	ID           string
-	FlightplanID string
-	IsCompleted  bool
-	Version      string
+	ID          string
+	Name        string
+	Description string
+	FleetID     string
+	IsCompleted bool
+	Version     string
 }
 
 func (f *flightoperationComponentMock) GetID() string {
 	return f.ID
 }
 
-func (f *flightoperationComponentMock) GetFlightplanID() string {
-	return f.FlightplanID
+func (f *flightoperationComponentMock) GetName() string {
+	return f.Name
+}
+
+func (f *flightoperationComponentMock) GetDescription() string {
+	return f.Description
+}
+
+func (f *flightoperationComponentMock) GetFleetID() string {
+	return f.FleetID
 }
 
 func (f *flightoperationComponentMock) GetIsCompleted() bool {
@@ -156,18 +168,54 @@ func (f *flightoperationComponentMock) GetVersion() string {
 	return f.Version
 }
 
-type flightoperationIDRequestMock struct {
+type flightoperationIDCommandMock struct {
 	ID string
 }
 
-func (f *flightoperationIDRequestMock) GetID() string {
+func (f *flightoperationIDCommandMock) GetID() string {
 	return f.ID
 }
 
-type flightplanIDRequestMock struct {
-	FlightplanID string
+type flightoperationCommandMock struct {
+	Flightoperation flightoperationMock
 }
 
-func (f *flightplanIDRequestMock) GetFlightplanID() string {
-	return f.FlightplanID
+func (f *flightoperationCommandMock) GetFlightoperation() Flightoperation {
+	return &f.Flightoperation
+}
+
+type flightoperationModelMock struct {
+	flightoperation *flightoperationMock
+}
+
+func (f *flightoperationModelMock) GetFlightoperation() Flightoperation {
+	return &flightoperationMock{
+		ID:          f.flightoperation.ID,
+		Name:        f.flightoperation.Name,
+		Description: f.flightoperation.Description,
+		FleetID:     f.flightoperation.FleetID,
+	}
+}
+
+type flightoperationMock struct {
+	ID          string
+	Name        string
+	Description string
+	FleetID     string
+}
+
+func (f *flightoperationMock) GetID() string {
+	return f.ID
+}
+
+func (f *flightoperationMock) GetName() string {
+	return f.Name
+}
+
+func (f *flightoperationMock) GetDescription() string {
+	return f.Description
+}
+
+func (f *flightoperationMock) GetFleetID() string {
+	return f.FleetID
 }

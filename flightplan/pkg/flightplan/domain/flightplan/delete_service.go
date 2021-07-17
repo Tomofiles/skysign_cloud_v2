@@ -17,14 +17,14 @@ func DeleteFlightplan(
 		return err
 	}
 
-	if flightplan.isCarbonCopy {
-		return ErrCannotChange
+	flightplan.SetPublisher(pub)
+	if err := flightplan.RemoveFleetID(); err != nil {
+		return err
 	}
 
 	if err := repo.Delete(tx, id); err != nil {
 		return err
 	}
 
-	pub.Publish(DeletedEvent{ID: flightplan.GetID()})
 	return nil
 }

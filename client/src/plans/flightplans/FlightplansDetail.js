@@ -16,9 +16,8 @@ import ArrowDropDown from '@material-ui/icons/ArrowDropDown';
 import ArrowDropUp from '@material-ui/icons/ArrowDropUp';
 import { grey } from '@material-ui/core/colors';
 
-import { getFlightplan, deleteFlightplan, getAssignments } from './FlightplansUtils';
+import { getFlightplan, executeFlightplan, deleteFlightplan, getAssignments } from './FlightplansUtils';
 import { AppContext } from '../../context/Context';
-import { createFlight } from '../../flights/flights/FlightUtils';
 
 const EDIT_FLIGHTPLAN = "edit_flightplan"
 const DELETE_FLIGHTPLAN = "delete_flightplan"
@@ -27,7 +26,7 @@ const ASSGN_ASSETS = "assign_assets"
 
 const FlightplansDetail = (props) => {
   const { dispatchFuncMode } = useContext(AppContext);
-  const [ flightplan, setFlightplan ] = useState({id: "-", name: "-", description: "-"});
+  const [ flightplan, setFlightplan ] = useState({id: "-", name: "-", description: "-", fleet_id: "-"});
   const [ numberOfVehicles, setNumberOfVehicles ] = useState("-");
   const [ openAction, setOpenAction ] = useState(false);
 
@@ -35,10 +34,10 @@ const FlightplansDetail = (props) => {
     getFlightplan(props.id)
       .then(data => {
         setFlightplan(data);
-      })
-    getAssignments(props.id)
-      .then(data => {
-        setNumberOfVehicles(data.assignments.length);
+        getAssignments(data.fleet_id)
+          .then(data => {
+            setNumberOfVehicles(data.assignments.length);
+          })
       })
   }, [ props.id ])
 
@@ -47,7 +46,7 @@ const FlightplansDetail = (props) => {
   }
 
   const onClickFlight = () => {
-    createFlight(props.id)
+    executeFlightplan(props.id)
       .then(data => dispatchFuncMode({ type: 'FLIGHTS' }));
   }
 

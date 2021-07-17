@@ -46,10 +46,10 @@ func (r *ActionRepository) GetByID(
 	return action, nil
 }
 
-// GetAllActiveByFlightplanID .
-func (r *ActionRepository) GetAllActiveByFlightplanID(
+// GetAllActiveByFleetID .
+func (r *ActionRepository) GetAllActiveByFleetID(
 	tx txmanager.Tx,
-	flightplanID action.FlightplanID,
+	fleetID action.FleetID,
 ) ([]*action.Action, error) {
 	txGorm, ok := tx.(*gorm.DB)
 	if !ok {
@@ -60,7 +60,7 @@ func (r *ActionRepository) GetAllActiveByFlightplanID(
 
 	var actionRecords []*Action
 
-	if err := txGorm.Where("flightplan_id = ? AND is_completed = false", string(flightplanID)).Find(&actionRecords).Error; err != nil {
+	if err := txGorm.Where("fleet_id = ? AND is_completed = false", string(fleetID)).Find(&actionRecords).Error; err != nil {
 		return nil, err
 	}
 
@@ -142,7 +142,7 @@ func (r *ActionRepository) Save(
 		aAction,
 		func(comp action.ActionComponent) {
 			actionRecord.CommunicationID = comp.GetCommunicationID()
-			actionRecord.FlightplanID = comp.GetFlightplanID()
+			actionRecord.FleetID = comp.GetFleetID()
 			actionRecord.IsCompleted = comp.GetIsCompleted()
 		},
 		func(comp action.TrajectoryPointComponent) {

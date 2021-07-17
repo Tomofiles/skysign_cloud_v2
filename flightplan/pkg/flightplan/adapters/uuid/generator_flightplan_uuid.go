@@ -20,6 +20,12 @@ func (g *FlightplanUUID) NewID() flightplan.ID {
 	return flightplan.ID(uuid.String())
 }
 
+// NewFleetID .
+func (g *FlightplanUUID) NewFleetID() flightplan.FleetID {
+	uuid, _ := uuid.NewRandom()
+	return flightplan.FleetID(uuid.String())
+}
+
 // NewVersion .
 func (g *FlightplanUUID) NewVersion() flightplan.Version {
 	uuid, _ := uuid.NewRandom()

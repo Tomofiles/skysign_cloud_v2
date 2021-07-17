@@ -11,21 +11,29 @@ import (
 
 // Flightplanを削除するドメインサービスをテストする。
 // 指定されたIDのFlightplanを削除する。
-// 削除が成功すると、Flightplanが削除されたことを表す
+// 削除が成功すると、FleetIDが削除されたことを表す
 // ドメインイベントを発行する。
 func TestDeleteFlightplanService(t *testing.T) {
 	a := assert.New(t)
 
 	ctx := context.Background()
 
+	var (
+		DefaultVersion1 = DefaultVersion + "-1"
+		DefaultVersion2 = DefaultVersion + "-2"
+	)
+
+	gen := &generatorMock{
+		versions: []Version{DefaultVersion2},
+	}
 	testFlightplan := Flightplan{
-		id:           DefaultID,
-		name:         DefaultName,
-		description:  DefaultDescription,
-		isCarbonCopy: Original,
-		version:      DefaultVersion,
-		newVersion:   DefaultVersion,
-		gen:          nil,
+		id:          DefaultID,
+		name:        DefaultName,
+		description: DefaultDescription,
+		fleetID:     DefaultFleetID,
+		version:     DefaultVersion1,
+		newVersion:  DefaultVersion1,
+		gen:         gen,
 	}
 	repo := &repositoryMockDeleteService{}
 	repo.On("GetByID", DefaultID).Return(&testFlightplan, nil)
@@ -35,12 +43,12 @@ func TestDeleteFlightplanService(t *testing.T) {
 
 	ret := DeleteFlightplan(ctx, repo, pub, DefaultID)
 
-	expectEvent := DeletedEvent{ID: DefaultID}
+	expectEvent := FleetIDRemovedEvent{FleetID: DefaultFleetID}
 
 	a.Len(repo.deleteIDs, 1)
 	a.Equal(repo.deleteIDs[0], DefaultID)
 	a.Len(pub.events, 1)
-	a.Equal(pub.events[0], expectEvent)
+	a.Equal(pub.events, []interface{}{expectEvent})
 
 	a.Nil(ret)
 }
@@ -77,14 +85,22 @@ func TestDeleteErrorWhenDeleteFlightplanService(t *testing.T) {
 
 	ctx := context.Background()
 
+	var (
+		DefaultVersion1 = DefaultVersion + "-1"
+		DefaultVersion2 = DefaultVersion + "-2"
+	)
+
+	gen := &generatorMock{
+		versions: []Version{DefaultVersion2},
+	}
 	testFlightplan := Flightplan{
-		id:           DefaultID,
-		name:         DefaultName,
-		description:  DefaultDescription,
-		isCarbonCopy: Original,
-		version:      DefaultVersion,
-		newVersion:   DefaultVersion,
-		gen:          nil,
+		id:          DefaultID,
+		name:        DefaultName,
+		description: DefaultDescription,
+		fleetID:     DefaultFleetID,
+		version:     DefaultVersion1,
+		newVersion:  DefaultVersion1,
+		gen:         gen,
 	}
 	repo := &repositoryMockDeleteService{}
 	repo.On("GetByID", DefaultID).Return(&testFlightplan, nil)
@@ -95,41 +111,9 @@ func TestDeleteErrorWhenDeleteFlightplanService(t *testing.T) {
 	ret := DeleteFlightplan(ctx, repo, pub, DefaultID)
 
 	a.Len(repo.deleteIDs, 0)
-	a.Len(pub.events, 0)
+	// a.Len(pub.events, 0) // 1件PublishされるがFlushされない想定
 
 	a.Equal(ret, ErrDelete)
-}
-
-// Flightplanを削除するドメインサービスをテストする。
-// カーボンコピーされたFlightplanを削除しようとした場合、、
-// 削除が失敗し、エラーが返却されることを検証する。
-// また、ドメインイベントは発行されないことを検証する。
-func TestCannnotDeleteErrorWhenDeleteFlightplanService(t *testing.T) {
-	a := assert.New(t)
-
-	ctx := context.Background()
-
-	testFlightplan := Flightplan{
-		id:           DefaultID,
-		name:         DefaultName,
-		description:  DefaultDescription,
-		isCarbonCopy: CarbonCopy,
-		version:      DefaultVersion,
-		newVersion:   DefaultVersion,
-		gen:          nil,
-	}
-	repo := &repositoryMockDeleteService{}
-	repo.On("GetByID", DefaultID).Return(&testFlightplan, nil)
-	repo.On("Delete", mock.Anything).Return(ErrDelete)
-
-	pub := &publisherMock{}
-
-	ret := DeleteFlightplan(ctx, repo, pub, DefaultID)
-
-	a.Len(repo.deleteIDs, 0)
-	a.Len(pub.events, 0)
-
-	a.Equal(ret, ErrCannotChange)
 }
 
 // Flightplan削除サービス用リポジトリモック
@@ -141,9 +125,6 @@ type repositoryMockDeleteService struct {
 }
 
 func (rm *repositoryMockDeleteService) GetAll(tx txmanager.Tx) ([]*Flightplan, error) {
-	panic("implement me")
-}
-func (rm *repositoryMockDeleteService) GetAllOrigin(tx txmanager.Tx) ([]*Flightplan, error) {
 	panic("implement me")
 }
 func (rm *repositoryMockDeleteService) GetByID(tx txmanager.Tx, id ID) (*Flightplan, error) {

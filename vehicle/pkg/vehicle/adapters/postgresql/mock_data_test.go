@@ -12,7 +12,7 @@ const DefaultVehicleID = v.ID("vehicle-id")
 const DefaultVehicleVersion = v.Version("version")
 const DefaultVehicleName = "vehicle-name"
 const DefaultVehicleCommunicationID = v.CommunicationID("communication-id")
-const DefaultFlightplanID = v.FlightplanID("flightplan-id")
+const DefaultFleetID = v.FleetID("fleet-id")
 
 func GetNewDbMock() (*gorm.DB, sqlmock.Sqlmock, error) {
 	db, mock, err := sqlmock.New()

@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"flightplan/pkg/flightplan/app"
+	"flightplan/pkg/flightplan/service"
 	proto "flightplan/pkg/skysign_proto"
 
 	"github.com/golang/glog"
@@ -44,13 +45,14 @@ func (s *GrpcServer) ListFlightplans(
 ) (*proto.ListFlightplansResponses, error) {
 	response := &proto.ListFlightplansResponses{}
 	if ret := s.app.Services.ManageFlightplan.ListFlightplans(
-		func(id, name, description string) {
+		func(model service.FlightplanPresentationModel) {
 			response.Flightplans = append(
 				response.Flightplans,
 				&proto.Flightplan{
-					Id:          id,
-					Name:        name,
-					Description: description,
+					Id:          model.GetFlightplan().GetID(),
+					Name:        model.GetFlightplan().GetName(),
+					Description: model.GetFlightplan().GetDescription(),
+					FleetId:     model.GetFlightplan().GetFleetID(),
 				},
 			)
 		},
@@ -66,15 +68,16 @@ func (s *GrpcServer) GetFlightplan(
 	request *proto.GetFlightplanRequest,
 ) (*proto.Flightplan, error) {
 	response := &proto.Flightplan{}
-	requestDpo := &flightplanIDRequestDpo{
+	command := &flightplanIDCommand{
 		id: request.Id,
 	}
 	if ret := s.app.Services.ManageFlightplan.GetFlightplan(
-		requestDpo,
-		func(id, name, description string) {
-			response.Id = id
-			response.Name = name
-			response.Description = description
+		command,
+		func(model service.FlightplanPresentationModel) {
+			response.Id = model.GetFlightplan().GetID()
+			response.Name = model.GetFlightplan().GetName()
+			response.Description = model.GetFlightplan().GetDescription()
+			response.FleetId = model.GetFlightplan().GetFleetID()
 		},
 	); ret != nil {
 		return nil, ret
@@ -88,20 +91,22 @@ func (s *GrpcServer) CreateFlightplan(
 	request *proto.Flightplan,
 ) (*proto.Flightplan, error) {
 	response := &proto.Flightplan{}
-	requestDpo := &flightplanRequestDpo{
-		name:        request.Name,
-		description: request.Description,
+	command := &createCommand{
+		request: request,
 	}
 	if ret := s.app.Services.ManageFlightplan.CreateFlightplan(
-		requestDpo,
-		func(id, name, description string) {
+		command,
+		func(id string) {
 			response.Id = id
-			response.Name = name
-			response.Description = description
+		},
+		func(fleetID string) {
+			response.FleetId = fleetID
 		},
 	); ret != nil {
 		return nil, ret
 	}
+	response.Name = request.Name
+	response.Description = request.Description
 	return response, nil
 }
 
@@ -111,21 +116,20 @@ func (s *GrpcServer) UpdateFlightplan(
 	request *proto.Flightplan,
 ) (*proto.Flightplan, error) {
 	response := &proto.Flightplan{}
-	requestDpo := &flightplanRequestDpo{
-		id:          request.Id,
-		name:        request.Name,
-		description: request.Description,
+	command := &updateCommand{
+		request: request,
 	}
 	if ret := s.app.Services.ManageFlightplan.UpdateFlightplan(
-		requestDpo,
-		func(id, name, description string) {
-			response.Id = id
-			response.Name = name
-			response.Description = description
+		command,
+		func(fleetID string) {
+			response.FleetId = fleetID
 		},
 	); ret != nil {
 		return nil, ret
 	}
+	response.Id = request.Id
+	response.Name = request.Name
+	response.Description = request.Description
 	return response, nil
 }
 
@@ -135,12 +139,10 @@ func (s *GrpcServer) DeleteFlightplan(
 	request *proto.DeleteFlightplanRequest,
 ) (*proto.Empty, error) {
 	response := &proto.Empty{}
-	requestDpo := &flightplanIDRequestDpo{
+	command := &flightplanIDCommand{
 		id: request.Id,
 	}
-	if ret := s.app.Services.ManageFlightplan.DeleteFlightplan(
-		requestDpo,
-	); ret != nil {
+	if ret := s.app.Services.ManageFlightplan.DeleteFlightplan(command); ret != nil {
 		return nil, ret
 	}
 	return response, nil
@@ -152,19 +154,15 @@ func (s *GrpcServer) ChangeNumberOfVehicles(
 	request *proto.ChangeNumberOfVehiclesRequest,
 ) (*proto.ChangeNumberOfVehiclesResponse, error) {
 	response := &proto.ChangeNumberOfVehiclesResponse{}
-	requestDpo := &changeNumberOfVehiclesRequestDpo{
-		flightplanID:     request.Id,
-		numberOfVehicles: request.NumberOfVehicles,
+	command := &changeNumberOfVehiclesCommand{
+		id:               request.Id,
+		numberOfVehicles: int(request.NumberOfVehicles),
 	}
-	if ret := s.app.Services.AssignFleet.ChangeNumberOfVehicles(
-		requestDpo,
-		func(id string, numberOfVehicles int32) {
-			response.Id = id
-			response.NumberOfVehicles = numberOfVehicles
-		},
-	); ret != nil {
+	if ret := s.app.Services.ChangeFlightplan.ChangeNumberOfVehicles(command); ret != nil {
 		return nil, ret
 	}
+	response.Id = request.Id
+	response.NumberOfVehicles = request.NumberOfVehicles
 	return response, nil
 }
 
@@ -176,19 +174,19 @@ func (s *GrpcServer) GetAssignments(
 	response := &proto.GetAssignmentsResponse{
 		Id: request.Id,
 	}
-	requestDpo := &fleetIDRequestDpo{
-		flightplanID: request.Id,
+	command := &fleetIDCommand{
+		id: request.Id,
 	}
 	if ret := s.app.Services.AssignFleet.GetAssignments(
-		requestDpo,
-		func(id, assignmentID, vehicleID, missionID string) {
+		command,
+		func(model service.AssignmentPresentationModel) {
 			response.Assignments = append(
 				response.Assignments,
 				&proto.Assignment{
-					Id:           id,
-					AssignmentId: assignmentID,
-					VehicleId:    vehicleID,
-					MissionId:    missionID,
+					Id:           model.GetAssignment().GetEventID(),
+					AssignmentId: model.GetAssignment().GetAssignmentID(),
+					VehicleId:    model.GetAssignment().GetVehicleID(),
+					MissionId:    model.GetAssignment().GetMissionID(),
 				},
 			)
 		},
@@ -207,20 +205,20 @@ func (s *GrpcServer) UpdateAssignments(
 		Id: request.Id,
 	}
 	for _, assignment := range request.Assignments {
-		requestDpo := &updateAssignmentsRequestDpo{
-			flightplanID: request.Id,
-			assignment:   assignment,
+		command := &updateAssignmentsCommand{
+			id:         request.Id,
+			assignment: assignment,
 		}
 		if ret := s.app.Services.AssignFleet.UpdateAssignment(
-			requestDpo,
-			func(id, assignmentID, vehicleID, missionID string) {
+			command,
+			func(model service.AssignmentPresentationModel) {
 				response.Assignments = append(
 					response.Assignments,
 					&proto.Assignment{
-						Id:           id,
-						AssignmentId: assignmentID,
-						VehicleId:    vehicleID,
-						MissionId:    missionID,
+						Id:           model.GetAssignment().GetEventID(),
+						AssignmentId: model.GetAssignment().GetAssignmentID(),
+						VehicleId:    model.GetAssignment().GetVehicleID(),
+						MissionId:    model.GetAssignment().GetMissionID(),
 					},
 				)
 			},
@@ -231,70 +229,113 @@ func (s *GrpcServer) UpdateAssignments(
 	return response, nil
 }
 
-type flightplanRequestDpo struct {
-	id          string
-	name        string
-	description string
+// ExecuteFlightplan .
+func (s *GrpcServer) ExecuteFlightplan(
+	ctx context.Context,
+	request *proto.ExecuteFlightplanRequest,
+) (*proto.ExecuteFlightplanResponse, error) {
+	response := &proto.ExecuteFlightplanResponse{
+		Id: request.Id,
+	}
+	command := &flightplanIDCommand{
+		id: request.Id,
+	}
+	if ret := s.app.Services.ExecuteFlightplan.ExecuteFlightplan(command); ret != nil {
+		return nil, ret
+	}
+	return response, nil
 }
 
-func (f *flightplanRequestDpo) GetID() string {
-	return f.id
+type createCommand struct {
+	request *proto.Flightplan
 }
 
-func (f *flightplanRequestDpo) GetName() string {
-	return f.name
+func (f *createCommand) GetFlightplan() service.Flightplan {
+	return &flightplan{
+		request: f.request,
+	}
 }
 
-func (f *flightplanRequestDpo) GetDescription() string {
-	return f.description
+type updateCommand struct {
+	request *proto.Flightplan
 }
 
-type flightplanIDRequestDpo struct {
+func (f *updateCommand) GetID() string {
+	return f.request.Id
+}
+
+func (f *updateCommand) GetFlightplan() service.Flightplan {
+	return &flightplan{
+		request: f.request,
+	}
+}
+
+type flightplan struct {
+	request *proto.Flightplan
+}
+
+func (f *flightplan) GetID() string {
+	return f.request.Id
+}
+
+func (f *flightplan) GetName() string {
+	return f.request.Name
+}
+
+func (f *flightplan) GetDescription() string {
+	return f.request.Description
+}
+
+func (f *flightplan) GetFleetID() string {
+	return f.request.FleetId
+}
+
+type flightplanIDCommand struct {
 	id string
 }
 
-func (f *flightplanIDRequestDpo) GetID() string {
+func (f *flightplanIDCommand) GetID() string {
 	return f.id
 }
 
-type fleetIDRequestDpo struct {
-	flightplanID string
+type fleetIDCommand struct {
+	id string
 }
 
-func (f *fleetIDRequestDpo) GetFlightplanID() string {
-	return f.flightplanID
+func (f *fleetIDCommand) GetID() string {
+	return f.id
 }
 
-type changeNumberOfVehiclesRequestDpo struct {
-	flightplanID     string
-	numberOfVehicles int32
+type changeNumberOfVehiclesCommand struct {
+	id               string
+	numberOfVehicles int
 }
 
-func (c *changeNumberOfVehiclesRequestDpo) GetFlightplanID() string {
-	return c.flightplanID
+func (c *changeNumberOfVehiclesCommand) GetID() string {
+	return c.id
 }
 
-func (c *changeNumberOfVehiclesRequestDpo) GetNumberOfVehicles() int32 {
+func (c *changeNumberOfVehiclesCommand) GetNumberOfVehicles() int {
 	return c.numberOfVehicles
 }
 
-type updateAssignmentsRequestDpo struct {
-	flightplanID string
-	assignment   *proto.Assignment
+type updateAssignmentsCommand struct {
+	id         string
+	assignment *proto.Assignment
 }
 
-func (r *updateAssignmentsRequestDpo) GetFlightplanID() string {
-	return r.flightplanID
+func (r *updateAssignmentsCommand) GetID() string {
+	return r.id
 }
-func (r *updateAssignmentsRequestDpo) GetEventID() string {
+func (r *updateAssignmentsCommand) GetEventID() string {
 	return r.assignment.Id
 }
-func (r *updateAssignmentsRequestDpo) GetAssignmentID() string {
+func (r *updateAssignmentsCommand) GetAssignmentID() string {
 	return r.assignment.AssignmentId
 }
-func (r *updateAssignmentsRequestDpo) GetVehicleID() string {
+func (r *updateAssignmentsCommand) GetVehicleID() string {
 	return r.assignment.VehicleId
 }
-func (r *updateAssignmentsRequestDpo) GetMissionID() string {
+func (r *updateAssignmentsCommand) GetMissionID() string {
 	return r.assignment.MissionId
 }

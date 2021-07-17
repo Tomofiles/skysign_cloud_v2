@@ -11,7 +11,7 @@ import (
 	"github.com/stretchr/testify/mock"
 )
 
-func TestHandleMissionCopiedWhenFlightplanCopiedEvent(t *testing.T) {
+func TestHandleMissionCopiedEvent(t *testing.T) {
 	a := assert.New(t)
 
 	var (
@@ -46,12 +46,12 @@ func TestHandleMissionCopiedWhenFlightplanCopiedEvent(t *testing.T) {
 
 	handler := NewEventHandler(app)
 
-	requestPb := &skysign_proto.MissionCopiedWhenFlightplanCopiedEvent{
+	requestPb := &skysign_proto.MissionCopiedEvent{
 		OriginalMissionId: DefaultOriginalID,
 		NewMissionId:      DefaultNewID,
 	}
 	requestBin, _ := proto.Marshal(requestPb)
-	err := handler.HandleMissionCopiedWhenFlightplanCopiedEvent(
+	err := handler.HandleMissionCopiedEvent(
 		nil,
 		requestBin,
 	)

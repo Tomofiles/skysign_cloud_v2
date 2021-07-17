@@ -14,7 +14,7 @@ func CarbonCopyVehicle(
 	pub event.Publisher,
 	originalID ID,
 	newID ID,
-	flightplanID FlightplanID,
+	fleetID FleetID,
 ) error {
 	_, err := repo.GetByID(tx, newID)
 	if err != nil && !errors.Is(err, ErrNotFound) {
@@ -37,7 +37,7 @@ func CarbonCopyVehicle(
 	pub.Publish(CopiedVehicleCreatedEvent{
 		ID:              vehicle.GetID(),
 		CommunicationID: vehicle.GetCommunicationID(),
-		FlightplanID:    flightplanID,
+		FleetID:         fleetID,
 	})
 	return nil
 }

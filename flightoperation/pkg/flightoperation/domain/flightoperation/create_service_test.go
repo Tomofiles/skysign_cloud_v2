@@ -10,45 +10,46 @@ import (
 )
 
 // Flightoperationを作成するドメインサービスをテストする。
-// あらかじめFlightplanIDを与えられたFlightoperationを作成し、保存する。
-// 保存が成功すると、Flightoperationが作成されたことを表すメインイベントと、
-// Flightplanがコピーされたことを表すドメインイベントを発行する。
+// あらかじめFleetIDを与えられたFlightoperationを作成し、保存する。
+// 保存が成功すると、Fleetがコピーされたことを表すドメインイベントを発行する。
 func TestCreateNewFlightoperationService(t *testing.T) {
 	a := assert.New(t)
 
 	ctx := context.Background()
 
 	var (
-		OriginalID = DefaultFlightplanID + "-original"
-		NewID      = DefaultFlightplanID + "-new"
+		OriginalID = DefaultFleetID + "-original"
+		NewID      = DefaultFleetID + "-new"
 	)
 
 	gen := &generatorMock{
-		id:           DefaultID,
-		flightplanID: NewID,
-		version:      DefaultVersion,
+		id:      DefaultID,
+		fleetID: NewID,
+		version: DefaultVersion,
 	}
 	repo := &repositoryMockCreateService{}
 	repo.On("Save", mock.Anything).Return(nil)
 	pub := &publisherMock{}
 
-	ret := CreateNewFlightoperation(ctx, gen, repo, pub, OriginalID)
+	ret := CreateNewFlightoperation(ctx, gen, repo, pub, DefaultName, DefaultDescription, OriginalID)
 
 	expectFlightoperation := &Flightoperation{
-		id:           DefaultID,
-		flightplanID: NewID,
-		isCompleted:  Operating,
-		version:      DefaultVersion,
-		newVersion:   DefaultVersion,
-		gen:          gen,
+		id:          DefaultID,
+		name:        DefaultName,
+		description: DefaultDescription,
+		fleetID:     NewID,
+		isCompleted: Operating,
+		version:     DefaultVersion,
+		newVersion:  DefaultVersion,
+		gen:         gen,
+		pub:         pub,
 	}
-	expectEvent1 := CreatedEvent{ID: DefaultID, FlightplanID: NewID}
-	expectEvent2 := FlightplanCopiedWhenCreatedEvent{ID: DefaultID, OriginalID: OriginalID, NewID: NewID}
+	expectEvent := FleetCopiedEvent{OriginalID: OriginalID, NewID: NewID}
 
 	a.Len(repo.saveFlightoperations, 1)
 	a.Equal(repo.saveFlightoperations[0], expectFlightoperation)
-	a.Len(pub.events, 2)
-	a.Equal(pub.events, []interface{}{expectEvent1, expectEvent2})
+	a.Len(pub.events, 1)
+	a.Equal(pub.events, []interface{}{expectEvent})
 
 	a.Nil(ret)
 }
@@ -63,19 +64,19 @@ func TestSaveErrorWhenCreateNewFlightoperationService(t *testing.T) {
 	ctx := context.Background()
 
 	var (
-		OriginalID = DefaultFlightplanID + "-original"
-		NewID      = DefaultFlightplanID + "-new"
+		OriginalID = DefaultFleetID + "-original"
+		NewID      = DefaultFleetID + "-new"
 	)
 
 	gen := &generatorMock{
-		id:           DefaultID,
-		flightplanID: NewID,
+		id:      DefaultID,
+		fleetID: NewID,
 	}
 	repo := &repositoryMockCreateService{}
 	repo.On("Save", mock.Anything).Return(ErrSave)
 	pub := &publisherMock{}
 
-	ret := CreateNewFlightoperation(ctx, gen, repo, pub, OriginalID)
+	ret := CreateNewFlightoperation(ctx, gen, repo, pub, DefaultName, DefaultDescription, OriginalID)
 
 	a.Len(repo.saveFlightoperations, 0)
 	a.Len(pub.events, 0)

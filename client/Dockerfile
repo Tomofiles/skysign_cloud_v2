@@ -16,9 +16,9 @@ COPY src ./src/
 COPY public ./public/
 
 RUN mkdir -p /usr/src/cesium \
-    && wget https://github.com/CesiumGS/cesium-workshop/archive/master.zip -P /usr/src/cesium
-RUN unzip /usr/src/cesium/master.zip -d /usr/src/cesium
-RUN cp -r /usr/src/cesium/cesium-workshop-master/Source/SampleData/Models/CesiumDrone.gltf ./public/
+    && wget https://github.com/CesiumGS/cesium-workshop/archive/refs/heads/main.zip -P /usr/src/cesium
+RUN unzip /usr/src/cesium/main.zip -d /usr/src/cesium
+RUN cp -r /usr/src/cesium/cesium-workshop-main/Source/SampleData/Models/CesiumDrone.gltf ./public/
 
 RUN mkdir -p /usr/src/env
 RUN echo REACT_APP_CESIUM_KEY=${CESIUM_KEY} > /usr/src/env/.env

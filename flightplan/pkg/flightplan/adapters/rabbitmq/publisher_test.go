@@ -33,7 +33,7 @@ func TestNoneEventWhenPublish(t *testing.T) {
 func TestSingleEventWhenPublish(t *testing.T) {
 	a := assert.New(t)
 
-	event := flightplan.CreatedEvent{}
+	event := flightplan.FleetIDGaveEvent{}
 
 	connMock := &connectionMockCommon{}
 	chMock := &channelMockPublish{}
@@ -55,11 +55,11 @@ func TestSingleEventWhenPublish(t *testing.T) {
 func TestMultipleEventWhenPublish(t *testing.T) {
 	a := assert.New(t)
 
-	event1 := flightplan.CreatedEvent{}
-	event2 := flightplan.DeletedEvent{}
-	event3 := flightplan.CopiedEvent{}
-	event4 := fleet.VehicleCopiedWhenFlightplanCopiedEvent{}
-	event5 := fleet.MissionCopiedWhenFlightplanCopiedEvent{}
+	event1 := flightplan.FleetIDGaveEvent{}
+	event2 := flightplan.FleetIDRemovedEvent{}
+	event3 := fleet.VehicleCopiedEvent{}
+	event4 := fleet.MissionCopiedEvent{}
+	event5 := flightplan.FlightplanExecutedEvent{}
 
 	connMock := &connectionMockCommon{}
 	chMock := &channelMockPublish{}
@@ -82,10 +82,10 @@ func TestMultipleEventWhenPublish(t *testing.T) {
 	a.Equal(chMock.messageCallCount, 5)
 }
 
-func TestFanoutExchangeDeclareErrorWhenCreatedEventPublish(t *testing.T) {
+func TestFanoutExchangeDeclareErrorWhenFleetIDGaveEventPublish(t *testing.T) {
 	a := assert.New(t)
 
-	event := flightplan.CreatedEvent{}
+	event := flightplan.FleetIDGaveEvent{}
 
 	errPub := errors.New("publish error")
 
@@ -106,10 +106,10 @@ func TestFanoutExchangeDeclareErrorWhenCreatedEventPublish(t *testing.T) {
 	a.Equal(chMock.messageCallCount, 0)
 }
 
-func TestPublishErrorWhenCreatedEventPublish(t *testing.T) {
+func TestPublishErrorWhenFleetIDGaveEventPublish(t *testing.T) {
 	a := assert.New(t)
 
-	event := flightplan.CreatedEvent{}
+	event := flightplan.FleetIDGaveEvent{}
 
 	errPub := errors.New("publish error")
 
@@ -130,10 +130,10 @@ func TestPublishErrorWhenCreatedEventPublish(t *testing.T) {
 	a.Equal(chMock.messageCallCount, 1)
 }
 
-func TestFanoutExchangeDeclareErrorWhenDeletedEventPublish(t *testing.T) {
+func TestFanoutExchangeDeclareErrorWhenFleetIDRemovedEventPublish(t *testing.T) {
 	a := assert.New(t)
 
-	event := flightplan.DeletedEvent{}
+	event := flightplan.FleetIDRemovedEvent{}
 
 	errPub := errors.New("publish error")
 
@@ -154,10 +154,10 @@ func TestFanoutExchangeDeclareErrorWhenDeletedEventPublish(t *testing.T) {
 	a.Equal(chMock.messageCallCount, 0)
 }
 
-func TestPublishErrorWhenDeletedEventPublish(t *testing.T) {
+func TestPublishErrorWhenFleetIDRemovedEventPublish(t *testing.T) {
 	a := assert.New(t)
 
-	event := flightplan.DeletedEvent{}
+	event := flightplan.FleetIDRemovedEvent{}
 
 	errPub := errors.New("publish error")
 
@@ -178,10 +178,10 @@ func TestPublishErrorWhenDeletedEventPublish(t *testing.T) {
 	a.Equal(chMock.messageCallCount, 1)
 }
 
-func TestFanoutExchangeDeclareErrorWhenCopiedEventPublish(t *testing.T) {
+func TestFanoutExchangeDeclareErrorWhenVehicleCopiedEventPublish(t *testing.T) {
 	a := assert.New(t)
 
-	event := flightplan.CopiedEvent{}
+	event := fleet.VehicleCopiedEvent{}
 
 	errPub := errors.New("publish error")
 
@@ -202,10 +202,10 @@ func TestFanoutExchangeDeclareErrorWhenCopiedEventPublish(t *testing.T) {
 	a.Equal(chMock.messageCallCount, 0)
 }
 
-func TestPublishErrorWhenCopiedEventPublish(t *testing.T) {
+func TestPublishErrorWhenVehicleCopiedEventPublish(t *testing.T) {
 	a := assert.New(t)
 
-	event := flightplan.CopiedEvent{}
+	event := fleet.VehicleCopiedEvent{}
 
 	errPub := errors.New("publish error")
 
@@ -226,10 +226,10 @@ func TestPublishErrorWhenCopiedEventPublish(t *testing.T) {
 	a.Equal(chMock.messageCallCount, 1)
 }
 
-func TestFanoutExchangeDeclareErrorWhenVehicleCopiedWhenFlightplanCopiedEventPublish(t *testing.T) {
+func TestFanoutExchangeDeclareErrorWhenMissionCopiedEventPublish(t *testing.T) {
 	a := assert.New(t)
 
-	event := fleet.VehicleCopiedWhenFlightplanCopiedEvent{}
+	event := fleet.MissionCopiedEvent{}
 
 	errPub := errors.New("publish error")
 
@@ -250,10 +250,10 @@ func TestFanoutExchangeDeclareErrorWhenVehicleCopiedWhenFlightplanCopiedEventPub
 	a.Equal(chMock.messageCallCount, 0)
 }
 
-func TestPublishErrorWhenVehicleCopiedWhenFlightplanCopiedEventPublish(t *testing.T) {
+func TestPublishErrorWhenMissionCopiedEventPublish(t *testing.T) {
 	a := assert.New(t)
 
-	event := fleet.VehicleCopiedWhenFlightplanCopiedEvent{}
+	event := fleet.MissionCopiedEvent{}
 
 	errPub := errors.New("publish error")
 
@@ -274,10 +274,10 @@ func TestPublishErrorWhenVehicleCopiedWhenFlightplanCopiedEventPublish(t *testin
 	a.Equal(chMock.messageCallCount, 1)
 }
 
-func TestFanoutExchangeDeclareErrorWhenMissionCopiedWhenFlightplanCopiedEventPublish(t *testing.T) {
+func TestFanoutExchangeDeclareErrorWhenFlightplanExecutedEventPublish(t *testing.T) {
 	a := assert.New(t)
 
-	event := fleet.MissionCopiedWhenFlightplanCopiedEvent{}
+	event := flightplan.FlightplanExecutedEvent{}
 
 	errPub := errors.New("publish error")
 
@@ -298,10 +298,10 @@ func TestFanoutExchangeDeclareErrorWhenMissionCopiedWhenFlightplanCopiedEventPub
 	a.Equal(chMock.messageCallCount, 0)
 }
 
-func TestPublishErrorWhenMissionCopiedWhenFlightplanCopiedEventPublish(t *testing.T) {
+func TestPublishErrorWhenFlightplanExecutedEventPublish(t *testing.T) {
 	a := assert.New(t)
 
-	event := fleet.MissionCopiedWhenFlightplanCopiedEvent{}
+	event := flightplan.FlightplanExecutedEvent{}
 
 	errPub := errors.New("publish error")
 

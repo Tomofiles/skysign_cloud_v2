@@ -9,8 +9,10 @@ import (
 	"github.com/stretchr/testify/mock"
 )
 
-const DefaultFlightreportID = frep.ID("flightreport-id")
-const DefaultFlightoperationID = frep.FlightoperationID("flightoperation-id")
+const DefaultID = frep.ID("flightreport-id")
+const DefaultName = "flightreport-name"
+const DefaultDescription = "flightreport-description"
+const DefaultFleetID = frep.FleetID("fleet-id")
 
 type flightreportRepositoryMock struct {
 	mock.Mock
@@ -53,15 +55,11 @@ func (r *flightreportRepositoryMock) Save(
 
 type generatorMockFlightreport struct {
 	frep.Generator
-	id                frep.ID
-	flightoperationID frep.FlightoperationID
+	id frep.ID
 }
 
 func (gen *generatorMockFlightreport) NewID() frep.ID {
 	return gen.id
-}
-func (gen *generatorMockFlightreport) NewFlightoperationID() frep.FlightoperationID {
-	return gen.flightoperationID
 }
 
 type publisherMock struct {
@@ -115,30 +113,67 @@ func (txm *txManagerMock) DoAndEndHook(operation func(txmanager.Tx) error, endHo
 }
 
 type flightreportComponentMock struct {
-	ID                string
-	FlightoperationID string
+	ID          string
+	Name        string
+	Description string
+	FleetID     string
 }
 
 func (f *flightreportComponentMock) GetID() string {
 	return f.ID
 }
 
-func (f *flightreportComponentMock) GetFlightoperationID() string {
-	return f.FlightoperationID
+func (f *flightreportComponentMock) GetName() string {
+	return f.Name
 }
 
-type flightreportIDRequestMock struct {
+func (f *flightreportComponentMock) GetDescription() string {
+	return f.Description
+}
+
+func (f *flightreportComponentMock) GetFleetID() string {
+	return f.FleetID
+}
+
+type flightreportIDCommandMock struct {
 	ID string
 }
 
-func (f *flightreportIDRequestMock) GetID() string {
+func (f *flightreportIDCommandMock) GetID() string {
 	return f.ID
 }
 
-type flightoperationIDRequestMock struct {
-	FlightoperationID string
+type flightreportCommandMock struct {
+	Flightreport flightreportMock
 }
 
-func (f *flightoperationIDRequestMock) GetFlightoperationID() string {
-	return f.FlightoperationID
+func (f *flightreportCommandMock) GetID() string {
+	return f.Flightreport.ID
+}
+
+func (f *flightreportCommandMock) GetFlightreport() Flightreport {
+	return &f.Flightreport
+}
+
+type flightreportMock struct {
+	ID          string
+	Name        string
+	Description string
+	FleetID     string
+}
+
+func (f *flightreportMock) GetID() string {
+	return f.ID
+}
+
+func (f *flightreportMock) GetName() string {
+	return f.Name
+}
+
+func (f *flightreportMock) GetDescription() string {
+	return f.Description
+}
+
+func (f *flightreportMock) GetFleetID() string {
+	return f.FleetID
 }

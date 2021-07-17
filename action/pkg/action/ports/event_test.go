@@ -28,7 +28,7 @@ func TestHandleCopiedVehicleCreatedEvent(t *testing.T) {
 	requestPb := &skysign_proto.CopiedVehicleCreatedEvent{
 		VehicleId:       string(DefaultActionID),
 		CommunicationId: string(DefaultActionCommunicationID),
-		FlightplanId:    string(DefaultActionFlightplanID),
+		FleetId:         string(DefaultActionFleetID),
 	}
 	requestBin, _ := proto.Marshal(requestPb)
 	err := handler.HandleCopiedVehicleCreatedEvent(
@@ -37,9 +37,9 @@ func TestHandleCopiedVehicleCreatedEvent(t *testing.T) {
 	)
 
 	a.Nil(err)
-	a.Equal(requestPb.GetVehicleId(), service.requestDpo.GetID())
-	a.Equal(requestPb.GetCommunicationId(), service.requestDpo.GetCommunicationID())
-	a.Equal(requestPb.GetFlightplanId(), service.requestDpo.GetFlightplanID())
+	a.Equal(requestPb.GetVehicleId(), service.command.GetID())
+	a.Equal(requestPb.GetCommunicationId(), service.command.GetCommunicationID())
+	a.Equal(requestPb.GetFleetId(), service.command.GetFleetID())
 }
 
 func TestHandleFlightoperationCompletedEvent(t *testing.T) {
@@ -58,7 +58,9 @@ func TestHandleFlightoperationCompletedEvent(t *testing.T) {
 	handler := NewEventHandler(app)
 
 	requestPb := &skysign_proto.FlightoperationCompletedEvent{
-		FlightplanId: string(DefaultActionFlightplanID),
+		Flightoperation: &skysign_proto.Flightoperation{
+			FleetId: string(DefaultActionFleetID),
+		},
 	}
 	requestBin, _ := proto.Marshal(requestPb)
 	err := handler.HandleFlightoperationCompletedEvent(
@@ -67,7 +69,7 @@ func TestHandleFlightoperationCompletedEvent(t *testing.T) {
 	)
 
 	a.Nil(err)
-	a.Equal(requestPb.GetFlightplanId(), service.completeRequestDpo.GetFlightplanID())
+	a.Equal(requestPb.Flightoperation.GetFleetId(), service.completeCommand.GetFleetID())
 }
 
 func TestHandleTelemetryUpdatedEvent(t *testing.T) {
@@ -108,16 +110,16 @@ func TestHandleTelemetryUpdatedEvent(t *testing.T) {
 	)
 
 	a.Nil(err)
-	a.Equal(requestPb.GetCommunicationId(), service.telemetryRequestDpo.GetCommunicationID())
-	a.Equal(requestPb.GetTelemetry().Latitude, service.telemetryRequestDpo.GetLatitude())
-	a.Equal(requestPb.GetTelemetry().Longitude, service.telemetryRequestDpo.GetLongitude())
-	a.Equal(requestPb.GetTelemetry().Altitude, service.telemetryRequestDpo.GetAltitude())
-	a.Equal(requestPb.GetTelemetry().RelativeAltitude, service.telemetryRequestDpo.GetRelativeAltitude())
-	a.Equal(requestPb.GetTelemetry().Speed, service.telemetryRequestDpo.GetSpeed())
-	a.Equal(requestPb.GetTelemetry().Armed, service.telemetryRequestDpo.GetArmed())
-	a.Equal(requestPb.GetTelemetry().FlightMode, service.telemetryRequestDpo.GetFlightMode())
-	a.Equal(requestPb.GetTelemetry().OrientationX, service.telemetryRequestDpo.GetOrientationX())
-	a.Equal(requestPb.GetTelemetry().OrientationY, service.telemetryRequestDpo.GetOrientationY())
-	a.Equal(requestPb.GetTelemetry().OrientationZ, service.telemetryRequestDpo.GetOrientationZ())
-	a.Equal(requestPb.GetTelemetry().OrientationW, service.telemetryRequestDpo.GetOrientationW())
+	a.Equal(requestPb.GetCommunicationId(), service.telemetryCommand.GetCommunicationID())
+	a.Equal(requestPb.GetTelemetry().Latitude, service.telemetryCommand.GetLatitude())
+	a.Equal(requestPb.GetTelemetry().Longitude, service.telemetryCommand.GetLongitude())
+	a.Equal(requestPb.GetTelemetry().Altitude, service.telemetryCommand.GetAltitude())
+	a.Equal(requestPb.GetTelemetry().RelativeAltitude, service.telemetryCommand.GetRelativeAltitude())
+	a.Equal(requestPb.GetTelemetry().Speed, service.telemetryCommand.GetSpeed())
+	a.Equal(requestPb.GetTelemetry().Armed, service.telemetryCommand.GetArmed())
+	a.Equal(requestPb.GetTelemetry().FlightMode, service.telemetryCommand.GetFlightMode())
+	a.Equal(requestPb.GetTelemetry().OrientationX, service.telemetryCommand.GetOrientationX())
+	a.Equal(requestPb.GetTelemetry().OrientationY, service.telemetryCommand.GetOrientationY())
+	a.Equal(requestPb.GetTelemetry().OrientationZ, service.telemetryCommand.GetOrientationZ())
+	a.Equal(requestPb.GetTelemetry().OrientationW, service.telemetryCommand.GetOrientationW())
 }

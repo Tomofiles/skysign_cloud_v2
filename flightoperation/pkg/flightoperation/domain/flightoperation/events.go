@@ -1,55 +1,45 @@
 package flightoperation
 
-// CreatedEvent .
-type CreatedEvent struct {
-	ID           ID
-	FlightplanID FlightplanID
-}
-
-// GetID .
-func (e *CreatedEvent) GetID() string {
-	return string(e.ID)
-}
-
-// GetFlightplanID .
-func (e *CreatedEvent) GetFlightplanID() string {
-	return string(e.FlightplanID)
-}
-
-// FlightplanCopiedWhenCreatedEvent .
-type FlightplanCopiedWhenCreatedEvent struct {
-	ID         ID
-	OriginalID FlightplanID
-	NewID      FlightplanID
-}
-
-// GetFlightoperationID .
-func (e *FlightplanCopiedWhenCreatedEvent) GetFlightoperationID() string {
-	return string(e.ID)
+// FleetCopiedEvent .
+type FleetCopiedEvent struct {
+	OriginalID FleetID
+	NewID      FleetID
 }
 
 // GetOriginalID .
-func (e *FlightplanCopiedWhenCreatedEvent) GetOriginalID() string {
+func (e *FleetCopiedEvent) GetOriginalID() string {
 	return string(e.OriginalID)
 }
 
 // GetNewID .
-func (e *FlightplanCopiedWhenCreatedEvent) GetNewID() string {
+func (e *FleetCopiedEvent) GetNewID() string {
 	return string(e.NewID)
 }
 
-// CompletedEvent .
-type CompletedEvent struct {
-	ID           ID
-	FlightplanID FlightplanID
+// FlightoperationCompletedEvent .
+type FlightoperationCompletedEvent struct {
+	ID          ID
+	Name        string
+	Description string
+	FleetID     FleetID
 }
 
 // GetID .
-func (e *CompletedEvent) GetID() string {
+func (e *FlightoperationCompletedEvent) GetID() string {
 	return string(e.ID)
 }
 
-// GetFlightplanID .
-func (e *CompletedEvent) GetFlightplanID() string {
-	return string(e.FlightplanID)
+// GetName .
+func (e *FlightoperationCompletedEvent) GetName() string {
+	return e.Name
+}
+
+// GetDescription .
+func (e *FlightoperationCompletedEvent) GetDescription() string {
+	return e.Description
+}
+
+// GetFleetID .
+func (e *FlightoperationCompletedEvent) GetFleetID() string {
+	return string(e.FleetID)
 }

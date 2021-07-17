@@ -8,26 +8,36 @@ import (
 
 // ManageFlightreportService .
 type ManageFlightreportService interface {
-	GetFlightreport(requestDpo GetFlightreportRequestDpo, responseDpo GetFlightreportResponseDpo) error
-	ListFlightreports(responseEachDpo ListFlightreportsResponseDpo) error
-	CreateFlightreport(requestDpo CreateFlightreportRequestDpo) error
+	GetFlightreport(command GetFlightreportCommand, retrievedModel RetrievedModel) error
+	ListFlightreports(retrievedModel RetrievedModel) error
+	CreateFlightreport(command CreateFlightreportCommand) error
 }
 
-// CreateFlightreportRequestDpo .
-type CreateFlightreportRequestDpo interface {
-	GetFlightoperationID() string
+// CreateFlightreportCommand .
+type CreateFlightreportCommand interface {
+	GetFlightreport() Flightreport
 }
 
-// GetFlightreportRequestDpo .
-type GetFlightreportRequestDpo interface {
+// GetFlightreportCommand .
+type GetFlightreportCommand interface {
 	GetID() string
 }
 
-// GetFlightreportResponseDpo .
-type GetFlightreportResponseDpo = func(id, flightoperationID string)
+// FlightreportPresentationModel .
+type FlightreportPresentationModel interface {
+	GetFlightreport() Flightreport
+}
 
-// ListFlightreportsResponseDpo .
-type ListFlightreportsResponseDpo = func(id, flightoperationID string)
+// Flightreport .
+type Flightreport interface {
+	GetID() string
+	GetName() string
+	GetDescription() string
+	GetFleetID() string
+}
+
+// RetrievedModel .
+type RetrievedModel = func(model FlightreportPresentationModel)
 
 // NewManageFlightreportService .
 func NewManageFlightreportService(
@@ -52,49 +62,50 @@ type manageFlightreportService struct {
 }
 
 func (s *manageFlightreportService) GetFlightreport(
-	requestDpo GetFlightreportRequestDpo,
-	responseDpo GetFlightreportResponseDpo,
+	command GetFlightreportCommand,
+	retrievedModel RetrievedModel,
 ) error {
 	return s.txm.Do(func(tx txmanager.Tx) error {
 		return s.getFlightreportOperation(
 			tx,
-			requestDpo,
-			responseDpo,
+			command,
+			retrievedModel,
 		)
 	})
 }
 
 func (s *manageFlightreportService) getFlightreportOperation(
 	tx txmanager.Tx,
-	requestDpo GetFlightreportRequestDpo,
-	responseDpo GetFlightreportResponseDpo,
+	command GetFlightreportCommand,
+	retrievedModel RetrievedModel,
 ) error {
-	flightreport, err := s.repo.GetByID(tx, frep.ID(requestDpo.GetID()))
+	flightreport, err := s.repo.GetByID(tx, frep.ID(command.GetID()))
 	if err != nil {
 		return err
 	}
 
-	responseDpo(
-		string(flightreport.GetID()),
-		string(flightreport.GetFlightoperationID()),
+	retrievedModel(
+		&flightreportModel{
+			flightreport: flightreport,
+		},
 	)
 	return nil
 }
 
 func (s *manageFlightreportService) ListFlightreports(
-	responseEachDpo ListFlightreportsResponseDpo,
+	retrievedModel RetrievedModel,
 ) error {
 	return s.txm.Do(func(tx txmanager.Tx) error {
 		return s.listFlightreportsOperation(
 			tx,
-			responseEachDpo,
+			retrievedModel,
 		)
 	})
 }
 
 func (s *manageFlightreportService) listFlightreportsOperation(
 	tx txmanager.Tx,
-	responseEachDpo ListFlightreportsResponseDpo,
+	retrievedModel RetrievedModel,
 ) error {
 	flightreports, err := s.repo.GetAll(tx)
 	if err != nil {
@@ -102,22 +113,23 @@ func (s *manageFlightreportService) listFlightreportsOperation(
 	}
 
 	for _, f := range flightreports {
-		responseEachDpo(
-			string(f.GetID()),
-			string(f.GetFlightoperationID()),
+		retrievedModel(
+			&flightreportModel{
+				flightreport: f,
+			},
 		)
 	}
 	return nil
 }
 
 func (s *manageFlightreportService) CreateFlightreport(
-	requestDpo CreateFlightreportRequestDpo,
+	command CreateFlightreportCommand,
 ) error {
 	return s.txm.Do(
 		func(tx txmanager.Tx) error {
 			return s.createFlightreportOperation(
 				tx,
-				requestDpo,
+				command,
 			)
 		},
 	)
@@ -125,16 +137,48 @@ func (s *manageFlightreportService) CreateFlightreport(
 
 func (s *manageFlightreportService) createFlightreportOperation(
 	tx txmanager.Tx,
-	requestDpo CreateFlightreportRequestDpo,
+	command CreateFlightreportCommand,
 ) error {
 	if ret := frep.CreateNewFlightreport(
 		tx,
 		s.gen,
 		s.repo,
-		frep.FlightoperationID(requestDpo.GetFlightoperationID()),
+		command.GetFlightreport().GetName(),
+		command.GetFlightreport().GetDescription(),
+		frep.FleetID(command.GetFlightreport().GetFleetID()),
 	); ret != nil {
 		return ret
 	}
 
 	return nil
+}
+
+type flightreportModel struct {
+	flightreport *frep.Flightreport
+}
+
+func (f *flightreportModel) GetFlightreport() Flightreport {
+	return &flightreport{
+		flightreport: f.flightreport,
+	}
+}
+
+type flightreport struct {
+	flightreport *frep.Flightreport
+}
+
+func (f *flightreport) GetID() string {
+	return string(f.flightreport.GetID())
+}
+
+func (f *flightreport) GetName() string {
+	return f.flightreport.GetName()
+}
+
+func (f *flightreport) GetDescription() string {
+	return f.flightreport.GetDescription()
+}
+
+func (f *flightreport) GetFleetID() string {
+	return string(f.flightreport.GetFleetID())
 }

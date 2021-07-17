@@ -8,11 +8,11 @@ import (
 
 // OperateFlightoperationService .
 type OperateFlightoperationService interface {
-	CompleteFlightoperation(requestDpo CompleteFlightoperationRequestDpo) error
+	CompleteFlightoperation(command CompleteFlightoperationCommand) error
 }
 
-// CompleteFlightoperationRequestDpo .
-type CompleteFlightoperationRequestDpo interface {
+// CompleteFlightoperationCommand .
+type CompleteFlightoperationCommand interface {
 	GetID() string
 }
 
@@ -39,7 +39,7 @@ type operateFlightoperationService struct {
 }
 
 func (s *operateFlightoperationService) CompleteFlightoperation(
-	requestDpo CompleteFlightoperationRequestDpo,
+	command CompleteFlightoperationCommand,
 ) error {
 	pub, chClose, err := s.psm.GetPublisher()
 	if err != nil {
@@ -52,7 +52,7 @@ func (s *operateFlightoperationService) CompleteFlightoperation(
 			return s.completeFlightoperationOperation(
 				tx,
 				pub,
-				requestDpo,
+				command,
 			)
 		},
 		func() error {
@@ -64,20 +64,15 @@ func (s *operateFlightoperationService) CompleteFlightoperation(
 func (s *operateFlightoperationService) completeFlightoperationOperation(
 	tx txmanager.Tx,
 	pub event.Publisher,
-	requestDpo CompleteFlightoperationRequestDpo,
+	command CompleteFlightoperationCommand,
 ) error {
-	flightoperation, err := s.repo.GetByID(tx, fope.ID(requestDpo.GetID()))
-	if err != nil {
-		return err
-	}
-
-	flightoperation.SetPublisher(pub)
-	if err := flightoperation.Complete(); err != nil {
-		return err
-	}
-
-	if err := s.repo.Save(tx, flightoperation); err != nil {
-		return err
+	if ret := fope.CompleteFlightoperation(
+		tx,
+		s.repo,
+		pub,
+		fope.ID(command.GetID()),
+	); ret != nil {
+		return ret
 	}
 
 	return nil

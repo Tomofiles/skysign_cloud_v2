@@ -33,7 +33,7 @@ func CarbonCopyMission(
 		return "", err
 	}
 
-	pub.Publish(CreatedEvent{
+	pub.Publish(CopiedMissionCreatedEvent{
 		ID:      mission.GetID(),
 		Mission: mission,
 	})

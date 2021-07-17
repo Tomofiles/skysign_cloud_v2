@@ -20,12 +20,12 @@ func TestCreateActionTransaction(t *testing.T) {
 		txm:  txm,
 	}
 
-	req := &createRequestMock{
+	command := &createCommandMock{
 		VehicleId:       string(DefaultActionID),
 		CommunicationId: string(DefaultActionCommunicationID),
-		FlightplanId:    string(DefaultActionFlightplanID),
+		FleetId:         string(DefaultActionFleetID),
 	}
-	ret := service.CreateAction(req)
+	ret := service.CreateAction(command)
 
 	a.Nil(ret)
 	a.Nil(txm.isOpe)
@@ -43,18 +43,18 @@ func TestCreateActionOperation(t *testing.T) {
 		txm:  nil,
 	}
 
-	req := &createRequestMock{
+	command := &createCommandMock{
 		VehicleId:       string(DefaultActionID),
 		CommunicationId: string(DefaultActionCommunicationID),
-		FlightplanId:    string(DefaultActionFlightplanID),
+		FleetId:         string(DefaultActionFleetID),
 	}
-	ret := service.createActionOperation(nil, req)
+	ret := service.createActionOperation(nil, command)
 
 	trajectoryPointComps := []act.TrajectoryPointComponent{}
 	actionComp := actionComponentMock{
 		ID:               string(DefaultActionID),
 		CommunicationID:  string(DefaultActionCommunicationID),
-		FlightplanID:     string(DefaultActionFlightplanID),
+		FleetID:          string(DefaultActionFleetID),
 		IsCompleted:      act.Active,
 		TrajectoryPoints: trajectoryPointComps,
 	}
@@ -88,7 +88,7 @@ func TestGetTrajectoryTransaction(t *testing.T) {
 	actionComp := actionComponentMock{
 		ID:               string(DefaultActionID),
 		CommunicationID:  string(DefaultActionCommunicationID),
-		FlightplanID:     string(DefaultActionFlightplanID),
+		FleetID:          string(DefaultActionFleetID),
 		IsCompleted:      act.Active,
 		TrajectoryPoints: trajectoryPointComps,
 	}
@@ -105,12 +105,12 @@ func TestGetTrajectoryTransaction(t *testing.T) {
 		txm:  txm,
 	}
 
-	req := &idRequestMock{
-		VehicleId: string(DefaultActionID),
+	command := &actionIDCommandMock{
+		ID: string(DefaultActionID),
 	}
 	var resCall bool
 	ret := service.GetTrajectory(
-		req,
+		command,
 		func(s act.TelemetrySnapshot) {
 			resCall = true
 		},
@@ -142,7 +142,7 @@ func TestGetTrajectoryOperation(t *testing.T) {
 	actionComp := actionComponentMock{
 		ID:               string(DefaultActionID),
 		CommunicationID:  string(DefaultActionCommunicationID),
-		FlightplanID:     string(DefaultActionFlightplanID),
+		FleetID:          string(DefaultActionFleetID),
 		IsCompleted:      act.Active,
 		TrajectoryPoints: trajectoryPointComps,
 	}
@@ -158,13 +158,13 @@ func TestGetTrajectoryOperation(t *testing.T) {
 		txm:  nil,
 	}
 
-	req := &idRequestMock{
-		VehicleId: string(DefaultActionID),
+	command := &actionIDCommandMock{
+		ID: string(DefaultActionID),
 	}
 	var snapshot act.TelemetrySnapshot
 	ret := service.getTrajectoryOperation(
 		nil,
-		req,
+		command,
 		func(s act.TelemetrySnapshot) {
 			snapshot = s
 		},

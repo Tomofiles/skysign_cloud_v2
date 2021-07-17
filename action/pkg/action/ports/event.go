@@ -46,8 +46,8 @@ func (h *EventHandler) HandleCopiedVehicleCreatedEvent(
 
 	glog.Infof("RECEIVE , Event: %s, Message: %s", CopiedVehicleCreatedEventQueueName, eventPb.String())
 
-	requestDpo := createRequestDpoHolder{event: &eventPb}
-	if ret := h.app.Services.ManageAction.CreateAction(&requestDpo); ret != nil {
+	command := createCommandHolder{event: &eventPb}
+	if ret := h.app.Services.ManageAction.CreateAction(&command); ret != nil {
 		return ret
 	}
 	return nil
@@ -65,8 +65,8 @@ func (h *EventHandler) HandleFlightoperationCompletedEvent(
 
 	glog.Infof("RECEIVE , Event: %s, Message: %s", FlightoperationCompletedEventQueueName, eventPb.String())
 
-	requestDpo := completeRequestDpoHolder{event: &eventPb}
-	if ret := h.app.Services.OperateAction.CompleteAction(&requestDpo); ret != nil {
+	command := completeCommandHolder{event: &eventPb}
+	if ret := h.app.Services.OperateAction.CompleteAction(&command); ret != nil {
 		return ret
 	}
 	return nil
@@ -84,74 +84,74 @@ func (h *EventHandler) HandleTelemetryUpdatedEvent(
 
 	glog.Infof("RECEIVE , Event: %s, Message: %s", TelemetryUpdatedEventQueueName, eventPb.String())
 
-	requestDpo := pushTelemetryRequestDpoHolder{event: &eventPb}
-	if ret := h.app.Services.OperateAction.PushTelemetry(&requestDpo); ret != nil {
+	command := pushTelemetryCommandHolder{event: &eventPb}
+	if ret := h.app.Services.OperateAction.PushTelemetry(&command); ret != nil {
 		return ret
 	}
 	return nil
 }
 
-type createRequestDpoHolder struct {
+type createCommandHolder struct {
 	event *skysign_proto.CopiedVehicleCreatedEvent
 }
 
-func (h *createRequestDpoHolder) GetID() string {
+func (h *createCommandHolder) GetID() string {
 	return h.event.VehicleId
 }
 
-func (h *createRequestDpoHolder) GetCommunicationID() string {
+func (h *createCommandHolder) GetCommunicationID() string {
 	return h.event.CommunicationId
 }
 
-func (h *createRequestDpoHolder) GetFlightplanID() string {
-	return h.event.FlightplanId
+func (h *createCommandHolder) GetFleetID() string {
+	return h.event.FleetId
 }
 
-type completeRequestDpoHolder struct {
+type completeCommandHolder struct {
 	event *skysign_proto.FlightoperationCompletedEvent
 }
 
-func (h *completeRequestDpoHolder) GetFlightplanID() string {
-	return h.event.FlightplanId
+func (h *completeCommandHolder) GetFleetID() string {
+	return h.event.Flightoperation.FleetId
 }
 
-type pushTelemetryRequestDpoHolder struct {
+type pushTelemetryCommandHolder struct {
 	event *skysign_proto.TelemetryUpdatedEvent
 }
 
-func (h *pushTelemetryRequestDpoHolder) GetCommunicationID() string {
+func (h *pushTelemetryCommandHolder) GetCommunicationID() string {
 	return h.event.CommunicationId
 }
-func (h *pushTelemetryRequestDpoHolder) GetLatitude() float64 {
+func (h *pushTelemetryCommandHolder) GetLatitude() float64 {
 	return h.event.Telemetry.Latitude
 }
-func (h *pushTelemetryRequestDpoHolder) GetLongitude() float64 {
+func (h *pushTelemetryCommandHolder) GetLongitude() float64 {
 	return h.event.Telemetry.Longitude
 }
-func (h *pushTelemetryRequestDpoHolder) GetAltitude() float64 {
+func (h *pushTelemetryCommandHolder) GetAltitude() float64 {
 	return h.event.Telemetry.Altitude
 }
-func (h *pushTelemetryRequestDpoHolder) GetRelativeAltitude() float64 {
+func (h *pushTelemetryCommandHolder) GetRelativeAltitude() float64 {
 	return h.event.Telemetry.RelativeAltitude
 }
-func (h *pushTelemetryRequestDpoHolder) GetSpeed() float64 {
+func (h *pushTelemetryCommandHolder) GetSpeed() float64 {
 	return h.event.Telemetry.Speed
 }
-func (h *pushTelemetryRequestDpoHolder) GetArmed() bool {
+func (h *pushTelemetryCommandHolder) GetArmed() bool {
 	return h.event.Telemetry.Armed
 }
-func (h *pushTelemetryRequestDpoHolder) GetFlightMode() string {
+func (h *pushTelemetryCommandHolder) GetFlightMode() string {
 	return h.event.Telemetry.FlightMode
 }
-func (h *pushTelemetryRequestDpoHolder) GetOrientationX() float64 {
+func (h *pushTelemetryCommandHolder) GetOrientationX() float64 {
 	return h.event.Telemetry.OrientationX
 }
-func (h *pushTelemetryRequestDpoHolder) GetOrientationY() float64 {
+func (h *pushTelemetryCommandHolder) GetOrientationY() float64 {
 	return h.event.Telemetry.OrientationY
 }
-func (h *pushTelemetryRequestDpoHolder) GetOrientationZ() float64 {
+func (h *pushTelemetryCommandHolder) GetOrientationZ() float64 {
 	return h.event.Telemetry.OrientationZ
 }
-func (h *pushTelemetryRequestDpoHolder) GetOrientationW() float64 {
+func (h *pushTelemetryCommandHolder) GetOrientationW() float64 {
 	return h.event.Telemetry.OrientationW
 }

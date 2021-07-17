@@ -10,7 +10,7 @@ import (
 
 const DefaultActionID = action.ID("action-id")
 const DefaultActionCommunicationID = action.CommunicationID("communication-id")
-const DefaultActionFlightplanID = action.FlightplanID("flightplan-id")
+const DefaultActionFleetID = action.FleetID("fleet-id")
 
 func GetNewDbMock() (*gorm.DB, sqlmock.Sqlmock, error) {
 	db, mock, err := sqlmock.New()
@@ -34,7 +34,7 @@ func GetNewDbMock() (*gorm.DB, sqlmock.Sqlmock, error) {
 type actionComponentMock struct {
 	ID               string
 	CommunicationID  string
-	FlightplanID     string
+	FleetID          string
 	IsCompleted      bool
 	TrajectoryPoints []action.TrajectoryPointComponent
 }
@@ -45,8 +45,8 @@ func (c *actionComponentMock) GetID() string {
 func (c *actionComponentMock) GetCommunicationID() string {
 	return c.CommunicationID
 }
-func (c *actionComponentMock) GetFlightplanID() string {
-	return c.FlightplanID
+func (c *actionComponentMock) GetFleetID() string {
+	return c.FleetID
 }
 func (c *actionComponentMock) GetIsCompleted() bool {
 	return c.IsCompleted

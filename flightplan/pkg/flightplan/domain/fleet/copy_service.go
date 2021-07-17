@@ -3,7 +3,6 @@ package fleet
 import (
 	"errors"
 	"flightplan/pkg/flightplan/domain/event"
-	"flightplan/pkg/flightplan/domain/flightplan"
 	"flightplan/pkg/flightplan/domain/txmanager"
 )
 
@@ -13,17 +12,17 @@ func CarbonCopyFleet(
 	gen Generator,
 	repo Repository,
 	pub event.Publisher,
-	originalID flightplan.ID,
-	newID flightplan.ID,
+	originalID ID,
+	newID ID,
 ) error {
-	_, err := repo.GetByFlightplanID(tx, newID)
+	_, err := repo.GetByID(tx, newID)
 	if err != nil && !errors.Is(err, ErrNotFound) {
 		return err
 	} else if err == nil {
 		return nil
 	}
 
-	original, err := repo.GetByFlightplanID(tx, originalID)
+	original, err := repo.GetByID(tx, originalID)
 	if err != nil {
 		return err
 	}

@@ -10,10 +10,10 @@ import (
 )
 
 const (
-	// VehicleCopiedWhenFlightplanCopiedEventExchangeName .
-	VehicleCopiedWhenFlightplanCopiedEventExchangeName = "fleet.vehicle_copied_when_flightplan_copied_event"
-	// VehicleCopiedWhenFlightplanCopiedEventQueueName .
-	VehicleCopiedWhenFlightplanCopiedEventQueueName = "vehicle.vehicle_copied_when_flightplan_copied_event"
+	// VehicleCopiedEventExchangeName .
+	VehicleCopiedEventExchangeName = "fleet.vehicle_copied_event"
+	// VehicleCopiedEventQueueName .
+	VehicleCopiedEventQueueName = "vehicle.vehicle_copied_event"
 )
 
 // EventHandler .
@@ -26,22 +26,22 @@ func NewEventHandler(application app.Application) EventHandler {
 	return EventHandler{app: application}
 }
 
-// HandleVehicleCopiedWhenFlightplanCopiedEvent .
-func (h *EventHandler) HandleVehicleCopiedWhenFlightplanCopiedEvent(
+// HandleVehicleCopiedEvent .
+func (h *EventHandler) HandleVehicleCopiedEvent(
 	ctx context.Context,
 	event []byte,
 ) error {
-	eventPb := skysign_proto.VehicleCopiedWhenFlightplanCopiedEvent{}
+	eventPb := skysign_proto.VehicleCopiedEvent{}
 	if err := proto.Unmarshal(event, &eventPb); err != nil {
 		return err
 	}
 
-	glog.Infof("RECEIVE , Event: %s, Message: %s", VehicleCopiedWhenFlightplanCopiedEventQueueName, eventPb.String())
+	glog.Infof("RECEIVE , Event: %s, Message: %s", VehicleCopiedEventQueueName, eventPb.String())
 
 	requestDpo := copyRequestDpoHolder{
-		originalID:   eventPb.GetOriginalVehicleId(),
-		newID:        eventPb.GetNewVehicleId(),
-		flightplanID: eventPb.GetFlightplanId(),
+		originalID: eventPb.GetOriginalVehicleId(),
+		newID:      eventPb.GetNewVehicleId(),
+		fleetID:    eventPb.GetFleetId(),
 	}
 	if ret := h.app.Services.ManageVehicle.CarbonCopyVehicle(&requestDpo); ret != nil {
 		return ret
@@ -50,9 +50,9 @@ func (h *EventHandler) HandleVehicleCopiedWhenFlightplanCopiedEvent(
 }
 
 type copyRequestDpoHolder struct {
-	originalID   string
-	newID        string
-	flightplanID string
+	originalID string
+	newID      string
+	fleetID    string
 }
 
 func (h *copyRequestDpoHolder) GetOriginalID() string {
@@ -61,6 +61,6 @@ func (h *copyRequestDpoHolder) GetOriginalID() string {
 func (h *copyRequestDpoHolder) GetNewID() string {
 	return h.newID
 }
-func (h *copyRequestDpoHolder) GetFlightplanID() string {
-	return h.flightplanID
+func (h *copyRequestDpoHolder) GetFleetID() string {
+	return h.fleetID
 }

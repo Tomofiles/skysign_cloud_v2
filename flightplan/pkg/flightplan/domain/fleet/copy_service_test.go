@@ -16,33 +16,27 @@ func TestCarbonCopyFleetService(t *testing.T) {
 	ctx := context.Background()
 
 	var (
-		DefaultID1        = DefaultID + "-1"
-		DefaultID2        = DefaultID + "-2"
-		DefaultOriginalID = DefaultFlightplanID
-		DefaultNewID      = DefaultFlightplanID + "-new"
+		DefaultOriginalID = DefaultID
+		DefaultNewID      = DefaultID + "-new"
 	)
 
 	fleet := Fleet{
-		id:           DefaultID1,
-		flightplanID: DefaultOriginalID,
+		id:           DefaultOriginalID,
 		isCarbonCopy: Original,
 		version:      DefaultVersion,
 		newVersion:   DefaultVersion,
 		gen:          nil,
 	}
-	gen := &generatorMock{
-		id: DefaultID2,
-	}
+	gen := &generatorMock{}
 	repo := &repositoryMock{}
-	repo.On("GetByFlightplanID", DefaultNewID).Return(nil, ErrNotFound)
-	repo.On("GetByFlightplanID", DefaultOriginalID).Return(&fleet, nil)
+	repo.On("GetByID", DefaultNewID).Return(nil, ErrNotFound)
+	repo.On("GetByID", DefaultOriginalID).Return(&fleet, nil)
 	repo.On("Save", mock.Anything).Return(nil)
 
 	ret := CarbonCopyFleet(ctx, gen, repo, nil, DefaultOriginalID, DefaultNewID)
 
 	expectFleet := Fleet{
-		id:           DefaultID2,
-		flightplanID: DefaultNewID,
+		id:           DefaultNewID,
 		isCarbonCopy: CarbonCopy,
 		version:      DefaultVersion,
 		newVersion:   DefaultVersion,
@@ -62,13 +56,12 @@ func TestCopySuccessWhenAlreadyExistsFleetWhenCarbonCopyFleetService(t *testing.
 	ctx := context.Background()
 
 	var (
-		DefaultOriginalID = DefaultFlightplanID
-		DefaultNewID      = DefaultFlightplanID + "-new"
+		DefaultOriginalID = DefaultID
+		DefaultNewID      = DefaultID + "-new"
 	)
 
 	fleet := Fleet{
-		id:           DefaultID,
-		flightplanID: DefaultNewID,
+		id:           DefaultNewID,
 		isCarbonCopy: CarbonCopy,
 		version:      DefaultVersion,
 		newVersion:   DefaultVersion,
@@ -76,7 +69,7 @@ func TestCopySuccessWhenAlreadyExistsFleetWhenCarbonCopyFleetService(t *testing.
 	}
 	gen := &generatorMock{}
 	repo := &repositoryMock{}
-	repo.On("GetByFlightplanID", DefaultNewID).Return(&fleet, nil)
+	repo.On("GetByID", DefaultNewID).Return(&fleet, nil)
 
 	ret := CarbonCopyFleet(ctx, gen, repo, nil, DefaultOriginalID, DefaultNewID)
 
@@ -85,21 +78,21 @@ func TestCopySuccessWhenAlreadyExistsFleetWhenCarbonCopyFleetService(t *testing.
 
 // Fleetをカーボンコピーするドメインサービスをテストする。
 // 指定されたIDのFleetの取得がエラーとなった場合、
-// 削除が失敗し、エラーが返却されることを検証する。
+// コピーが失敗し、エラーが返却されることを検証する。
 func TestGetErrorWhenCarbonCopyFleetService(t *testing.T) {
 	a := assert.New(t)
 
 	ctx := context.Background()
 
 	var (
-		DefaultOriginalID = DefaultFlightplanID
-		DefaultNewID      = DefaultFlightplanID + "-new"
+		DefaultOriginalID = DefaultID
+		DefaultNewID      = DefaultID + "-new"
 	)
 
 	gen := &generatorMock{}
 	repo := &repositoryMock{}
-	repo.On("GetByFlightplanID", DefaultNewID).Return(nil, ErrGet)
-	repo.On("GetByFlightplanID", DefaultOriginalID).Return(nil, ErrGet)
+	repo.On("GetByID", DefaultNewID).Return(nil, ErrGet)
+	repo.On("GetByID", DefaultOriginalID).Return(nil, ErrGet)
 	repo.On("Save", mock.Anything).Return(nil)
 
 	ret := CarbonCopyFleet(ctx, gen, repo, nil, DefaultOriginalID, DefaultNewID)
@@ -109,21 +102,21 @@ func TestGetErrorWhenCarbonCopyFleetService(t *testing.T) {
 
 // Fleetをカーボンコピーするドメインサービスをテストする。
 // 指定されたIDのFleetの取得がエラーとなった場合、
-// 削除が失敗し、エラーが返却されることを検証する。
+// コピーが失敗し、エラーが返却されることを検証する。
 func TestGetError2WhenCarbonCopyFleetService(t *testing.T) {
 	a := assert.New(t)
 
 	ctx := context.Background()
 
 	var (
-		DefaultOriginalID = DefaultFlightplanID
-		DefaultNewID      = DefaultFlightplanID + "-new"
+		DefaultOriginalID = DefaultID
+		DefaultNewID      = DefaultID + "-new"
 	)
 
 	gen := &generatorMock{}
 	repo := &repositoryMock{}
-	repo.On("GetByFlightplanID", DefaultNewID).Return(nil, ErrNotFound)
-	repo.On("GetByFlightplanID", DefaultOriginalID).Return(nil, ErrGet)
+	repo.On("GetByID", DefaultNewID).Return(nil, ErrNotFound)
+	repo.On("GetByID", DefaultOriginalID).Return(nil, ErrGet)
 	repo.On("Save", mock.Anything).Return(nil)
 
 	ret := CarbonCopyFleet(ctx, gen, repo, nil, DefaultOriginalID, DefaultNewID)
@@ -140,26 +133,21 @@ func TestSaveErrorWhenCarbonCopyFleetService(t *testing.T) {
 	ctx := context.Background()
 
 	var (
-		DefaultID1        = DefaultID + "-1"
-		DefaultID2        = DefaultID + "-2"
-		DefaultOriginalID = DefaultFlightplanID
-		DefaultNewID      = DefaultFlightplanID + "-new"
+		DefaultOriginalID = DefaultID
+		DefaultNewID      = DefaultID + "-new"
 	)
 
 	fleet := Fleet{
-		id:           DefaultID1,
-		flightplanID: DefaultOriginalID,
+		id:           DefaultOriginalID,
 		isCarbonCopy: Original,
 		version:      DefaultVersion,
 		newVersion:   DefaultVersion,
 		gen:          nil,
 	}
-	gen := &generatorMock{
-		id: DefaultID2,
-	}
+	gen := &generatorMock{}
 	repo := &repositoryMock{}
-	repo.On("GetByFlightplanID", DefaultNewID).Return(nil, ErrNotFound)
-	repo.On("GetByFlightplanID", DefaultOriginalID).Return(&fleet, nil)
+	repo.On("GetByID", DefaultNewID).Return(nil, ErrNotFound)
+	repo.On("GetByID", DefaultOriginalID).Return(&fleet, nil)
 	repo.On("Save", mock.Anything).Return(ErrSave)
 
 	ret := CarbonCopyFleet(ctx, gen, repo, nil, DefaultOriginalID, DefaultNewID)
