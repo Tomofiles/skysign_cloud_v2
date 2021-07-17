@@ -83,12 +83,12 @@ func run() error {
 
 	proto.RegisterAssignAssetsToFleetServiceServer(s, &svc)
 
-	glog.Info("start flightplan server")
+	glog.Info("start fleet-formation server")
 	return s.Serve(listen)
 }
 
 func main() {
-	port = flag.String("port", "5001", "flightplan port")
+	port = flag.String("port", "5001", "fleet-formation port")
 	flag.Parse()
 	defer glog.Flush()
 
