@@ -31,7 +31,15 @@ func run() error {
 	mux := runtime.NewServeMux(smOpts...)
 	opts := []grpc.DialOption{grpc.WithInsecure()}
 	endpoint := fmt.Sprintf(*backendHost + ":" + *backendPort)
-	err := gw.RegisterManageVehicleServiceHandlerFromEndpoint(ctx, mux, endpoint, opts)
+	err := gw.RegisterAssignAssetsToFleetServiceHandlerFromEndpoint(ctx, mux, endpoint, opts)
+	if err != nil {
+		return err
+	}
+	err = gw.RegisterManageMissionServiceHandlerFromEndpoint(ctx, mux, endpoint, opts)
+	if err != nil {
+		return err
+	}
+	err = gw.RegisterManageVehicleServiceHandlerFromEndpoint(ctx, mux, endpoint, opts)
 	if err != nil {
 		return err
 	}

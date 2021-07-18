@@ -18,10 +18,9 @@ WORKDIR /app/
 
 EXPOSE 5000
 
-COPY --from=build /go/bin/vehicle-gateway .
-COPY --from=build /go/bin/mission-gateway .
 COPY --from=build /go/bin/helper-gateway .
 COPY --from=build /go/bin/comm-gateway .
+COPY --from=build /go/bin/fleet-formation-gateway .
 COPY --from=build /go/bin/flightplan-gateway .
 COPY --from=build /go/bin/flightoperation-gateway .
 COPY --from=build /go/bin/flightreport-gateway .
