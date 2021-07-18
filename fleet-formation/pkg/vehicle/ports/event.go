@@ -17,17 +17,22 @@ const (
 )
 
 // EventHandler .
-type EventHandler struct {
+type EventHandler interface {
+	HandleVehicleCopiedEvent(ctx context.Context, event []byte) error
+}
+
+// eventHandler .
+type eventHandler struct {
 	app app.Application
 }
 
 // NewEventHandler .
-func NewEventHandler(application app.Application) EventHandler {
-	return EventHandler{app: application}
+func NewEventHandler(application app.Application) *eventHandler {
+	return &eventHandler{app: application}
 }
 
 // HandleVehicleCopiedEvent .
-func (h *EventHandler) HandleVehicleCopiedEvent(
+func (h *eventHandler) HandleVehicleCopiedEvent(
 	ctx context.Context,
 	event []byte,
 ) error {

@@ -2,7 +2,7 @@ package vehicle
 
 import (
 	"errors"
-	"fleet-formation/pkg/vehicle/domain/event"
+	"fleet-formation/pkg/common/domain/event"
 )
 
 // ID .

@@ -2,7 +2,7 @@ package vehicle
 
 import (
 	"context"
-	"fleet-formation/pkg/vehicle/domain/txmanager"
+	"fleet-formation/pkg/common/domain/txmanager"
 	"testing"
 
 	"github.com/stretchr/testify/assert"

@@ -1,6 +1,7 @@
 package rabbitmq
 
 import (
+	crm "fleet-formation/pkg/common/adapters/rabbitmq"
 	"fleet-formation/pkg/mission/domain/mission"
 	"fleet-formation/pkg/skysign_proto"
 
@@ -12,7 +13,7 @@ const copiedMissionCreatedEventExchangeName = "mission.copied_mission_created_ev
 
 // PublishCopiedMissionCreatedEvent .
 func PublishCopiedMissionCreatedEvent(
-	ch Channel,
+	ch crm.Channel,
 	event mission.CopiedMissionCreatedEvent,
 ) error {
 	if err := ch.FanoutExchangeDeclare(

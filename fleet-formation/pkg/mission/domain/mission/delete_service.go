@@ -1,8 +1,8 @@
 package mission
 
 import (
-	"fleet-formation/pkg/mission/domain/event"
-	"fleet-formation/pkg/mission/domain/txmanager"
+	"fleet-formation/pkg/common/domain/event"
+	"fleet-formation/pkg/common/domain/txmanager"
 )
 
 // DeleteMission .

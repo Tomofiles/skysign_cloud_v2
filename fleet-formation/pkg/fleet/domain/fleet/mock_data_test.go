@@ -2,7 +2,7 @@ package fleet
 
 import (
 	"errors"
-	"fleet-formation/pkg/fleet/domain/txmanager"
+	"fleet-formation/pkg/common/domain/txmanager"
 
 	"github.com/stretchr/testify/mock"
 )

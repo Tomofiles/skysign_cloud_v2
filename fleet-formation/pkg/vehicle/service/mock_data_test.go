@@ -1,9 +1,8 @@
 package service
 
 import (
-	"context"
-	"fleet-formation/pkg/vehicle/domain/event"
-	"fleet-formation/pkg/vehicle/domain/txmanager"
+	"fleet-formation/pkg/common/domain/event"
+	"fleet-formation/pkg/common/domain/txmanager"
 	v "fleet-formation/pkg/vehicle/domain/vehicle"
 
 	"github.com/stretchr/testify/mock"
@@ -120,10 +119,6 @@ func (psm *pubSubManagerMock) GetPublisher() (event.Publisher, event.ChannelClos
 		close = ret.Get(1).(func() error)
 	}
 	return pub, close, ret.Error(2)
-}
-
-func (psm *pubSubManagerMock) SetConsumer(ctx context.Context, exchangeName, queueName string, handler event.Handler) error {
-	return nil
 }
 
 type txManagerMock struct {

@@ -2,8 +2,8 @@ package fleet
 
 import (
 	"errors"
-	"fleet-formation/pkg/fleet/domain/event"
-	"fleet-formation/pkg/fleet/domain/txmanager"
+	"fleet-formation/pkg/common/domain/event"
+	"fleet-formation/pkg/common/domain/txmanager"
 )
 
 // CarbonCopyFleet .

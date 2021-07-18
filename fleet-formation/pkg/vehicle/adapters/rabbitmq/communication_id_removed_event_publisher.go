@@ -1,6 +1,7 @@
 package rabbitmq
 
 import (
+	crm "fleet-formation/pkg/common/adapters/rabbitmq"
 	"fleet-formation/pkg/skysign_proto"
 	"fleet-formation/pkg/vehicle/domain/vehicle"
 
@@ -12,7 +13,7 @@ const communicationIDRemovedEventExchangeName = "vehicle.communication_id_remove
 
 // PublishCommunicationIDRemovedEvent .
 func PublishCommunicationIDRemovedEvent(
-	ch Channel,
+	ch crm.Channel,
 	event vehicle.CommunicationIDRemovedEvent,
 ) error {
 	if err := ch.FanoutExchangeDeclare(

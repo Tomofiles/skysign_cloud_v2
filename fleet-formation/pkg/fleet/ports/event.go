@@ -25,17 +25,24 @@ const (
 )
 
 // EventHandler .
-type EventHandler struct {
+type EventHandler interface {
+	HandleFleetIDGaveEvent(ctx context.Context, event []byte) error
+	HandleFleetIDRemovedEvent(ctx context.Context, event []byte) error
+	HandleFleetCopiedEvent(ctx context.Context, event []byte) error
+}
+
+// eventHandler .
+type eventHandler struct {
 	app app.Application
 }
 
 // NewEventHandler .
-func NewEventHandler(application app.Application) EventHandler {
-	return EventHandler{app: application}
+func NewEventHandler(application app.Application) *eventHandler {
+	return &eventHandler{app: application}
 }
 
 // HandleFleetIDGaveEvent .
-func (h *EventHandler) HandleFleetIDGaveEvent(
+func (h *eventHandler) HandleFleetIDGaveEvent(
 	ctx context.Context,
 	event []byte,
 ) error {
@@ -56,7 +63,7 @@ func (h *EventHandler) HandleFleetIDGaveEvent(
 }
 
 // HandleFleetIDRemovedEvent .
-func (h *EventHandler) HandleFleetIDRemovedEvent(
+func (h *eventHandler) HandleFleetIDRemovedEvent(
 	ctx context.Context,
 	event []byte,
 ) error {
@@ -77,7 +84,7 @@ func (h *EventHandler) HandleFleetIDRemovedEvent(
 }
 
 // HandleFleetCopiedEvent .
-func (h *EventHandler) HandleFleetCopiedEvent(
+func (h *eventHandler) HandleFleetCopiedEvent(
 	ctx context.Context,
 	event []byte,
 ) error {

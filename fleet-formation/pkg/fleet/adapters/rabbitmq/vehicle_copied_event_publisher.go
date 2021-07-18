@@ -1,6 +1,7 @@
 package rabbitmq
 
 import (
+	crm "fleet-formation/pkg/common/adapters/rabbitmq"
 	"fleet-formation/pkg/fleet/domain/fleet"
 	"fleet-formation/pkg/skysign_proto"
 
@@ -12,7 +13,7 @@ const vehicleCopiedEventExchangeName = "fleet.vehicle_copied_event"
 
 // PublishVehicleCopiedEvent .
 func PublishVehicleCopiedEvent(
-	ch Channel,
+	ch crm.Channel,
 	event fleet.VehicleCopiedEvent,
 ) error {
 	if err := ch.FanoutExchangeDeclare(

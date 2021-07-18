@@ -2,7 +2,7 @@ package vehicle
 
 import (
 	"errors"
-	"fleet-formation/pkg/vehicle/domain/txmanager"
+	"fleet-formation/pkg/common/domain/txmanager"
 )
 
 var (

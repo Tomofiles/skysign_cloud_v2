@@ -1,7 +1,7 @@
 package fleet
 
 import (
-	"fleet-formation/pkg/fleet/domain/event"
+	"fleet-formation/pkg/common/domain/event"
 )
 
 // NewInstance .

@@ -1,7 +1,7 @@
 package postgresql
 
 import (
-	"fleet-formation/pkg/vehicle/domain/txmanager"
+	"fleet-formation/pkg/common/domain/txmanager"
 	v "fleet-formation/pkg/vehicle/domain/vehicle"
 
 	"gorm.io/gorm"

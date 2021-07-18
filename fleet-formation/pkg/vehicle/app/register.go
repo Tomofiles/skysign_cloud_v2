@@ -2,10 +2,10 @@ package app
 
 import (
 	"context"
+	"fleet-formation/pkg/common/domain/event"
+	"fleet-formation/pkg/common/domain/txmanager"
 	"fleet-formation/pkg/vehicle/adapters/postgresql"
 	"fleet-formation/pkg/vehicle/adapters/uuid"
-	"fleet-formation/pkg/vehicle/domain/event"
-	"fleet-formation/pkg/vehicle/domain/txmanager"
 	"fleet-formation/pkg/vehicle/service"
 )
 

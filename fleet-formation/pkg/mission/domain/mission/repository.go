@@ -2,7 +2,7 @@ package mission
 
 import (
 	"errors"
-	"fleet-formation/pkg/mission/domain/txmanager"
+	"fleet-formation/pkg/common/domain/txmanager"
 )
 
 var (

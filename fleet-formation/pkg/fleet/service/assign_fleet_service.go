@@ -1,8 +1,8 @@
 package service
 
 import (
+	"fleet-formation/pkg/common/domain/txmanager"
 	f "fleet-formation/pkg/fleet/domain/fleet"
-	"fleet-formation/pkg/fleet/domain/txmanager"
 )
 
 // AssignFleetService .

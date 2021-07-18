@@ -2,7 +2,7 @@ package mission
 
 import (
 	"context"
-	"fleet-formation/pkg/mission/domain/txmanager"
+	"fleet-formation/pkg/common/domain/txmanager"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
