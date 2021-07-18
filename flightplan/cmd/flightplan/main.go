@@ -48,43 +48,10 @@ func run() error {
 	application := app.NewApplication(ctx, txm, psm)
 
 	svc := ports.NewGrpcServer(application)
-	evt := ports.NewEventHandler(application)
-
-	psm.SetConsumer(
-		ctx,
-		ports.FleetIDGaveEventExchangeName,
-		ports.FleetIDGaveEventQueueName,
-		func(event []byte) {
-			if err := evt.HandleFleetIDGaveEvent(ctx, event); err != nil {
-				glog.Error(err)
-			}
-		},
-	)
-	psm.SetConsumer(
-		ctx,
-		ports.FleetIDRemovedEventExchangeName,
-		ports.FleetIDRemovedEventQueueName,
-		func(event []byte) {
-			if err := evt.HandleFleetIDRemovedEvent(ctx, event); err != nil {
-				glog.Error(err)
-			}
-		},
-	)
-	psm.SetConsumer(
-		ctx,
-		ports.FleetCopiedEventExchangeName,
-		ports.FleetCopiedEventQueueName,
-		func(event []byte) {
-			if err := evt.HandleFleetCopiedEvent(ctx, event); err != nil {
-				glog.Error(err)
-			}
-		},
-	)
 
 	proto.RegisterManageFlightplanServiceServer(s, &svc)
 	proto.RegisterChangeFlightplanServiceServer(s, &svc)
 	proto.RegisterExecuteFlightplanServiceServer(s, &svc)
-	proto.RegisterAssignAssetsToFleetServiceServer(s, &svc)
 
 	glog.Info("start flightplan server")
 	return s.Serve(listen)

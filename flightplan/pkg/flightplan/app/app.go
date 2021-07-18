@@ -14,6 +14,4 @@ type Services struct {
 	ManageFlightplan  service.ManageFlightplanService
 	ChangeFlightplan  service.ChangeFlightplanService
 	ExecuteFlightplan service.ExecuteFlightplanService
-	ManageFleet       service.ManageFleetService
-	AssignFleet       service.AssignFleetService
 }
