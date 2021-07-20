@@ -8,6 +8,6 @@ ENV TZ Asia/Tokyo
 
 ENV POSTGRES_USER tomofiles
 ENV POSTGRES_PASSWORD pc+tomofiles
-ENV POSTGRES_DB action
+ENV POSTGRES_DB collection-analysis
 
 COPY *.sql /docker-entrypoint-initdb.d/
