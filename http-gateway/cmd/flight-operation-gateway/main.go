@@ -31,7 +31,23 @@ func run() error {
 	mux := runtime.NewServeMux(smOpts...)
 	opts := []grpc.DialOption{grpc.WithInsecure()}
 	endpoint := fmt.Sprintf(*backendHost + ":" + *backendPort)
-	err := gw.RegisterOperateFlightServiceHandlerFromEndpoint(ctx, mux, endpoint, opts)
+	err := gw.RegisterManageFlightplanServiceHandlerFromEndpoint(ctx, mux, endpoint, opts)
+	if err != nil {
+		return err
+	}
+	err = gw.RegisterChangeFlightplanServiceHandlerFromEndpoint(ctx, mux, endpoint, opts)
+	if err != nil {
+		return err
+	}
+	err = gw.RegisterExecuteFlightplanServiceHandlerFromEndpoint(ctx, mux, endpoint, opts)
+	if err != nil {
+		return err
+	}
+	err = gw.RegisterOperateFlightServiceHandlerFromEndpoint(ctx, mux, endpoint, opts)
+	if err != nil {
+		return err
+	}
+	err = gw.RegisterReportFlightServiceHandlerFromEndpoint(ctx, mux, endpoint, opts)
 	if err != nil {
 		return err
 	}
