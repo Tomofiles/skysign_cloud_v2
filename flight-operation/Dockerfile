@@ -19,4 +19,4 @@ WORKDIR /app/
 
 EXPOSE 5000
 
-COPY --from=build /go/bin/fleet-formation .
+COPY --from=build /go/bin/flight-operation .
