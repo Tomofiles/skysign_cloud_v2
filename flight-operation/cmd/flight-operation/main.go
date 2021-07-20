@@ -1,95 +1,93 @@
 package main
 
-// import (
-// 	"context"
-// 	"flag"
-// 	"net"
-// 	"time"
+import (
+	"context"
+	"flag"
+	"net"
+	"time"
 
-// 	cpg "fleet-formation/pkg/common/adapters/postgresql"
-// 	crm "fleet-formation/pkg/common/adapters/rabbitmq"
-// 	cports "fleet-formation/pkg/common/ports"
-// 	frm "fleet-formation/pkg/fleet/adapters/rabbitmq"
-// 	fapp "fleet-formation/pkg/fleet/app"
-// 	fports "fleet-formation/pkg/fleet/ports"
-// 	mrm "fleet-formation/pkg/mission/adapters/rabbitmq"
-// 	mapp "fleet-formation/pkg/mission/app"
-// 	mports "fleet-formation/pkg/mission/ports"
-// 	proto "fleet-formation/pkg/skysign_proto"
-// 	vrm "fleet-formation/pkg/vehicle/adapters/rabbitmq"
-// 	vapp "fleet-formation/pkg/vehicle/app"
-// 	vports "fleet-formation/pkg/vehicle/ports"
+	cpg "flight-operation/pkg/common/adapters/postgresql"
+	crm "flight-operation/pkg/common/adapters/rabbitmq"
+	cports "flight-operation/pkg/common/ports"
+	foperm "flight-operation/pkg/flightoperation/adapters/rabbitmq"
+	fopeapp "flight-operation/pkg/flightoperation/app"
+	fopeports "flight-operation/pkg/flightoperation/ports"
+	fplrm "flight-operation/pkg/flightplan/adapters/rabbitmq"
+	fplapp "flight-operation/pkg/flightplan/app"
+	fplports "flight-operation/pkg/flightplan/ports"
+	frepapp "flight-operation/pkg/flightreport/app"
+	frepports "flight-operation/pkg/flightreport/ports"
+	proto "flight-operation/pkg/skysign_proto"
 
-// 	"github.com/golang/glog"
-// 	"google.golang.org/grpc"
-// )
+	"github.com/golang/glog"
+	"google.golang.org/grpc"
+)
 
-// var (
-// 	port *string
-// )
+var (
+	port *string
+)
 
-// func run() error {
-// 	ctx := context.Background()
-// 	ctx, cancel := context.WithCancel(ctx)
-// 	defer cancel()
+func run() error {
+	ctx := context.Background()
+	ctx, cancel := context.WithCancel(ctx)
+	defer cancel()
 
-// 	listen, err := net.Listen("tcp", ":"+*port)
-// 	if err != nil {
-// 		return err
-// 	}
-// 	defer listen.Close()
-// 	s := grpc.NewServer(grpc.UnaryInterceptor(cports.LogBodyInterceptor()))
+	listen, err := net.Listen("tcp", ":"+*port)
+	if err != nil {
+		return err
+	}
+	defer listen.Close()
+	s := grpc.NewServer(grpc.UnaryInterceptor(cports.LogBodyInterceptor()))
 
-// 	db, err := cpg.NewPostgresqlConnection()
-// 	if err != nil {
-// 		return err
-// 	}
-// 	txm := cpg.NewGormTransactionManager(db)
+	db, err := cpg.NewPostgresqlConnection()
+	if err != nil {
+		return err
+	}
+	txm := cpg.NewGormTransactionManager(db)
 
-// 	conn, err := crm.NewRabbitMQConnection()
-// 	if err != nil {
-// 		return err
-// 	}
-// 	defer conn.Close()
-// 	psm := crm.NewPubSubManager(conn)
+	conn, err := crm.NewRabbitMQConnection()
+	if err != nil {
+		return err
+	}
+	defer conn.Close()
+	psm := crm.NewPubSubManager(conn)
 
-// 	fleetApp := fapp.NewApplication(ctx, txm, psm)
-// 	vehilceApp := vapp.NewApplication(ctx, txm, psm)
-// 	missionApp := mapp.NewApplication(ctx, txm, psm)
+	fplApp := fplapp.NewApplication(ctx, txm, psm)
+	fopeApp := fopeapp.NewApplication(ctx, txm, psm)
+	frepApp := frepapp.NewApplication(ctx, txm, psm)
 
-// 	fevt := fports.NewEventHandler(fleetApp)
-// 	vevt := vports.NewEventHandler(vehilceApp)
-// 	mevt := mports.NewEventHandler(missionApp)
+	fopeevt := fopeports.NewEventHandler(fopeApp)
+	frepevt := frepports.NewEventHandler(frepApp)
 
-// 	fports.SubscribeEventHandler(ctx, psm, fevt)
-// 	vports.SubscribeEventHandler(ctx, psm, vevt)
-// 	mports.SubscribeEventHandler(ctx, psm, mevt)
+	fopeports.SubscribeEventHandler(ctx, psm, fopeevt)
+	frepports.SubscribeEventHandler(ctx, psm, frepevt)
 
-// 	frm.SubscribePublishHandler(psm)
-// 	vrm.SubscribePublishHandler(psm)
-// 	mrm.SubscribePublishHandler(psm)
+	fplrm.SubscribePublishHandler(psm)
+	foperm.SubscribePublishHandler(psm)
 
-// 	fsvc := fports.NewGrpcServer(fleetApp)
-// 	vsvc := vports.NewGrpcServer(vehilceApp)
-// 	msvc := mports.NewGrpcServer(missionApp)
+	fplsvc := fplports.NewGrpcServer(fplApp)
+	fopesvc := fopeports.NewGrpcServer(fopeApp)
+	frepsvc := frepports.NewGrpcServer(frepApp)
 
-// 	proto.RegisterAssignAssetsToFleetServiceServer(s, &fsvc)
-// 	proto.RegisterManageVehicleServiceServer(s, &vsvc)
-// 	proto.RegisterManageMissionServiceServer(s, &msvc)
+	proto.RegisterManageFlightplanServiceServer(s, &fplsvc)
+	proto.RegisterChangeFlightplanServiceServer(s, &fplsvc)
+	proto.RegisterExecuteFlightplanServiceServer(s, &fplsvc)
+	proto.RegisterOperateFlightServiceServer(s, &fopesvc)
+	proto.RegisterReportFlightServiceServer(s, &frepsvc)
 
-// 	glog.Info("start fleet-formation server")
-// 	return s.Serve(listen)
-// }
+	glog.Info("start flight-operation server")
+	return s.Serve(listen)
+}
 
 func main() {
-	// port = flag.String("port", "5001", "fleet-formation port")
-	// flag.Parse()
-	// defer glog.Flush()
+	port = flag.String("port", "5001", "flight-operation port")
+	flag.Parse()
+	defer glog.Flush()
 
-	// for {
-	// 	if err := run(); err != nil {
-	// 		glog.Error(err)
-	// 		time.Sleep(10 * time.Second)
-	// 	}
-	// }
+	for {
+		if err := run(); err != nil {
+			glog.Error(err)
+			time.Sleep(10 * time.Second)
+		}
+	}
 }
