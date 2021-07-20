@@ -6,11 +6,11 @@ version: '3.7'
 
 services:
 
-  skysign-communication-db-for-debugging:
-    container_name: skysign-communication-db
-    hostname: skysign-communication-db
+  skysign-remote-communication-db-for-debugging:
+    container_name: skysign-remote-communication-db
+    hostname: skysign-remote-communication-db
     build:
-      context: ../../skysign-db/communication-db
+      context: ../../skysign-db/remote-communication-db
       dockerfile: Dockerfile
     ports:
       - 54321:5432
@@ -52,19 +52,19 @@ services:
       - 56721:5672
       - 15672:15672
 
-  skysign-communication-backend-for-debugging:
-    container_name: skysign-communication-backend
-    hostname: skysign-communication-backend
+  skysign-remote-communication-backend-for-debugging:
+    container_name: skysign-remote-communication-backend
+    hostname: skysign-remote-communication-backend
     build:
       context: ../../communication
       dockerfile: Dockerfile
     environment:
-     - db.host=skysign-communication-db
+     - db.host=skysign-remote-communication-db
      - mq.host=skysign-mq
      - mq.ssl.enabled=false
     command: java -cp app:app/lib/* net.tomofiles.skysign.communication.CommunicationApplication
     depends_on:
-      - skysign-communication-db-for-debugging
+      - skysign-remote-communication-db-for-debugging
       - skysign-mq-for-debugging
 
   skysign-fleet-formation-backend-for-debugging:
@@ -117,15 +117,15 @@ services:
       dockerfile: Dockerfile
     command: /app/helper-user-api
 
-  skysign-communication-gateway-for-debugging:
-    container_name: skysign-communication-gateway
-    hostname: skysign-communication-gateway
+  skysign-remote-communication-gateway-for-debugging:
+    container_name: skysign-remote-communication-gateway
+    hostname: skysign-remote-communication-gateway
     build:
       context: ../../http-gateway
       dockerfile: Dockerfile
-    command: /app/comm-gateway -backend_host skysign-communication-backend -backend_port 5001
+    command: /app/remote-communication-gateway -backend_host skysign-remote-communication-backend -backend_port 5001
     depends_on:
-      - skysign-communication-backend-for-debugging
+      - skysign-remote-communication-backend-for-debugging
 
   skysign-fleet-formation-gateway-for-debugging:
     container_name: skysign-fleet-formation-gateway
@@ -185,7 +185,7 @@ services:
     ports:
       - 8080:80
     depends_on:
-      - skysign-communication-gateway-for-debugging
+      - skysign-remote-communication-gateway-for-debugging
       - skysign-fleet-formation-gateway-for-debugging
       - skysign-flight-operation-gateway-for-debugging
       - skysign-collection-analysis-gateway-for-debugging
