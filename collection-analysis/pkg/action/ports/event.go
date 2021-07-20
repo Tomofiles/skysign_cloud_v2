@@ -25,17 +25,24 @@ const (
 )
 
 // EventHandler .
-type EventHandler struct {
+type EventHandler interface {
+	HandleCopiedVehicleCreatedEvent(ctx context.Context, event []byte) error
+	HandleFlightoperationCompletedEvent(ctx context.Context, event []byte) error
+	HandleTelemetryUpdatedEvent(ctx context.Context, event []byte) error
+}
+
+// eventHandler .
+type eventHandler struct {
 	app app.Application
 }
 
 // NewEventHandler .
-func NewEventHandler(application app.Application) EventHandler {
-	return EventHandler{app: application}
+func NewEventHandler(application app.Application) *eventHandler {
+	return &eventHandler{app: application}
 }
 
 // HandleCopiedVehicleCreatedEvent .
-func (h *EventHandler) HandleCopiedVehicleCreatedEvent(
+func (h *eventHandler) HandleCopiedVehicleCreatedEvent(
 	ctx context.Context,
 	event []byte,
 ) error {
@@ -54,7 +61,7 @@ func (h *EventHandler) HandleCopiedVehicleCreatedEvent(
 }
 
 // HandleFlightoperationCompletedEvent .
-func (h *EventHandler) HandleFlightoperationCompletedEvent(
+func (h *eventHandler) HandleFlightoperationCompletedEvent(
 	ctx context.Context,
 	event []byte,
 ) error {
@@ -73,7 +80,7 @@ func (h *EventHandler) HandleFlightoperationCompletedEvent(
 }
 
 // HandleTelemetryUpdatedEvent .
-func (h *EventHandler) HandleTelemetryUpdatedEvent(
+func (h *eventHandler) HandleTelemetryUpdatedEvent(
 	ctx context.Context,
 	event []byte,
 ) error {
