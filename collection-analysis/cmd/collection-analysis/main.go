@@ -6,7 +6,6 @@ import (
 	"net"
 	"time"
 
-	arm "collection-analysis/pkg/action/adapters/rabbitmq"
 	aapp "collection-analysis/pkg/action/app"
 	aports "collection-analysis/pkg/action/ports"
 	cpg "collection-analysis/pkg/common/adapters/postgresql"
@@ -52,8 +51,6 @@ func run() error {
 	aevt := aports.NewEventHandler(aApp)
 
 	aports.SubscribeEventHandler(ctx, psm, aevt)
-
-	arm.SubscribePublishHandler(psm)
 
 	asvc := aports.NewGrpcServer(aApp)
 
