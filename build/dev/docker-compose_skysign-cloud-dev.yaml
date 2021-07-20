@@ -33,11 +33,11 @@ services:
     ports:
       - 54323:5432
 
-  skysign-action-db-for-debugging:
-    container_name: skysign-action-db
-    hostname: skysign-action-db
+  skysign-collection-analysis-db-for-debugging:
+    container_name: skysign-collection-analysis-db
+    hostname: skysign-collection-analysis-db
     build:
-      context: ../../skysign-db/action-db
+      context: ../../skysign-db/collection-analysis-db
       dockerfile: Dockerfile
     ports:
       - 54324:5432
@@ -95,18 +95,18 @@ services:
       - skysign-flight-operation-db-for-debugging
       - skysign-mq-for-debugging
 
-  skysign-action-backend-for-debugging:
-    container_name: skysign-action-backend
-    hostname: skysign-action-backend
+  skysign-collection-analysis-backend-for-debugging:
+    container_name: skysign-collection-analysis-backend
+    hostname: skysign-collection-analysis-backend
     build:
-      context: ../../action
+      context: ../../collection-analysis
       dockerfile: Dockerfile
     environment:
-     - DB_HOST=skysign-action-db
+     - DB_HOST=skysign-collection-analysis-db
      - MQ_HOST=skysign-mq
     command: /app/action -logtostderr
     depends_on:
-      - skysign-action-db-for-debugging
+      - skysign-collection-analysis-db-for-debugging
       - skysign-mq-for-debugging
 
   skysign-helper-backend-for-debugging:
@@ -147,15 +147,15 @@ services:
     depends_on:
       - skysign-flight-operation-backend-for-debugging
 
-  skysign-action-gateway-for-debugging:
-    container_name: skysign-action-gateway
-    hostname: skysign-action-gateway
+  skysign-collection-analysis-gateway-for-debugging:
+    container_name: skysign-collection-analysis-gateway
+    hostname: skysign-collection-analysis-gateway
     build:
       context: ../../http-gateway
       dockerfile: Dockerfile
-    command: /app/action-gateway -backend_host skysign-action-backend -backend_port 5001
+    command: /app/collection-analysis-gateway -backend_host skysign-collection-analysis-backend -backend_port 5001
     depends_on:
-      - skysign-action-backend-for-debugging
+      - skysign-collection-analysis-backend-for-debugging
 
   skysign-helper-gateway-for-debugging:
     container_name: skysign-helper-gateway
@@ -188,7 +188,7 @@ services:
       - skysign-communication-gateway-for-debugging
       - skysign-fleet-formation-gateway-for-debugging
       - skysign-flight-operation-gateway-for-debugging
-      - skysign-action-gateway-for-debugging
+      - skysign-collection-analysis-gateway-for-debugging
       - skysign-helper-gateway-for-debugging
       - skysign-frontend-for-debugging
 
