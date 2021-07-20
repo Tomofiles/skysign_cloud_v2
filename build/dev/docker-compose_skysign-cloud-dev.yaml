@@ -104,7 +104,7 @@ services:
     environment:
      - DB_HOST=skysign-collection-analysis-db
      - MQ_HOST=skysign-mq
-    command: /app/action -logtostderr
+    command: /app/collection-analysis -logtostderr
     depends_on:
       - skysign-collection-analysis-db-for-debugging
       - skysign-mq-for-debugging
