@@ -37,7 +37,7 @@ jobs:
           checkout: true
           path: ./helper-api
 
-  build_and_test_communication:
+  build_and_test_remote-communication:
     executor: aws-ecr/default
     steps:
       - aws-ecr/build-image:
@@ -46,11 +46,11 @@ jobs:
           aws-access-key-id: AWS_ACCESS_KEY_ID
           aws-secret-access-key: AWS_SECRET_ACCESS_KEY
           repo: ${AWS_RESOURCE_NAME_PREFIX}
-          tag: "communication_${CIRCLE_SHA1}"
+          tag: "remote-communication_${CIRCLE_SHA1}"
           checkout: true
           path: ./communication
 
-  build_and_test_vehicle:
+  build_and_test_fleet-formation:
     executor: aws-ecr/default
     steps:
       - aws-ecr/build-image:
@@ -59,11 +59,11 @@ jobs:
           aws-access-key-id: AWS_ACCESS_KEY_ID
           aws-secret-access-key: AWS_SECRET_ACCESS_KEY
           repo: ${AWS_RESOURCE_NAME_PREFIX}
-          tag: "vehicle_${CIRCLE_SHA1}"
+          tag: "fleet-formation_${CIRCLE_SHA1}"
           checkout: true
-          path: ./vehicle
+          path: ./fleet-formation
 
-  build_and_test_mission:
+  build_and_test_flight-operation:
     executor: aws-ecr/default
     steps:
       - aws-ecr/build-image:
@@ -72,11 +72,11 @@ jobs:
           aws-access-key-id: AWS_ACCESS_KEY_ID
           aws-secret-access-key: AWS_SECRET_ACCESS_KEY
           repo: ${AWS_RESOURCE_NAME_PREFIX}
-          tag: "mission_${CIRCLE_SHA1}"
+          tag: "flight-operation_${CIRCLE_SHA1}"
           checkout: true
-          path: ./mission
+          path: ./flight-operation
 
-  build_and_test_flightplan:
+  build_and_test_collection-analysis:
     executor: aws-ecr/default
     steps:
       - aws-ecr/build-image:
@@ -85,48 +85,9 @@ jobs:
           aws-access-key-id: AWS_ACCESS_KEY_ID
           aws-secret-access-key: AWS_SECRET_ACCESS_KEY
           repo: ${AWS_RESOURCE_NAME_PREFIX}
-          tag: "flightplan_${CIRCLE_SHA1}"
+          tag: "collection-analysis_${CIRCLE_SHA1}"
           checkout: true
-          path: ./flightplan
-
-  build_and_test_flightoperation:
-    executor: aws-ecr/default
-    steps:
-      - aws-ecr/build-image:
-          region: AWS_DEFAULT_REGION
-          account-url: AWS_ACCOUNT_URL
-          aws-access-key-id: AWS_ACCESS_KEY_ID
-          aws-secret-access-key: AWS_SECRET_ACCESS_KEY
-          repo: ${AWS_RESOURCE_NAME_PREFIX}
-          tag: "flightoperation_${CIRCLE_SHA1}"
-          checkout: true
-          path: ./flightoperation
-
-  build_and_test_flightreport:
-    executor: aws-ecr/default
-    steps:
-      - aws-ecr/build-image:
-          region: AWS_DEFAULT_REGION
-          account-url: AWS_ACCOUNT_URL
-          aws-access-key-id: AWS_ACCESS_KEY_ID
-          aws-secret-access-key: AWS_SECRET_ACCESS_KEY
-          repo: ${AWS_RESOURCE_NAME_PREFIX}
-          tag: "flightreport_${CIRCLE_SHA1}"
-          checkout: true
-          path: ./flightreport
-
-  build_and_test_action:
-    executor: aws-ecr/default
-    steps:
-      - aws-ecr/build-image:
-          region: AWS_DEFAULT_REGION
-          account-url: AWS_ACCOUNT_URL
-          aws-access-key-id: AWS_ACCESS_KEY_ID
-          aws-secret-access-key: AWS_SECRET_ACCESS_KEY
-          repo: ${AWS_RESOURCE_NAME_PREFIX}
-          tag: "action_${CIRCLE_SHA1}"
-          checkout: true
-          path: ./action
+          path: ./collection-analysis
 
   build_and_test_client:
     executor: aws-ecr/default
@@ -179,7 +140,7 @@ jobs:
           tag: "helper-api_${CIRCLE_SHA1}"
           path: ./helper-api
 
-  build_and_push_communication:
+  build_and_push_remote-communication:
     executor: aws-ecr/default
     steps:
       - aws-ecr/build-and-push-image:
@@ -188,10 +149,10 @@ jobs:
           aws-access-key-id: AWS_ACCESS_KEY_ID
           aws-secret-access-key: AWS_SECRET_ACCESS_KEY
           repo: ${AWS_RESOURCE_NAME_PREFIX}
-          tag: "communication_${CIRCLE_SHA1}"
+          tag: "remote-communication_${CIRCLE_SHA1}"
           path: ./communication
 
-  build_and_push_vehicle:
+  build_and_push_fleet-formation:
     executor: aws-ecr/default
     steps:
       - aws-ecr/build-and-push-image:
@@ -200,10 +161,10 @@ jobs:
           aws-access-key-id: AWS_ACCESS_KEY_ID
           aws-secret-access-key: AWS_SECRET_ACCESS_KEY
           repo: ${AWS_RESOURCE_NAME_PREFIX}
-          tag: "vehicle_${CIRCLE_SHA1}"
-          path: ./vehicle
+          tag: "fleet-formation_${CIRCLE_SHA1}"
+          path: ./fleet-formation
 
-  build_and_push_mission:
+  build_and_push_flight-operation:
     executor: aws-ecr/default
     steps:
       - aws-ecr/build-and-push-image:
@@ -212,10 +173,10 @@ jobs:
           aws-access-key-id: AWS_ACCESS_KEY_ID
           aws-secret-access-key: AWS_SECRET_ACCESS_KEY
           repo: ${AWS_RESOURCE_NAME_PREFIX}
-          tag: "mission_${CIRCLE_SHA1}"
-          path: ./mission
+          tag: "flight-operation_${CIRCLE_SHA1}"
+          path: ./flight-operation
 
-  build_and_push_flightplan:
+  build_and_push_collection-analysis:
     executor: aws-ecr/default
     steps:
       - aws-ecr/build-and-push-image:
@@ -224,44 +185,8 @@ jobs:
           aws-access-key-id: AWS_ACCESS_KEY_ID
           aws-secret-access-key: AWS_SECRET_ACCESS_KEY
           repo: ${AWS_RESOURCE_NAME_PREFIX}
-          tag: "flightplan_${CIRCLE_SHA1}"
-          path: ./flightplan
-
-  build_and_push_flightoperation:
-    executor: aws-ecr/default
-    steps:
-      - aws-ecr/build-and-push-image:
-          region: AWS_DEFAULT_REGION
-          account-url: AWS_ACCOUNT_URL
-          aws-access-key-id: AWS_ACCESS_KEY_ID
-          aws-secret-access-key: AWS_SECRET_ACCESS_KEY
-          repo: ${AWS_RESOURCE_NAME_PREFIX}
-          tag: "flightoperation_${CIRCLE_SHA1}"
-          path: ./flightoperation
-
-  build_and_push_flightreport:
-    executor: aws-ecr/default
-    steps:
-      - aws-ecr/build-and-push-image:
-          region: AWS_DEFAULT_REGION
-          account-url: AWS_ACCOUNT_URL
-          aws-access-key-id: AWS_ACCESS_KEY_ID
-          aws-secret-access-key: AWS_SECRET_ACCESS_KEY
-          repo: ${AWS_RESOURCE_NAME_PREFIX}
-          tag: "flightreport_${CIRCLE_SHA1}"
-          path: ./flightreport
-
-  build_and_push_action:
-    executor: aws-ecr/default
-    steps:
-      - aws-ecr/build-and-push-image:
-          region: AWS_DEFAULT_REGION
-          account-url: AWS_ACCOUNT_URL
-          aws-access-key-id: AWS_ACCESS_KEY_ID
-          aws-secret-access-key: AWS_SECRET_ACCESS_KEY
-          repo: ${AWS_RESOURCE_NAME_PREFIX}
-          tag: "action_${CIRCLE_SHA1}"
-          path: ./action
+          tag: "collection-analysis_${CIRCLE_SHA1}"
+          path: ./collection-analysis
 
   build_and_push_client:
     executor: aws-ecr/default
@@ -383,37 +308,22 @@ workflows:
             branches:
               ignore: master
           <<: *slack-fail-post-step
-      - build_and_test_communication:
+      - build_and_test_remote-communication:
           filters:
             branches:
               ignore: master
           <<: *slack-fail-post-step
-      - build_and_test_vehicle:
+      - build_and_test_fleet-formation:
           filters:
             branches:
               ignore: master
           <<: *slack-fail-post-step
-      - build_and_test_mission:
+      - build_and_test_flight-operation:
           filters:
             branches:
               ignore: master
           <<: *slack-fail-post-step
-      - build_and_test_flightplan:
-          filters:
-            branches:
-              ignore: master
-          <<: *slack-fail-post-step
-      - build_and_test_flightoperation:
-          filters:
-            branches:
-              ignore: master
-          <<: *slack-fail-post-step
-      - build_and_test_flightreport:
-          filters:
-            branches:
-              ignore: master
-          <<: *slack-fail-post-step
-      - build_and_test_action:
+      - build_and_test_collection-analysis:
           filters:
             branches:
               ignore: master
@@ -432,13 +342,10 @@ workflows:
           requires:
             - build_and_test_http_gateway
             - build_and_test_helper_api
-            - build_and_test_communication
-            - build_and_test_vehicle
-            - build_and_test_mission
-            - build_and_test_flightplan
-            - build_and_test_flightoperation
-            - build_and_test_flightreport
-            - build_and_test_action
+            - build_and_test_remote-communication
+            - build_and_test_fleet-formation
+            - build_and_test_flight-operation
+            - build_and_test_collection-analysis
             - build_and_test_client
             - build_and_test_edge
           filters:
@@ -454,37 +361,22 @@ workflows:
             branches:
               only: master
           <<: *slack-fail-post-step
-      - build_and_push_communication:
+      - build_and_push_remote-communication:
           filters:
             branches:
               only: master
           <<: *slack-fail-post-step
-      - build_and_push_vehicle:
+      - build_and_push_fleet-formation:
           filters:
             branches:
               only: master
           <<: *slack-fail-post-step
-      - build_and_push_mission:
+      - build_and_push_flight-operation:
           filters:
             branches:
               only: master
           <<: *slack-fail-post-step
-      - build_and_push_flightplan:
-          filters:
-            branches:
-              only: master
-          <<: *slack-fail-post-step
-      - build_and_push_flightoperation:
-          filters:
-            branches:
-              only: master
-          <<: *slack-fail-post-step
-      - build_and_push_flightreport:
-          filters:
-            branches:
-              only: master
-          <<: *slack-fail-post-step
-      - build_and_push_action:
+      - build_and_push_collection-analysis:
           filters:
             branches:
               only: master
@@ -498,13 +390,10 @@ workflows:
           requires:
             - build_and_push_http_gateway
             - build_and_push_helper_api
-            - build_and_push_communication
-            - build_and_push_vehicle
-            - build_and_push_mission
-            - build_and_push_flightplan
-            - build_and_push_flightoperation
-            - build_and_push_flightreport
-            - build_and_push_action
+            - build_and_push_remote-communication
+            - build_and_push_fleet-formation
+            - build_and_push_flight-operation
+            - build_and_push_collection-analysis
             - build_and_push_client
           filters:
             branches:
