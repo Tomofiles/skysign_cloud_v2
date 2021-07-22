@@ -37,7 +37,7 @@ jobs:
           checkout: true
           path: ./helper-api
 
-  build_and_test_communication:
+  build_and_test_remote-communication:
     executor: aws-ecr/default
     steps:
       - aws-ecr/build-image:
@@ -46,11 +46,11 @@ jobs:
           aws-access-key-id: AWS_ACCESS_KEY_ID
           aws-secret-access-key: AWS_SECRET_ACCESS_KEY
           repo: ${AWS_RESOURCE_NAME_PREFIX}
-          tag: "communication_${CIRCLE_SHA1}"
+          tag: "remote-communication_${CIRCLE_SHA1}"
           checkout: true
           path: ./communication
 
-  build_and_test_vehicle:
+  build_and_test_fleet-formation:
     executor: aws-ecr/default
     steps:
       - aws-ecr/build-image:
@@ -59,11 +59,11 @@ jobs:
           aws-access-key-id: AWS_ACCESS_KEY_ID
           aws-secret-access-key: AWS_SECRET_ACCESS_KEY
           repo: ${AWS_RESOURCE_NAME_PREFIX}
-          tag: "vehicle_${CIRCLE_SHA1}"
+          tag: "fleet-formation_${CIRCLE_SHA1}"
           checkout: true
-          path: ./vehicle
+          path: ./fleet-formation
 
-  build_and_test_mission:
+  build_and_test_flight-operation:
     executor: aws-ecr/default
     steps:
       - aws-ecr/build-image:
@@ -72,11 +72,11 @@ jobs:
           aws-access-key-id: AWS_ACCESS_KEY_ID
           aws-secret-access-key: AWS_SECRET_ACCESS_KEY
           repo: ${AWS_RESOURCE_NAME_PREFIX}
-          tag: "mission_${CIRCLE_SHA1}"
+          tag: "flight-operation_${CIRCLE_SHA1}"
           checkout: true
-          path: ./mission
+          path: ./flight-operation
 
-  build_and_test_flightplan:
+  build_and_test_collection-analysis:
     executor: aws-ecr/default
     steps:
       - aws-ecr/build-image:
@@ -85,48 +85,9 @@ jobs:
           aws-access-key-id: AWS_ACCESS_KEY_ID
           aws-secret-access-key: AWS_SECRET_ACCESS_KEY
           repo: ${AWS_RESOURCE_NAME_PREFIX}
-          tag: "flightplan_${CIRCLE_SHA1}"
+          tag: "collection-analysis_${CIRCLE_SHA1}"
           checkout: true
-          path: ./flightplan
-
-  build_and_test_flightoperation:
-    executor: aws-ecr/default
-    steps:
-      - aws-ecr/build-image:
-          region: AWS_DEFAULT_REGION
-          account-url: AWS_ACCOUNT_URL
-          aws-access-key-id: AWS_ACCESS_KEY_ID
-          aws-secret-access-key: AWS_SECRET_ACCESS_KEY
-          repo: ${AWS_RESOURCE_NAME_PREFIX}
-          tag: "flightoperation_${CIRCLE_SHA1}"
-          checkout: true
-          path: ./flightoperation
-
-  build_and_test_flightreport:
-    executor: aws-ecr/default
-    steps:
-      - aws-ecr/build-image:
-          region: AWS_DEFAULT_REGION
-          account-url: AWS_ACCOUNT_URL
-          aws-access-key-id: AWS_ACCESS_KEY_ID
-          aws-secret-access-key: AWS_SECRET_ACCESS_KEY
-          repo: ${AWS_RESOURCE_NAME_PREFIX}
-          tag: "flightreport_${CIRCLE_SHA1}"
-          checkout: true
-          path: ./flightreport
-
-  build_and_test_action:
-    executor: aws-ecr/default
-    steps:
-      - aws-ecr/build-image:
-          region: AWS_DEFAULT_REGION
-          account-url: AWS_ACCOUNT_URL
-          aws-access-key-id: AWS_ACCESS_KEY_ID
-          aws-secret-access-key: AWS_SECRET_ACCESS_KEY
-          repo: ${AWS_RESOURCE_NAME_PREFIX}
-          tag: "action_${CIRCLE_SHA1}"
-          checkout: true
-          path: ./action
+          path: ./collection-analysis
 
   build_and_test_client:
     executor: aws-ecr/default
@@ -179,7 +140,7 @@ jobs:
           tag: "helper-api_${CIRCLE_SHA1}"
           path: ./helper-api
 
-  build_and_push_communication:
+  build_and_push_remote-communication:
     executor: aws-ecr/default
     steps:
       - aws-ecr/build-and-push-image:
@@ -188,10 +149,10 @@ jobs:
           aws-access-key-id: AWS_ACCESS_KEY_ID
           aws-secret-access-key: AWS_SECRET_ACCESS_KEY
           repo: ${AWS_RESOURCE_NAME_PREFIX}
-          tag: "communication_${CIRCLE_SHA1}"
+          tag: "remote-communication_${CIRCLE_SHA1}"
           path: ./communication
 
-  build_and_push_vehicle:
+  build_and_push_fleet-formation:
     executor: aws-ecr/default
     steps:
       - aws-ecr/build-and-push-image:
@@ -200,10 +161,10 @@ jobs:
           aws-access-key-id: AWS_ACCESS_KEY_ID
           aws-secret-access-key: AWS_SECRET_ACCESS_KEY
           repo: ${AWS_RESOURCE_NAME_PREFIX}
-          tag: "vehicle_${CIRCLE_SHA1}"
-          path: ./vehicle
+          tag: "fleet-formation_${CIRCLE_SHA1}"
+          path: ./fleet-formation
 
-  build_and_push_mission:
+  build_and_push_flight-operation:
     executor: aws-ecr/default
     steps:
       - aws-ecr/build-and-push-image:
@@ -212,10 +173,10 @@ jobs:
           aws-access-key-id: AWS_ACCESS_KEY_ID
           aws-secret-access-key: AWS_SECRET_ACCESS_KEY
           repo: ${AWS_RESOURCE_NAME_PREFIX}
-          tag: "mission_${CIRCLE_SHA1}"
-          path: ./mission
+          tag: "flight-operation_${CIRCLE_SHA1}"
+          path: ./flight-operation
 
-  build_and_push_flightplan:
+  build_and_push_collection-analysis:
     executor: aws-ecr/default
     steps:
       - aws-ecr/build-and-push-image:
@@ -224,44 +185,8 @@ jobs:
           aws-access-key-id: AWS_ACCESS_KEY_ID
           aws-secret-access-key: AWS_SECRET_ACCESS_KEY
           repo: ${AWS_RESOURCE_NAME_PREFIX}
-          tag: "flightplan_${CIRCLE_SHA1}"
-          path: ./flightplan
-
-  build_and_push_flightoperation:
-    executor: aws-ecr/default
-    steps:
-      - aws-ecr/build-and-push-image:
-          region: AWS_DEFAULT_REGION
-          account-url: AWS_ACCOUNT_URL
-          aws-access-key-id: AWS_ACCESS_KEY_ID
-          aws-secret-access-key: AWS_SECRET_ACCESS_KEY
-          repo: ${AWS_RESOURCE_NAME_PREFIX}
-          tag: "flightoperation_${CIRCLE_SHA1}"
-          path: ./flightoperation
-
-  build_and_push_flightreport:
-    executor: aws-ecr/default
-    steps:
-      - aws-ecr/build-and-push-image:
-          region: AWS_DEFAULT_REGION
-          account-url: AWS_ACCOUNT_URL
-          aws-access-key-id: AWS_ACCESS_KEY_ID
-          aws-secret-access-key: AWS_SECRET_ACCESS_KEY
-          repo: ${AWS_RESOURCE_NAME_PREFIX}
-          tag: "flightreport_${CIRCLE_SHA1}"
-          path: ./flightreport
-
-  build_and_push_action:
-    executor: aws-ecr/default
-    steps:
-      - aws-ecr/build-and-push-image:
-          region: AWS_DEFAULT_REGION
-          account-url: AWS_ACCOUNT_URL
-          aws-access-key-id: AWS_ACCESS_KEY_ID
-          aws-secret-access-key: AWS_SECRET_ACCESS_KEY
-          repo: ${AWS_RESOURCE_NAME_PREFIX}
-          tag: "action_${CIRCLE_SHA1}"
-          path: ./action
+          tag: "collection-analysis_${CIRCLE_SHA1}"
+          path: ./collection-analysis
 
   build_and_push_client:
     executor: aws-ecr/default
@@ -301,56 +226,20 @@ jobs:
             cd ${SKYSIGN_CONFIG_REPO}/
             git checkout -b release-${CIRCLE_SHA1}
             rm -f manifest/*
-            envsubst < ../build/deploy/skysign-action-gateway-backend-envoy.yaml > manifest/skysign-action-gateway-backend-envoy.yaml
-            envsubst < ../build/deploy/skysign-action-gateway-backend.yaml > manifest/skysign-action-gateway-backend.yaml
-            envsubst < ../build/deploy/skysign-action-gateway.yaml > manifest/skysign-action-gateway.yaml
-            envsubst < ../build/deploy/skysign-action-service-backend-envoy.yaml > manifest/skysign-action-service-backend-envoy.yaml
-            envsubst < ../build/deploy/skysign-action-service-backend.yaml > manifest/skysign-action-service-backend.yaml
-            envsubst < ../build/deploy/skysign-action-service.yaml > manifest/skysign-action-service.yaml
-            envsubst < ../build/deploy/skysign-client-backend.yaml > manifest/skysign-client-backend.yaml
             envsubst < ../build/deploy/skysign-client.yaml > manifest/skysign-client.yaml
-            envsubst < ../build/deploy/skysign-communication-gateway-backend-envoy.yaml > manifest/skysign-communication-gateway-backend-envoy.yaml
-            envsubst < ../build/deploy/skysign-communication-gateway-backend.yaml > manifest/skysign-communication-gateway-backend.yaml
-            envsubst < ../build/deploy/skysign-communication-gateway.yaml > manifest/skysign-communication-gateway.yaml
-            envsubst < ../build/deploy/skysign-communication-service-backend-envoy.yaml > manifest/skysign-communication-service-backend-envoy.yaml
-            envsubst < ../build/deploy/skysign-communication-service-backend.yaml > manifest/skysign-communication-service-backend.yaml
-            envsubst < ../build/deploy/skysign-communication-service.yaml > manifest/skysign-communication-service.yaml
+            envsubst < ../build/deploy/skysign-collection-analysis-gateway.yaml > manifest/skysign-collection-analysis-gateway.yaml
+            envsubst < ../build/deploy/skysign-collection-analysis-service.yaml > manifest/skysign-collection-analysis-service.yaml
             envsubst < ../build/deploy/skysign-db.yaml > manifest/skysign-db.yaml
             envsubst < ../build/deploy/skysign-endpoint.yaml > manifest/skysign-endpoint.yaml
-            envsubst < ../build/deploy/skysign-flightoperation-gateway-backend-envoy.yaml > manifest/skysign-flightoperation-gateway-backend-envoy.yaml
-            envsubst < ../build/deploy/skysign-flightoperation-gateway-backend.yaml > manifest/skysign-flightoperation-gateway-backend.yaml
+            envsubst < ../build/deploy/skysign-fleet-formation-gateway.yaml > manifest/skysign-fleet-formation-gateway.yaml
+            envsubst < ../build/deploy/skysign-fleet-formation-service.yaml > manifest/skysign-fleet-formation-service.yaml
             envsubst < ../build/deploy/skysign-flightoperation-gateway.yaml > manifest/skysign-flightoperation-gateway.yaml
-            envsubst < ../build/deploy/skysign-flightoperation-service-backend-envoy.yaml > manifest/skysign-flightoperation-service-backend-envoy.yaml
-            envsubst < ../build/deploy/skysign-flightoperation-service-backend.yaml > manifest/skysign-flightoperation-service-backend.yaml
             envsubst < ../build/deploy/skysign-flightoperation-service.yaml > manifest/skysign-flightoperation-service.yaml
-            envsubst < ../build/deploy/skysign-flightplan-gateway-backend-envoy.yaml > manifest/skysign-flightplan-gateway-backend-envoy.yaml
-            envsubst < ../build/deploy/skysign-flightplan-gateway-backend.yaml > manifest/skysign-flightplan-gateway-backend.yaml
-            envsubst < ../build/deploy/skysign-flightplan-gateway.yaml > manifest/skysign-flightplan-gateway.yaml
-            envsubst < ../build/deploy/skysign-flightplan-service-backend-envoy.yaml > manifest/skysign-flightplan-service-backend-envoy.yaml
-            envsubst < ../build/deploy/skysign-flightplan-service-backend.yaml > manifest/skysign-flightplan-service-backend.yaml
-            envsubst < ../build/deploy/skysign-flightplan-service.yaml > manifest/skysign-flightplan-service.yaml
-            envsubst < ../build/deploy/skysign-flightreport-gateway-backend-envoy.yaml > manifest/skysign-flightreport-gateway-backend-envoy.yaml
-            envsubst < ../build/deploy/skysign-flightreport-gateway-backend.yaml > manifest/skysign-flightreport-gateway-backend.yaml
-            envsubst < ../build/deploy/skysign-flightreport-gateway.yaml > manifest/skysign-flightreport-gateway.yaml
-            envsubst < ../build/deploy/skysign-flightreport-service-backend-envoy.yaml > manifest/skysign-flightreport-service-backend-envoy.yaml
-            envsubst < ../build/deploy/skysign-flightreport-service-backend.yaml > manifest/skysign-flightreport-service-backend.yaml
-            envsubst < ../build/deploy/skysign-flightreport-service.yaml > manifest/skysign-flightreport-service.yaml
-            envsubst < ../build/deploy/skysign-helper-gateway-backend.yaml > manifest/skysign-helper-gateway-backend.yaml
             envsubst < ../build/deploy/skysign-helper-gateway.yaml > manifest/skysign-helper-gateway.yaml
-            envsubst < ../build/deploy/skysign-helper-service-backend.yaml > manifest/skysign-helper-service-backend.yaml
             envsubst < ../build/deploy/skysign-helper-service.yaml > manifest/skysign-helper-service.yaml
-            envsubst < ../build/deploy/skysign-mission-gateway-backend-envoy.yaml > manifest/skysign-mission-gateway-backend-envoy.yaml
-            envsubst < ../build/deploy/skysign-mission-gateway-backend.yaml > manifest/skysign-mission-gateway-backend.yaml
-            envsubst < ../build/deploy/skysign-mission-gateway.yaml > manifest/skysign-mission-gateway.yaml
-            envsubst < ../build/deploy/skysign-mission-service-backend-envoy.yaml > manifest/skysign-mission-service-backend-envoy.yaml
-            envsubst < ../build/deploy/skysign-mission-service-backend.yaml > manifest/skysign-mission-service-backend.yaml
-            envsubst < ../build/deploy/skysign-mission-service.yaml > manifest/skysign-mission-service.yaml
-            envsubst < ../build/deploy/skysign-vehicle-gateway-backend-envoy.yaml > manifest/skysign-vehicle-gateway-backend-envoy.yaml
-            envsubst < ../build/deploy/skysign-vehicle-gateway-backend.yaml > manifest/skysign-vehicle-gateway-backend.yaml
-            envsubst < ../build/deploy/skysign-vehicle-gateway.yaml > manifest/skysign-vehicle-gateway.yaml
-            envsubst < ../build/deploy/skysign-vehicle-service-backend-envoy.yaml > manifest/skysign-vehicle-service-backend-envoy.yaml
-            envsubst < ../build/deploy/skysign-vehicle-service-backend.yaml > manifest/skysign-vehicle-service-backend.yaml
-            envsubst < ../build/deploy/skysign-vehicle-service.yaml > manifest/skysign-vehicle-service.yaml
+            envsubst < ../build/deploy/skysign-mq.yaml > manifest/skysign-mq.yaml
+            envsubst < ../build/deploy/skysign-remote-communication-gateway.yaml > manifest/skysign-remote-communication-gateway.yaml
+            envsubst < ../build/deploy/skysign-remote-communication-service.yaml > manifest/skysign-remote-communication-service.yaml
             git add .
             git commit -m "release-${CIRCLE_SHA1}"
             git push --set-upstream origin release-${CIRCLE_SHA1}
@@ -383,37 +272,22 @@ workflows:
             branches:
               ignore: master
           <<: *slack-fail-post-step
-      - build_and_test_communication:
+      - build_and_test_remote-communication:
           filters:
             branches:
               ignore: master
           <<: *slack-fail-post-step
-      - build_and_test_vehicle:
+      - build_and_test_fleet-formation:
           filters:
             branches:
               ignore: master
           <<: *slack-fail-post-step
-      - build_and_test_mission:
+      - build_and_test_flight-operation:
           filters:
             branches:
               ignore: master
           <<: *slack-fail-post-step
-      - build_and_test_flightplan:
-          filters:
-            branches:
-              ignore: master
-          <<: *slack-fail-post-step
-      - build_and_test_flightoperation:
-          filters:
-            branches:
-              ignore: master
-          <<: *slack-fail-post-step
-      - build_and_test_flightreport:
-          filters:
-            branches:
-              ignore: master
-          <<: *slack-fail-post-step
-      - build_and_test_action:
+      - build_and_test_collection-analysis:
           filters:
             branches:
               ignore: master
@@ -432,13 +306,10 @@ workflows:
           requires:
             - build_and_test_http_gateway
             - build_and_test_helper_api
-            - build_and_test_communication
-            - build_and_test_vehicle
-            - build_and_test_mission
-            - build_and_test_flightplan
-            - build_and_test_flightoperation
-            - build_and_test_flightreport
-            - build_and_test_action
+            - build_and_test_remote-communication
+            - build_and_test_fleet-formation
+            - build_and_test_flight-operation
+            - build_and_test_collection-analysis
             - build_and_test_client
             - build_and_test_edge
           filters:
@@ -454,37 +325,22 @@ workflows:
             branches:
               only: master
           <<: *slack-fail-post-step
-      - build_and_push_communication:
+      - build_and_push_remote-communication:
           filters:
             branches:
               only: master
           <<: *slack-fail-post-step
-      - build_and_push_vehicle:
+      - build_and_push_fleet-formation:
           filters:
             branches:
               only: master
           <<: *slack-fail-post-step
-      - build_and_push_mission:
+      - build_and_push_flight-operation:
           filters:
             branches:
               only: master
           <<: *slack-fail-post-step
-      - build_and_push_flightplan:
-          filters:
-            branches:
-              only: master
-          <<: *slack-fail-post-step
-      - build_and_push_flightoperation:
-          filters:
-            branches:
-              only: master
-          <<: *slack-fail-post-step
-      - build_and_push_flightreport:
-          filters:
-            branches:
-              only: master
-          <<: *slack-fail-post-step
-      - build_and_push_action:
+      - build_and_push_collection-analysis:
           filters:
             branches:
               only: master
@@ -498,13 +354,10 @@ workflows:
           requires:
             - build_and_push_http_gateway
             - build_and_push_helper_api
-            - build_and_push_communication
-            - build_and_push_vehicle
-            - build_and_push_mission
-            - build_and_push_flightplan
-            - build_and_push_flightoperation
-            - build_and_push_flightreport
-            - build_and_push_action
+            - build_and_push_remote-communication
+            - build_and_push_fleet-formation
+            - build_and_push_flight-operation
+            - build_and_push_collection-analysis
             - build_and_push_client
           filters:
             branches:

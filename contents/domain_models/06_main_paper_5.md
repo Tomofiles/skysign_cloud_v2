@@ -21,7 +21,7 @@ Skysignでは**トラジェクトリー**と呼ぶ（航空管制用語の軌道
 飛行実績は、飛行レポート・エンティティ（Flightreport）という名称で、
 以下の図のようにモデリングしています。
 
-![domain_models_flightreport](https://user-images.githubusercontent.com/27773127/113295367-16332d80-9333-11eb-8108-714a29421a6f.png)
+![domain_models_flightreport](https://user-images.githubusercontent.com/27773127/126589517-7e753188-c2e5-425d-89bb-227bcb6a45fc.png)
 
 飛行オペレーションを完了させることで、飛行レポートが非同期で作成されます。
 
@@ -42,7 +42,7 @@ Skysignでは**トラジェクトリー**と呼ぶ（航空管制用語の軌道
 コミュニケーション・エンティティから、飛行オペレーションに向けて、
 テレメトリーが更新されたときに、ドメインイベントを通知してみます。
 
-![domain_models_communication-send-telemetry-updated-event-to-flightoperation](https://user-images.githubusercontent.com/27773127/113295414-23501c80-9333-11eb-82fc-9ac153240e8d.png)
+![domain_models_communication-send-telemetry-updated-event-to-flightoperation](https://user-images.githubusercontent.com/27773127/126589566-24c4a40f-55bc-4a67-add9-b60f84cb69a9.png)
 
 なんとなく良さそうな気がしますが、大きな問題があります。  
 ドメインイベントはコミュニケーション・エンティティが知っていること以上の知識は
@@ -66,7 +66,7 @@ Skysignでは**トラジェクトリー**と呼ぶ（航空管制用語の軌道
 適当ではなさそうです。  
 （アイデンティティとステートについては、[本編1](./02_main_paper_1.md)を参照）
 
-![domain_models_communication-send-telemetry-updated-event-to-vehicle](https://user-images.githubusercontent.com/27773127/113295478-3662ec80-9333-11eb-9ab3-0d564fd49d5f.png)
+![domain_models_communication-send-telemetry-updated-event-to-vehicle](https://user-images.githubusercontent.com/27773127/126589596-ed6da1af-a093-4df9-bd12-dfcf1e127062.png)
 
 なんとなく見えてきましたが、機体に関連したの識別子に依存していることを考慮すると、
 飛行実績を扱う集約は、機体の集約の周囲（もしくは中に含む）に隠れていて、
@@ -81,7 +81,7 @@ Skysignでは**トラジェクトリー**と呼ぶ（航空管制用語の軌道
 送信履歴と、ドローンの返却の履歴も含めて、**ドローンの行動として説明できる**ので、
 **アクション**というドメイン・モデルを追加しました。
 
-![domain_models_action](https://user-images.githubusercontent.com/27773127/113295526-45499f00-9333-11eb-9aa9-78c13f90a496.png)
+![domain_models_action](https://user-images.githubusercontent.com/27773127/126589704-968cad18-c852-4de5-a853-f09e2076359a.png)
 
 アクション・エンティティ（Action）は、機体のコピーが作成された際に
 発行されるドメインイベントを受信して、集約ルートが作成されます。
@@ -98,7 +98,7 @@ Skysignでは**トラジェクトリー**と呼ぶ（航空管制用語の軌道
 
 最終的な、集約ルートの関係を図にすると、以下のようになります。
 
-![domain_models_flightreport-and-action](https://user-images.githubusercontent.com/27773127/113295574-55fa1500-9333-11eb-8d6c-e5a583a3a38a.png)
+![domain_models_flightreport-and-action](https://user-images.githubusercontent.com/27773127/126589750-0e7a4212-bb4d-4ca6-9f75-1470881c6a48.png)
 
 アクションは、集約ルートの作成から、状態の更新、そして最後の終了状態への移行まで、
 **すべてドメインイベントにより、コントロールされます**。

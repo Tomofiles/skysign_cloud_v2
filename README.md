@@ -33,7 +33,7 @@ Skysignが提供する各種コンポーネントと、コンポーネント間�
 
 ## アーキテクチャ概要
 ### Overview
-![simple_architecture](https://user-images.githubusercontent.com/27773127/113296134-0f58ea80-9334-11eb-9e7d-2c52e2193419.png)
+![simple_architecture](https://user-images.githubusercontent.com/27773127/126493119-e463f95a-f7eb-4751-a2be-3763d0cfe6c9.png)
 
 Skysignは、大きく分けて`Cloud`と`Edge`の2つのコンポーネントから構成されます。
 

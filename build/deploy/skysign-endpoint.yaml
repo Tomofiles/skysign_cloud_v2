@@ -13,33 +13,41 @@ spec:
   rules:
   - http:
       paths:
-      - path: /api/v1/vehicles*
-        backend:
-          serviceName: skysign-vehicle-gateway
-          servicePort: 6000
       - path: /api/v1/communications*
         backend:
-          serviceName: skysign-communication-gateway
+          serviceName: skysign-remote-communication-gateway
           servicePort: 6000
-      - path: /api/v1/actions*
+      - path: /api/v1/uploadmissions*
         backend:
-          serviceName: skysign-action-gateway
+          serviceName: skysign-remote-communication-gateway
+          servicePort: 6000
+      - path: /api/v1/vehicles*
+        backend:
+          serviceName: skysign-fleet-formation-gateway
           servicePort: 6000
       - path: /api/v1/missions*
         backend:
-          serviceName: skysign-mission-gateway
+          serviceName: skysign-fleet-formation-gateway
+          servicePort: 6000
+      - path: /api/v1/fleets*
+        backend:
+          serviceName: skysign-fleet-formation-gateway
           servicePort: 6000
       - path: /api/v1/flightplans*
         backend:
-          serviceName: skysign-flightplan-gateway
+          serviceName: skysign-flight-operation-gateway
           servicePort: 6000
       - path: /api/v1/flightoperations*
         backend:
-          serviceName: skysign-flightoperation-gateway
+          serviceName: skysign-flight-operation-gateway
           servicePort: 6000
       - path: /api/v1/flightreports*
         backend:
-          serviceName: skysign-flightreport-gateway
+          serviceName: skysign-flight-operation-gateway
+          servicePort: 6000
+      - path: /api/v1/actions*
+        backend:
+          serviceName: skysign-collection-analysis-gateway
           servicePort: 6000
       - path: /api/v1/helper*
         backend:

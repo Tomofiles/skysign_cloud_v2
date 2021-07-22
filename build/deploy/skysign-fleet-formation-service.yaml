@@ -1,0 +1,54 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: skysign-fleet-formation-service
+  labels:
+    run: skysign-fleet-formation-service
+spec:
+  clusterIP: None
+  ports:
+  - port: 5001
+    protocol: TCP
+  selector:
+    run: skysign-fleet-formation-service-backend
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: skysign-fleet-formation-service-backend
+spec:
+  selector:
+    matchLabels:
+      run: skysign-fleet-formation-service-backend
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        run: skysign-fleet-formation-service-backend
+    spec:
+      containers:
+      - name: skysign-fleet-formation-service-backend
+        image: ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com/skysign-cloud-v2:fleet-formation_${CIRCLE_SHA1}
+        command: ["/app/fleet-formation"]
+        args: ["-logtostderr"]
+        env:
+        - name: DB_HOST
+          value: "skysign-db"
+        - name: DB_USERNAME
+          value: "${AWS_RDS_USER_NAME}"
+        - name: DB_PASSWORD
+          value: "${AWS_RDS_PASSWORD}"
+        - name: DB_SSL_ENABLED
+          value: "require"
+        - name: MQ_HOST
+          value: "skysign-mq"
+        - name: MQ_PORT
+          value: "${AWS_AMQ_PORT}"
+        - name: MQ_USERNAME
+          value: "${AWS_AMQ_USER_NAME}"
+        - name: MQ_PASSWORD
+          value: "${AWS_AMQ_PASSWORD}"
+        - name: MQ_SSL_ENABLED
+          value: "enable"
+        ports:
+        - containerPort: 5001
