@@ -13,16 +13,19 @@ import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import { grey } from '@material-ui/core/colors';
 import { Controller, useForm } from 'react-hook-form';
 
-import { changeNumberOfVehicles, getAssignments } from './FlightplansUtils';
+import { getFlightplan, changeNumberOfVehicles, getAssignments } from './FlightplansUtils';
 
 const ChangeNumberOfVehicles = (props) => {
   const { control, handleSubmit, setValue } = useForm();
 
   useEffect(() => {
     if (props.open) {
-      getAssignments(props.id)
+      getFlightplan(props.id)
         .then(data => {
-          setValue("number_of_vehicles", data.assignments.length);
+          getAssignments(data.fleet_id)
+            .then(data => {
+              setValue("number_of_vehicles", data.assignments.length);
+            })
         })
     }
   }, [ props.open, props.id, setValue ])

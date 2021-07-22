@@ -14,7 +14,7 @@ const BridgeVehicleToStep = () => {
     let communicationIds = [];
     vehicles
       .forEach(vehicle => {
-        communicationIds.push(vehicle.commId);
+        communicationIds.push(vehicle.communication_id);
       });
 
     dispatchSteps({ type: 'INIT', ids: communicationIds });

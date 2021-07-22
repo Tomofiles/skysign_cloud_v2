@@ -21,13 +21,13 @@ func AdapterUpload(ctx context.Context, url string, missionModel *edge.Mission) 
 
 	missionItems := make([]*mavsdk_rpc_mission.MissionItem, 0)
 
-	for _, item := range missionModel.Items {
+	for _, waypoint := range missionModel.Waypoints {
 		missionItems = append(missionItems,
 			&mavsdk_rpc_mission.MissionItem{
-				LatitudeDeg:       item.Latitude,
-				LongitudeDeg:      item.Longitude,
-				RelativeAltitudeM: float32(item.RelativeHeight),
-				SpeedMS:           float32(item.Speed),
+				LatitudeDeg:       waypoint.Latitude,
+				LongitudeDeg:      waypoint.Longitude,
+				RelativeAltitudeM: float32(waypoint.RelativeHeight),
+				SpeedMS:           float32(waypoint.Speed),
 			},
 		)
 	}

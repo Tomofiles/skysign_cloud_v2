@@ -131,15 +131,15 @@ func request_CommunicationEdgeService_PullCommand_0(ctx context.Context, marshal
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "id", err)
 	}
 
-	val, ok = pathParams["commandId"]
+	val, ok = pathParams["command_id"]
 	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "commandId")
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "command_id")
 	}
 
 	protoReq.CommandId, err = runtime.String(val)
 
 	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "commandId", err)
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "command_id", err)
 	}
 
 	msg, err := client.PullCommand(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
@@ -177,15 +177,15 @@ func local_request_CommunicationEdgeService_PullCommand_0(ctx context.Context, m
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "id", err)
 	}
 
-	val, ok = pathParams["commandId"]
+	val, ok = pathParams["command_id"]
 	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "commandId")
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "command_id")
 	}
 
 	protoReq.CommandId, err = runtime.String(val)
 
 	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "commandId", err)
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "command_id", err)
 	}
 
 	msg, err := server.PullCommand(ctx, &protoReq)
@@ -223,15 +223,15 @@ func request_CommunicationEdgeService_PullUploadMission_0(ctx context.Context, m
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "id", err)
 	}
 
-	val, ok = pathParams["commandId"]
+	val, ok = pathParams["command_id"]
 	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "commandId")
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "command_id")
 	}
 
 	protoReq.CommandId, err = runtime.String(val)
 
 	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "commandId", err)
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "command_id", err)
 	}
 
 	msg, err := client.PullUploadMission(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
@@ -269,15 +269,15 @@ func local_request_CommunicationEdgeService_PullUploadMission_0(ctx context.Cont
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "id", err)
 	}
 
-	val, ok = pathParams["commandId"]
+	val, ok = pathParams["command_id"]
 	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "commandId")
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "command_id")
 	}
 
 	protoReq.CommandId, err = runtime.String(val)
 
 	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "commandId", err)
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "command_id", err)
 	}
 
 	msg, err := server.PullUploadMission(ctx, &protoReq)
@@ -458,9 +458,9 @@ func RegisterCommunicationEdgeServiceHandlerClient(ctx context.Context, mux *run
 var (
 	pattern_CommunicationEdgeService_PushTelemetry_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3, 2, 4}, []string{"api", "v1", "communications", "id", "telemetry"}, "", runtime.AssumeColonVerbOpt(true)))
 
-	pattern_CommunicationEdgeService_PullCommand_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3, 2, 4, 1, 0, 4, 1, 5, 5}, []string{"api", "v1", "communications", "id", "commands", "commandId"}, "", runtime.AssumeColonVerbOpt(true)))
+	pattern_CommunicationEdgeService_PullCommand_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3, 2, 4, 1, 0, 4, 1, 5, 5}, []string{"api", "v1", "communications", "id", "commands", "command_id"}, "", runtime.AssumeColonVerbOpt(true)))
 
-	pattern_CommunicationEdgeService_PullUploadMission_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3, 2, 4, 1, 0, 4, 1, 5, 5}, []string{"api", "v1", "communications", "id", "uploadmissions", "commandId"}, "", runtime.AssumeColonVerbOpt(true)))
+	pattern_CommunicationEdgeService_PullUploadMission_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3, 2, 4, 1, 0, 4, 1, 5, 5}, []string{"api", "v1", "communications", "id", "uploadmissions", "command_id"}, "", runtime.AssumeColonVerbOpt(true)))
 )
 
 var (

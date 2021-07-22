@@ -2,53 +2,46 @@
 // https://dreampuf.github.io/GraphvizOnline/
 digraph G {
   Client [label="Client", shape=Box];
-  HTTPFrontend1 [label="<Communicaton>\ngRPC gateway\n[Golang]"];
-  HTTPFrontend2 [label="<Mission>\ngRPC gateway\n[Golang]"];
-  HTTPFrontend3 [label="<Vehicle>\ngRPC gateway\n[Golang]"];
-  HTTPFrontend4 [label="<Flightplan>\ngRPC gateway\n[Golang]"];
-  HTTPFrontend5 [label="<Flightoperation>\ngRPC gateway\n[Golang]"];
-  HTTPFrontend6 [label="<Flightreport>\ngRPC gateway\n[Golang]"];
-  HTTPFrontend7 [label="<Action>\ngRPC gateway\n[Golang]"];
-  MissionsBackend [label="<Mission>\nbackend\n[Java]"];
-  CommunicationBackend [label="<Communication>\nbackend\n[Java]"];
-  VehicleBackend [label="<Vehicle>\nbackend\n[Java]"];
-  FlightplanBackend [label="<Flightplan>\nbackend\n[Golang]"];
-  FlightoperationBackend [label="<Flightoperation>\nbackend\n[Golang]"];
-  FlightreportBackend [label="<Flightreport>\nbackend\n[Golang]"];
-  ActionBackend [label="<Action>\nbackend\n[Golang]"];
+  HTTPFrontend1 [label="<Remote-Communication>\ngRPC gateway\n[Golang]"];
+  HTTPFrontend2 [label="<Fleet-Formation>\ngRPC gateway\n[Golang]"];
+  HTTPFrontend3 [label="<Flight-Operation>\ngRPC gateway\n[Golang]"];
+  HTTPFrontend4 [label="<Collection-Analysis>\ngRPC gateway\n[Golang]"];
+
+  RemoteCommunicationBackend [label="<Remote-Communication>\nbackend\n[Java]"];
+  FleetFormationBackend [label="<Fleet-Formation>\nbackend\n[Golang]"];
+  FlightOperationBackend [label="<Flight-Operation>\nbackend\n[Golang]"];
+  CollectionAnalysisBackend [label="<Collection-Analysis>\nbackend\n[Golang]"];
+  
   PostgreSQL1 [label="PostgreSQL", shape=cylinder];
   PostgreSQL2 [label="PostgreSQL", shape=cylinder];
   PostgreSQL3 [label="PostgreSQL", shape=cylinder];
   PostgreSQL4 [label="PostgreSQL", shape=cylinder];
-  PostgreSQL5 [label="PostgreSQL", shape=cylinder];
-  PostgreSQL6 [label="PostgreSQL", shape=cylinder];
-  PostgreSQL7 [label="PostgreSQL", shape=cylinder];
+
   RabbitMQ [label="RabbitMQ", shape=box3d];
+  
   ReverseProxy [label="Reverse Proxy"];
+  
   StaticContents [label="Static contents\n[React/Cesium]"];
+  
   Edge_ [label="Edge\n[Golang]"];
+  
   MavsdkBackend [label="Mavsdk\nbackend server"];
+  
   PX4 [label="PX4"];
   
   Client -> ReverseProxy [label="HTTP"];
   Edge_ -> ReverseProxy [label="HTTP"];
   
-  VehicleBackend -> PostgreSQL1;
-  CommunicationBackend -> PostgreSQL2;
-  MissionsBackend -> PostgreSQL3;
-  FlightplanBackend -> PostgreSQL4;
-  FlightoperationBackend -> PostgreSQL5;
-  FlightreportBackend -> PostgreSQL6;
-  ActionBackend -> PostgreSQL7;
-  
-  VehicleBackend -> RabbitMQ;
-  CommunicationBackend -> RabbitMQ;
-  MissionsBackend -> RabbitMQ;
-  FlightplanBackend -> RabbitMQ;
-  FlightoperationBackend -> RabbitMQ;
-  FlightreportBackend -> RabbitMQ;
-  ActionBackend -> RabbitMQ;
-  
+  RemoteCommunicationBackend -> PostgreSQL1;
+  FleetFormationBackend -> PostgreSQL2;
+  FlightOperationBackend -> PostgreSQL3;
+  CollectionAnalysisBackend -> PostgreSQL4;
+
+  RemoteCommunicationBackend -> RabbitMQ;
+  FleetFormationBackend -> RabbitMQ;
+  FlightOperationBackend -> RabbitMQ;
+  CollectionAnalysisBackend -> RabbitMQ;
+
   subgraph cluster_0 {
     label="Container\nplatform";
     ReverseProxy -> StaticContents [label="HTTP"];
@@ -56,17 +49,11 @@ digraph G {
     ReverseProxy -> HTTPFrontend2 [label="HTTP"];
     ReverseProxy -> HTTPFrontend3 [label="HTTP"];
     ReverseProxy -> HTTPFrontend4 [label="HTTP"];
-    ReverseProxy -> HTTPFrontend5 [label="HTTP"];
-    ReverseProxy -> HTTPFrontend6 [label="HTTP"];
-    ReverseProxy -> HTTPFrontend7 [label="HTTP"];
   
-    HTTPFrontend1 -> CommunicationBackend [label="gRPC"];
-    HTTPFrontend2 -> MissionsBackend [label="gRPC"];
-    HTTPFrontend3 -> VehicleBackend [label="gRPC"];
-    HTTPFrontend4 -> FlightplanBackend [label="gRPC"];
-    HTTPFrontend5 -> FlightoperationBackend [label="gRPC"];
-    HTTPFrontend6 -> FlightreportBackend [label="gRPC"];
-    HTTPFrontend7 -> ActionBackend [label="gRPC"];
+    HTTPFrontend1 -> RemoteCommunicationBackend [label="gRPC"];
+    HTTPFrontend2 -> FleetFormationBackend [label="gRPC"];
+    HTTPFrontend3 -> FlightOperationBackend [label="gRPC"];
+    HTTPFrontend4 -> CollectionAnalysisBackend [label="gRPC"];
   }
   
   subgraph cluster_1 {

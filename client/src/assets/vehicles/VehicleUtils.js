@@ -29,7 +29,7 @@ export async function createVehicle(data) {
     const res = await axios
       .post(`/api/v1/vehicles`, {
         name: data.name,
-        commId: data.commId
+        communication_id: data.communication_id
       })
     return res.data;
   } catch(error) {
@@ -42,7 +42,7 @@ export async function updateVehicle(id, data) {
     const res = await axios
       .put(`/api/v1/vehicles/${id}`, {
         name: data.name,
-        commId: data.commId
+        communication_id: data.communication_id
       })
     return res.data;
   } catch(error) {

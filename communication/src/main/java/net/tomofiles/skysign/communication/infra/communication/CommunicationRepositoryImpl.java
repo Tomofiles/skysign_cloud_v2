@@ -45,11 +45,11 @@ public class CommunicationRepositoryImpl implements CommunicationRepository {
             isCreate = true;
 
             telemetry = new TelemetryRecord();
-            telemetry.setCommId(componentDto.getId());
+            telemetry.setCommunicationId(componentDto.getId());
         } else {
             telemetry = this.telemetryMapper.find(componentDto.getId());
-            commandsInDB.addAll(this.commandMapper.findByCommId(componentDto.getId()));
-            uploadMissionsInDB.addAll(this.uploadMissionMapper.findByCommId(componentDto.getId()));
+            commandsInDB.addAll(this.commandMapper.findByCommunicationId(componentDto.getId()));
+            uploadMissionsInDB.addAll(this.uploadMissionMapper.findByCommunicationId(componentDto.getId()));
         }
 
         telemetry.setLatitude(componentDto.getTelemetry().getLatitude());
@@ -108,7 +108,7 @@ public class CommunicationRepositoryImpl implements CommunicationRepository {
     public void remove(CommunicationId id) {
         this.communicationMapper.delete(id.getId());
         this.telemetryMapper.delete(id.getId());
-        this.commandMapper.deleteByCommId(id.getId());
+        this.commandMapper.deleteByCommunicationId(id.getId());
     }
 
     @Override
@@ -120,8 +120,8 @@ public class CommunicationRepositoryImpl implements CommunicationRepository {
         }
 
         TelemetryRecord telemetry = this.telemetryMapper.find(id.getId());
-        List<CommandRecord> commands = this.commandMapper.findByCommId(communication.getId());
-        List<UploadMissionRecord> uploadMissions = this.uploadMissionMapper.findByCommId(communication.getId());
+        List<CommandRecord> commands = this.commandMapper.findByCommunicationId(communication.getId());
+        List<UploadMissionRecord> uploadMissions = this.uploadMissionMapper.findByCommunicationId(communication.getId());
 
         return CommunicationFactory.assembleFrom(
                 new CommunicationComponentDto(
@@ -168,8 +168,8 @@ public class CommunicationRepositoryImpl implements CommunicationRepository {
         for (CommunicationRecord commRecord : commRecords) {
 
             TelemetryRecord telemetry = this.telemetryMapper.find(commRecord.getId());
-            List<CommandRecord> commands = this.commandMapper.findByCommId(commRecord.getId());
-            List<UploadMissionRecord> uploadMissions = this.uploadMissionMapper.findByCommId(commRecord.getId());
+            List<CommandRecord> commands = this.commandMapper.findByCommunicationId(commRecord.getId());
+            List<UploadMissionRecord> uploadMissions = this.uploadMissionMapper.findByCommunicationId(commRecord.getId());
     
             Communication communication = CommunicationFactory.assembleFrom(
                     new CommunicationComponentDto(

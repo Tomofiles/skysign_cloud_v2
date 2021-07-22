@@ -54,10 +54,30 @@ export async function deleteFlightplan(id) {
   }
 }
 
+export async function changeNumberOfVehicles(id, data) {
+  try {
+    const res = await axios
+      .put(`/api/v1/flightplans/${id}/numberofvehicles`, data)
+    return res.data;
+  } catch(error) {
+    console.log(error);
+  }
+}
+
+export async function executeFlightplan(id) {
+  try {
+    const res = await axios
+      .post(`/api/v1/flightplans/${id}/execute`, {})
+    return res.data;
+  } catch(error) {
+    console.log(error);
+  }
+}
+
 export async function getAssignments(id) {
   try {
     const res = await axios
-      .get(`/api/v1/flightplans/${id}/assignments`, {
+      .get(`/api/v1/fleets/${id}/assignments`, {
         params: {}
       })
     return res.data;
@@ -69,17 +89,7 @@ export async function getAssignments(id) {
 export async function updateAssignments(id, data) {
   try {
     const res = await axios
-      .put(`/api/v1/flightplans/${id}/assignments`, data)
-    return res.data;
-  } catch(error) {
-    console.log(error);
-  }
-}
-
-export async function changeNumberOfVehicles(id, data) {
-  try {
-    const res = await axios
-      .put(`/api/v1/flightplans/${id}/numberofvehicles`, data)
+      .put(`/api/v1/fleets/${id}/assignments`, data)
     return res.data;
   } catch(error) {
     console.log(error);

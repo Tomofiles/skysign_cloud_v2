@@ -1,0 +1,50 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: skysign-remote-communication-service
+  labels:
+    run: skysign-remote-communication-service
+spec:
+  clusterIP: None
+  ports:
+  - port: 5001
+    protocol: TCP
+  selector:
+    run: skysign-remote-communication-service-backend
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: skysign-remote-communication-service-backend
+spec:
+  selector:
+    matchLabels:
+      run: skysign-remote-communication-service-backend
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        run: skysign-remote-communication-service-backend
+    spec:
+      containers:
+      - name: skysign-remote-communication-service-backend
+        image: ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com/skysign-cloud-v2:remote-communication_${CIRCLE_SHA1}
+        command: ["java"]
+        args: ["-cp", "app:app/lib/*", "net.tomofiles.skysign.communication.CommunicationApplication"]
+        env:
+        - name: db.host
+          value: "skysign-db"
+        - name: db.username
+          value: "${AWS_RDS_USER_NAME}"
+        - name: db.password
+          value: "${AWS_RDS_PASSWORD}"
+        - name: mq.host
+          value: "skysign-mq"
+        - name: mq.port
+          value: "${AWS_AMQ_PORT}"
+        - name: mq.username
+          value: "${AWS_AMQ_USER_NAME}"
+        - name: mq.password
+          value: "${AWS_AMQ_PASSWORD}"
+        ports:
+        - containerPort: 5001

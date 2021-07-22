@@ -9,63 +9,61 @@ option java_multiple_files = true;
 option go_package = ".;skysign_proto";
 
 message CommunicationIdGaveEvent {
-    string communicationId = 1;
-    string version = 2;
+    string communication_id = 1;
 }
 
 message CommunicationIdRemovedEvent {
-    string communicationId = 1;
-    string version = 2;
+    string communication_id = 1;
 }
 
-message FlightplanCreatedEvent {
+message FleetIDGaveEvent {
+    string fleet_id = 1;
+    int32 number_of_vehicles = 2;
+}
+
+message FleetIDRemovedEvent {
+    string fleet_id = 1;
+}
+
+message FlightplanExecutedEvent {
     string flightplan_id = 1;
+    Flightplan flightplan = 2;
 }
 
-message FlightplanCopiedEvent {
-    string original_flightplan_id = 1;
-    string new_flightplan_id = 2;
+message FleetCopiedEvent {
+    string original_fleet_id = 1;
+    string new_fleet_id = 2;
 }
 
-message FlightplanDeletedEvent {
-    string flightplan_id = 1;
-}
-
-message VehicleCopiedWhenFlightplanCopiedEvent {
-    string flightplan_id = 1;
+message VehicleCopiedEvent {
+    string fleet_id = 1;
     string original_vehicle_id = 2;
     string new_vehicle_id = 3;
 }
 
-message MissionCopiedWhenFlightplanCopiedEvent {
-    string flightplan_id = 1;
+message MissionCopiedEvent {
+    string fleet_id = 1;
     string original_mission_id = 2;
     string new_mission_id = 3;
 }
 
-message FlightoperationCreatedEvent {
-    string flightoperation_id = 1;
-    string flightplan_id = 2;
-}
-
 message FlightoperationCompletedEvent {
     string flightoperation_id = 1;
-    string flightplan_id = 2;
-}
-
-message FlightplanCopiedWhenFlightoperationCreatedEvent {
-    string flightoperation_id = 1;
-    string original_flightplan_id = 2;
-    string new_flightplan_id = 3;
+    Flightoperation flightoperation = 2;
 }
 
 message CopiedVehicleCreatedEvent {
     string vehicle_id = 1;
     string communication_id = 2;
-    string flightplan_id = 3;
+    string fleet_id = 3;
 }
 
 message TelemetryUpdatedEvent {
     string communication_id = 1;
     Telemetry telemetry = 2;
+}
+
+message CopiedMissionCreatedEvent {
+    string mission_id = 1;
+    Mission mission = 2;
 }

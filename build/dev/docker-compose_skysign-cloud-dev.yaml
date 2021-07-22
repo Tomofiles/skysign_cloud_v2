@@ -6,68 +6,41 @@ version: '3.7'
 
 services:
 
-  skysign-communication-db-for-debugging:
-    container_name: skysign-communication-db
-    hostname: skysign-communication-db
+  skysign-remote-communication-db-for-debugging:
+    container_name: skysign-remote-communication-db
+    hostname: skysign-remote-communication-db
     build:
-      context: ../../skysign-db/communication-db
+      context: ../../skysign-db/remote-communication-db
       dockerfile: Dockerfile
     ports:
       - 54321:5432
 
-  skysign-mission-db-for-debugging:
-    container_name: skysign-mission-db
-    hostname: skysign-mission-db
+  skysign-fleet-formation-db-for-debugging:
+    container_name: skysign-fleet-formation-db
+    hostname: skysign-fleet-formation-db
     build:
-      context: ../../skysign-db/mission-db
+      context: ../../skysign-db/fleet-formation-db
       dockerfile: Dockerfile
     ports:
       - 54322:5432
 
-  skysign-flightplan-db-for-debugging:
-    container_name: skysign-flightplan-db
-    hostname: skysign-flightplan-db
+  skysign-flight-operation-db-for-debugging:
+    container_name: skysign-flight-operation-db
+    hostname: skysign-flight-operation-db
     build:
-      context: ../../skysign-db/flightplan-db
+      context: ../../skysign-db/flight-operation-db
       dockerfile: Dockerfile
     ports:
       - 54323:5432
 
-  skysign-flightoperation-db-for-debugging:
-    container_name: skysign-flightoperation-db
-    hostname: skysign-flightoperation-db
+  skysign-collection-analysis-db-for-debugging:
+    container_name: skysign-collection-analysis-db
+    hostname: skysign-collection-analysis-db
     build:
-      context: ../../skysign-db/flightoperation-db
+      context: ../../skysign-db/collection-analysis-db
       dockerfile: Dockerfile
     ports:
       - 54324:5432
-
-  skysign-flightreport-db-for-debugging:
-    container_name: skysign-flightreport-db
-    hostname: skysign-flightreport-db
-    build:
-      context: ../../skysign-db/flightreport-db
-      dockerfile: Dockerfile
-    ports:
-      - 54325:5432
-
-  skysign-action-db-for-debugging:
-    container_name: skysign-action-db
-    hostname: skysign-action-db
-    build:
-      context: ../../skysign-db/action-db
-      dockerfile: Dockerfile
-    ports:
-      - 54326:5432
-
-  skysign-vehicle-db-for-debugging:
-    container_name: skysign-vehicle-db
-    hostname: skysign-vehicle-db
-    build:
-      context: ../../skysign-db/vehicle-db
-      dockerfile: Dockerfile
-    ports:
-      - 54327:5432
 
   skysign-mq-for-debugging:
     container_name: skysign-mq
@@ -79,49 +52,62 @@ services:
       - 56721:5672
       - 15672:15672
 
-  skysign-communication-backend-for-debugging:
-    container_name: skysign-communication-backend
-    hostname: skysign-communication-backend
+  skysign-remote-communication-backend-for-debugging:
+    container_name: skysign-remote-communication-backend
+    hostname: skysign-remote-communication-backend
     build:
       context: ../../communication
       dockerfile: Dockerfile
     environment:
-     - db.host=skysign-communication-db
+     - db.host=skysign-remote-communication-db
      - mq.host=skysign-mq
      - mq.ssl.enabled=false
     command: java -cp app:app/lib/* net.tomofiles.skysign.communication.CommunicationApplication
     depends_on:
-      - skysign-communication-db-for-debugging
+      - skysign-remote-communication-db-for-debugging
       - skysign-mq-for-debugging
 
-  skysign-vehicle-backend-for-debugging:
-    container_name: skysign-vehicle-backend
-    hostname: skysign-vehicle-backend
+  skysign-fleet-formation-backend-for-debugging:
+    container_name: skysign-fleet-formation-backend
+    hostname: skysign-fleet-formation-backend
     build:
-      context: ../../vehicle
+      context: ../../fleet-formation
       dockerfile: Dockerfile
     environment:
-     - db.host=skysign-vehicle-db
-     - mq.host=skysign-mq
-     - mq.ssl.enabled=false
-    command: java -cp app:app/lib/* net.tomofiles.skysign.vehicle.VehicleApplication
+     - DB_HOST=skysign-fleet-formation-db
+     - MQ_HOST=skysign-mq
+    command: /app/fleet-formation -logtostderr
     depends_on:
-      - skysign-vehicle-db-for-debugging
+      - skysign-fleet-formation-db-for-debugging
       - skysign-mq-for-debugging
 
-  skysign-mission-backend-for-debugging:
-    container_name: skysign-mission-backend
-    hostname: skysign-mission-backend
+  skysign-flight-operation-backend-for-debugging:
+    container_name: skysign-flight-operation-backend
+    hostname: skysign-flight-operation-backend
     build:
-      context: ../../mission
+      context: ../../flight-operation
       dockerfile: Dockerfile
     environment:
-     - db.host=skysign-mission-db
-     - mq.host=skysign-mq
-     - mq.ssl.enabled=false
-    command: java -cp app:app/lib/* net.tomofiles.skysign.mission.MissionApplication
+     - DB_HOST=skysign-flight-operation-db
+     - MQ_HOST=skysign-mq
+    command: /app/flight-operation -logtostderr
     depends_on:
-      - skysign-mission-db-for-debugging
+      - skysign-flight-operation-db-for-debugging
+      - skysign-mq-for-debugging
+
+  skysign-collection-analysis-backend-for-debugging:
+    container_name: skysign-collection-analysis-backend
+    hostname: skysign-collection-analysis-backend
+    build:
+      context: ../../collection-analysis
+      dockerfile: Dockerfile
+    environment:
+     - DB_HOST=skysign-collection-analysis-db
+     - MQ_HOST=skysign-mq
+    command: /app/collection-analysis -logtostderr
+    depends_on:
+      - skysign-collection-analysis-db-for-debugging
+      - skysign-mq-for-debugging
 
   skysign-helper-backend-for-debugging:
     container_name: skysign-helper-backend
@@ -131,91 +117,45 @@ services:
       dockerfile: Dockerfile
     command: /app/helper-user-api
 
-  skysign-flightplan-backend-for-debugging:
-    container_name: skysign-flightplan-backend
-    hostname: skysign-flightplan-backend
-    build:
-      context: ../../flightplan
-      dockerfile: Dockerfile
-    environment:
-     - DB_HOST=skysign-flightplan-db
-     - MQ_HOST=skysign-mq
-    command: /app/flightplan -logtostderr
-    depends_on:
-      - skysign-flightplan-db-for-debugging
-      - skysign-mq-for-debugging
-
-  skysign-flightoperation-backend-for-debugging:
-    container_name: skysign-flightoperation-backend
-    hostname: skysign-flightoperation-backend
-    build:
-      context: ../../flightoperation
-      dockerfile: Dockerfile
-    environment:
-     - DB_HOST=skysign-flightoperation-db
-     - MQ_HOST=skysign-mq
-    command: /app/flightoperation -logtostderr
-    depends_on:
-      - skysign-flightoperation-db-for-debugging
-      - skysign-mq-for-debugging
-
-  skysign-flightreport-backend-for-debugging:
-    container_name: skysign-flightreport-backend
-    hostname: skysign-flightreport-backend
-    build:
-      context: ../../flightreport
-      dockerfile: Dockerfile
-    environment:
-     - DB_HOST=skysign-flightreport-db
-     - MQ_HOST=skysign-mq
-    command: /app/flightreport -logtostderr
-    depends_on:
-      - skysign-flightreport-db-for-debugging
-      - skysign-mq-for-debugging
-
-  skysign-action-backend-for-debugging:
-    container_name: skysign-action-backend
-    hostname: skysign-action-backend
-    build:
-      context: ../../action
-      dockerfile: Dockerfile
-    environment:
-     - DB_HOST=skysign-action-db
-     - MQ_HOST=skysign-mq
-    command: /app/action -logtostderr
-    depends_on:
-      - skysign-action-db-for-debugging
-      - skysign-mq-for-debugging
-
-  skysign-communication-gateway-for-debugging:
-    container_name: skysign-communication-gateway
-    hostname: skysign-communication-gateway
+  skysign-remote-communication-gateway-for-debugging:
+    container_name: skysign-remote-communication-gateway
+    hostname: skysign-remote-communication-gateway
     build:
       context: ../../http-gateway
       dockerfile: Dockerfile
-    command: /app/comm-gateway -backend_host skysign-communication-backend -backend_port 5001
+    command: /app/remote-communication-gateway -backend_host skysign-remote-communication-backend -backend_port 5001
     depends_on:
-      - skysign-communication-backend-for-debugging
+      - skysign-remote-communication-backend-for-debugging
 
-  skysign-vehicle-gateway-for-debugging:
-    container_name: skysign-vehicle-gateway
-    hostname: skysign-vehicle-gateway
+  skysign-fleet-formation-gateway-for-debugging:
+    container_name: skysign-fleet-formation-gateway
+    hostname: skysign-fleet-formation-gateway
     build:
       context: ../../http-gateway
       dockerfile: Dockerfile
-    command: /app/vehicle-gateway -backend_host skysign-vehicle-backend -backend_port 5001
+    command: /app/fleet-formation-gateway -backend_host skysign-fleet-formation-backend -backend_port 5001
     depends_on:
-      - skysign-vehicle-backend-for-debugging
+      - skysign-fleet-formation-backend-for-debugging
 
-  skysign-mission-gateway-for-debugging:
-    container_name: skysign-mission-gateway
-    hostname: skysign-mission-gateway
+  skysign-flight-operation-gateway-for-debugging:
+    container_name: skysign-flight-operation-gateway
+    hostname: skysign-flight-operation-gateway
     build:
       context: ../../http-gateway
       dockerfile: Dockerfile
-    command: /app/mission-gateway -backend_host skysign-mission-backend -backend_port 5001
+    command: /app/flight-operation-gateway -backend_host skysign-flight-operation-backend -backend_port 5001
     depends_on:
-      - skysign-mission-backend-for-debugging
+      - skysign-flight-operation-backend-for-debugging
+
+  skysign-collection-analysis-gateway-for-debugging:
+    container_name: skysign-collection-analysis-gateway
+    hostname: skysign-collection-analysis-gateway
+    build:
+      context: ../../http-gateway
+      dockerfile: Dockerfile
+    command: /app/collection-analysis-gateway -backend_host skysign-collection-analysis-backend -backend_port 5001
+    depends_on:
+      - skysign-collection-analysis-backend-for-debugging
 
   skysign-helper-gateway-for-debugging:
     container_name: skysign-helper-gateway
@@ -226,46 +166,6 @@ services:
     command: /app/helper-gateway -backend_host skysign-helper-backend -backend_port 5001
     depends_on:
       - skysign-helper-backend-for-debugging
-
-  skysign-flightplan-gateway-for-debugging:
-    container_name: skysign-flightplan-gateway
-    hostname: skysign-flightplan-gateway
-    build:
-      context: ../../http-gateway
-      dockerfile: Dockerfile
-    command: /app/flightplan-gateway -backend_host skysign-flightplan-backend -backend_port 5001
-    depends_on:
-      - skysign-flightplan-backend-for-debugging
-
-  skysign-flightoperation-gateway-for-debugging:
-    container_name: skysign-flightoperation-gateway
-    hostname: skysign-flightoperation-gateway
-    build:
-      context: ../../http-gateway
-      dockerfile: Dockerfile
-    command: /app/flightoperation-gateway -backend_host skysign-flightoperation-backend -backend_port 5001
-    depends_on:
-      - skysign-flightoperation-backend-for-debugging
-
-  skysign-flightreport-gateway-for-debugging:
-    container_name: skysign-flightreport-gateway
-    hostname: skysign-flightreport-gateway
-    build:
-      context: ../../http-gateway
-      dockerfile: Dockerfile
-    command: /app/flightreport-gateway -backend_host skysign-flightreport-backend -backend_port 5001
-    depends_on:
-      - skysign-flightreport-backend-for-debugging
-
-  skysign-action-gateway-for-debugging:
-    container_name: skysign-action-gateway
-    hostname: skysign-action-gateway
-    build:
-      context: ../../http-gateway
-      dockerfile: Dockerfile
-    command: /app/action-gateway -backend_host skysign-action-backend -backend_port 5001
-    depends_on:
-      - skysign-action-backend-for-debugging
 
   skysign-frontend-for-debugging:
     container_name: skysign-cloud-frontend
@@ -285,14 +185,11 @@ services:
     ports:
       - 8080:80
     depends_on:
-      - skysign-communication-gateway-for-debugging
-      - skysign-vehicle-gateway-for-debugging
-      - skysign-mission-gateway-for-debugging
+      - skysign-remote-communication-gateway-for-debugging
+      - skysign-fleet-formation-gateway-for-debugging
+      - skysign-flight-operation-gateway-for-debugging
+      - skysign-collection-analysis-gateway-for-debugging
       - skysign-helper-gateway-for-debugging
-      - skysign-flightplan-gateway-for-debugging
-      - skysign-flightoperation-gateway-for-debugging
-      - skysign-flightreport-gateway-for-debugging
-      - skysign-action-gateway-for-debugging
       - skysign-frontend-for-debugging
 
 networks:

@@ -26,7 +26,6 @@ import static net.tomofiles.skysign.communication.api.EventObjectMother.newNorma
 public class CommunicationEventHandlerTests {
     
     private static final CommunicationId DEFAULT_COMMUNICATION_ID = new CommunicationId(UUID.randomUUID().toString());
-    private static final String DEFAULT_VERSION = UUID.randomUUID().toString();
     private static final String QUEUE_NAME_GAVE_EVENT = "queue_name_gave_event";
     private static final String QUEUE_NAME_REMOVED_EVENT = "queue_name_removed_event";
 
@@ -55,10 +54,7 @@ public class CommunicationEventHandlerTests {
     @Test
     public void fireCommunicationIdGaveEvent() throws Exception {
         this.eventHandler.processCommunicationIdGaveEvent(
-            newNormalCommunicationIdGaveEvent(
-                DEFAULT_COMMUNICATION_ID,
-                DEFAULT_VERSION
-            ));
+            newNormalCommunicationIdGaveEvent(DEFAULT_COMMUNICATION_ID));
 
         ArgumentCaptor<Communication> commCaptor = ArgumentCaptor.forClass(Communication.class);
         verify(this.repository, times(1)).save(commCaptor.capture());
@@ -79,10 +75,7 @@ public class CommunicationEventHandlerTests {
                         null)); // テストに使用しないためNull
 
         this.eventHandler.processCommunicationIdRemovedEvent(
-            newNormalCommunicationIdRemovedEvent(
-                DEFAULT_COMMUNICATION_ID,
-                DEFAULT_VERSION
-            ));
+            newNormalCommunicationIdRemovedEvent(DEFAULT_COMMUNICATION_ID));
 
         verify(this.repository, times(1)).remove(DEFAULT_COMMUNICATION_ID);
     }

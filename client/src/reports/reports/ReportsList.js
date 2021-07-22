@@ -16,8 +16,6 @@ import {
 
 import { getReports } from './ReportUtils'
 import Refresh from '@material-ui/icons/Refresh';
-import { getFlightplan } from '../../plans/flightplans/FlightplansUtils';
-import { getFlight } from '../../flights/flights/FlightUtils';
 
 const ReportsList = (props) => {
   const [ rows, setRows ] = useState([]);
@@ -26,21 +24,7 @@ const ReportsList = (props) => {
     if (props.open) {
       getReports()
         .then(data => {
-          data.flightreports
-            .forEach(report => {
-              getFlight(report.flightoperation_id)
-                .then(data => {
-                  getFlightplan(data.flightplan_id)
-                    .then(flightplan => {
-                      report.flightplan_name = flightplan.name;
-                      setRows(rows => {
-                        const newRows = [ ...rows ];
-                        newRows.push(report);
-                        return newRows;
-                      });
-                    });
-                })
-            });
+          setRows(data.flightreports);
         })
     }
   }, [ props.open ])
@@ -49,21 +33,7 @@ const ReportsList = (props) => {
     setRows([]);
     getReports()
       .then(data => {
-        data.flightreports
-          .forEach(report => {
-            getFlight(report.flightoperation_id)
-              .then(data => {
-                getFlightplan(data.flightplan_id)
-                  .then(flightplan => {
-                    report.flightplan_name = flightplan.name;
-                    setRows(rows => {
-                      const newRows = [ ...rows ];
-                      newRows.push(report);
-                      return newRows;
-                    });
-                  });
-              })
-          });
+        setRows(data.flightreports);
       })
   }
 
@@ -91,14 +61,16 @@ const ReportsList = (props) => {
               <TableHead>
                 <TableRow>
                   <TableCell>Name</TableCell>
+                  <TableCell>Description</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
                 {rows.map((row) => (
                   <TableRow key={row.id} onClick={() => onSelect(row.id)}>
                     <TableCell component="th" scope="row">
-                      {row.flightplan_name}
+                      {row.name}
                     </TableCell>
+                    <TableCell>{row.description}</TableCell>
                   </TableRow>
                 ))}
               </TableBody>

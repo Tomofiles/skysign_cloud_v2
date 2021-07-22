@@ -30,6 +30,10 @@ const MissionsNew = (props) => {
     }
   }, [ dispatchEditMode, dispatchEditMission ])
 
+  useEffect(() => {
+    console.log(editMission);
+  }, [ editMission ])
+
   const onClickSave = () => {
     createMission(editMission)
       .then(ret => {
@@ -70,7 +74,7 @@ const MissionsNew = (props) => {
   }
 
   const removeWaypoint = index => {
-    if (editMission.items.length === 1) {
+    if (editMission.navigation.waypoints.length === 1) {
       dispatchEditMission({
         type: 'CHANGE_TAKEOFF_POINT_GROUND_HEIGHT',
         height: undefined,
@@ -119,10 +123,10 @@ const MissionsNew = (props) => {
                     </Grid>
                     <Grid item xs={12}>
                       <Typography>
-                        {editMission.takeoffPointGroundHeight === undefined ?
+                        {editMission.navigation.takeoff_point_ground_height === undefined ?
                           "-"
                         :
-                          editMission.takeoffPointGroundHeight} m
+                          editMission.navigation.takeoff_point_ground_height} m
                         </Typography>
                     </Grid>
                   </Grid>
@@ -136,10 +140,10 @@ const MissionsNew = (props) => {
             <Grid item xs={12}>
               <List 
                 className={props.classes.funcPanelDetails} >
-                {editMission.items.length === 0 &&
+                {editMission.navigation.waypoints.length === 0 &&
                   <Typography>No Waypoints</Typography>
                 }
-                {editMission.items.map((waypoint, index) => (
+                {editMission.navigation.waypoints.map((waypoint, index) => (
                   <WaypointItem
                     key={index}
                     classes={props.classes}

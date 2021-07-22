@@ -128,11 +128,11 @@ public class CommunicationRepositoryTests {
                 }));
         when(this.telemetryMapper.find(DEFAULT_COMMUNICATION_ID.getId()))
                 .thenReturn(newNormalTelemetryRecord(DEFAULT_COMMUNICATION_ID));
-        when(this.commandMapper.findByCommId(DEFAULT_COMMUNICATION_ID.getId()))
+        when(this.commandMapper.findByCommunicationId(DEFAULT_COMMUNICATION_ID.getId()))
                 .thenReturn(newSeveralCommandRecords(
                         DEFAULT_COMMUNICATION_ID,
                         DEFAULT_GENERATOR.get()));
-        when(this.uploadMissionMapper.findByCommId(DEFAULT_COMMUNICATION_ID.getId()))
+        when(this.uploadMissionMapper.findByCommunicationId(DEFAULT_COMMUNICATION_ID.getId()))
                 .thenReturn(newSeveralUploadMissionRecords(
                         DEFAULT_COMMUNICATION_ID,
                         DEFAULT_GENERATOR.get()));
@@ -173,11 +173,11 @@ public class CommunicationRepositoryTests {
         when(this.telemetryMapper.find(DEFAULT_COMMUNICATION_ID.getId()))
                 .thenReturn(newNormalTelemetryRecord(
                         DEFAULT_COMMUNICATION_ID));
-        when(this.commandMapper.findByCommId(DEFAULT_COMMUNICATION_ID.getId()))
+        when(this.commandMapper.findByCommunicationId(DEFAULT_COMMUNICATION_ID.getId()))
                 .thenReturn(newSeveralCommandRecords(
                         DEFAULT_COMMUNICATION_ID,
                         DEFAULT_GENERATOR.get()));
-        when(this.uploadMissionMapper.findByCommId(DEFAULT_COMMUNICATION_ID.getId()))
+        when(this.uploadMissionMapper.findByCommunicationId(DEFAULT_COMMUNICATION_ID.getId()))
                 .thenReturn(newSeveralUploadMissionRecords(
                         DEFAULT_COMMUNICATION_ID,
                         DEFAULT_GENERATOR.get()));
@@ -242,13 +242,13 @@ public class CommunicationRepositoryTests {
                         DEFAULT_COMMUNICATION_ID));
         when(this.telemetryMapper.find(DEFAULT_COMMUNICATION_ID.getId()))
                 .thenReturn(newEmptyTelemetryRecord(DEFAULT_COMMUNICATION_ID));
-        when(this.commandMapper.findByCommId(DEFAULT_COMMUNICATION_ID.getId()))
+        when(this.commandMapper.findByCommunicationId(DEFAULT_COMMUNICATION_ID.getId()))
                 .thenReturn(Arrays.asList(new CommandRecord[] {
                         newSingleCommandRecord(
                                 DEFAULT_COMMUNICATION_ID,
                                 DEFAULT_GENERATOR_SINGLE_1.get())
                 }));
-        when(this.uploadMissionMapper.findByCommId(DEFAULT_COMMUNICATION_ID.getId()))
+        when(this.uploadMissionMapper.findByCommunicationId(DEFAULT_COMMUNICATION_ID.getId()))
                 .thenReturn(Arrays.asList(new UploadMissionRecord[] {
                         newSingleUploadMissionRecord(
                                 DEFAULT_COMMUNICATION_ID,

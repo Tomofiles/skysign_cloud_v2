@@ -22,7 +22,7 @@
 含めるのが理想ですが、Skysignでは現状では紐づけ以上のことは行っていません。  
 （モデリングの例として、シンプルに保ちたかったためです）
 
-![domain_models_flightplan-description](https://user-images.githubusercontent.com/27773127/113294909-6d84ce00-9332-11eb-8d83-38737d977a4e.png)
+![domain_models_flightplan-description](https://user-images.githubusercontent.com/27773127/126588950-80fa17d3-9eeb-467d-9401-b39b6b0ddacf.png)
 
 ## 艦隊編成という新しい概念の導入
 有人航空の世界と違い、ドローンの業務での利用シーンでは、一度のオペレーションで
@@ -44,7 +44,7 @@ Flytbaseでは、複数ドローンの同時飛行を効率化するための、
 ということで、Skysignの飛行計画も、このフリート（艦隊）という概念を導入しました。  
 飛行計画のドメイン・モデルは次のとおりです。
 
-![domain_models_flightplan-and-fleet](https://user-images.githubusercontent.com/27773127/113294956-7fff0780-9332-11eb-9f4a-f4de3d91df63.png)
+![domain_models_flightplan-and-fleet](https://user-images.githubusercontent.com/27773127/126589023-a545721b-c598-4e2b-9efd-a59d17ecdd99.png)
 
 飛行計画・エンティティ（Flightplan）とフリート・エンティティ（Fleet）の
 集約ルートの関係も、機体とコミュニケーションの関係と同じく、
@@ -76,7 +76,7 @@ Flytbaseでは、複数ドローンの同時飛行を効率化するための、
 また、ミッションや機体の削除時に、飛行計画に対してAPIでチェックを行ったとしても、
 **確実に整合性を取ることはできない**のです。
 
-![domain_models_flightplan-dependency-remove-1](https://user-images.githubusercontent.com/27773127/113295003-960cc800-9332-11eb-9dff-cd97fd8aa32b.png)
+![domain_models_flightplan-dependency-remove-1](https://user-images.githubusercontent.com/27773127/126589101-a0f97a24-e645-4988-95bc-819b03db2847.png)
 
 モノリシックなアーキテクチャで開発する分には、ソフトウェア全体でのデータベース
 アクセスに対してトランザクションを張ってしまう設計をしても良いかと思います。
@@ -91,7 +91,7 @@ Flytbaseでは、複数ドローンの同時飛行を効率化するための、
 
 これは、DDDの文脈では、**結果整合性**と呼ばれるパターンです。
 
-![domain_models_flightplan-dependency-remove-2](https://user-images.githubusercontent.com/27773127/113295044-a6bd3e00-9332-11eb-84fd-5f2786467433.png)
+![domain_models_flightplan-dependency-remove-2](https://user-images.githubusercontent.com/27773127/126589147-e8fdc7b4-4ea4-4e14-ab36-c58b098d5759.png)
 
 Skysignでは、もちろん、こちらを採用しています。  
 （ただし、例に挙げたリソース削除時の識別子のクリアは、現状実装されていません）
@@ -115,14 +115,14 @@ Skysignでは、もちろん、こちらを採用しています。
 という**枠を用意**して、その枠に、**持ち玉の機体やミッションを割り当てる**、
 という操作が、最も認識しやすい説明になります。
 
-よって、フリートのドメイン・モデルに**アサインメント（割り当て）**というエンティティを
+よって、フリートのドメイン・モデルに**アサインメント\(割り当て\)**というエンティティを
 追加し、アサインメントが艦隊編成の固定枠として機能するようにモデリングしました。
 
 ミッションと機体の識別子は、アサインメントのそれぞれのフィールドに設定／除去でき、
 すべてのアサインメントの識別子の枠が設定済みである場合、その飛行計画は
 「実行（飛行）可能」であると判断できる仕組みです。
 
-![domain_models_fleet-and-assignments](https://user-images.githubusercontent.com/27773127/113295153-ca808400-9332-11eb-92f7-74df1f3dfaf1.png)
+![domain_models_fleet-and-assignments](https://user-images.githubusercontent.com/27773127/126589186-40f39352-3237-4bf5-a77e-04e458bf76cb.png)
 
 異なる集約ルートへの参照は、直接的にではなく、間接的に依存するようにすることで、
 自身の集約内の守るべき制約を外部に漏らすことなく、維持することができました。

@@ -39,18 +39,18 @@ message PushCommandRequest {
 message PushCommandResponse {
     string id = 1;
     CommandType type = 2;
-    string commandId = 3;
+    string command_id = 3;
 }
 
 message PushUploadMissionRequest {
     string id = 1;
-    string missionId = 2;
+    string mission_id = 2;
 }
 
 message PushUploadMissionResponse {
     string id = 1;
-    string missionId = 2;
-    string commandId = 3;
+    string mission_id = 2;
+    string command_id = 3;
 }
 
 message PullTelemetryRequest {

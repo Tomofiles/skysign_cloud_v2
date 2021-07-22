@@ -1,36 +1,36 @@
 import { Cartesian3 } from 'cesium';
 
 export const getWaypointsForDisplayToMap = (mission) => {
-  return mission.items
-      .map((item, index) => {
+  return mission.navigation.waypoints
+      .map((waypoint, index) => {
         return {
           id: "WP_" + index,
           groundPosition: Cartesian3.fromDegrees(
-              item.longitude,
-              item.latitude,
-              mission.takeoffPointGroundHeight),
+              waypoint.longitude,
+              waypoint.latitude,
+              mission.navigation.takeoff_point_ground_height),
           airPosition: Cartesian3.fromDegrees(
-              item.longitude,
-              item.latitude,
-              mission.takeoffPointGroundHeight + item.relativeHeight)
+              waypoint.longitude,
+              waypoint.latitude,
+              mission.navigation.takeoff_point_ground_height + waypoint.relative_height)
         }
       });
 }
 
 export const getPathsForDisplayToMap = (mission) => {
 
-  const pairOfWaypoint = (paths, takeoffPointGroundHeight) => {
+  const pairOfWaypoint = (paths, takeoff_point_ground_height) => {
     return (prev, current, index) => {
       paths.push({
         id: "PT_" + index,
         prevPosition: Cartesian3.fromDegrees(
             prev.longitude,
             prev.latitude,
-            takeoffPointGroundHeight + prev.relativeHeight),
+            takeoff_point_ground_height + prev.relative_height),
         currentPosition: Cartesian3.fromDegrees(
             current.longitude,
             current.latitude,
-            takeoffPointGroundHeight + current.relativeHeight),
+            takeoff_point_ground_height + current.relative_height),
       });
     };
   };
@@ -42,6 +42,6 @@ export const getPathsForDisplayToMap = (mission) => {
   }
 
   const paths = [];
-  pairwise(mission.items, pairOfWaypoint(paths, mission.takeoffPointGroundHeight));
+  pairwise(mission.navigation.waypoints, pairOfWaypoint(paths, mission.navigation.takeoff_point_ground_height));
   return paths;
 }

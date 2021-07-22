@@ -9,15 +9,15 @@ import org.apache.ibatis.annotations.Update;
 
 @Mapper
 public interface UploadMissionMapper {
-    @Select("SELECT id, comm_id as commId, mission_id as missionId FROM upload_mission WHERE comm_id = #{commId}")
-    List<UploadMissionRecord> findByCommId(String commId);
+    @Select("SELECT id, communication_id as communicationId, mission_id as missionId FROM upload_missions WHERE communication_id = #{communicationId}")
+    List<UploadMissionRecord> findByCommunicationId(String communicationId);
 
-    @Insert("INSERT INTO upload_mission (id, comm_id, mission_id) VALUES (#{id}, #{commId}, #{missionId})")
+    @Insert("INSERT INTO upload_missions (id, communication_id, mission_id) VALUES (#{id}, #{communicationId}, #{missionId})")
     void create(UploadMissionRecord command);
 
-    @Update("DELETE FROM upload_mission WHERE id = #{id}")
+    @Update("DELETE FROM upload_missions WHERE id = #{id}")
     void delete(String id);
 
-    @Update("DELETE FROM upload_mission WHERE comm_id = #{commId}")
-    void deleteByCommId(String commId);
+    @Update("DELETE FROM upload_missions WHERE communication_id = #{communicationId}")
+    void deleteByCommunicationId(String communicationId);
 }
