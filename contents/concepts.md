@@ -71,10 +71,6 @@ Skysignでは、ポーリングでコマンドをクラウドに問い合わせ�
 
 ![commands_and_telemetry](https://user-images.githubusercontent.com/27773127/113296131-0ec05400-9334-11eb-8245-aa65e5e3de1b.png)
 
-また、ユーザーとドローン間のミッションの転送に関するシーケンスも、以下に示します。
-
-![commands_and_mission](https://user-images.githubusercontent.com/27773127/113296128-0e27bd80-9334-11eb-9016-4dbd2232444f.png)
-
 ### 課題
 現状、発見と同期のコンセプトは有効ではありますが、問題を含んでいます。
 ドローンがクラウドに接続された状態から、ユーザーのコマンドの発行を開始する分には問題ないですが、
