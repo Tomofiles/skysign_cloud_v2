@@ -239,9 +239,7 @@ jobs:
             git add .
             git commit -m "release-${CIRCLE_SHA1}"
             git push --set-upstream origin release-${CIRCLE_SHA1}
-            gh pr create \
-              -t "deploy a new image ${APP_NAME}:${CIRCLE_SHA1}" \
-              -b "CircleCI auto-generated pull request from https://github.com/${GITHUB_ORG}/${APP_NAME}/commit/${CIRCLE_SHA1}"
+            gh pr create -t "deploy a new image ${APP_NAME}:${CIRCLE_SHA1}" -b "CircleCI auto-generated pull request from https://github.com/${GITHUB_ORG}/${APP_NAME}/commit/${CIRCLE_SHA1}"
 
   notify-slack:
     docker:
