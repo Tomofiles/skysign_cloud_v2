@@ -33,13 +33,13 @@ spec:
         args: ["-cp", "app:app/lib/*", "net.tomofiles.skysign.communication.CommunicationApplication"]
         env:
         - name: db.host
-          value: "skysign-db"
+          value: "${AWS_RDS_DB_HOST}"
         - name: db.username
           value: "${AWS_RDS_USER_NAME}"
         - name: db.password
           value: "${AWS_RDS_PASSWORD}"
         - name: mq.host
-          value: "skysign-mq"
+          value: "${AWS_AMQ_MQ_HOST}"
         - name: mq.port
           value: "${AWS_AMQ_PORT}"
         - name: mq.username

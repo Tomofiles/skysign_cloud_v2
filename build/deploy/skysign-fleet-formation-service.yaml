@@ -33,7 +33,7 @@ spec:
         args: ["-logtostderr"]
         env:
         - name: DB_HOST
-          value: "skysign-db"
+          value: "${AWS_RDS_DB_HOST}"
         - name: DB_USERNAME
           value: "${AWS_RDS_USER_NAME}"
         - name: DB_PASSWORD
@@ -41,7 +41,7 @@ spec:
         - name: DB_SSL_ENABLED
           value: "require"
         - name: MQ_HOST
-          value: "skysign-mq"
+          value: "${AWS_AMQ_MQ_HOST}"
         - name: MQ_PORT
           value: "${AWS_AMQ_PORT}"
         - name: MQ_USERNAME
