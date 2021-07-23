@@ -203,7 +203,7 @@ jobs:
 
   create_pull_request:
     docker:
-      - image: cimg/base:stable-20.04
+      - image: circleci/python:3.7.4-stretch
     steps:
       - checkout
       - run:
