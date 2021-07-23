@@ -203,16 +203,14 @@ jobs:
 
   create_pull_request:
     docker:
-      - image: circleci/python:3.7.4-stretch
+      - image: cimg/base:stable-20.04
     steps:
       - checkout
       - run:
-          name: install hub
+          name: install gh
           command: |
-            curl -sSLf https://github.com/github/hub/releases/download/v2.8.3/hub-linux-amd64-2.8.3.tgz | \
-            tar zxf - --strip-components=1 -C /tmp/ && \
-            sudo mv /tmp/bin/hub /usr/local/bin/hub
-            hub --version
+            wget https://github.com/cli/cli/releases/download/v1.13.1/gh_1.13.1_linux_arm64.deb
+            sudo dpkg --install ./gh_1.13.1_linux_arm64.deb
       - run:
           name: install envsubst
           command: |
@@ -243,7 +241,9 @@ jobs:
             git add .
             git commit -m "release-${CIRCLE_SHA1}"
             git push --set-upstream origin release-${CIRCLE_SHA1}
-            hub pull-request -F .github/PULL_REQUEST_TEMPLATE.md -m "[image update] skysign ${CIRCLE_SHA1}"
+            gh pr create \
+              -t "deploy a new image ${APP_NAME}:${CIRCLE_SHA1}" \
+              -b "CircleCI auto-generated pull request from https://github.com/${GITHUB_ORG}/${APP_NAME}/commit/${CIRCLE_SHA1}"
 
   notify-slack:
     docker:
