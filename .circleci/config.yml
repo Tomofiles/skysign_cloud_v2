@@ -210,7 +210,7 @@ jobs:
           name: install gh
           command: |
             wget https://github.com/cli/cli/releases/download/v1.13.1/gh_1.13.1_linux_amd64.deb
-            sudo dpkg --install ./gh_1.13.1_linux_arm64.deb
+            sudo dpkg --install ./gh_1.13.1_linux_amd64.deb
       - run:
           name: install envsubst
           command: |
