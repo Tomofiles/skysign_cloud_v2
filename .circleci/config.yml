@@ -3,6 +3,7 @@ version: 2.1
 orbs:
   aws-ecr: circleci/aws-ecr@6.15.2
   slack: circleci/slack@3.4.2
+  gh: circleci/github-cli@1.0
 
 slack-fail-post-step: &slack-fail-post-step
   post-steps:
@@ -206,11 +207,7 @@ jobs:
       - image: circleci/python:3.7.4-stretch
     steps:
       - checkout
-      - run:
-          name: install gh
-          command: |
-            wget https://github.com/cli/cli/releases/download/v1.13.1/gh_1.13.1_linux_amd64.deb
-            sudo dpkg --install ./gh_1.13.1_linux_amd64.deb
+      - gh/setup
       - run:
           name: install envsubst
           command: |
@@ -221,6 +218,9 @@ jobs:
             git config --global user.name tomofiles-circleci
             git config --global user.email tomofiles-circleci@email.com
             git clone git@github.com:Tomofiles/${SKYSIGN_CONFIG_REPO}.git
+      - run:
+          name: update deployment manifest
+          command: |
             cd ${SKYSIGN_CONFIG_REPO}/
             git checkout -b release-${CIRCLE_SHA1}
             rm -f manifest/*
@@ -236,10 +236,18 @@ jobs:
             envsubst < ../build/deploy/skysign-helper-service.yaml > manifest/skysign-helper-service.yaml
             envsubst < ../build/deploy/skysign-remote-communication-gateway.yaml > manifest/skysign-remote-communication-gateway.yaml
             envsubst < ../build/deploy/skysign-remote-communication-service.yaml > manifest/skysign-remote-communication-service.yaml
+      - run:
+          name: git commit and push
+          command: |
+            cd ${SKYSIGN_CONFIG_REPO}/
             git add .
             git commit -m "release-${CIRCLE_SHA1}"
             git push --set-upstream origin release-${CIRCLE_SHA1}
-            gh pr create -t "deploy a new image ${APP_NAME}:${CIRCLE_SHA1}" -b "CircleCI auto-generated pull request from https://github.com/${GITHUB_ORG}/${APP_NAME}/commit/${CIRCLE_SHA1}"
+      - run:
+          name: create pull request
+          command: |
+            cd ${SKYSIGN_CONFIG_REPO}/
+            gh pr create --title "deploy a new image ${APP_NAME}:${CIRCLE_SHA1}" --body "CircleCI auto-generated pull request from https://github.com/${GITHUB_ORG}/${APP_NAME}/commit/${CIRCLE_SHA1}"
 
   notify-slack:
     docker:
