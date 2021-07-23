@@ -227,7 +227,6 @@ jobs:
             envsubst < ../build/deploy/skysign-client.yaml > manifest/skysign-client.yaml
             envsubst < ../build/deploy/skysign-collection-analysis-gateway.yaml > manifest/skysign-collection-analysis-gateway.yaml
             envsubst < ../build/deploy/skysign-collection-analysis-service.yaml > manifest/skysign-collection-analysis-service.yaml
-            envsubst < ../build/deploy/skysign-db.yaml > manifest/skysign-db.yaml
             envsubst < ../build/deploy/skysign-endpoint.yaml > manifest/skysign-endpoint.yaml
             envsubst < ../build/deploy/skysign-fleet-formation-gateway.yaml > manifest/skysign-fleet-formation-gateway.yaml
             envsubst < ../build/deploy/skysign-fleet-formation-service.yaml > manifest/skysign-fleet-formation-service.yaml
@@ -235,7 +234,6 @@ jobs:
             envsubst < ../build/deploy/skysign-flightoperation-service.yaml > manifest/skysign-flightoperation-service.yaml
             envsubst < ../build/deploy/skysign-helper-gateway.yaml > manifest/skysign-helper-gateway.yaml
             envsubst < ../build/deploy/skysign-helper-service.yaml > manifest/skysign-helper-service.yaml
-            envsubst < ../build/deploy/skysign-mq.yaml > manifest/skysign-mq.yaml
             envsubst < ../build/deploy/skysign-remote-communication-gateway.yaml > manifest/skysign-remote-communication-gateway.yaml
             envsubst < ../build/deploy/skysign-remote-communication-service.yaml > manifest/skysign-remote-communication-service.yaml
             git add .
