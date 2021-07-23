@@ -242,12 +242,12 @@ jobs:
             cd ${SKYSIGN_CONFIG_REPO}/
             git add .
             git commit -m "release-${CIRCLE_SHA1}"
-            git push origin release-${CIRCLE_SHA1}
+            git push --set-upstream origin release-${CIRCLE_SHA1}
       - run:
           name: create pull request
           command: |
             cd ${SKYSIGN_CONFIG_REPO}/
-            gh pr create --title "deploy a new image ${APP_NAME}:${CIRCLE_SHA1}" --body "CircleCI auto-generated pull request from https://github.com/${GITHUB_ORG}/${APP_NAME}/commit/${CIRCLE_SHA1}"
+            gh pr create --base master --title "deploy a new image ${APP_NAME}:${CIRCLE_SHA1}" --body "CircleCI auto-generated pull request from https://github.com/${GITHUB_ORG}/${APP_NAME}/commit/${CIRCLE_SHA1}"
 
   notify-slack:
     docker:
