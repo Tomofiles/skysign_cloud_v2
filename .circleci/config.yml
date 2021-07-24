@@ -358,8 +358,8 @@ workflows:
       #       branches:
       #         only: master
       - create_pull_request:
-          requires:
-            - notify-slack-master
+          # requires:
+          #   - notify-slack-master
           filters:
             branches:
               only: master
