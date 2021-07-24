@@ -234,7 +234,11 @@ jobs:
             git add .
             git commit -m "release-${CIRCLE_SHA1}"
             git push --set-upstream origin release-${CIRCLE_SHA1}
-            gh pr create --fill
+      - run:
+          name: create pull request
+          command: |
+            cd ${SKYSIGN_CONFIG_REPO}/
+            curl -v -H "Authorization: token ${GITHUB_TOKEN}" https://api.github.com/repos/Tomofiles/${SKYSIGN_CONFIG_REPO}/pulls --data '{ "head": "release-${CIRCLE_SHA1}","base": "master"}'
 
   notify-slack:
     docker:
