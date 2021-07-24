@@ -206,27 +206,35 @@ jobs:
     docker:
       - image: circleci/python:3.7.4-stretch
     steps:
-      # - checkout
-      - gh/setup
+      - checkout
       - run:
           name: install envsubst
           command: |
             sudo apt-get install -qq -y gettext
       - run:
-          name: git setup
+          name: git clone
           command: |
             git config --global user.name tomofiles-circleci
             git config --global user.email tomofiles-circleci@email.com
-      - run:
-          name: git clone
-          command: |
-            gh repo clone Tomofiles/${SKYSIGN_CONFIG_REPO}
+            git clone git@github.com:Tomofiles/${SKYSIGN_CONFIG_REPO}.git
       - run:
           name: update deployment manifest
           command: |
             cd ${SKYSIGN_CONFIG_REPO}/
             git checkout -b release-${CIRCLE_SHA1}
             rm -f manifest/*
+            envsubst < ../build/deploy/skysign-client.yaml > manifest/skysign-client.yaml
+            envsubst < ../build/deploy/skysign-collection-analysis-gateway.yaml > manifest/skysign-collection-analysis-gateway.yaml
+            envsubst < ../build/deploy/skysign-collection-analysis-service.yaml > manifest/skysign-collection-analysis-service.yaml
+            envsubst < ../build/deploy/skysign-endpoint.yaml > manifest/skysign-endpoint.yaml
+            envsubst < ../build/deploy/skysign-fleet-formation-gateway.yaml > manifest/skysign-fleet-formation-gateway.yaml
+            envsubst < ../build/deploy/skysign-fleet-formation-service.yaml > manifest/skysign-fleet-formation-service.yaml
+            envsubst < ../build/deploy/skysign-flightoperation-gateway.yaml > manifest/skysign-flightoperation-gateway.yaml
+            envsubst < ../build/deploy/skysign-flightoperation-service.yaml > manifest/skysign-flightoperation-service.yaml
+            envsubst < ../build/deploy/skysign-helper-gateway.yaml > manifest/skysign-helper-gateway.yaml
+            envsubst < ../build/deploy/skysign-helper-service.yaml > manifest/skysign-helper-service.yaml
+            envsubst < ../build/deploy/skysign-remote-communication-gateway.yaml > manifest/skysign-remote-communication-gateway.yaml
+            envsubst < ../build/deploy/skysign-remote-communication-service.yaml > manifest/skysign-remote-communication-service.yaml
       - run:
           name: git commit and push and create pull request
           command: |
@@ -310,56 +318,56 @@ workflows:
           filters:
             branches:
               ignore: master
-      # - build_and_push_http_gateway:
-      #     filters:
-      #       branches:
-      #         only: master
-      #     <<: *slack-fail-post-step
-      # - build_and_push_helper_api:
-      #     filters:
-      #       branches:
-      #         only: master
-      #     <<: *slack-fail-post-step
-      # - build_and_push_remote-communication:
-      #     filters:
-      #       branches:
-      #         only: master
-      #     <<: *slack-fail-post-step
-      # - build_and_push_fleet-formation:
-      #     filters:
-      #       branches:
-      #         only: master
-      #     <<: *slack-fail-post-step
-      # - build_and_push_flight-operation:
-      #     filters:
-      #       branches:
-      #         only: master
-      #     <<: *slack-fail-post-step
-      # - build_and_push_collection-analysis:
-      #     filters:
-      #       branches:
-      #         only: master
-      #     <<: *slack-fail-post-step
-      # - build_and_push_client:
-      #     filters:
-      #       branches:
-      #         only: master
-      #     <<: *slack-fail-post-step
-      # - notify-slack-master:
-      #     requires:
-      #       - build_and_push_http_gateway
-      #       - build_and_push_helper_api
-      #       - build_and_push_remote-communication
-      #       - build_and_push_fleet-formation
-      #       - build_and_push_flight-operation
-      #       - build_and_push_collection-analysis
-      #       - build_and_push_client
-      #     filters:
-      #       branches:
-      #         only: master
+      - build_and_push_http_gateway:
+          filters:
+            branches:
+              only: master
+          <<: *slack-fail-post-step
+      - build_and_push_helper_api:
+          filters:
+            branches:
+              only: master
+          <<: *slack-fail-post-step
+      - build_and_push_remote-communication:
+          filters:
+            branches:
+              only: master
+          <<: *slack-fail-post-step
+      - build_and_push_fleet-formation:
+          filters:
+            branches:
+              only: master
+          <<: *slack-fail-post-step
+      - build_and_push_flight-operation:
+          filters:
+            branches:
+              only: master
+          <<: *slack-fail-post-step
+      - build_and_push_collection-analysis:
+          filters:
+            branches:
+              only: master
+          <<: *slack-fail-post-step
+      - build_and_push_client:
+          filters:
+            branches:
+              only: master
+          <<: *slack-fail-post-step
+      - notify-slack-master:
+          requires:
+            - build_and_push_http_gateway
+            - build_and_push_helper_api
+            - build_and_push_remote-communication
+            - build_and_push_fleet-formation
+            - build_and_push_flight-operation
+            - build_and_push_collection-analysis
+            - build_and_push_client
+          filters:
+            branches:
+              only: master
       - create_pull_request:
-          # requires:
-          #   - notify-slack-master
+          requires:
+            - notify-slack-master
           filters:
             branches:
               only: master
