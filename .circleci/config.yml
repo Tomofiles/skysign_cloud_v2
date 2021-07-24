@@ -238,7 +238,7 @@ jobs:
           name: create pull request
           command: |
             cd ${SKYSIGN_CONFIG_REPO}/
-            curl -v -H "Authorization: token ${GITHUB_TOKEN}" https://api.github.com/repos/Tomofiles/${SKYSIGN_CONFIG_REPO}/pulls --data '{ "head": "'release-${CIRCLE_SHA1}'","base": "master"}'
+            curl -v -H "Authorization: token ${GITHUB_TOKEN}" https://api.github.com/repos/Tomofiles/${SKYSIGN_CONFIG_REPO}/pulls --data '{ "title": "'[image update] skysign-cloud-v2 ${CIRCLE_SHA1}'", "head": "'release-${CIRCLE_SHA1}'","base": "master"}'
 
   notify-slack:
     docker:
