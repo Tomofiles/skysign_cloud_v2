@@ -206,36 +206,35 @@ jobs:
     docker:
       - image: circleci/python:3.7.4-stretch
     steps:
-      - checkout
+      # - checkout
       - gh/setup
       - run:
           name: install envsubst
           command: |
             sudo apt-get install -qq -y gettext
       - run:
-          name: git clone commit push create pull request
+          name: git clone
           command: |
-            git config --global user.name tomofiles-circleci
-            git config --global user.email tomofiles-circleci@email.com
-            git clone git@github.com:Tomofiles/${SKYSIGN_CONFIG_REPO}.git
+            gh repo clone Tomofiles/skysign_cloud_v2
+            gh repo clone Tomofiles/${SKYSIGN_CONFIG_REPO}
       - run:
           name: update deployment manifest
           command: |
             cd ${SKYSIGN_CONFIG_REPO}/
             git checkout -b release-${CIRCLE_SHA1}
             rm -f manifest/*
-            envsubst < ../build/deploy/skysign-client.yaml > manifest/skysign-client.yaml
-            envsubst < ../build/deploy/skysign-collection-analysis-gateway.yaml > manifest/skysign-collection-analysis-gateway.yaml
-            envsubst < ../build/deploy/skysign-collection-analysis-service.yaml > manifest/skysign-collection-analysis-service.yaml
-            envsubst < ../build/deploy/skysign-endpoint.yaml > manifest/skysign-endpoint.yaml
-            envsubst < ../build/deploy/skysign-fleet-formation-gateway.yaml > manifest/skysign-fleet-formation-gateway.yaml
-            envsubst < ../build/deploy/skysign-fleet-formation-service.yaml > manifest/skysign-fleet-formation-service.yaml
-            envsubst < ../build/deploy/skysign-flightoperation-gateway.yaml > manifest/skysign-flightoperation-gateway.yaml
-            envsubst < ../build/deploy/skysign-flightoperation-service.yaml > manifest/skysign-flightoperation-service.yaml
-            envsubst < ../build/deploy/skysign-helper-gateway.yaml > manifest/skysign-helper-gateway.yaml
-            envsubst < ../build/deploy/skysign-helper-service.yaml > manifest/skysign-helper-service.yaml
-            envsubst < ../build/deploy/skysign-remote-communication-gateway.yaml > manifest/skysign-remote-communication-gateway.yaml
-            envsubst < ../build/deploy/skysign-remote-communication-service.yaml > manifest/skysign-remote-communication-service.yaml
+            envsubst < ../skysign_cloud_v2/build/deploy/skysign-client.yaml > manifest/skysign-client.yaml
+            envsubst < ../skysign_cloud_v2/build/deploy/skysign-collection-analysis-gateway.yaml > manifest/skysign-collection-analysis-gateway.yaml
+            envsubst < ../skysign_cloud_v2/build/deploy/skysign-collection-analysis-service.yaml > manifest/skysign-collection-analysis-service.yaml
+            envsubst < ../skysign_cloud_v2/build/deploy/skysign-endpoint.yaml > manifest/skysign-endpoint.yaml
+            envsubst < ../skysign_cloud_v2/build/deploy/skysign-fleet-formation-gateway.yaml > manifest/skysign-fleet-formation-gateway.yaml
+            envsubst < ../skysign_cloud_v2/build/deploy/skysign-fleet-formation-service.yaml > manifest/skysign-fleet-formation-service.yaml
+            envsubst < ../skysign_cloud_v2/build/deploy/skysign-flightoperation-gateway.yaml > manifest/skysign-flightoperation-gateway.yaml
+            envsubst < ../skysign_cloud_v2/build/deploy/skysign-flightoperation-service.yaml > manifest/skysign-flightoperation-service.yaml
+            envsubst < ../skysign_cloud_v2/build/deploy/skysign-helper-gateway.yaml > manifest/skysign-helper-gateway.yaml
+            envsubst < ../skysign_cloud_v2/build/deploy/skysign-helper-service.yaml > manifest/skysign-helper-service.yaml
+            envsubst < ../skysign_cloud_v2/build/deploy/skysign-remote-communication-gateway.yaml > manifest/skysign-remote-communication-gateway.yaml
+            envsubst < ../skysign_cloud_v2/build/deploy/skysign-remote-communication-service.yaml > manifest/skysign-remote-communication-service.yaml
       - run:
           name: git commit and push
           command: |
@@ -247,7 +246,7 @@ jobs:
           name: create pull request
           command: |
             cd ${SKYSIGN_CONFIG_REPO}/
-            gh pr create --base master --title "deploy a new image ${APP_NAME}:${CIRCLE_SHA1}" --body "CircleCI auto-generated pull request from https://github.com/${GITHUB_ORG}/${APP_NAME}/commit/${CIRCLE_SHA1}"
+            gh pr create --fill
 
   notify-slack:
     docker:
