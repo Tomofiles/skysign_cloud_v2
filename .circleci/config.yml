@@ -213,6 +213,11 @@ jobs:
           command: |
             sudo apt-get install -qq -y gettext
       - run:
+          name: git setup
+          command: |
+            git config --global user.name tomofiles-circleci
+            git config --global user.email tomofiles-circleci@email.com
+      - run:
           name: git clone
           command: |
             gh repo clone Tomofiles/skysign_cloud_v2
