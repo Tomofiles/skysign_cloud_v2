@@ -228,16 +228,12 @@ jobs:
             git checkout -b release-${CIRCLE_SHA1}
             rm -f manifest/*
       - run:
-          name: git commit and push
+          name: git commit and push and create pull request
           command: |
             cd ${SKYSIGN_CONFIG_REPO}/
             git add .
             git commit -m "release-${CIRCLE_SHA1}"
             git push --set-upstream origin release-${CIRCLE_SHA1}
-      - run:
-          name: create pull request
-          command: |
-            cd ${SKYSIGN_CONFIG_REPO}/
             gh pr create --fill
 
   notify-slack:
