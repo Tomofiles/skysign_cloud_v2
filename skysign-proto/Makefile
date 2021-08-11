@@ -59,9 +59,9 @@ compile_fleet-formation: common.proto fleet_assignments.proto vehicle.proto miss
 	protoc -I/usr/local/include -I.   -I$(GOPATH)/src   -I$(GOPATH)/pkg/mod/github.com/grpc-ecosystem/grpc-gateway@v1.9.6/third_party/googleapis   --go_out=plugins=grpc:../fleet-formation/pkg/skysign_proto mission.proto
 	protoc -I/usr/local/include -I.   -I$(GOPATH)/src   -I$(GOPATH)/pkg/mod/github.com/grpc-ecosystem/grpc-gateway@v1.9.6/third_party/googleapis   --go_out=plugins=grpc:../fleet-formation/pkg/skysign_proto event.proto
 
-cp_communication: common.proto communication_edge.proto communication_user.proto event.proto upload_mission_edge.proto
-	cp common.proto ../communication/src/main/proto
-	cp communication_edge.proto ../communication/src/main/proto
-	cp communication_user.proto ../communication/src/main/proto
-	cp event.proto ../communication/src/main/proto
-	cp upload_mission_edge.proto ../communication/src/main/proto
+compile_remote-communication: common.proto communication_edge.proto communication_user.proto event.proto upload_mission_edge.proto
+	protoc -I/usr/local/include -I.   -I$(GOPATH)/src   -I$(GOPATH)/pkg/mod/github.com/grpc-ecosystem/grpc-gateway@v1.9.6/third_party/googleapis   --go_out=plugins=grpc:../remote-communication/pkg/skysign_proto common.proto
+	protoc -I/usr/local/include -I.   -I$(GOPATH)/src   -I$(GOPATH)/pkg/mod/github.com/grpc-ecosystem/grpc-gateway@v1.9.6/third_party/googleapis   --go_out=plugins=grpc:../remote-communication/pkg/skysign_proto communication_edge.proto
+	protoc -I/usr/local/include -I.   -I$(GOPATH)/src   -I$(GOPATH)/pkg/mod/github.com/grpc-ecosystem/grpc-gateway@v1.9.6/third_party/googleapis   --go_out=plugins=grpc:../remote-communication/pkg/skysign_proto communication_user.proto
+	protoc -I/usr/local/include -I.   -I$(GOPATH)/src   -I$(GOPATH)/pkg/mod/github.com/grpc-ecosystem/grpc-gateway@v1.9.6/third_party/googleapis   --go_out=plugins=grpc:../remote-communication/pkg/skysign_proto upload_mission_edge.proto
+	protoc -I/usr/local/include -I.   -I$(GOPATH)/src   -I$(GOPATH)/pkg/mod/github.com/grpc-ecosystem/grpc-gateway@v1.9.6/third_party/googleapis   --go_out=plugins=grpc:../remote-communication/pkg/skysign_proto event.proto
