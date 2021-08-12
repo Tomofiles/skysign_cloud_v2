@@ -11,5 +11,8 @@ type UploadMission struct {
 
 // NewUploadMission .
 func NewUploadMission(commandID CommandID, missionID MissionID) *UploadMission {
-	return nil
+	return &UploadMission{
+		commandID: commandID,
+		missionID: missionID,
+	}
 }

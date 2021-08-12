@@ -1,12 +1,21 @@
 package communication
 
 import (
+	"errors"
 	"remote-communication/pkg/common/domain/event"
+	"sort"
 	"time"
 )
 
 // ID .
 type ID string
+
+var (
+	// ErrCannotPullCommand .
+	ErrCannotPullCommand = errors.New("cannot pull command by id")
+	// ErrCannotPullUploadMission .
+	ErrCannotPullUploadMission = errors.New("cannot pull upload mission by id")
+)
 
 // Communication .
 type Communication struct {
@@ -30,39 +39,50 @@ func (c *Communication) GetID() ID {
 
 // PushTelemetry .
 func (c *Communication) PushTelemetry(snapshot TelemetrySnapshot) {
+	c.telemetry = NewTelemetryBySnapshot(snapshot)
+
+	if c.pub != nil {
+		c.pub.Publish(TelemetryUpdatedEvent{
+			CommunicationID: c.id,
+			Telemetry:       snapshot,
+		})
+	}
 }
 
 // PullTelemetry .
 func (c *Communication) PullTelemetry() TelemetrySnapshot {
-	return TelemetrySnapshot{}
+	return c.telemetry.GetSnapshot()
 }
 
 // GetCommandIDs .
 func (c *Communication) GetCommandIDs() []CommandID {
 	var commandIDs []CommandID
-	for _, command := range c.commands {
-		// sort?
+	commands := append([]*Command{}, c.commands...)
+	sort.Slice(commands, func(i, j int) bool {
+		return commands[i].time.Before(commands[j].time)
+	})
+	for _, command := range commands {
 		commandIDs = append(commandIDs, command.id)
 	}
 	return commandIDs
 }
 
 // PushCommand .
-func (c *Communication) PushCommand(cType string) CommandID {
+func (c *Communication) PushCommand(cType CommandType) CommandID {
 	if IsFollowArmCommandPushPolicy(cType, c) {
-		c.pushCommandDo("ARM")
+		c.pushCommandDo(CommandTypeARM)
 	}
 	return c.pushCommandDo(cType)
 }
 
 // PushUploadMission .
 func (c *Communication) PushUploadMission(missionID MissionID) CommandID {
-	id := c.pushCommandDo("UPLOAD")
+	id := c.pushCommandDo(CommandTypeUPLOAD)
 	c.uploadMissions = append(c.uploadMissions, NewUploadMission(id, missionID))
 	return id
 }
 
-func (c *Communication) pushCommandDo(cType string) CommandID {
+func (c *Communication) pushCommandDo(cType CommandType) CommandID {
 	id := c.gen.NewCommandID()
 	time := c.gen.NewTime()
 	c.commands = append(c.commands, NewCommand(id, cType, time))
@@ -70,13 +90,39 @@ func (c *Communication) pushCommandDo(cType string) CommandID {
 }
 
 // PullCommandById .
-func (c *Communication) PullCommandByID(commandID CommandID) string {
-	return ""
+func (c *Communication) PullCommandByID(commandID CommandID) (CommandType, error) {
+	var command *Command
+	var commands []*Command
+	for _, cmd := range c.commands {
+		if cmd.id == commandID {
+			command = cmd
+		} else {
+			commands = append(commands, cmd)
+		}
+	}
+	if command != nil {
+		return "", ErrCannotPullCommand
+	}
+	c.commands = commands
+	return command.cType, nil
 }
 
 // PullUploadMissionByID .
-func (c *Communication) PullUploadMissionByID(commandID CommandID) MissionID {
-	return ""
+func (c *Communication) PullUploadMissionByID(commandID CommandID) (MissionID, error) {
+	var uploadMission *UploadMission
+	var uploadMissions []*UploadMission
+	for _, um := range c.uploadMissions {
+		if um.commandID == commandID {
+			uploadMission = um
+		} else {
+			uploadMissions = append(uploadMissions, um)
+		}
+	}
+	if uploadMission != nil {
+		return "", ErrCannotPullUploadMission
+	}
+	c.uploadMissions = uploadMissions
+	return uploadMission.missionID, nil
 }
 
 // Generator .

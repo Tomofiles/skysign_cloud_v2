@@ -1,5 +1,11 @@
 package communication
 
-func IsFollowArmCommandPushPolicy(cType string, communication *Communication) bool {
-	return true
+// IsFollowArmCommandPushPolicy .
+func IsFollowArmCommandPushPolicy(cType CommandType, communication *Communication) bool {
+	if cType == CommandTypeTAKEOFF || cType == CommandTypeSTART {
+		if communication.telemetry.IsDisarmed() {
+			return true
+		}
+	}
+	return false
 }

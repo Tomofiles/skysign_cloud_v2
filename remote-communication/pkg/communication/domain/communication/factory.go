@@ -1,5 +1,7 @@
 package communication
 
+import "time"
+
 // NewInstance .
 func NewInstance(gen Generator, id ID) *Communication {
 	telemetry := NewTelemetry()
@@ -14,165 +16,122 @@ func NewInstance(gen Generator, id ID) *Communication {
 	}
 }
 
-// // Copy .
-// func Copy(
-// 	gen Generator,
-// 	pub event.Publisher,
-// 	id ID,
-// 	original *Fleet,
-// ) *Fleet {
-// 	var vehicleAssignments []*VehicleAssignment
-// 	var eventPlannings []*EventPlanning
+// AssembleFrom .
+func AssembleFrom(gen Generator, comp Component) *Communication {
+	telemetry := &Telemetry{
+		Latitude:         comp.GetTelemetry().GetLatitude(),
+		Longitude:        comp.GetTelemetry().GetLongitude(),
+		Altitude:         comp.GetTelemetry().GetAltitude(),
+		RelativeAltitude: comp.GetTelemetry().GetRelativeAltitude(),
+		Speed:            comp.GetTelemetry().GetSpeed(),
+		Armed:            comp.GetTelemetry().GetArmed(),
+		FlightMode:       comp.GetTelemetry().GetFlightMode(),
+		X:                comp.GetTelemetry().GetX(),
+		Y:                comp.GetTelemetry().GetY(),
+		Z:                comp.GetTelemetry().GetZ(),
+		W:                comp.GetTelemetry().GetW(),
+	}
+	var commands []*Command
+	for _, c := range comp.GetCommands() {
+		commands = append(
+			commands,
+			&Command{
+				id:    CommandID(c.GetID()),
+				cType: CommandType(c.GetType()),
+				time:  c.GetTime(),
+			},
+		)
+	}
+	var uploadMissions []*UploadMission
+	for _, um := range comp.GetUploadMissions() {
+		uploadMissions = append(
+			uploadMissions,
+			&UploadMission{
+				commandID: CommandID(um.GetCommandID()),
+				missionID: MissionID(um.GetMissionID()),
+			},
+		)
+	}
+	return &Communication{
+		id:             ID(comp.GetID()),
+		telemetry:      telemetry,
+		commands:       commands,
+		uploadMissions: uploadMissions,
+		gen:            gen,
+	}
+}
 
-// 	assignmentIDMap := map[AssignmentID]AssignmentID{}
-// 	vehicleIDMap := map[VehicleID]VehicleID{"": ""}
-// 	missionIDMap := map[MissionID]MissionID{"": ""}
-// 	for _, va := range original.vehicleAssignments {
-// 		assignmentIDMap[va.assignmentID] = gen.NewAssignmentID()
-// 		if va.vehicleID != "" {
-// 			vehicleIDMap[va.vehicleID] = gen.NewVehicleID()
-// 		}
-// 		vehicleAssignments = append(
-// 			vehicleAssignments,
-// 			&VehicleAssignment{
-// 				assignmentID: assignmentIDMap[va.assignmentID],
-// 				vehicleID:    vehicleIDMap[va.vehicleID],
-// 			},
-// 		)
-// 	}
-// 	for _, ep := range original.eventPlannings {
-// 		if ep.missionID != "" {
-// 			missionIDMap[ep.missionID] = gen.NewMissionID()
-// 		}
-// 		eventPlannings = append(
-// 			eventPlannings,
-// 			&EventPlanning{
-// 				eventID:      gen.NewEventID(),
-// 				assignmentID: assignmentIDMap[ep.assignmentID],
-// 				missionID:    missionIDMap[ep.missionID],
-// 			},
-// 		)
-// 	}
+// TakeApart .
+func TakeApart(
+	communication *Communication,
+	communicationComp func(id string),
+	telemetryComp func(latitude, longitude, altitude, relativeAltitude, speed, x, y, z, w float64, armed bool, flightMode string),
+	commandComp func(id, cType string, time time.Time),
+	uploadMissionComp func(commandID, missionID string),
+) {
+	communicationComp(
+		string(communication.id),
+	)
+	telemetryComp(
+		communication.telemetry.Latitude,
+		communication.telemetry.Longitude,
+		communication.telemetry.Altitude,
+		communication.telemetry.RelativeAltitude,
+		communication.telemetry.Speed,
+		communication.telemetry.X,
+		communication.telemetry.Y,
+		communication.telemetry.Z,
+		communication.telemetry.W,
+		communication.telemetry.Armed,
+		communication.telemetry.FlightMode,
+	)
+	for _, c := range communication.commands {
+		commandComp(
+			string(c.id),
+			string(c.cType),
+			c.time,
+		)
+	}
+	for _, um := range communication.uploadMissions {
+		uploadMissionComp(
+			string(um.commandID),
+			string(um.missionID),
+		)
+	}
+}
 
-// 	if pub != nil {
-// 		for k, v := range vehicleIDMap {
-// 			if k == "" {
-// 				continue
-// 			}
-// 			event := VehicleCopiedEvent{
-// 				FleetID:    id,
-// 				OriginalID: k,
-// 				NewID:      v,
-// 			}
-// 			pub.Publish(event)
-// 		}
-// 		for k, v := range missionIDMap {
-// 			if k == "" {
-// 				continue
-// 			}
-// 			event := MissionCopiedEvent{
-// 				FleetID:    id,
-// 				OriginalID: k,
-// 				NewID:      v,
-// 			}
-// 			pub.Publish(event)
-// 		}
-// 	}
+// Component .
+type Component interface {
+	GetID() string
+	GetTelemetry() TelemetryComponent
+	GetCommands() []CommandComponent
+	GetUploadMissions() []UploadMissionComponent
+}
 
-// 	return &Fleet{
-// 		id:                 id,
-// 		vehicleAssignments: vehicleAssignments,
-// 		eventPlannings:     eventPlannings,
-// 		isCarbonCopy:       CarbonCopy,
-// 		version:            original.version,
-// 		newVersion:         original.newVersion,
-// 		gen:                gen,
-// 	}
-// }
+// TelemetryComponent .
+type TelemetryComponent interface {
+	GetLatitude() float64
+	GetLongitude() float64
+	GetAltitude() float64
+	GetRelativeAltitude() float64
+	GetSpeed() float64
+	GetArmed() bool
+	GetFlightMode() string
+	GetX() float64
+	GetY() float64
+	GetZ() float64
+	GetW() float64
+}
 
-// // AssembleFrom .
-// func AssembleFrom(gen Generator, comp Component) *Fleet {
-// 	var vehicleAssignments []*VehicleAssignment
-// 	for _, a := range comp.GetAssignments() {
-// 		vehicleAssignments = append(
-// 			vehicleAssignments,
-// 			&VehicleAssignment{
-// 				assignmentID: AssignmentID(a.GetID()),
-// 				vehicleID:    VehicleID(a.GetVehicleID()),
-// 			},
-// 		)
-// 	}
-// 	var eventPlannings []*EventPlanning
-// 	for _, e := range comp.GetEvents() {
-// 		eventPlannings = append(
-// 			eventPlannings,
-// 			&EventPlanning{
-// 				eventID:      EventID(e.GetID()),
-// 				assignmentID: AssignmentID(e.GetAssignmentID()),
-// 				missionID:    MissionID(e.GetMissionID()),
-// 			},
-// 		)
-// 	}
-// 	return &Fleet{
-// 		id:                 ID(comp.GetID()),
-// 		vehicleAssignments: vehicleAssignments,
-// 		eventPlannings:     eventPlannings,
-// 		isCarbonCopy:       comp.GetIsCarbonCopy(),
-// 		version:            Version(comp.GetVersion()),
-// 		newVersion:         Version(comp.GetVersion()),
-// 		gen:                gen,
-// 	}
-// }
+// CommandComponent .
+type CommandComponent interface {
+	GetID() string
+	GetType() string
+	GetTime() time.Time
+}
 
-// // TakeApart .
-// func TakeApart(
-// 	fleet *Fleet,
-// 	fleetComp func(id, version string, isCarbonCopy bool),
-// 	assignmentComp func(id, fleetID, vehicleID string),
-// 	eventComp func(id, fleetID, assignmentID, missionID string),
-// ) {
-// 	fleetComp(
-// 		string(fleet.id),
-// 		string(fleet.version),
-// 		fleet.isCarbonCopy,
-// 	)
-// 	for _, a := range fleet.vehicleAssignments {
-// 		assignmentComp(
-// 			string(a.assignmentID),
-// 			string(fleet.id),
-// 			string(a.vehicleID),
-// 		)
-// 	}
-// 	for _, e := range fleet.eventPlannings {
-// 		eventComp(
-// 			string(e.eventID),
-// 			string(fleet.id),
-// 			string(e.assignmentID),
-// 			string(e.missionID),
-// 		)
-// 	}
-// }
-
-// // Component .
-// type Component interface {
-// 	GetID() string
-// 	GetIsCarbonCopy() bool
-// 	GetVersion() string
-// 	GetAssignments() []AssignmentComponent
-// 	GetEvents() []EventComponent
-// }
-
-// // AssignmentComponent .
-// type AssignmentComponent interface {
-// 	GetID() string
-// 	GetFleetID() string
-// 	GetVehicleID() string
-// }
-
-// // EventComponent .
-// type EventComponent interface {
-// 	GetID() string
-// 	GetFleetID() string
-// 	GetAssignmentID() string
-// 	GetMissionID() string
-// }
+// UploadMissionComponent .
+type UploadMissionComponent interface {
+	GetCommandID() string
+	GetMissionID() string
+}
