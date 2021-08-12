@@ -19,17 +19,17 @@ func NewInstance(gen Generator, id ID) *Communication {
 // AssembleFrom .
 func AssembleFrom(gen Generator, comp Component) *Communication {
 	telemetry := &Telemetry{
-		Latitude:         comp.GetTelemetry().GetLatitude(),
-		Longitude:        comp.GetTelemetry().GetLongitude(),
-		Altitude:         comp.GetTelemetry().GetAltitude(),
-		RelativeAltitude: comp.GetTelemetry().GetRelativeAltitude(),
-		Speed:            comp.GetTelemetry().GetSpeed(),
-		Armed:            comp.GetTelemetry().GetArmed(),
-		FlightMode:       comp.GetTelemetry().GetFlightMode(),
-		X:                comp.GetTelemetry().GetX(),
-		Y:                comp.GetTelemetry().GetY(),
-		Z:                comp.GetTelemetry().GetZ(),
-		W:                comp.GetTelemetry().GetW(),
+		latitude:         comp.GetTelemetry().GetLatitude(),
+		longitude:        comp.GetTelemetry().GetLongitude(),
+		altitude:         comp.GetTelemetry().GetAltitude(),
+		relativeAltitude: comp.GetTelemetry().GetRelativeAltitude(),
+		speed:            comp.GetTelemetry().GetSpeed(),
+		armed:            comp.GetTelemetry().GetArmed(),
+		flightMode:       comp.GetTelemetry().GetFlightMode(),
+		x:                comp.GetTelemetry().GetX(),
+		y:                comp.GetTelemetry().GetY(),
+		z:                comp.GetTelemetry().GetZ(),
+		w:                comp.GetTelemetry().GetW(),
 	}
 	var commands []*Command
 	for _, c := range comp.GetCommands() {
@@ -73,17 +73,17 @@ func TakeApart(
 		string(communication.id),
 	)
 	telemetryComp(
-		communication.telemetry.Latitude,
-		communication.telemetry.Longitude,
-		communication.telemetry.Altitude,
-		communication.telemetry.RelativeAltitude,
-		communication.telemetry.Speed,
-		communication.telemetry.X,
-		communication.telemetry.Y,
-		communication.telemetry.Z,
-		communication.telemetry.W,
-		communication.telemetry.Armed,
-		communication.telemetry.FlightMode,
+		communication.telemetry.latitude,
+		communication.telemetry.longitude,
+		communication.telemetry.altitude,
+		communication.telemetry.relativeAltitude,
+		communication.telemetry.speed,
+		communication.telemetry.x,
+		communication.telemetry.y,
+		communication.telemetry.z,
+		communication.telemetry.w,
+		communication.telemetry.armed,
+		communication.telemetry.flightMode,
 	)
 	for _, c := range communication.commands {
 		commandComp(

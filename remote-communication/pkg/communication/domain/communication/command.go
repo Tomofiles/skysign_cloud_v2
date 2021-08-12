@@ -29,6 +29,19 @@ const (
 	CommandTypeNONE = CommandType("NONE")
 )
 
+// AllCommandTypes .
+var AllCommandTypes = []CommandType{
+	CommandTypeARM,
+	CommandTypeDISARM,
+	CommandTypeUPLOAD,
+	CommandTypeSTART,
+	CommandTypePAUSE,
+	CommandTypeTAKEOFF,
+	CommandTypeLAND,
+	CommandTypeRETURN,
+	CommandTypeNONE,
+}
+
 // Command .
 type Command struct {
 	id    CommandID
