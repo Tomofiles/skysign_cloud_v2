@@ -2,6 +2,7 @@ package communication
 
 import (
 	"testing"
+	"time"
 
 	"github.com/stretchr/testify/assert"
 )
@@ -24,253 +25,294 @@ func TestCreateNewCommunication(t *testing.T) {
 	a.Equal(communication.gen, gen)
 }
 
-// // Fleetを構成オブジェクトから組み立て直し、
-// // 内部状態を検証する。
-// func TestFleetAssembleFromComponent(t *testing.T) {
-// 	a := assert.New(t)
+// Communicationを構成オブジェクトから組み立て直し、
+// 内部状態を検証する。
+func TestCommunicationAssembleFromComponent(t *testing.T) {
+	a := assert.New(t)
 
-// 	var (
-// 		DefaultAssignmentID1 = DefaultAssignmentID + "-1"
-// 		DefaultAssignmentID2 = DefaultAssignmentID + "-2"
-// 		DefaultAssignmentID3 = DefaultAssignmentID + "-3"
-// 		DefaultEventID1      = DefaultEventID + "-1"
-// 		DefaultEventID2      = DefaultEventID + "-2"
-// 		DefaultEventID3      = DefaultEventID + "-3"
-// 		DefaultVehicleID1    = DefaultVehicleID + "-1"
-// 		DefaultVehicleID2    = DefaultVehicleID + "-2"
-// 		DefaultVehicleID3    = DefaultVehicleID + "-3"
-// 		DefaultMissionID1    = DefaultMissionID + "-1"
-// 		DefaultMissionID2    = DefaultMissionID + "-2"
-// 		DefaultMissionID3    = DefaultMissionID + "-3"
-// 	)
+	var (
+		DefaultCommandID1 = DefaultCommandID + "-1"
+		DefaultCommandID2 = DefaultCommandID + "-2"
+		DefaultCommandID3 = DefaultCommandID + "-3"
+		DefaultTime1      = DefaultTime.Add(1 * time.Minute)
+		DefaultTime2      = DefaultTime.Add(2 * time.Minute)
+		DefaultTime3      = DefaultTime.Add(3 * time.Minute)
+		DefaultMissionID1 = DefaultMissionID + "-1"
+		DefaultMissionID2 = DefaultMissionID + "-2"
+		DefaultMissionID3 = DefaultMissionID + "-3"
+	)
 
-// 	gen := &generatorMock{}
+	gen := &generatorMock{}
 
-// 	assignmentComps := []assignmentComponentMock{
-// 		{
-// 			id:        string(DefaultAssignmentID1),
-// 			fleetID:   string(DefaultID),
-// 			vehicleID: string(DefaultVehicleID1),
-// 		},
-// 		{
-// 			id:        string(DefaultAssignmentID2),
-// 			fleetID:   string(DefaultID),
-// 			vehicleID: string(DefaultVehicleID2),
-// 		},
-// 		{
-// 			id:        string(DefaultAssignmentID3),
-// 			fleetID:   string(DefaultID),
-// 			vehicleID: string(DefaultVehicleID3),
-// 		},
-// 	}
-// 	eventComps := []eventComponentMock{
-// 		{
-// 			id:           string(DefaultEventID1),
-// 			fleetID:      string(DefaultID),
-// 			assignmentID: string(DefaultAssignmentID1),
-// 			missionID:    string(DefaultMissionID1),
-// 		},
-// 		{
-// 			id:           string(DefaultEventID2),
-// 			fleetID:      string(DefaultID),
-// 			assignmentID: string(DefaultAssignmentID2),
-// 			missionID:    string(DefaultMissionID2),
-// 		},
-// 		{
-// 			id:           string(DefaultEventID3),
-// 			fleetID:      string(DefaultID),
-// 			assignmentID: string(DefaultAssignmentID3),
-// 			missionID:    string(DefaultMissionID3),
-// 		},
-// 	}
-// 	fleetComp := fleetComponentMock{
-// 		id:           string(DefaultID),
-// 		isCarbonCopy: CarbonCopy,
-// 		assignments:  assignmentComps,
-// 		events:       eventComps,
-// 		version:      string(DefaultVersion),
-// 	}
-// 	fleet := AssembleFrom(gen, &fleetComp)
+	telemetryComp := telemetryComponentMock{
+		latitude:         1.0,
+		longitude:        2.0,
+		altitude:         3.0,
+		relativeAltitude: 4.0,
+		speed:            5.0,
+		armed:            Armed,
+		flightMode:       "NONE",
+		x:                6.0,
+		y:                7.0,
+		z:                8.0,
+		w:                9.0,
+	}
+	commandComps := []*commandComponentMock{
+		{
+			id:    string(DefaultCommandID1),
+			cType: string(CommandTypeARM),
+			time:  DefaultTime1,
+		},
+		{
+			id:    string(DefaultCommandID2),
+			cType: string(CommandTypeDISARM),
+			time:  DefaultTime2,
+		},
+		{
+			id:    string(DefaultCommandID3),
+			cType: string(CommandTypeLAND),
+			time:  DefaultTime3,
+		},
+	}
+	uploadMissionComps := []*uploadMissionComponentMock{
+		{
+			commandID: string(DefaultCommandID1),
+			missionID: string(DefaultMissionID1),
+		},
+		{
+			commandID: string(DefaultCommandID2),
+			missionID: string(DefaultMissionID2),
+		},
+		{
+			commandID: string(DefaultCommandID3),
+			missionID: string(DefaultMissionID3),
+		},
+	}
+	communicationComp := communicationComponentMock{
+		id:             string(DefaultID),
+		telemetry:      &telemetryComp,
+		commands:       commandComps,
+		uploadMissions: uploadMissionComps,
+	}
+	communication := AssembleFrom(gen, &communicationComp)
 
-// 	expectAssignment1 := &VehicleAssignment{
-// 		assignmentID: DefaultAssignmentID1,
-// 		vehicleID:    DefaultVehicleID1,
-// 	}
-// 	expectAssignment2 := &VehicleAssignment{
-// 		assignmentID: DefaultAssignmentID2,
-// 		vehicleID:    DefaultVehicleID2,
-// 	}
-// 	expectAssignment3 := &VehicleAssignment{
-// 		assignmentID: DefaultAssignmentID3,
-// 		vehicleID:    DefaultVehicleID3,
-// 	}
+	expectTelemetry := &Telemetry{
+		latitude:         1.0,
+		longitude:        2.0,
+		altitude:         3.0,
+		relativeAltitude: 4.0,
+		speed:            5.0,
+		armed:            Armed,
+		flightMode:       "NONE",
+		x:                6.0,
+		y:                7.0,
+		z:                8.0,
+		w:                9.0,
+	}
+	expectCommands := []*Command{
+		{
+			id:    DefaultCommandID1,
+			cType: CommandTypeARM,
+			time:  DefaultTime1,
+		},
+		{
+			id:    DefaultCommandID2,
+			cType: CommandTypeDISARM,
+			time:  DefaultTime2,
+		},
+		{
+			id:    DefaultCommandID3,
+			cType: CommandTypeLAND,
+			time:  DefaultTime3,
+		},
+	}
+	expectUploadMissions := []*UploadMission{
+		{
+			commandID: DefaultCommandID1,
+			missionID: DefaultMissionID1,
+		},
+		{
+			commandID: DefaultCommandID2,
+			missionID: DefaultMissionID2,
+		},
+		{
+			commandID: DefaultCommandID3,
+			missionID: DefaultMissionID3,
+		},
+	}
 
-// 	expectEvent1 := &EventPlanning{
-// 		eventID:      DefaultEventID1,
-// 		assignmentID: DefaultAssignmentID1,
-// 		missionID:    DefaultMissionID1,
-// 	}
-// 	expectEvent2 := &EventPlanning{
-// 		eventID:      DefaultEventID2,
-// 		assignmentID: DefaultAssignmentID2,
-// 		missionID:    DefaultMissionID2,
-// 	}
-// 	expectEvent3 := &EventPlanning{
-// 		eventID:      DefaultEventID3,
-// 		assignmentID: DefaultAssignmentID3,
-// 		missionID:    DefaultMissionID3,
-// 	}
+	a.Equal(communication.GetID(), DefaultID)
+	a.Equal(communication.telemetry, expectTelemetry)
+	a.Equal(communication.commands, expectCommands)
+	a.Equal(communication.uploadMissions, expectUploadMissions)
+	a.Equal(communication.gen, gen)
+}
 
-// 	a.Equal(fleet.GetID(), DefaultID)
-// 	a.Equal(fleet.GetNumberOfVehicles(), 3)
-// 	a.Equal(fleet.GetAllAssignmentID(), []AssignmentID{DefaultAssignmentID1, DefaultAssignmentID2, DefaultAssignmentID3})
-// 	a.Equal(fleet.isCarbonCopy, CarbonCopy)
-// 	a.Equal(fleet.GetVersion(), DefaultVersion)
-// 	a.Equal(fleet.GetNewVersion(), DefaultVersion)
-// 	a.Len(fleet.vehicleAssignments, 3)
-// 	a.Equal(fleet.vehicleAssignments[0], expectAssignment1)
-// 	a.Equal(fleet.vehicleAssignments[1], expectAssignment2)
-// 	a.Equal(fleet.vehicleAssignments[2], expectAssignment3)
-// 	a.Len(fleet.eventPlannings, 3)
-// 	a.Equal(fleet.eventPlannings[0], expectEvent1)
-// 	a.Equal(fleet.eventPlannings[1], expectEvent2)
-// 	a.Equal(fleet.eventPlannings[2], expectEvent3)
-// }
+// Communicationを構成オブジェクトに分解し、
+// 内部状態を検証する。
+func TestTakeApartCommunication(t *testing.T) {
+	a := assert.New(t)
 
-// // Fleetを構成オブジェクトに分解し、
-// // 内部状態を検証する。
-// func TestTakeApartFleet(t *testing.T) {
-// 	a := assert.New(t)
+	var (
+		DefaultCommandID1 = DefaultCommandID + "-1"
+		DefaultCommandID2 = DefaultCommandID + "-2"
+		DefaultCommandID3 = DefaultCommandID + "-3"
+		DefaultTime1      = DefaultTime.Add(1 * time.Minute)
+		DefaultTime2      = DefaultTime.Add(2 * time.Minute)
+		DefaultTime3      = DefaultTime.Add(3 * time.Minute)
+		DefaultMissionID1 = DefaultMissionID + "-1"
+		DefaultMissionID2 = DefaultMissionID + "-2"
+		DefaultMissionID3 = DefaultMissionID + "-3"
+	)
 
-// 	var (
-// 		DefaultAssignmentID1 = DefaultAssignmentID + "-1"
-// 		DefaultAssignmentID2 = DefaultAssignmentID + "-2"
-// 		DefaultAssignmentID3 = DefaultAssignmentID + "-3"
-// 		DefaultEventID1      = DefaultEventID + "-1"
-// 		DefaultEventID2      = DefaultEventID + "-2"
-// 		DefaultEventID3      = DefaultEventID + "-3"
-// 		DefaultVehicleID1    = DefaultVehicleID + "-1"
-// 		DefaultVehicleID2    = DefaultVehicleID + "-2"
-// 		DefaultVehicleID3    = DefaultVehicleID + "-3"
-// 		DefaultMissionID1    = DefaultMissionID + "-1"
-// 		DefaultMissionID2    = DefaultMissionID + "-2"
-// 		DefaultMissionID3    = DefaultMissionID + "-3"
-// 		DefaultVersion1      = DefaultVersion + "-1"
-// 		DefaultVersion2      = DefaultVersion + "-2"
-// 	)
+	telemetry := &Telemetry{
+		latitude:         1.0,
+		longitude:        2.0,
+		altitude:         3.0,
+		relativeAltitude: 4.0,
+		speed:            5.0,
+		armed:            Armed,
+		flightMode:       "NONE",
+		x:                6.0,
+		y:                7.0,
+		z:                8.0,
+		w:                9.0,
+	}
+	commands := []*Command{
+		{
+			id:    DefaultCommandID1,
+			cType: CommandTypeARM,
+			time:  DefaultTime1,
+		},
+		{
+			id:    DefaultCommandID2,
+			cType: CommandTypeDISARM,
+			time:  DefaultTime2,
+		},
+		{
+			id:    DefaultCommandID3,
+			cType: CommandTypeLAND,
+			time:  DefaultTime3,
+		},
+	}
+	uploadMissions := []*UploadMission{
+		{
+			commandID: DefaultCommandID1,
+			missionID: DefaultMissionID1,
+		},
+		{
+			commandID: DefaultCommandID2,
+			missionID: DefaultMissionID2,
+		},
+		{
+			commandID: DefaultCommandID3,
+			missionID: DefaultMissionID3,
+		},
+	}
 
-// 	gen := &generatorMock{
-// 		assignmentIDs: []AssignmentID{DefaultAssignmentID1, DefaultAssignmentID2, DefaultAssignmentID3},
-// 		versions:      []Version{DefaultVersion1, DefaultVersion2},
-// 	}
-// 	fleet := NewInstance(gen, DefaultID, 3)
-// 	fleet.vehicleAssignments[0].vehicleID = DefaultVehicleID1
-// 	fleet.vehicleAssignments[1].vehicleID = DefaultVehicleID2
-// 	fleet.vehicleAssignments[2].vehicleID = DefaultVehicleID3
-// 	fleet.eventPlannings = append(
-// 		fleet.eventPlannings,
-// 		&EventPlanning{
-// 			eventID:      DefaultEventID1,
-// 			assignmentID: DefaultAssignmentID1,
-// 			missionID:    DefaultMissionID1,
-// 		},
-// 	)
-// 	fleet.eventPlannings = append(
-// 		fleet.eventPlannings,
-// 		&EventPlanning{
-// 			eventID:      DefaultEventID2,
-// 			assignmentID: DefaultAssignmentID2,
-// 			missionID:    DefaultMissionID2,
-// 		},
-// 	)
-// 	fleet.eventPlannings = append(
-// 		fleet.eventPlannings,
-// 		&EventPlanning{
-// 			eventID:      DefaultEventID3,
-// 			assignmentID: DefaultAssignmentID3,
-// 			missionID:    DefaultMissionID3,
-// 		},
-// 	)
-// 	fleet.isCarbonCopy = CarbonCopy
+	gen := &generatorMock{}
+	communication := NewInstance(gen, DefaultID)
+	communication.telemetry = telemetry
+	communication.commands = commands
+	communication.uploadMissions = uploadMissions
 
-// 	var fleetComp fleetComponentMock
-// 	var assignmentComps []assignmentComponentMock
-// 	var eventComps []eventComponentMock
+	var communicationComp communicationComponentMock
+	var commandComps []*commandComponentMock
+	var uploadMissionComps []*uploadMissionComponentMock
 
-// 	TakeApart(
-// 		fleet,
-// 		func(id, version string, isCarbonCopy bool) {
-// 			fleetComp.id = id
-// 			fleetComp.version = version
-// 			fleetComp.isCarbonCopy = isCarbonCopy
-// 		},
-// 		func(id, fleetID, vehicleID string) {
-// 			assignmentComps = append(
-// 				assignmentComps,
-// 				assignmentComponentMock{
-// 					id:        id,
-// 					fleetID:   fleetID,
-// 					vehicleID: vehicleID,
-// 				},
-// 			)
-// 		},
-// 		func(id, fleetID, assignmentID, missionID string) {
-// 			eventComps = append(
-// 				eventComps,
-// 				eventComponentMock{
-// 					id:           id,
-// 					fleetID:      fleetID,
-// 					assignmentID: assignmentID,
-// 					missionID:    missionID,
-// 				},
-// 			)
-// 		},
-// 	)
+	TakeApart(
+		communication,
+		func(id string) {
+			communicationComp.id = id
+		},
+		func(latitude, longitude, altitude, relativeAltitude, speed, x, y, z, w float64, armed bool, flightMode string) {
+			communicationComp.telemetry = &telemetryComponentMock{
+				latitude:         latitude,
+				longitude:        longitude,
+				altitude:         altitude,
+				relativeAltitude: relativeAltitude,
+				speed:            speed,
+				armed:            armed,
+				flightMode:       flightMode,
+				x:                x,
+				y:                y,
+				z:                z,
+				w:                w,
+			}
+		},
+		func(id, cType string, time time.Time) {
+			commandComps = append(
+				commandComps,
+				&commandComponentMock{
+					id:    id,
+					cType: cType,
+					time:  time,
+				},
+			)
+		},
+		func(commandID, missionID string) {
+			uploadMissionComps = append(
+				uploadMissionComps,
+				&uploadMissionComponentMock{
+					commandID: commandID,
+					missionID: missionID,
+				},
+			)
+		},
+	)
 
-// 	expectFleet := fleetComponentMock{
-// 		id:           string(DefaultID),
-// 		version:      string(DefaultVersion1),
-// 		isCarbonCopy: CarbonCopy,
-// 	}
-// 	expectAssignments := []assignmentComponentMock{
-// 		{
-// 			id:        string(DefaultAssignmentID1),
-// 			fleetID:   string(DefaultID),
-// 			vehicleID: string(DefaultVehicleID1),
-// 		},
-// 		{
-// 			id:        string(DefaultAssignmentID2),
-// 			fleetID:   string(DefaultID),
-// 			vehicleID: string(DefaultVehicleID2),
-// 		},
-// 		{
-// 			id:        string(DefaultAssignmentID3),
-// 			fleetID:   string(DefaultID),
-// 			vehicleID: string(DefaultVehicleID3),
-// 		},
-// 	}
-// 	expectEvents := []eventComponentMock{
-// 		{
-// 			id:           string(DefaultEventID1),
-// 			fleetID:      string(DefaultID),
-// 			assignmentID: string(DefaultAssignmentID1),
-// 			missionID:    string(DefaultMissionID1),
-// 		},
-// 		{
-// 			id:           string(DefaultEventID2),
-// 			fleetID:      string(DefaultID),
-// 			assignmentID: string(DefaultAssignmentID2),
-// 			missionID:    string(DefaultMissionID2),
-// 		},
-// 		{
-// 			id:           string(DefaultEventID3),
-// 			fleetID:      string(DefaultID),
-// 			assignmentID: string(DefaultAssignmentID3),
-// 			missionID:    string(DefaultMissionID3),
-// 		},
-// 	}
+	communicationComp.commands = commandComps
+	communicationComp.uploadMissions = uploadMissionComps
 
-// 	a.Equal(fleetComp, expectFleet)
-// 	a.Equal(assignmentComps, expectAssignments)
-// 	a.Equal(eventComps, expectEvents)
-// }
+	expectTelemetryComp := telemetryComponentMock{
+		latitude:         1.0,
+		longitude:        2.0,
+		altitude:         3.0,
+		relativeAltitude: 4.0,
+		speed:            5.0,
+		armed:            Armed,
+		flightMode:       "NONE",
+		x:                6.0,
+		y:                7.0,
+		z:                8.0,
+		w:                9.0,
+	}
+	expectCommandComps := []*commandComponentMock{
+		{
+			id:    string(DefaultCommandID1),
+			cType: string(CommandTypeARM),
+			time:  DefaultTime1,
+		},
+		{
+			id:    string(DefaultCommandID2),
+			cType: string(CommandTypeDISARM),
+			time:  DefaultTime2,
+		},
+		{
+			id:    string(DefaultCommandID3),
+			cType: string(CommandTypeLAND),
+			time:  DefaultTime3,
+		},
+	}
+	expectUploadMissionComps := []*uploadMissionComponentMock{
+		{
+			commandID: string(DefaultCommandID1),
+			missionID: string(DefaultMissionID1),
+		},
+		{
+			commandID: string(DefaultCommandID2),
+			missionID: string(DefaultMissionID2),
+		},
+		{
+			commandID: string(DefaultCommandID3),
+			missionID: string(DefaultMissionID3),
+		},
+	}
+	expectCommunicationComp := communicationComponentMock{
+		id:             string(DefaultID),
+		telemetry:      &expectTelemetryComp,
+		commands:       expectCommandComps,
+		uploadMissions: expectUploadMissionComps,
+	}
+	a.Equal(communicationComp, expectCommunicationComp)
+}

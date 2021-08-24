@@ -50,136 +50,126 @@ func (rm *publisherMock) Flush() error {
 	return nil
 }
 
-// // Fleet用リポジトリモック
-// type repositoryMock struct {
-// 	mock.Mock
-// 	fleet    *Fleet
-// 	deleteID ID
-// }
+// Communication構成オブジェクトモック
+type communicationComponentMock struct {
+	id             string
+	telemetry      *telemetryComponentMock
+	commands       []*commandComponentMock
+	uploadMissions []*uploadMissionComponentMock
+}
 
-// func (r *repositoryMock) GetByID(
-// 	tx txmanager.Tx,
-// 	id ID,
-// ) (*Fleet, error) {
-// 	ret := r.Called(id)
-// 	var f *Fleet
-// 	if ret.Get(0) == nil {
-// 		f = nil
-// 	} else {
-// 		f = ret.Get(0).(*Fleet)
-// 	}
-// 	return f, ret.Error(1)
-// }
+func (m *communicationComponentMock) GetID() string {
+	return m.id
+}
 
-// func (r *repositoryMock) Save(
-// 	tx txmanager.Tx,
-// 	fleet *Fleet,
-// ) error {
-// 	ret := r.Called(fleet)
-// 	r.fleet = fleet
-// 	return ret.Error(0)
-// }
+func (m *communicationComponentMock) GetTelemetry() TelemetryComponent {
+	return m.telemetry
+}
 
-// func (r *repositoryMock) Delete(
-// 	tx txmanager.Tx,
-// 	id ID,
-// ) error {
-// 	ret := r.Called(id)
-// 	r.deleteID = id
-// 	return ret.Error(0)
-// }
+func (m *communicationComponentMock) GetCommands() []CommandComponent {
+	var commands []CommandComponent
+	for _, cmd := range m.commands {
+		commands = append(commands, cmd)
+	}
+	return commands
+}
 
-// // Fleet構成オブジェクトモック
-// type fleetComponentMock struct {
-// 	id           string
-// 	assignments  []assignmentComponentMock
-// 	events       []eventComponentMock
-// 	isCarbonCopy bool
-// 	version      string
-// }
+func (m *communicationComponentMock) GetUploadMissions() []UploadMissionComponent {
+	var uploadMissions []UploadMissionComponent
+	for _, um := range m.uploadMissions {
+		uploadMissions = append(uploadMissions, um)
+	}
+	return uploadMissions
+}
 
-// func (f *fleetComponentMock) GetID() string {
-// 	return f.id
-// }
+// Telemetry構成オブジェクトモック
+type telemetryComponentMock struct {
+	latitude         float64
+	longitude        float64
+	altitude         float64
+	relativeAltitude float64
+	speed            float64
+	armed            bool
+	flightMode       string
+	x                float64
+	y                float64
+	z                float64
+	w                float64
+}
 
-// func (f *fleetComponentMock) GetIsCarbonCopy() bool {
-// 	return f.isCarbonCopy
-// }
+func (m *telemetryComponentMock) GetLatitude() float64 {
+	return m.latitude
+}
 
-// func (f *fleetComponentMock) GetVersion() string {
-// 	return f.version
-// }
+func (m *telemetryComponentMock) GetLongitude() float64 {
+	return m.longitude
+}
 
-// func (f *fleetComponentMock) GetAssignments() []AssignmentComponent {
-// 	var assignments []AssignmentComponent
-// 	for _, a := range f.assignments {
-// 		assignments = append(
-// 			assignments,
-// 			&assignmentComponentMock{
-// 				id:        a.id,
-// 				fleetID:   a.fleetID,
-// 				vehicleID: a.vehicleID,
-// 			},
-// 		)
-// 	}
-// 	return assignments
-// }
+func (m *telemetryComponentMock) GetAltitude() float64 {
+	return m.altitude
+}
 
-// func (f *fleetComponentMock) GetEvents() []EventComponent {
-// 	var events []EventComponent
-// 	for _, e := range f.events {
-// 		events = append(
-// 			events,
-// 			&eventComponentMock{
-// 				id:           e.id,
-// 				fleetID:      e.fleetID,
-// 				assignmentID: e.assignmentID,
-// 				missionID:    e.missionID,
-// 			},
-// 		)
-// 	}
-// 	return events
-// }
+func (m *telemetryComponentMock) GetRelativeAltitude() float64 {
+	return m.relativeAltitude
+}
 
-// // Assignment構成オブジェクトモック
-// type assignmentComponentMock struct {
-// 	id        string
-// 	fleetID   string
-// 	vehicleID string
-// }
+func (m *telemetryComponentMock) GetSpeed() float64 {
+	return m.speed
+}
 
-// func (a *assignmentComponentMock) GetID() string {
-// 	return a.id
-// }
+func (m *telemetryComponentMock) GetArmed() bool {
+	return m.armed
+}
 
-// func (a *assignmentComponentMock) GetFleetID() string {
-// 	return a.fleetID
-// }
+func (m *telemetryComponentMock) GetFlightMode() string {
+	return m.flightMode
+}
 
-// func (a *assignmentComponentMock) GetVehicleID() string {
-// 	return a.vehicleID
-// }
+func (m *telemetryComponentMock) GetX() float64 {
+	return m.x
+}
 
-// // Event構成オブジェクトモック
-// type eventComponentMock struct {
-// 	id           string
-// 	fleetID      string
-// 	assignmentID string
-// 	missionID    string
-// }
+func (m *telemetryComponentMock) GetY() float64 {
+	return m.y
+}
 
-// func (e *eventComponentMock) GetID() string {
-// 	return e.id
-// }
+func (m *telemetryComponentMock) GetZ() float64 {
+	return m.z
+}
 
-// func (e *eventComponentMock) GetFleetID() string {
-// 	return e.fleetID
-// }
+func (m *telemetryComponentMock) GetW() float64 {
+	return m.w
+}
 
-// func (e *eventComponentMock) GetAssignmentID() string {
-// 	return e.assignmentID
-// }
+// Command構成オブジェクトモック
+type commandComponentMock struct {
+	id    string
+	cType string
+	time  time.Time
+}
 
-// func (e *eventComponentMock) GetMissionID() string {
-// 	return e.missionID
-// }
+func (m *commandComponentMock) GetID() string {
+	return m.id
+}
+
+func (m *commandComponentMock) GetType() string {
+	return m.cType
+}
+
+func (m *commandComponentMock) GetTime() time.Time {
+	return m.time
+}
+
+// UploadMission構成オブジェクトモック
+type uploadMissionComponentMock struct {
+	commandID string
+	missionID string
+}
+
+func (m *uploadMissionComponentMock) GetCommandID() string {
+	return m.commandID
+}
+
+func (m *uploadMissionComponentMock) GetMissionID() string {
+	return m.missionID
+}
