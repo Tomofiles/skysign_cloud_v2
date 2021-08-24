@@ -100,7 +100,7 @@ func (c *Communication) PullCommandByID(commandID CommandID) (CommandType, error
 			commands = append(commands, cmd)
 		}
 	}
-	if command != nil {
+	if command == nil {
 		return "", ErrCannotPullCommand
 	}
 	c.commands = commands
@@ -118,7 +118,7 @@ func (c *Communication) PullUploadMissionByID(commandID CommandID) (MissionID, e
 			uploadMissions = append(uploadMissions, um)
 		}
 	}
-	if uploadMission != nil {
+	if uploadMission == nil {
 		return "", ErrCannotPullUploadMission
 	}
 	c.uploadMissions = uploadMissions
