@@ -19,6 +19,8 @@ func PushTelemetryService(
 		return []CommandID{}, err
 	}
 
+	communication.SetPublisher(pub)
+
 	communication.PushTelemetry(snapshot)
 	commandIDs := communication.GetCommandIDs()
 
