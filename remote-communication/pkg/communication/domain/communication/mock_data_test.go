@@ -2,7 +2,10 @@ package communication
 
 import (
 	"errors"
+	"remote-communication/pkg/common/domain/txmanager"
 	"time"
+
+	"github.com/stretchr/testify/mock"
 )
 
 const DefaultID = ID("communication-id")
@@ -48,6 +51,34 @@ func (rm *publisherMock) Publish(event interface{}) {
 
 func (rm *publisherMock) Flush() error {
 	return nil
+}
+
+// Communication用リポジトリモック
+type repositoryMock struct {
+	mock.Mock
+
+	saveCommunications []*Communication
+}
+
+func (rm *repositoryMock) GetByID(tx txmanager.Tx, id ID) (*Communication, error) {
+	ret := rm.Called(id)
+	var v *Communication
+	if ret.Get(0) == nil {
+		v = nil
+	} else {
+		v = ret.Get(0).(*Communication)
+	}
+	return v, ret.Error(1)
+}
+func (rm *repositoryMock) Save(tx txmanager.Tx, v *Communication) error {
+	ret := rm.Called(v)
+	if ret.Error(0) == nil {
+		rm.saveCommunications = append(rm.saveCommunications, v)
+	}
+	return ret.Error(0)
+}
+func (rm *repositoryMock) Delete(tx txmanager.Tx, id ID) error {
+	panic("implement me")
 }
 
 // Communication構成オブジェクトモック

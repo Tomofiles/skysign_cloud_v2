@@ -39,7 +39,7 @@ func TestPushTelemetryService(t *testing.T) {
 		},
 	)
 
-	repo := &repositoryMockCommandService{}
+	repo := &repositoryMock{}
 	repo.On("GetByID", DefaultID).Return(testCommunication, nil)
 	repo.On("Save", mock.Anything).Return(nil)
 
@@ -112,7 +112,7 @@ func TestGetErrorWhenPushTelemetryService(t *testing.T) {
 	ctx := context.Background()
 
 	gen := &generatorMock{}
-	repo := &repositoryMockCommandService{}
+	repo := &repositoryMock{}
 	repo.On("GetByID", DefaultID).Return(nil, ErrGet)
 	repo.On("Save", mock.Anything).Return(nil)
 
@@ -154,7 +154,7 @@ func TestSaveErrorWhenPushTelemetryService(t *testing.T) {
 	}
 	testCommunication := NewInstance(gen, DefaultID)
 
-	repo := &repositoryMockCommandService{}
+	repo := &repositoryMock{}
 	repo.On("GetByID", DefaultID).Return(testCommunication, nil)
 	repo.On("Save", mock.Anything).Return(ErrSave)
 
@@ -205,7 +205,7 @@ func TestPullTelemetryService(t *testing.T) {
 		w:                9.0,
 	}
 
-	repo := &repositoryMockCommandService{}
+	repo := &repositoryMock{}
 	repo.On("GetByID", DefaultID).Return(testCommunication, nil)
 
 	pub := &publisherMock{}
@@ -240,7 +240,7 @@ func TestGetErrorWhenPullTelemetryService(t *testing.T) {
 	ctx := context.Background()
 
 	gen := &generatorMock{}
-	repo := &repositoryMockCommandService{}
+	repo := &repositoryMock{}
 	repo.On("GetByID", DefaultID).Return(nil, ErrGet)
 	repo.On("Save", mock.Anything).Return(nil)
 

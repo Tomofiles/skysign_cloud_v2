@@ -2,7 +2,6 @@ package communication
 
 import (
 	"context"
-	"remote-communication/pkg/common/domain/txmanager"
 	"testing"
 	"time"
 
@@ -23,7 +22,7 @@ func TestPushCommandService(t *testing.T) {
 	}
 	testCommunication := NewInstance(gen, DefaultID)
 
-	repo := &repositoryMockCommandService{}
+	repo := &repositoryMock{}
 	repo.On("GetByID", DefaultID).Return(testCommunication, nil)
 	repo.On("Save", mock.Anything).Return(nil)
 
@@ -58,7 +57,7 @@ func TestGetErrorWhenPushCommandService(t *testing.T) {
 	ctx := context.Background()
 
 	gen := &generatorMock{}
-	repo := &repositoryMockCommandService{}
+	repo := &repositoryMock{}
 	repo.On("GetByID", DefaultID).Return(nil, ErrGet)
 	repo.On("Save", mock.Anything).Return(nil)
 
@@ -87,7 +86,7 @@ func TestSaveErrorWhenPushCommandService(t *testing.T) {
 	}
 	testCommunication := NewInstance(gen, DefaultID)
 
-	repo := &repositoryMockCommandService{}
+	repo := &repositoryMock{}
 	repo.On("GetByID", DefaultID).Return(testCommunication, nil)
 	repo.On("Save", mock.Anything).Return(ErrSave)
 
@@ -120,7 +119,7 @@ func TestPullCommandService(t *testing.T) {
 		},
 	)
 
-	repo := &repositoryMockCommandService{}
+	repo := &repositoryMock{}
 	repo.On("GetByID", DefaultID).Return(testCommunication, nil)
 	repo.On("Save", mock.Anything).Return(nil)
 
@@ -147,7 +146,7 @@ func TestGetErrorWhenPullCommandService(t *testing.T) {
 	ctx := context.Background()
 
 	gen := &generatorMock{}
-	repo := &repositoryMockCommandService{}
+	repo := &repositoryMock{}
 	repo.On("GetByID", DefaultID).Return(nil, ErrGet)
 	repo.On("Save", mock.Anything).Return(nil)
 
@@ -186,7 +185,7 @@ func TestPullErrorWhenPullCommandService(t *testing.T) {
 		},
 	)
 
-	repo := &repositoryMockCommandService{}
+	repo := &repositoryMock{}
 	repo.On("GetByID", DefaultID).Return(testCommunication, nil)
 	repo.On("Save", mock.Anything).Return(nil)
 
@@ -220,7 +219,7 @@ func TestSaveErrorWhenPullCommandService(t *testing.T) {
 		},
 	)
 
-	repo := &repositoryMockCommandService{}
+	repo := &repositoryMock{}
 	repo.On("GetByID", DefaultID).Return(testCommunication, nil)
 	repo.On("Save", mock.Anything).Return(ErrSave)
 
@@ -233,32 +232,4 @@ func TestSaveErrorWhenPullCommandService(t *testing.T) {
 	a.Len(pub.events, 0)
 
 	a.Equal(ret, ErrSave)
-}
-
-// Commandサービス用リポジトリモック
-type repositoryMockCommandService struct {
-	mock.Mock
-
-	saveCommunications []*Communication
-}
-
-func (rm *repositoryMockCommandService) GetByID(tx txmanager.Tx, id ID) (*Communication, error) {
-	ret := rm.Called(id)
-	var v *Communication
-	if ret.Get(0) == nil {
-		v = nil
-	} else {
-		v = ret.Get(0).(*Communication)
-	}
-	return v, ret.Error(1)
-}
-func (rm *repositoryMockCommandService) Save(tx txmanager.Tx, v *Communication) error {
-	ret := rm.Called(v)
-	if ret.Error(0) == nil {
-		rm.saveCommunications = append(rm.saveCommunications, v)
-	}
-	return ret.Error(0)
-}
-func (rm *repositoryMockCommandService) Delete(tx txmanager.Tx, id ID) error {
-	panic("implement me")
 }

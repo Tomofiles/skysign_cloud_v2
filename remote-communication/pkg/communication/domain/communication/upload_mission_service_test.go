@@ -22,7 +22,7 @@ func TestPushUploadMissionService(t *testing.T) {
 	}
 	testCommunication := NewInstance(gen, DefaultID)
 
-	repo := &repositoryMockCommandService{}
+	repo := &repositoryMock{}
 	repo.On("GetByID", DefaultID).Return(testCommunication, nil)
 	repo.On("Save", mock.Anything).Return(nil)
 
@@ -64,7 +64,7 @@ func TestGetErrorWhenPushUploadMissionService(t *testing.T) {
 	ctx := context.Background()
 
 	gen := &generatorMock{}
-	repo := &repositoryMockCommandService{}
+	repo := &repositoryMock{}
 	repo.On("GetByID", DefaultID).Return(nil, ErrGet)
 	repo.On("Save", mock.Anything).Return(nil)
 
@@ -93,7 +93,7 @@ func TestSaveErrorWhenPushUploadMissionService(t *testing.T) {
 	}
 	testCommunication := NewInstance(gen, DefaultID)
 
-	repo := &repositoryMockCommandService{}
+	repo := &repositoryMock{}
 	repo.On("GetByID", DefaultID).Return(testCommunication, nil)
 	repo.On("Save", mock.Anything).Return(ErrSave)
 
@@ -133,7 +133,7 @@ func TestPullUploadMissionService(t *testing.T) {
 		},
 	)
 
-	repo := &repositoryMockCommandService{}
+	repo := &repositoryMock{}
 	repo.On("GetByID", DefaultID).Return(testCommunication, nil)
 	repo.On("Save", mock.Anything).Return(nil)
 
@@ -168,7 +168,7 @@ func TestGetErrorWhenPullUploadMissionService(t *testing.T) {
 	ctx := context.Background()
 
 	gen := &generatorMock{}
-	repo := &repositoryMockCommandService{}
+	repo := &repositoryMock{}
 	repo.On("GetByID", DefaultID).Return(nil, ErrGet)
 	repo.On("Save", mock.Anything).Return(nil)
 
@@ -214,7 +214,7 @@ func TestPullErrorWhenPullUploadMissionService(t *testing.T) {
 		},
 	)
 
-	repo := &repositoryMockCommandService{}
+	repo := &repositoryMock{}
 	repo.On("GetByID", DefaultID).Return(testCommunication, nil)
 	repo.On("Save", mock.Anything).Return(nil)
 
@@ -255,7 +255,7 @@ func TestSaveErrorWhenPullUploadMissionService(t *testing.T) {
 		},
 	)
 
-	repo := &repositoryMockCommandService{}
+	repo := &repositoryMock{}
 	repo.On("GetByID", DefaultID).Return(testCommunication, nil)
 	repo.On("Save", mock.Anything).Return(ErrSave)
 
