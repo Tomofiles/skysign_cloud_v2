@@ -1,95 +1,78 @@
 package main
 
-// import (
-// 	"context"
-// 	"flag"
-// 	"net"
-// 	"time"
+import (
+	"context"
+	"flag"
+	"net"
+	"time"
 
-// 	cpg "fleet-formation/pkg/common/adapters/postgresql"
-// 	crm "fleet-formation/pkg/common/adapters/rabbitmq"
-// 	cports "fleet-formation/pkg/common/ports"
-// 	frm "fleet-formation/pkg/fleet/adapters/rabbitmq"
-// 	fapp "fleet-formation/pkg/fleet/app"
-// 	fports "fleet-formation/pkg/fleet/ports"
-// 	mrm "fleet-formation/pkg/mission/adapters/rabbitmq"
-// 	mapp "fleet-formation/pkg/mission/app"
-// 	mports "fleet-formation/pkg/mission/ports"
-// 	proto "fleet-formation/pkg/skysign_proto"
-// 	vrm "fleet-formation/pkg/vehicle/adapters/rabbitmq"
-// 	vapp "fleet-formation/pkg/vehicle/app"
-// 	vports "fleet-formation/pkg/vehicle/ports"
+	cpg "remote-communication/pkg/common/adapters/postgresql"
+	crm "remote-communication/pkg/common/adapters/rabbitmq"
+	cports "remote-communication/pkg/common/ports"
+	rrm "remote-communication/pkg/communication/adapters/rabbitmq"
+	rapp "remote-communication/pkg/communication/app"
+	rports "remote-communication/pkg/communication/ports"
+	"remote-communication/pkg/skysign_proto"
 
-// 	"github.com/golang/glog"
-// 	"google.golang.org/grpc"
-// )
+	"github.com/golang/glog"
+	"google.golang.org/grpc"
+)
 
-// var (
-// 	port *string
-// )
+var (
+	port *string
+)
 
-// func run() error {
-// 	ctx := context.Background()
-// 	ctx, cancel := context.WithCancel(ctx)
-// 	defer cancel()
+func run() error {
+	ctx := context.Background()
+	ctx, cancel := context.WithCancel(ctx)
+	defer cancel()
 
-// 	listen, err := net.Listen("tcp", ":"+*port)
-// 	if err != nil {
-// 		return err
-// 	}
-// 	defer listen.Close()
-// 	s := grpc.NewServer(grpc.UnaryInterceptor(cports.LogBodyInterceptor()))
+	listen, err := net.Listen("tcp", ":"+*port)
+	if err != nil {
+		return err
+	}
+	defer listen.Close()
+	s := grpc.NewServer(grpc.UnaryInterceptor(cports.LogBodyInterceptor()))
 
-// 	db, err := cpg.NewPostgresqlConnection()
-// 	if err != nil {
-// 		return err
-// 	}
-// 	txm := cpg.NewGormTransactionManager(db)
+	db, err := cpg.NewPostgresqlConnection()
+	if err != nil {
+		return err
+	}
+	txm := cpg.NewGormTransactionManager(db)
 
-// 	conn, err := crm.NewRabbitMQConnection()
-// 	if err != nil {
-// 		return err
-// 	}
-// 	defer conn.Close()
-// 	psm := crm.NewPubSubManager(conn)
+	conn, err := crm.NewRabbitMQConnection()
+	if err != nil {
+		return err
+	}
+	defer conn.Close()
+	psm := crm.NewPubSubManager(conn)
 
-// 	fleetApp := fapp.NewApplication(ctx, txm, psm)
-// 	vehilceApp := vapp.NewApplication(ctx, txm, psm)
-// 	missionApp := mapp.NewApplication(ctx, txm, psm)
+	communicationApp := rapp.NewApplication(ctx, txm, psm)
 
-// 	fevt := fports.NewEventHandler(fleetApp)
-// 	vevt := vports.NewEventHandler(vehilceApp)
-// 	mevt := mports.NewEventHandler(missionApp)
+	revt := rports.NewEventHandler(communicationApp)
 
-// 	fports.SubscribeEventHandler(ctx, psm, fevt)
-// 	vports.SubscribeEventHandler(ctx, psm, vevt)
-// 	mports.SubscribeEventHandler(ctx, psm, mevt)
+	rports.SubscribeEventHandler(ctx, psm, revt)
 
-// 	frm.SubscribePublishHandler(psm)
-// 	vrm.SubscribePublishHandler(psm)
-// 	mrm.SubscribePublishHandler(psm)
+	rrm.SubscribePublishHandler(psm)
 
-// 	fsvc := fports.NewGrpcServer(fleetApp)
-// 	vsvc := vports.NewGrpcServer(vehilceApp)
-// 	msvc := mports.NewGrpcServer(missionApp)
+	rsvc := rports.NewGrpcServer(communicationApp)
 
-// 	proto.RegisterAssignAssetsToFleetServiceServer(s, &fsvc)
-// 	proto.RegisterManageVehicleServiceServer(s, &vsvc)
-// 	proto.RegisterManageMissionServiceServer(s, &msvc)
+	skysign_proto.RegisterCommunicationUserServiceServer(s, &rsvc)
+	skysign_proto.RegisterCommunicationEdgeServiceServer(s, &rsvc)
 
-// 	glog.Info("start fleet-formation server")
-// 	return s.Serve(listen)
-// }
+	glog.Info("start remote-communication server")
+	return s.Serve(listen)
+}
 
 func main() {
-	// port = flag.String("port", "5001", "fleet-formation port")
-	// flag.Parse()
-	// defer glog.Flush()
+	port = flag.String("port", "5001", "remote-communication port")
+	flag.Parse()
+	defer glog.Flush()
 
-	// for {
-	// 	if err := run(); err != nil {
-	// 		glog.Error(err)
-	// 		time.Sleep(10 * time.Second)
-	// 	}
-	// }
+	for {
+		if err := run(); err != nil {
+			glog.Error(err)
+			time.Sleep(10 * time.Second)
+		}
+	}
 }
