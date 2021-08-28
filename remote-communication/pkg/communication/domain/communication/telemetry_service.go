@@ -14,7 +14,7 @@ func PushTelemetryService(
 	id ID,
 	snapshot TelemetrySnapshot,
 ) ([]CommandID, error) {
-	communication, err := repo.GetByID(gen, id)
+	communication, err := repo.GetByID(tx, id)
 	if err != nil {
 		return []CommandID{}, err
 	}
@@ -39,7 +39,7 @@ func PullTelemetryService(
 	pub event.Publisher,
 	id ID,
 ) (TelemetrySnapshot, error) {
-	communication, err := repo.GetByID(gen, id)
+	communication, err := repo.GetByID(tx, id)
 	if err != nil {
 		return TelemetrySnapshot{}, err
 	}

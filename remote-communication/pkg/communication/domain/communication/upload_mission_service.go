@@ -14,7 +14,7 @@ func PushUploadMissionService(
 	id ID,
 	missionID MissionID,
 ) (CommandID, error) {
-	communication, err := repo.GetByID(gen, id)
+	communication, err := repo.GetByID(tx, id)
 	if err != nil {
 		return "", err
 	}
@@ -37,7 +37,7 @@ func PullUploadMissionService(
 	id ID,
 	commandID CommandID,
 ) (MissionID, error) {
-	communication, err := repo.GetByID(gen, id)
+	communication, err := repo.GetByID(tx, id)
 	if err != nil {
 		return "", err
 	}

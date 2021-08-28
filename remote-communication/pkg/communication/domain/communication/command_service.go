@@ -14,7 +14,7 @@ func PushCommandService(
 	id ID,
 	cType CommandType,
 ) (CommandID, error) {
-	communication, err := repo.GetByID(gen, id)
+	communication, err := repo.GetByID(tx, id)
 	if err != nil {
 		return "", err
 	}
@@ -37,7 +37,7 @@ func PullCommandService(
 	id ID,
 	commandID CommandID,
 ) (CommandType, error) {
-	communication, err := repo.GetByID(gen, id)
+	communication, err := repo.GetByID(tx, id)
 	if err != nil {
 		return "", err
 	}
