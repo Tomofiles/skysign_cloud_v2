@@ -12,6 +12,8 @@ import (
 	rrm "remote-communication/pkg/communication/adapters/rabbitmq"
 	rapp "remote-communication/pkg/communication/app"
 	rports "remote-communication/pkg/communication/ports"
+	mapp "remote-communication/pkg/mission/app"
+	mports "remote-communication/pkg/mission/ports"
 	"remote-communication/pkg/skysign_proto"
 
 	"github.com/golang/glog"
@@ -48,17 +50,22 @@ func run() error {
 	psm := crm.NewPubSubManager(conn)
 
 	communicationApp := rapp.NewApplication(ctx, txm, psm)
+	missionApp := mapp.NewApplication(ctx, txm, psm)
 
 	revt := rports.NewEventHandler(communicationApp)
+	mevt := mports.NewEventHandler(missionApp)
 
 	rports.SubscribeEventHandler(ctx, psm, revt)
+	mports.SubscribeEventHandler(ctx, psm, mevt)
 
 	rrm.SubscribePublishHandler(psm)
 
 	rsvc := rports.NewGrpcServer(communicationApp)
+	msvc := mports.NewGrpcServer(missionApp)
 
 	skysign_proto.RegisterCommunicationUserServiceServer(s, &rsvc)
 	skysign_proto.RegisterCommunicationEdgeServiceServer(s, &rsvc)
+	skysign_proto.RegisterUploadMissionEdgeServiceServer(s, &msvc)
 
 	glog.Info("start remote-communication server")
 	return s.Serve(listen)
