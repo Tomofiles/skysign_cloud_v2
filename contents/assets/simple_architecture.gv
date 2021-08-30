@@ -7,7 +7,7 @@ digraph G {
   HTTPFrontend3 [label="<Flight-Operation>\ngRPC gateway\n[Golang]"];
   HTTPFrontend4 [label="<Collection-Analysis>\ngRPC gateway\n[Golang]"];
 
-  RemoteCommunicationBackend [label="<Remote-Communication>\nbackend\n[Java]"];
+  RemoteCommunicationBackend [label="<Remote-Communication>\nbackend\n[Golang]"];
   FleetFormationBackend [label="<Fleet-Formation>\nbackend\n[Golang]"];
   FlightOperationBackend [label="<Flight-Operation>\nbackend\n[Golang]"];
   CollectionAnalysisBackend [label="<Collection-Analysis>\nbackend\n[Golang]"];

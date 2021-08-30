@@ -29,22 +29,26 @@ spec:
       containers:
       - name: skysign-remote-communication-service-backend
         image: ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com/skysign-cloud-v2:remote-communication_${CIRCLE_SHA1}
-        command: ["java"]
-        args: ["-cp", "app:app/lib/*", "net.tomofiles.skysign.communication.CommunicationApplication"]
+        command: ["/app/remote-communication"]
+        args: ["-logtostderr"]
         env:
-        - name: db.host
+        - name: DB_HOST
           value: "${AWS_RDS_DB_HOST}"
-        - name: db.username
+        - name: DB_USERNAME
           value: "${AWS_RDS_USER_NAME}"
-        - name: db.password
+        - name: DB_PASSWORD
           value: "${AWS_RDS_PASSWORD}"
-        - name: mq.host
+        - name: DB_SSL_ENABLED
+          value: "require"
+        - name: MQ_HOST
           value: "${AWS_AMQ_MQ_HOST}"
-        - name: mq.port
+        - name: MQ_PORT
           value: "${AWS_AMQ_PORT}"
-        - name: mq.username
+        - name: MQ_USERNAME
           value: "${AWS_AMQ_USER_NAME}"
-        - name: mq.password
+        - name: MQ_PASSWORD
           value: "${AWS_AMQ_PASSWORD}"
+        - name: MQ_SSL_ENABLED
+          value: "enable"
         ports:
         - containerPort: 5001
