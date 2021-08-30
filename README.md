@@ -33,7 +33,7 @@ Skysignが提供する各種コンポーネントと、コンポーネント間�
 
 ## アーキテクチャ概要
 ### Overview
-![simple_architecture](https://user-images.githubusercontent.com/27773127/126493119-e463f95a-f7eb-4751-a2be-3763d0cfe6c9.png)
+![simple_architecture](https://user-images.githubusercontent.com/27773127/131324257-7fd131eb-8417-4eb3-be12-1afa306f1752.png)
 
 Skysignは、大きく分けて`Cloud`と`Edge`の2つのコンポーネントから構成されます。
 
@@ -65,8 +65,7 @@ gRPCにて提供されるビジネスロジックと中継するサーバーコ�
 ### Business backend
 Skysignが提供するビジネスロジックおよびエンティティを提供するコンポーネント。
 [Spring Boot](https://spring.io/projects/spring-boot)をベースに、
-DDD(ドメイン駆動設計)を採用したマイクロサービス・アーキテクチャを目指しています。  
-現在、段階的にJavaからGolangに移行中。
+DDD(ドメイン駆動設計)を採用したマイクロサービス・アーキテクチャを目指しています。
 
 ### PostgreSQL (DB)
 ビジネスロジックを支えるエンティティを格納するデータベース。
