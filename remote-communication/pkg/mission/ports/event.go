@@ -58,7 +58,7 @@ type createMissionCommandHolder struct {
 }
 
 func (h *createMissionCommandHolder) GetID() string {
-	return h.event.MissionId
+	return h.event.Mission.Navigation.UploadId
 }
 
 func (h *createMissionCommandHolder) GetWaypoints() []service.Waypoint {
