@@ -5,31 +5,15 @@ import (
 
 	"flight-operation/pkg/flightplan/app"
 	"flight-operation/pkg/flightplan/service"
-	proto "flight-operation/pkg/skysign_proto"
 
-	"github.com/golang/glog"
-	"google.golang.org/grpc"
+	proto "github.com/Tomofiles/skysign_cloud_v2/skysign-proto/pkg/skysign_proto"
 )
-
-// LogBodyInterceptor .
-func LogBodyInterceptor() grpc.UnaryServerInterceptor {
-	return func(ctx context.Context, req interface{}, info *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (resp interface{}, err error) {
-		glog.Infof("REQUEST , API: %s, Message: %+v", info.FullMethod, req)
-		defer func() {
-			if err != nil {
-				glog.Errorf("RESPONSE, API: %s, Error: %+v", info.FullMethod, err)
-			} else {
-				glog.Infof("RESPONSE, API: %s, Message: %+v", info.FullMethod, resp)
-			}
-		}()
-
-		resp, err = handler(ctx, req)
-		return
-	}
-}
 
 // GrpcServer .
 type GrpcServer struct {
+	proto.UnimplementedManageFlightplanServiceServer
+	proto.UnimplementedChangeFlightplanServiceServer
+	proto.UnimplementedExecuteFlightplanServiceServer
 	app app.Application
 }
 

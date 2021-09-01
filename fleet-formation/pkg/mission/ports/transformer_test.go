@@ -2,8 +2,9 @@ package ports
 
 import (
 	m "fleet-formation/pkg/mission/domain/mission"
-	"fleet-formation/pkg/skysign_proto"
 	"testing"
+
+	"github.com/Tomofiles/skysign_cloud_v2/skysign-proto/pkg/skysign_proto"
 
 	"github.com/stretchr/testify/assert"
 )

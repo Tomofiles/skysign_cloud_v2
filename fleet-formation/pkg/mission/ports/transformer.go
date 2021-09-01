@@ -2,7 +2,8 @@ package ports
 
 import (
 	"fleet-formation/pkg/mission/service"
-	proto "fleet-formation/pkg/skysign_proto"
+
+	proto "github.com/Tomofiles/skysign_cloud_v2/skysign-proto/pkg/skysign_proto"
 )
 
 // MissionProtoTransformerFromModel .

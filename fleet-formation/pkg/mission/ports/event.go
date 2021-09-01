@@ -3,7 +3,8 @@ package ports
 import (
 	"context"
 	"fleet-formation/pkg/mission/app"
-	"fleet-formation/pkg/skysign_proto"
+
+	"github.com/Tomofiles/skysign_cloud_v2/skysign-proto/pkg/skysign_proto"
 
 	"github.com/golang/glog"
 	"google.golang.org/protobuf/proto"

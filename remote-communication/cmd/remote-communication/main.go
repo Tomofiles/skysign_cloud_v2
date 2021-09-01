@@ -11,11 +11,12 @@ import (
 	rports "remote-communication/pkg/communication/ports"
 	mapp "remote-communication/pkg/mission/app"
 	mports "remote-communication/pkg/mission/ports"
-	"remote-communication/pkg/skysign_proto"
 
 	cpg "github.com/Tomofiles/skysign_cloud_v2/skysign-common/pkg/common/adapters/postgresql"
 	crm "github.com/Tomofiles/skysign_cloud_v2/skysign-common/pkg/common/adapters/rabbitmq"
 	cports "github.com/Tomofiles/skysign_cloud_v2/skysign-common/pkg/common/ports"
+
+	"github.com/Tomofiles/skysign_cloud_v2/skysign-proto/pkg/skysign_proto"
 
 	"github.com/golang/glog"
 	"google.golang.org/grpc"

@@ -12,10 +12,11 @@ import (
 	mrm "fleet-formation/pkg/mission/adapters/rabbitmq"
 	mapp "fleet-formation/pkg/mission/app"
 	mports "fleet-formation/pkg/mission/ports"
-	proto "fleet-formation/pkg/skysign_proto"
 	vrm "fleet-formation/pkg/vehicle/adapters/rabbitmq"
 	vapp "fleet-formation/pkg/vehicle/app"
 	vports "fleet-formation/pkg/vehicle/ports"
+
+	proto "github.com/Tomofiles/skysign_cloud_v2/skysign-proto/pkg/skysign_proto"
 
 	cpg "github.com/Tomofiles/skysign_cloud_v2/skysign-common/pkg/common/adapters/postgresql"
 	crm "github.com/Tomofiles/skysign_cloud_v2/skysign-common/pkg/common/adapters/rabbitmq"

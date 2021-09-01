@@ -14,7 +14,8 @@ import (
 	fplports "flight-operation/pkg/flightplan/ports"
 	frepapp "flight-operation/pkg/flightreport/app"
 	frepports "flight-operation/pkg/flightreport/ports"
-	proto "flight-operation/pkg/skysign_proto"
+
+	proto "github.com/Tomofiles/skysign_cloud_v2/skysign-proto/pkg/skysign_proto"
 
 	cpg "github.com/Tomofiles/skysign_cloud_v2/skysign-common/pkg/common/adapters/postgresql"
 	crm "github.com/Tomofiles/skysign_cloud_v2/skysign-common/pkg/common/adapters/rabbitmq"

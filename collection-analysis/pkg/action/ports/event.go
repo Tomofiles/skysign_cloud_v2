@@ -2,8 +2,9 @@ package ports
 
 import (
 	"collection-analysis/pkg/action/app"
-	"collection-analysis/pkg/skysign_proto"
 	"context"
+
+	"github.com/Tomofiles/skysign_cloud_v2/skysign-proto/pkg/skysign_proto"
 
 	"github.com/golang/glog"
 	"google.golang.org/protobuf/proto"

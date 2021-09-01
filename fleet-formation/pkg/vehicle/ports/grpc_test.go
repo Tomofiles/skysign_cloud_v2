@@ -1,9 +1,10 @@
 package ports
 
 import (
-	proto "fleet-formation/pkg/skysign_proto"
 	"fleet-formation/pkg/vehicle/app"
 	"testing"
+
+	proto "github.com/Tomofiles/skysign_cloud_v2/skysign-proto/pkg/skysign_proto"
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
