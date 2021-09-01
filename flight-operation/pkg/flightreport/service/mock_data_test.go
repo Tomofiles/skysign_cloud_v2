@@ -1,9 +1,10 @@
 package service
 
 import (
-	"flight-operation/pkg/common/domain/event"
-	"flight-operation/pkg/common/domain/txmanager"
 	frep "flight-operation/pkg/flightreport/domain/flightreport"
+
+	"github.com/Tomofiles/skysign_cloud_v2/skysign-common/pkg/common/domain/event"
+	"github.com/Tomofiles/skysign_cloud_v2/skysign-common/pkg/common/domain/txmanager"
 
 	"github.com/stretchr/testify/mock"
 )

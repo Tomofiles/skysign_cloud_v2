@@ -2,8 +2,9 @@ package rabbitmq
 
 import (
 	"context"
-	crm "remote-communication/pkg/common/adapters/rabbitmq"
 	"remote-communication/pkg/communication/domain/communication"
+
+	crm "github.com/Tomofiles/skysign_cloud_v2/skysign-common/pkg/common/adapters/rabbitmq"
 
 	"github.com/stretchr/testify/mock"
 )

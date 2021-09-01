@@ -2,10 +2,6 @@ package postgresql
 
 import (
 	m "fleet-formation/pkg/mission/domain/mission"
-
-	sqlmock "github.com/DATA-DOG/go-sqlmock"
-	"gorm.io/driver/postgres"
-	"gorm.io/gorm"
 )
 
 const DefaultMissionID = m.ID("mission-id")
@@ -13,25 +9,6 @@ const DefaultMissionVersion = m.Version("version")
 const DefaultMissionName = "mission-name"
 const DefaultMissionTakeoffPointGroundHeightWGS84EllipsoidM float64 = 10
 const DefaultMissionUploadID = m.UploadID("upload-id")
-
-func GetNewDbMock() (*gorm.DB, sqlmock.Sqlmock, error) {
-	db, mock, err := sqlmock.New()
-	if err != nil {
-		return nil, nil, err
-	}
-
-	gormDB, err := gorm.Open(
-		postgres.New(
-			postgres.Config{
-				Conn: db,
-			}), &gorm.Config{})
-
-	if err != nil {
-		return nil, nil, err
-	}
-
-	return gormDB, mock, nil
-}
 
 // Mission構成オブジェクトモック
 type missionComponentMock struct {

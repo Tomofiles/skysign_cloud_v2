@@ -1,8 +1,9 @@
 package postgresql
 
 import (
-	"remote-communication/pkg/common/domain/txmanager"
 	m "remote-communication/pkg/mission/domain/mission"
+
+	"github.com/Tomofiles/skysign_cloud_v2/skysign-common/pkg/common/domain/txmanager"
 
 	"gorm.io/gorm"
 )

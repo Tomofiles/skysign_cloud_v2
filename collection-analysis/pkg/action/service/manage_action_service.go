@@ -2,7 +2,8 @@ package service
 
 import (
 	"collection-analysis/pkg/action/domain/action"
-	"collection-analysis/pkg/common/domain/txmanager"
+
+	"github.com/Tomofiles/skysign_cloud_v2/skysign-common/pkg/common/domain/txmanager"
 )
 
 // ManageActionService .

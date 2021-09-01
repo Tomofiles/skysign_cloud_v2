@@ -1,9 +1,10 @@
 package rabbitmq
 
 import (
-	crm "flight-operation/pkg/common/adapters/rabbitmq"
 	fope "flight-operation/pkg/flightoperation/domain/flightoperation"
 	"flight-operation/pkg/skysign_proto"
+
+	crm "github.com/Tomofiles/skysign_cloud_v2/skysign-common/pkg/common/adapters/rabbitmq"
 
 	"github.com/golang/glog"
 	"google.golang.org/protobuf/proto"

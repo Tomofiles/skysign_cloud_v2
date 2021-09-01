@@ -1,8 +1,9 @@
 package rabbitmq
 
 import (
-	"collection-analysis/pkg/common/domain/event"
 	"context"
+
+	"github.com/Tomofiles/skysign_cloud_v2/skysign-common/pkg/common/domain/event"
 )
 
 // PublishHandler .

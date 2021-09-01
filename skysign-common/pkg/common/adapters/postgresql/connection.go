@@ -9,18 +9,19 @@ import (
 	"gorm.io/gorm"
 )
 
-const dsnTemplate = "host=%s user=%s password=%s dbname=remote-communication port=%s sslmode=%s"
+const dsnTemplate = "host=%s user=%s password=%s dbname=%s port=%s sslmode=%s"
 
 var (
 	host     = "localhost"
 	user     = "tomofiles"
 	password = "pc+tomofiles"
+	dbname   = "##dbname##"
 	port     = "5432"
 	sslmode  = "disable"
 )
 
 // NewPostgresqlConnection .
-func NewPostgresqlConnection() (*gorm.DB, error) {
+func NewPostgresqlConnection(paramDbname string) (*gorm.DB, error) {
 	if envHost := os.Getenv("DB_HOST"); envHost != "" {
 		host = envHost
 	}
@@ -37,7 +38,9 @@ func NewPostgresqlConnection() (*gorm.DB, error) {
 		sslmode = envSslmode
 	}
 
-	dsn := fmt.Sprintf(dsnTemplate, host, user, password, port, sslmode)
+	dbname = paramDbname
+
+	dsn := fmt.Sprintf(dsnTemplate, host, user, password, dbname, port, sslmode)
 
 	db, err := gorm.Open(
 		postgres.Open(dsn),

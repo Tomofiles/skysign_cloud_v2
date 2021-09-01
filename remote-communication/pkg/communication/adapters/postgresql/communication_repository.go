@@ -1,9 +1,10 @@
 package postgresql
 
 import (
-	"remote-communication/pkg/common/domain/txmanager"
 	c "remote-communication/pkg/communication/domain/communication"
 	"time"
+
+	"github.com/Tomofiles/skysign_cloud_v2/skysign-common/pkg/common/domain/txmanager"
 
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"

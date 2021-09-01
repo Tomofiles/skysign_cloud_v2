@@ -1,8 +1,8 @@
 package communication
 
 import (
-	"remote-communication/pkg/common/domain/event"
-	"remote-communication/pkg/common/domain/txmanager"
+	"github.com/Tomofiles/skysign_cloud_v2/skysign-common/pkg/common/domain/event"
+	"github.com/Tomofiles/skysign_cloud_v2/skysign-common/pkg/common/domain/txmanager"
 )
 
 // PushUploadMissionService .

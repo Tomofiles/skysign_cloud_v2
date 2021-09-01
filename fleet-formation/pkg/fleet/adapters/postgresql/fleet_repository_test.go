@@ -6,6 +6,8 @@ import (
 	"regexp"
 	"testing"
 
+	"github.com/Tomofiles/skysign_cloud_v2/skysign-common/pkg/common/adapters/postgresql"
+
 	sqlmock "github.com/DATA-DOG/go-sqlmock"
 	"github.com/stretchr/testify/assert"
 )
@@ -13,7 +15,7 @@ import (
 func TestFleetRepositoryGetByID(t *testing.T) {
 	a := assert.New(t)
 
-	db, mock, err := GetNewDbMock()
+	db, mock, err := postgresql.GetNewDbMock()
 	if err != nil {
 		t.Errorf("failed to initialize mock DB: %v", err)
 		return
@@ -83,7 +85,7 @@ func TestFleetRepositoryGetByID(t *testing.T) {
 func TestFleetRepositoryNotFoundWhenGetByID(t *testing.T) {
 	a := assert.New(t)
 
-	db, mock, err := GetNewDbMock()
+	db, mock, err := postgresql.GetNewDbMock()
 	if err != nil {
 		t.Errorf("failed to initialize mock DB: %v", err)
 		return
@@ -109,7 +111,7 @@ func TestFleetRepositoryNotFoundWhenGetByID(t *testing.T) {
 func TestFleetRepositorySingleDataCreateSave(t *testing.T) {
 	a := assert.New(t)
 
-	db, mock, err := GetNewDbMock()
+	db, mock, err := postgresql.GetNewDbMock()
 	if err != nil {
 		t.Errorf("failed to initialize mock DB: %v", err)
 		return
@@ -185,7 +187,7 @@ func TestFleetRepositorySingleDataCreateSave(t *testing.T) {
 func TestFleetRepositoryNoneDataCreateSave(t *testing.T) {
 	a := assert.New(t)
 
-	db, mock, err := GetNewDbMock()
+	db, mock, err := postgresql.GetNewDbMock()
 	if err != nil {
 		t.Errorf("failed to initialize mock DB: %v", err)
 		return
@@ -228,7 +230,7 @@ func TestFleetRepositoryNoneDataCreateSave(t *testing.T) {
 func TestFleetRepositoryMultipleDataCreateSave(t *testing.T) {
 	a := assert.New(t)
 
-	db, mock, err := GetNewDbMock()
+	db, mock, err := postgresql.GetNewDbMock()
 	if err != nil {
 		t.Errorf("failed to initialize mock DB: %v", err)
 		return
@@ -354,7 +356,7 @@ func TestFleetRepositoryMultipleDataCreateSave(t *testing.T) {
 func TestFleetRepositorySingleDataUpdateSave(t *testing.T) {
 	a := assert.New(t)
 
-	db, mock, err := GetNewDbMock()
+	db, mock, err := postgresql.GetNewDbMock()
 	if err != nil {
 		t.Errorf("failed to initialize mock DB: %v", err)
 		return
@@ -447,7 +449,7 @@ func TestFleetRepositorySingleDataUpdateSave(t *testing.T) {
 func TestFleetRepositoryNoneDataUpdateSave(t *testing.T) {
 	a := assert.New(t)
 
-	db, mock, err := GetNewDbMock()
+	db, mock, err := postgresql.GetNewDbMock()
 	if err != nil {
 		t.Errorf("failed to initialize mock DB: %v", err)
 		return
@@ -507,7 +509,7 @@ func TestFleetRepositoryNoneDataUpdateSave(t *testing.T) {
 func TestFleetRepositoryMultipleDataUpdateSave(t *testing.T) {
 	a := assert.New(t)
 
-	db, mock, err := GetNewDbMock()
+	db, mock, err := postgresql.GetNewDbMock()
 	if err != nil {
 		t.Errorf("failed to initialize mock DB: %v", err)
 		return
@@ -650,7 +652,7 @@ func TestFleetRepositoryMultipleDataUpdateSave(t *testing.T) {
 func TestFleetRepositoryDelete(t *testing.T) {
 	a := assert.New(t)
 
-	db, mock, err := GetNewDbMock()
+	db, mock, err := postgresql.GetNewDbMock()
 	if err != nil {
 		t.Errorf("failed to initialize mock DB: %v", err)
 		return
@@ -700,7 +702,7 @@ func TestFleetRepositoryDelete(t *testing.T) {
 func TestFleetRepositoryNotFoundWhenDelete(t *testing.T) {
 	a := assert.New(t)
 
-	db, mock, err := GetNewDbMock()
+	db, mock, err := postgresql.GetNewDbMock()
 	if err != nil {
 		t.Errorf("failed to initialize mock DB: %v", err)
 		return

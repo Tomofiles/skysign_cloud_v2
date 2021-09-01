@@ -2,8 +2,9 @@ package communication
 
 import (
 	"errors"
-	"remote-communication/pkg/common/domain/txmanager"
 	"time"
+
+	"github.com/Tomofiles/skysign_cloud_v2/skysign-common/pkg/common/domain/txmanager"
 
 	"github.com/stretchr/testify/mock"
 )

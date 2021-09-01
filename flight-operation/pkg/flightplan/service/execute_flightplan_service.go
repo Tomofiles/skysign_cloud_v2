@@ -1,9 +1,10 @@
 package service
 
 import (
-	"flight-operation/pkg/common/domain/event"
-	"flight-operation/pkg/common/domain/txmanager"
 	f "flight-operation/pkg/flightplan/domain/flightplan"
+
+	"github.com/Tomofiles/skysign_cloud_v2/skysign-common/pkg/common/domain/event"
+	"github.com/Tomofiles/skysign_cloud_v2/skysign-common/pkg/common/domain/txmanager"
 )
 
 // ExecuteFlightplanService .

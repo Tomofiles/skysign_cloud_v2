@@ -2,8 +2,9 @@ package postgresql
 
 import (
 	"errors"
-	"remote-communication/pkg/common/domain/txmanager"
 	"testing"
+
+	"github.com/Tomofiles/skysign_cloud_v2/skysign-common/pkg/common/domain/txmanager"
 
 	"github.com/stretchr/testify/assert"
 	"gorm.io/gorm"

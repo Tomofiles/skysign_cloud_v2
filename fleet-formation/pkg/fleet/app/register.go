@@ -2,11 +2,12 @@ package app
 
 import (
 	"context"
-	"fleet-formation/pkg/common/domain/event"
-	"fleet-formation/pkg/common/domain/txmanager"
 	"fleet-formation/pkg/fleet/adapters/postgresql"
 	"fleet-formation/pkg/fleet/adapters/uuid"
 	"fleet-formation/pkg/fleet/service"
+
+	"github.com/Tomofiles/skysign_cloud_v2/skysign-common/pkg/common/domain/event"
+	"github.com/Tomofiles/skysign_cloud_v2/skysign-common/pkg/common/domain/txmanager"
 )
 
 // NewApplication .

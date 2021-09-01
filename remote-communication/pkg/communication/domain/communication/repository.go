@@ -2,7 +2,8 @@ package communication
 
 import (
 	"errors"
-	"remote-communication/pkg/common/domain/txmanager"
+
+	"github.com/Tomofiles/skysign_cloud_v2/skysign-common/pkg/common/domain/txmanager"
 )
 
 var (

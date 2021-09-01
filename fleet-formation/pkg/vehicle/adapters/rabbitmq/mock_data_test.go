@@ -2,8 +2,9 @@ package rabbitmq
 
 import (
 	"context"
-	crm "fleet-formation/pkg/common/adapters/rabbitmq"
 	v "fleet-formation/pkg/vehicle/domain/vehicle"
+
+	crm "github.com/Tomofiles/skysign_cloud_v2/skysign-common/pkg/common/adapters/rabbitmq"
 
 	"github.com/stretchr/testify/mock"
 )

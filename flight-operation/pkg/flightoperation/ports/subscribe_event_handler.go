@@ -2,7 +2,8 @@ package ports
 
 import (
 	"context"
-	"flight-operation/pkg/common/ports"
+
+	"github.com/Tomofiles/skysign_cloud_v2/skysign-common/pkg/common/ports"
 
 	"github.com/golang/glog"
 )

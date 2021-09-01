@@ -2,8 +2,9 @@ package vehicle
 
 import (
 	"context"
-	"fleet-formation/pkg/common/domain/txmanager"
 	"testing"
+
+	"github.com/Tomofiles/skysign_cloud_v2/skysign-common/pkg/common/domain/txmanager"
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"

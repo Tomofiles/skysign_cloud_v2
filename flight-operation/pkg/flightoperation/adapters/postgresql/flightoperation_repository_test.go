@@ -6,6 +6,8 @@ import (
 	"regexp"
 	"testing"
 
+	"github.com/Tomofiles/skysign_cloud_v2/skysign-common/pkg/common/adapters/postgresql"
+
 	sqlmock "github.com/DATA-DOG/go-sqlmock"
 	"github.com/stretchr/testify/assert"
 )
@@ -13,7 +15,7 @@ import (
 func TestFlightoperationRepositoryGetSingleWhenGetAll(t *testing.T) {
 	a := assert.New(t)
 
-	db, mock, err := GetNewDbMock()
+	db, mock, err := postgresql.GetNewDbMock()
 	if err != nil {
 		t.Errorf("failed to initialize mock DB: %v", err)
 		return
@@ -54,7 +56,7 @@ func TestFlightoperationRepositoryGetSingleWhenGetAll(t *testing.T) {
 func TestFlightoperationRepositoryGetMultipleWhenGetAll(t *testing.T) {
 	a := assert.New(t)
 
-	db, mock, err := GetNewDbMock()
+	db, mock, err := postgresql.GetNewDbMock()
 	if err != nil {
 		t.Errorf("failed to initialize mock DB: %v", err)
 		return
@@ -137,7 +139,7 @@ func TestFlightoperationRepositoryGetMultipleWhenGetAll(t *testing.T) {
 func TestFlightoperationRepositoryGetNoneWhenGetAll(t *testing.T) {
 	a := assert.New(t)
 
-	db, mock, err := GetNewDbMock()
+	db, mock, err := postgresql.GetNewDbMock()
 	if err != nil {
 		t.Errorf("failed to initialize mock DB: %v", err)
 		return
@@ -165,7 +167,7 @@ func TestFlightoperationRepositoryGetNoneWhenGetAll(t *testing.T) {
 func TestFlightoperationRepositoryGetSingleWhenGetAllOperating(t *testing.T) {
 	a := assert.New(t)
 
-	db, mock, err := GetNewDbMock()
+	db, mock, err := postgresql.GetNewDbMock()
 	if err != nil {
 		t.Errorf("failed to initialize mock DB: %v", err)
 		return
@@ -206,7 +208,7 @@ func TestFlightoperationRepositoryGetSingleWhenGetAllOperating(t *testing.T) {
 func TestFlightoperationRepositoryGetMultipleWhenGetAllOperating(t *testing.T) {
 	a := assert.New(t)
 
-	db, mock, err := GetNewDbMock()
+	db, mock, err := postgresql.GetNewDbMock()
 	if err != nil {
 		t.Errorf("failed to initialize mock DB: %v", err)
 		return
@@ -289,7 +291,7 @@ func TestFlightoperationRepositoryGetMultipleWhenGetAllOperating(t *testing.T) {
 func TestFlightoperationRepositoryGetNoneWhenGetAllOperating(t *testing.T) {
 	a := assert.New(t)
 
-	db, mock, err := GetNewDbMock()
+	db, mock, err := postgresql.GetNewDbMock()
 	if err != nil {
 		t.Errorf("failed to initialize mock DB: %v", err)
 		return
@@ -317,7 +319,7 @@ func TestFlightoperationRepositoryGetNoneWhenGetAllOperating(t *testing.T) {
 func TestFlightoperationRepositoryGetByID(t *testing.T) {
 	a := assert.New(t)
 
-	db, mock, err := GetNewDbMock()
+	db, mock, err := postgresql.GetNewDbMock()
 	if err != nil {
 		t.Errorf("failed to initialize mock DB: %v", err)
 		return
@@ -356,7 +358,7 @@ func TestFlightoperationRepositoryGetByID(t *testing.T) {
 func TestFlightoperationRepositoryNotFoundWhenGetByID(t *testing.T) {
 	a := assert.New(t)
 
-	db, mock, err := GetNewDbMock()
+	db, mock, err := postgresql.GetNewDbMock()
 	if err != nil {
 		t.Errorf("failed to initialize mock DB: %v", err)
 		return
@@ -382,7 +384,7 @@ func TestFlightoperationRepositoryNotFoundWhenGetByID(t *testing.T) {
 func TestFlightoperationRepositoryCreateSave(t *testing.T) {
 	a := assert.New(t)
 
-	db, mock, err := GetNewDbMock()
+	db, mock, err := postgresql.GetNewDbMock()
 	if err != nil {
 		t.Errorf("failed to initialize mock DB: %v", err)
 		return
@@ -427,7 +429,7 @@ func TestFlightoperationRepositoryCreateSave(t *testing.T) {
 func TestFlightoperationRepositoryUpdateSave(t *testing.T) {
 	a := assert.New(t)
 
-	db, mock, err := GetNewDbMock()
+	db, mock, err := postgresql.GetNewDbMock()
 	if err != nil {
 		t.Errorf("failed to initialize mock DB: %v", err)
 		return

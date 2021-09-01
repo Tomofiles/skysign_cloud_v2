@@ -6,9 +6,6 @@ import (
 	"net"
 	"time"
 
-	cpg "fleet-formation/pkg/common/adapters/postgresql"
-	crm "fleet-formation/pkg/common/adapters/rabbitmq"
-	cports "fleet-formation/pkg/common/ports"
 	frm "fleet-formation/pkg/fleet/adapters/rabbitmq"
 	fapp "fleet-formation/pkg/fleet/app"
 	fports "fleet-formation/pkg/fleet/ports"
@@ -19,6 +16,10 @@ import (
 	vrm "fleet-formation/pkg/vehicle/adapters/rabbitmq"
 	vapp "fleet-formation/pkg/vehicle/app"
 	vports "fleet-formation/pkg/vehicle/ports"
+
+	cpg "github.com/Tomofiles/skysign_cloud_v2/skysign-common/pkg/common/adapters/postgresql"
+	crm "github.com/Tomofiles/skysign_cloud_v2/skysign-common/pkg/common/adapters/rabbitmq"
+	cports "github.com/Tomofiles/skysign_cloud_v2/skysign-common/pkg/common/ports"
 
 	"github.com/golang/glog"
 	"google.golang.org/grpc"
@@ -40,7 +41,7 @@ func run() error {
 	defer listen.Close()
 	s := grpc.NewServer(grpc.UnaryInterceptor(cports.LogBodyInterceptor()))
 
-	db, err := cpg.NewPostgresqlConnection()
+	db, err := cpg.NewPostgresqlConnection("fleet-formation")
 	if err != nil {
 		return err
 	}
