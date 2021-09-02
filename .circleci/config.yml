@@ -12,6 +12,35 @@ slack-fail-post-step: &slack-fail-post-step
           fail_only: true
 
 jobs:
+  build_and_test_common:
+    working_directory: ~/skysign-common
+    docker:
+      - image: circleci/golang:1.13
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - go-mod-skysign-common-{{ checksum "skysign-common/go.sum" }}
+      - run:
+          name: Install Dependencies
+          command: |
+            cd skysign-common
+            make dependency
+      - save_cache:
+          key: go-mod-skysign-common-{{ checksum "skysign-common/go.sum" }}
+          paths:
+            - "/go/pkg/mod"
+      - run:
+          name: Run builds
+          command: |
+            cd skysign-common
+            make build-test
+      - run:
+          name: Run unit-tests
+          command: |
+            cd skysign-common
+            make unit-test
+
   build_and_test_http-gateway:
     working_directory: ~/http-gateway
     docker:
@@ -351,6 +380,11 @@ jobs:
 workflows:
   skysign-cicd-workflow:
     jobs:
+      - build_and_test_common:
+          filters:
+            branches:
+              ignore: master
+          <<: *slack-fail-post-step
       - build_and_test_http-gateway:
           filters:
             branches:
@@ -393,6 +427,7 @@ workflows:
       #     <<: *slack-fail-post-step
       - notify-slack:
           requires:
+            - build_and_test_common
             - build_and_test_http-gateway
             - build_and_test_helper-api
             - build_and_test_remote-communication
