@@ -12,241 +12,251 @@ slack-fail-post-step: &slack-fail-post-step
           fail_only: true
 
 jobs:
-  build_and_test_http_gateway:
-    executor: aws-ecr/default
-    steps:
-      - aws-ecr/build-image:
-          region: AWS_DEFAULT_REGION
-          account-url: AWS_ACCOUNT_URL
-          aws-access-key-id: AWS_ACCESS_KEY_ID
-          aws-secret-access-key: AWS_SECRET_ACCESS_KEY
-          repo: ${AWS_RESOURCE_NAME_PREFIX}
-          tag: "http-gateway_${CIRCLE_SHA1}"
-          checkout: true
-          path: ./http-gateway
+  # build_and_test_http_gateway:
+  #   executor: aws-ecr/default
+  #   steps:
+  #     - aws-ecr/build-image:
+  #         region: AWS_DEFAULT_REGION
+  #         account-url: AWS_ACCOUNT_URL
+  #         aws-access-key-id: AWS_ACCESS_KEY_ID
+  #         aws-secret-access-key: AWS_SECRET_ACCESS_KEY
+  #         repo: ${AWS_RESOURCE_NAME_PREFIX}
+  #         tag: "http-gateway_${CIRCLE_SHA1}"
+  #         checkout: true
+  #         path: ./http-gateway
 
-  build_and_test_helper_api:
-    executor: aws-ecr/default
-    steps:
-      - aws-ecr/build-image:
-          region: AWS_DEFAULT_REGION
-          account-url: AWS_ACCOUNT_URL
-          aws-access-key-id: AWS_ACCESS_KEY_ID
-          aws-secret-access-key: AWS_SECRET_ACCESS_KEY
-          repo: ${AWS_RESOURCE_NAME_PREFIX}
-          tag: "helper-api_${CIRCLE_SHA1}"
-          checkout: true
-          path: ./helper-api
+  # build_and_test_helper_api:
+  #   executor: aws-ecr/default
+  #   steps:
+  #     - aws-ecr/build-image:
+  #         region: AWS_DEFAULT_REGION
+  #         account-url: AWS_ACCOUNT_URL
+  #         aws-access-key-id: AWS_ACCESS_KEY_ID
+  #         aws-secret-access-key: AWS_SECRET_ACCESS_KEY
+  #         repo: ${AWS_RESOURCE_NAME_PREFIX}
+  #         tag: "helper-api_${CIRCLE_SHA1}"
+  #         checkout: true
+  #         path: ./helper-api
 
   build_and_test_remote-communication:
-    executor: aws-ecr/default
-    steps:
-      - aws-ecr/build-image:
-          region: AWS_DEFAULT_REGION
-          account-url: AWS_ACCOUNT_URL
-          aws-access-key-id: AWS_ACCESS_KEY_ID
-          aws-secret-access-key: AWS_SECRET_ACCESS_KEY
-          repo: ${AWS_RESOURCE_NAME_PREFIX}
-          tag: "remote-communication_${CIRCLE_SHA1}"
-          checkout: true
-          path: ./remote-communication
-
-  build_and_test_fleet-formation:
-    executor: aws-ecr/default
-    steps:
-      - aws-ecr/build-image:
-          region: AWS_DEFAULT_REGION
-          account-url: AWS_ACCOUNT_URL
-          aws-access-key-id: AWS_ACCESS_KEY_ID
-          aws-secret-access-key: AWS_SECRET_ACCESS_KEY
-          repo: ${AWS_RESOURCE_NAME_PREFIX}
-          tag: "fleet-formation_${CIRCLE_SHA1}"
-          checkout: true
-          path: ./fleet-formation
-
-  build_and_test_flight-operation:
-    executor: aws-ecr/default
-    steps:
-      - aws-ecr/build-image:
-          region: AWS_DEFAULT_REGION
-          account-url: AWS_ACCOUNT_URL
-          aws-access-key-id: AWS_ACCESS_KEY_ID
-          aws-secret-access-key: AWS_SECRET_ACCESS_KEY
-          repo: ${AWS_RESOURCE_NAME_PREFIX}
-          tag: "flight-operation_${CIRCLE_SHA1}"
-          checkout: true
-          path: ./flight-operation
-
-  build_and_test_collection-analysis:
-    executor: aws-ecr/default
-    steps:
-      - aws-ecr/build-image:
-          region: AWS_DEFAULT_REGION
-          account-url: AWS_ACCOUNT_URL
-          aws-access-key-id: AWS_ACCESS_KEY_ID
-          aws-secret-access-key: AWS_SECRET_ACCESS_KEY
-          repo: ${AWS_RESOURCE_NAME_PREFIX}
-          tag: "collection-analysis_${CIRCLE_SHA1}"
-          checkout: true
-          path: ./collection-analysis
-
-  build_and_test_client:
-    executor: aws-ecr/default
-    steps:
-      - aws-ecr/build-image:
-          region: AWS_DEFAULT_REGION
-          account-url: AWS_ACCOUNT_URL
-          aws-access-key-id: AWS_ACCESS_KEY_ID
-          aws-secret-access-key: AWS_SECRET_ACCESS_KEY
-          repo: ${AWS_RESOURCE_NAME_PREFIX}
-          tag: "client_${CIRCLE_SHA1}"
-          checkout: true
-          path: ./client
-          extra-build-args: "--build-arg CESIUM_KEY=${CESIUM_KEY}"
-
-  build_and_test_edge:
-    executor: aws-ecr/default
-    steps:
-      - aws-ecr/build-image:
-          region: AWS_DEFAULT_REGION
-          account-url: AWS_ACCOUNT_URL
-          aws-access-key-id: AWS_ACCESS_KEY_ID
-          aws-secret-access-key: AWS_SECRET_ACCESS_KEY
-          repo: ${AWS_RESOURCE_NAME_PREFIX}
-          tag: "edge_${CIRCLE_SHA1}"
-          checkout: true
-          path: ./edge
-
-  build_and_push_http_gateway:
-    executor: aws-ecr/default
-    steps:
-      - aws-ecr/build-and-push-image:
-          region: AWS_DEFAULT_REGION
-          account-url: AWS_ACCOUNT_URL
-          aws-access-key-id: AWS_ACCESS_KEY_ID
-          aws-secret-access-key: AWS_SECRET_ACCESS_KEY
-          repo: ${AWS_RESOURCE_NAME_PREFIX}
-          tag: "http-gateway_${CIRCLE_SHA1}"
-          path: ./http-gateway
-
-  build_and_push_helper_api:
-    executor: aws-ecr/default
-    steps:
-      - aws-ecr/build-and-push-image:
-          region: AWS_DEFAULT_REGION
-          account-url: AWS_ACCOUNT_URL
-          aws-access-key-id: AWS_ACCESS_KEY_ID
-          aws-secret-access-key: AWS_SECRET_ACCESS_KEY
-          repo: ${AWS_RESOURCE_NAME_PREFIX}
-          tag: "helper-api_${CIRCLE_SHA1}"
-          path: ./helper-api
-
-  build_and_push_remote-communication:
-    executor: aws-ecr/default
-    steps:
-      - aws-ecr/build-and-push-image:
-          region: AWS_DEFAULT_REGION
-          account-url: AWS_ACCOUNT_URL
-          aws-access-key-id: AWS_ACCESS_KEY_ID
-          aws-secret-access-key: AWS_SECRET_ACCESS_KEY
-          repo: ${AWS_RESOURCE_NAME_PREFIX}
-          tag: "remote-communication_${CIRCLE_SHA1}"
-          path: ./remote-communication
-
-  build_and_push_fleet-formation:
-    executor: aws-ecr/default
-    steps:
-      - aws-ecr/build-and-push-image:
-          region: AWS_DEFAULT_REGION
-          account-url: AWS_ACCOUNT_URL
-          aws-access-key-id: AWS_ACCESS_KEY_ID
-          aws-secret-access-key: AWS_SECRET_ACCESS_KEY
-          repo: ${AWS_RESOURCE_NAME_PREFIX}
-          tag: "fleet-formation_${CIRCLE_SHA1}"
-          path: ./fleet-formation
-
-  build_and_push_flight-operation:
-    executor: aws-ecr/default
-    steps:
-      - aws-ecr/build-and-push-image:
-          region: AWS_DEFAULT_REGION
-          account-url: AWS_ACCOUNT_URL
-          aws-access-key-id: AWS_ACCESS_KEY_ID
-          aws-secret-access-key: AWS_SECRET_ACCESS_KEY
-          repo: ${AWS_RESOURCE_NAME_PREFIX}
-          tag: "flight-operation_${CIRCLE_SHA1}"
-          path: ./flight-operation
-
-  build_and_push_collection-analysis:
-    executor: aws-ecr/default
-    steps:
-      - aws-ecr/build-and-push-image:
-          region: AWS_DEFAULT_REGION
-          account-url: AWS_ACCOUNT_URL
-          aws-access-key-id: AWS_ACCESS_KEY_ID
-          aws-secret-access-key: AWS_SECRET_ACCESS_KEY
-          repo: ${AWS_RESOURCE_NAME_PREFIX}
-          tag: "collection-analysis_${CIRCLE_SHA1}"
-          path: ./collection-analysis
-
-  build_and_push_client:
-    executor: aws-ecr/default
-    steps:
-      - aws-ecr/build-and-push-image:
-          region: AWS_DEFAULT_REGION
-          account-url: AWS_ACCOUNT_URL
-          aws-access-key-id: AWS_ACCESS_KEY_ID
-          aws-secret-access-key: AWS_SECRET_ACCESS_KEY
-          repo: ${AWS_RESOURCE_NAME_PREFIX}
-          tag: "client_${CIRCLE_SHA1}"
-          path: ./client
-          extra-build-args: "--build-arg CESIUM_KEY=${CESIUM_KEY}"
-
-  create_pull_request:
+    working_directory: ~/remote-communication
     docker:
-      - image: circleci/python:3.7.4-stretch
+      - image: circleci/golang:1.13
     steps:
       - checkout
       - run:
-          name: install envsubst
-          command: |
-            sudo apt-get install -qq -y gettext
+          name: Change directory
+          command: cd remote-communication
+      - restore_cache:
+          keys:
+            - go-mod-remote-communication-{{ checksum "go.sum" }}
       - run:
-          name: git clone
-          command: |
-            git config --global user.name tomofiles-circleci
-            git config --global user.email tomofiles-circleci@email.com
-            git clone git@github.com:Tomofiles/${SKYSIGN_CONFIG_REPO}.git
+          name: Install Dependencies
+          command: make dependency
+      - save_cache:
+          key: go-mod-remote-communication-{{ checksum "go.sum" }}
+          paths:
+            - "/go/pkg/mod"
       - run:
-          name: update deployment manifest
-          command: |
-            cd ${SKYSIGN_CONFIG_REPO}/
-            git checkout -b release-${CIRCLE_SHA1}
-            rm -f manifest/*
-            envsubst < ../build/deploy/skysign-client.yaml > manifest/skysign-client.yaml
-            envsubst < ../build/deploy/skysign-collection-analysis-gateway.yaml > manifest/skysign-collection-analysis-gateway.yaml
-            envsubst < ../build/deploy/skysign-collection-analysis-service.yaml > manifest/skysign-collection-analysis-service.yaml
-            envsubst < ../build/deploy/skysign-endpoint.yaml > manifest/skysign-endpoint.yaml
-            envsubst < ../build/deploy/skysign-fleet-formation-gateway.yaml > manifest/skysign-fleet-formation-gateway.yaml
-            envsubst < ../build/deploy/skysign-fleet-formation-service.yaml > manifest/skysign-fleet-formation-service.yaml
-            envsubst < ../build/deploy/skysign-flightoperation-gateway.yaml > manifest/skysign-flightoperation-gateway.yaml
-            envsubst < ../build/deploy/skysign-flightoperation-service.yaml > manifest/skysign-flightoperation-service.yaml
-            envsubst < ../build/deploy/skysign-helper-gateway.yaml > manifest/skysign-helper-gateway.yaml
-            envsubst < ../build/deploy/skysign-helper-service.yaml > manifest/skysign-helper-service.yaml
-            envsubst < ../build/deploy/skysign-remote-communication-gateway.yaml > manifest/skysign-remote-communication-gateway.yaml
-            envsubst < ../build/deploy/skysign-remote-communication-service.yaml > manifest/skysign-remote-communication-service.yaml
-      - run:
-          name: git commit and push
-          command: |
-            cd ${SKYSIGN_CONFIG_REPO}/
-            git add .
-            git commit -m "release-${CIRCLE_SHA1}"
-            git push --set-upstream origin release-${CIRCLE_SHA1}
-      - run:
-          name: create pull request
-          command: |
-            cd ${SKYSIGN_CONFIG_REPO}/
-            curl -v -H "Authorization: token ${GITHUB_TOKEN}" https://api.github.com/repos/Tomofiles/${SKYSIGN_CONFIG_REPO}/pulls --data '{ "title": "[image update] skysign-cloud-v2 '${CIRCLE_SHA1}'", "head": "'release-${CIRCLE_SHA1}'", "base": "master"}'
+          name: Run tests
+          command: make unit-test
+
+  # build_and_test_fleet-formation:
+  #   executor: aws-ecr/default
+  #   steps:
+  #     - aws-ecr/build-image:
+  #         region: AWS_DEFAULT_REGION
+  #         account-url: AWS_ACCOUNT_URL
+  #         aws-access-key-id: AWS_ACCESS_KEY_ID
+  #         aws-secret-access-key: AWS_SECRET_ACCESS_KEY
+  #         repo: ${AWS_RESOURCE_NAME_PREFIX}
+  #         tag: "fleet-formation_${CIRCLE_SHA1}"
+  #         checkout: true
+  #         path: ./fleet-formation
+
+  # build_and_test_flight-operation:
+  #   executor: aws-ecr/default
+  #   steps:
+  #     - aws-ecr/build-image:
+  #         region: AWS_DEFAULT_REGION
+  #         account-url: AWS_ACCOUNT_URL
+  #         aws-access-key-id: AWS_ACCESS_KEY_ID
+  #         aws-secret-access-key: AWS_SECRET_ACCESS_KEY
+  #         repo: ${AWS_RESOURCE_NAME_PREFIX}
+  #         tag: "flight-operation_${CIRCLE_SHA1}"
+  #         checkout: true
+  #         path: ./flight-operation
+
+  # build_and_test_collection-analysis:
+  #   executor: aws-ecr/default
+  #   steps:
+  #     - aws-ecr/build-image:
+  #         region: AWS_DEFAULT_REGION
+  #         account-url: AWS_ACCOUNT_URL
+  #         aws-access-key-id: AWS_ACCESS_KEY_ID
+  #         aws-secret-access-key: AWS_SECRET_ACCESS_KEY
+  #         repo: ${AWS_RESOURCE_NAME_PREFIX}
+  #         tag: "collection-analysis_${CIRCLE_SHA1}"
+  #         checkout: true
+  #         path: ./collection-analysis
+
+  # build_and_test_client:
+  #   executor: aws-ecr/default
+  #   steps:
+  #     - aws-ecr/build-image:
+  #         region: AWS_DEFAULT_REGION
+  #         account-url: AWS_ACCOUNT_URL
+  #         aws-access-key-id: AWS_ACCESS_KEY_ID
+  #         aws-secret-access-key: AWS_SECRET_ACCESS_KEY
+  #         repo: ${AWS_RESOURCE_NAME_PREFIX}
+  #         tag: "client_${CIRCLE_SHA1}"
+  #         checkout: true
+  #         path: ./client
+  #         extra-build-args: "--build-arg CESIUM_KEY=${CESIUM_KEY}"
+
+  # build_and_test_edge:
+  #   executor: aws-ecr/default
+  #   steps:
+  #     - aws-ecr/build-image:
+  #         region: AWS_DEFAULT_REGION
+  #         account-url: AWS_ACCOUNT_URL
+  #         aws-access-key-id: AWS_ACCESS_KEY_ID
+  #         aws-secret-access-key: AWS_SECRET_ACCESS_KEY
+  #         repo: ${AWS_RESOURCE_NAME_PREFIX}
+  #         tag: "edge_${CIRCLE_SHA1}"
+  #         checkout: true
+  #         path: ./edge
+
+  # build_and_push_http_gateway:
+  #   executor: aws-ecr/default
+  #   steps:
+  #     - aws-ecr/build-and-push-image:
+  #         region: AWS_DEFAULT_REGION
+  #         account-url: AWS_ACCOUNT_URL
+  #         aws-access-key-id: AWS_ACCESS_KEY_ID
+  #         aws-secret-access-key: AWS_SECRET_ACCESS_KEY
+  #         repo: ${AWS_RESOURCE_NAME_PREFIX}
+  #         tag: "http-gateway_${CIRCLE_SHA1}"
+  #         path: ./http-gateway
+
+  # build_and_push_helper_api:
+  #   executor: aws-ecr/default
+  #   steps:
+  #     - aws-ecr/build-and-push-image:
+  #         region: AWS_DEFAULT_REGION
+  #         account-url: AWS_ACCOUNT_URL
+  #         aws-access-key-id: AWS_ACCESS_KEY_ID
+  #         aws-secret-access-key: AWS_SECRET_ACCESS_KEY
+  #         repo: ${AWS_RESOURCE_NAME_PREFIX}
+  #         tag: "helper-api_${CIRCLE_SHA1}"
+  #         path: ./helper-api
+
+  # build_and_push_remote-communication:
+  #   executor: aws-ecr/default
+  #   steps:
+  #     - aws-ecr/build-and-push-image:
+  #         region: AWS_DEFAULT_REGION
+  #         account-url: AWS_ACCOUNT_URL
+  #         aws-access-key-id: AWS_ACCESS_KEY_ID
+  #         aws-secret-access-key: AWS_SECRET_ACCESS_KEY
+  #         repo: ${AWS_RESOURCE_NAME_PREFIX}
+  #         tag: "remote-communication_${CIRCLE_SHA1}"
+  #         path: ./remote-communication
+
+  # build_and_push_fleet-formation:
+  #   executor: aws-ecr/default
+  #   steps:
+  #     - aws-ecr/build-and-push-image:
+  #         region: AWS_DEFAULT_REGION
+  #         account-url: AWS_ACCOUNT_URL
+  #         aws-access-key-id: AWS_ACCESS_KEY_ID
+  #         aws-secret-access-key: AWS_SECRET_ACCESS_KEY
+  #         repo: ${AWS_RESOURCE_NAME_PREFIX}
+  #         tag: "fleet-formation_${CIRCLE_SHA1}"
+  #         path: ./fleet-formation
+
+  # build_and_push_flight-operation:
+  #   executor: aws-ecr/default
+  #   steps:
+  #     - aws-ecr/build-and-push-image:
+  #         region: AWS_DEFAULT_REGION
+  #         account-url: AWS_ACCOUNT_URL
+  #         aws-access-key-id: AWS_ACCESS_KEY_ID
+  #         aws-secret-access-key: AWS_SECRET_ACCESS_KEY
+  #         repo: ${AWS_RESOURCE_NAME_PREFIX}
+  #         tag: "flight-operation_${CIRCLE_SHA1}"
+  #         path: ./flight-operation
+
+  # build_and_push_collection-analysis:
+  #   executor: aws-ecr/default
+  #   steps:
+  #     - aws-ecr/build-and-push-image:
+  #         region: AWS_DEFAULT_REGION
+  #         account-url: AWS_ACCOUNT_URL
+  #         aws-access-key-id: AWS_ACCESS_KEY_ID
+  #         aws-secret-access-key: AWS_SECRET_ACCESS_KEY
+  #         repo: ${AWS_RESOURCE_NAME_PREFIX}
+  #         tag: "collection-analysis_${CIRCLE_SHA1}"
+  #         path: ./collection-analysis
+
+  # build_and_push_client:
+  #   executor: aws-ecr/default
+  #   steps:
+  #     - aws-ecr/build-and-push-image:
+  #         region: AWS_DEFAULT_REGION
+  #         account-url: AWS_ACCOUNT_URL
+  #         aws-access-key-id: AWS_ACCESS_KEY_ID
+  #         aws-secret-access-key: AWS_SECRET_ACCESS_KEY
+  #         repo: ${AWS_RESOURCE_NAME_PREFIX}
+  #         tag: "client_${CIRCLE_SHA1}"
+  #         path: ./client
+  #         extra-build-args: "--build-arg CESIUM_KEY=${CESIUM_KEY}"
+
+  # create_pull_request:
+  #   docker:
+  #     - image: circleci/python:3.7.4-stretch
+  #   steps:
+  #     - checkout
+  #     - run:
+  #         name: install envsubst
+  #         command: |
+  #           sudo apt-get install -qq -y gettext
+  #     - run:
+  #         name: git clone
+  #         command: |
+  #           git config --global user.name tomofiles-circleci
+  #           git config --global user.email tomofiles-circleci@email.com
+  #           git clone git@github.com:Tomofiles/${SKYSIGN_CONFIG_REPO}.git
+  #     - run:
+  #         name: update deployment manifest
+  #         command: |
+  #           cd ${SKYSIGN_CONFIG_REPO}/
+  #           git checkout -b release-${CIRCLE_SHA1}
+  #           rm -f manifest/*
+  #           envsubst < ../build/deploy/skysign-client.yaml > manifest/skysign-client.yaml
+  #           envsubst < ../build/deploy/skysign-collection-analysis-gateway.yaml > manifest/skysign-collection-analysis-gateway.yaml
+  #           envsubst < ../build/deploy/skysign-collection-analysis-service.yaml > manifest/skysign-collection-analysis-service.yaml
+  #           envsubst < ../build/deploy/skysign-endpoint.yaml > manifest/skysign-endpoint.yaml
+  #           envsubst < ../build/deploy/skysign-fleet-formation-gateway.yaml > manifest/skysign-fleet-formation-gateway.yaml
+  #           envsubst < ../build/deploy/skysign-fleet-formation-service.yaml > manifest/skysign-fleet-formation-service.yaml
+  #           envsubst < ../build/deploy/skysign-flightoperation-gateway.yaml > manifest/skysign-flightoperation-gateway.yaml
+  #           envsubst < ../build/deploy/skysign-flightoperation-service.yaml > manifest/skysign-flightoperation-service.yaml
+  #           envsubst < ../build/deploy/skysign-helper-gateway.yaml > manifest/skysign-helper-gateway.yaml
+  #           envsubst < ../build/deploy/skysign-helper-service.yaml > manifest/skysign-helper-service.yaml
+  #           envsubst < ../build/deploy/skysign-remote-communication-gateway.yaml > manifest/skysign-remote-communication-gateway.yaml
+  #           envsubst < ../build/deploy/skysign-remote-communication-service.yaml > manifest/skysign-remote-communication-service.yaml
+  #     - run:
+  #         name: git commit and push
+  #         command: |
+  #           cd ${SKYSIGN_CONFIG_REPO}/
+  #           git add .
+  #           git commit -m "release-${CIRCLE_SHA1}"
+  #           git push --set-upstream origin release-${CIRCLE_SHA1}
+  #     - run:
+  #         name: create pull request
+  #         command: |
+  #           cd ${SKYSIGN_CONFIG_REPO}/
+  #           curl -v -H "Authorization: token ${GITHUB_TOKEN}" https://api.github.com/repos/Tomofiles/${SKYSIGN_CONFIG_REPO}/pulls --data '{ "title": "[image update] skysign-cloud-v2 '${CIRCLE_SHA1}'", "head": "'release-${CIRCLE_SHA1}'", "base": "master"}'
 
   notify-slack:
     docker:
@@ -255,119 +265,119 @@ jobs:
       - slack/status:
           webhook: "${SLACK_WEBHOOK}"
 
-  notify-slack-master:
-    docker:
-      - image: "cimg/base:stable"
-    steps:
-      - slack/status:
-          webhook: "${SLACK_WEBHOOK}"
+  # notify-slack-master:
+  #   docker:
+  #     - image: "cimg/base:stable"
+  #   steps:
+  #     - slack/status:
+  #         webhook: "${SLACK_WEBHOOK}"
 
 workflows:
   skysign-cicd-workflow:
     jobs:
-      - build_and_test_http_gateway:
-          filters:
-            branches:
-              ignore: master
-          <<: *slack-fail-post-step
-      - build_and_test_helper_api:
-          filters:
-            branches:
-              ignore: master
-          <<: *slack-fail-post-step
+      # - build_and_test_http_gateway:
+      #     filters:
+      #       branches:
+      #         ignore: master
+      #     <<: *slack-fail-post-step
+      # - build_and_test_helper_api:
+      #     filters:
+      #       branches:
+      #         ignore: master
+      #     <<: *slack-fail-post-step
       - build_and_test_remote-communication:
           filters:
             branches:
               ignore: master
           <<: *slack-fail-post-step
-      - build_and_test_fleet-formation:
-          filters:
-            branches:
-              ignore: master
-          <<: *slack-fail-post-step
-      - build_and_test_flight-operation:
-          filters:
-            branches:
-              ignore: master
-          <<: *slack-fail-post-step
-      - build_and_test_collection-analysis:
-          filters:
-            branches:
-              ignore: master
-          <<: *slack-fail-post-step
-      - build_and_test_client:
-          filters:
-            branches:
-              ignore: master
-          <<: *slack-fail-post-step
-      - build_and_test_edge:
-          filters:
-            branches:
-              ignore: master
-          <<: *slack-fail-post-step
+      # - build_and_test_fleet-formation:
+      #     filters:
+      #       branches:
+      #         ignore: master
+      #     <<: *slack-fail-post-step
+      # - build_and_test_flight-operation:
+      #     filters:
+      #       branches:
+      #         ignore: master
+      #     <<: *slack-fail-post-step
+      # - build_and_test_collection-analysis:
+      #     filters:
+      #       branches:
+      #         ignore: master
+      #     <<: *slack-fail-post-step
+      # - build_and_test_client:
+      #     filters:
+      #       branches:
+      #         ignore: master
+      #     <<: *slack-fail-post-step
+      # - build_and_test_edge:
+      #     filters:
+      #       branches:
+      #         ignore: master
+      #     <<: *slack-fail-post-step
       - notify-slack:
           requires:
-            - build_and_test_http_gateway
-            - build_and_test_helper_api
+            # - build_and_test_http_gateway
+            # - build_and_test_helper_api
             - build_and_test_remote-communication
-            - build_and_test_fleet-formation
-            - build_and_test_flight-operation
-            - build_and_test_collection-analysis
-            - build_and_test_client
-            - build_and_test_edge
+            # - build_and_test_fleet-formation
+            # - build_and_test_flight-operation
+            # - build_and_test_collection-analysis
+            # - build_and_test_client
+            # - build_and_test_edge
           filters:
             branches:
               ignore: master
-      - build_and_push_http_gateway:
-          filters:
-            branches:
-              only: master
-          <<: *slack-fail-post-step
-      - build_and_push_helper_api:
-          filters:
-            branches:
-              only: master
-          <<: *slack-fail-post-step
-      - build_and_push_remote-communication:
-          filters:
-            branches:
-              only: master
-          <<: *slack-fail-post-step
-      - build_and_push_fleet-formation:
-          filters:
-            branches:
-              only: master
-          <<: *slack-fail-post-step
-      - build_and_push_flight-operation:
-          filters:
-            branches:
-              only: master
-          <<: *slack-fail-post-step
-      - build_and_push_collection-analysis:
-          filters:
-            branches:
-              only: master
-          <<: *slack-fail-post-step
-      - build_and_push_client:
-          filters:
-            branches:
-              only: master
-          <<: *slack-fail-post-step
-      - notify-slack-master:
-          requires:
-            - build_and_push_http_gateway
-            - build_and_push_helper_api
-            - build_and_push_remote-communication
-            - build_and_push_fleet-formation
-            - build_and_push_flight-operation
-            - build_and_push_collection-analysis
-            - build_and_push_client
-          filters:
-            branches:
-              only: master
-      - create_pull_request:
-          requires:
-            - notify-slack-master
-          filters:
-            branches:
-              only: master
+      # - build_and_push_http_gateway:
+      #     filters:
+      #       branches:
+      #         only: master
+      #     <<: *slack-fail-post-step
+      # - build_and_push_helper_api:
+      #     filters:
+      #       branches:
+      #         only: master
+      #     <<: *slack-fail-post-step
+      # - build_and_push_remote-communication:
+      #     filters:
+      #       branches:
+      #         only: master
+      #     <<: *slack-fail-post-step
+      # - build_and_push_fleet-formation:
+      #     filters:
+      #       branches:
+      #         only: master
+      #     <<: *slack-fail-post-step
+      # - build_and_push_flight-operation:
+      #     filters:
+      #       branches:
+      #         only: master
+      #     <<: *slack-fail-post-step
+      # - build_and_push_collection-analysis:
+      #     filters:
+      #       branches:
+      #         only: master
+      #     <<: *slack-fail-post-step
+      # - build_and_push_client:
+      #     filters:
+      #       branches:
+      #         only: master
+      #     <<: *slack-fail-post-step
+      # - notify-slack-master:
+      #     requires:
+      #       - build_and_push_http_gateway
+      #       - build_and_push_helper_api
+      #       - build_and_push_remote-communication
+      #       - build_and_push_fleet-formation
+      #       - build_and_push_flight-operation
+      #       - build_and_push_collection-analysis
+      #       - build_and_push_client
+      #     filters:
+      #       branches:
+      #         only: master
+      # - create_pull_request:
+      #     requires:
+      #       - notify-slack-master
+      #     filters:
+      #       branches:
+      #         only: master
