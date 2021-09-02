@@ -48,18 +48,19 @@ jobs:
           keys:
             - go-mod-remote-communication-{{ checksum "remote-communication/go.sum" }}
       - run:
-          name: Change directory
-          command: cd remote-communication
-      - run:
           name: Install Dependencies
-          command: make dependency
+          command: |
+            cd remote-communication
+            make dependency
       - save_cache:
           key: go-mod-remote-communication-{{ checksum "remote-communication/go.sum" }}
           paths:
             - "/go/pkg/mod"
       - run:
           name: Run tests
-          command: make unit-test
+          command: |
+            cd remote-communication
+            make unit-test
 
   # build_and_test_fleet-formation:
   #   executor: aws-ecr/default
