@@ -4,6 +4,7 @@ RUN apk add build-base
 FROM base AS build-base
 WORKDIR /go/src/app
 COPY helper-api ./helper-api
+COPY skysign-proto ./skysign-proto
 
 FROM build-base AS dependency
 WORKDIR /go/src/app/helper-api
