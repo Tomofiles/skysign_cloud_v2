@@ -56,8 +56,8 @@ services:
     container_name: skysign-remote-communication-backend
     hostname: skysign-remote-communication-backend
     build:
-      context: ../../remote-communication
-      dockerfile: Dockerfile
+      context: ../..
+      dockerfile: ./remote-communication/Dockerfile
     environment:
      - DB_HOST=skysign-remote-communication-db
      - MQ_HOST=skysign-mq
@@ -70,8 +70,8 @@ services:
     container_name: skysign-fleet-formation-backend
     hostname: skysign-fleet-formation-backend
     build:
-      context: ../../fleet-formation
-      dockerfile: Dockerfile
+      context: ../..
+      dockerfile: ./fleet-formation/Dockerfile
     environment:
      - DB_HOST=skysign-fleet-formation-db
      - MQ_HOST=skysign-mq
@@ -84,8 +84,8 @@ services:
     container_name: skysign-flight-operation-backend
     hostname: skysign-flight-operation-backend
     build:
-      context: ../../flight-operation
-      dockerfile: Dockerfile
+      context: ../..
+      dockerfile: ./flight-operation/Dockerfile
     environment:
      - DB_HOST=skysign-flight-operation-db
      - MQ_HOST=skysign-mq
@@ -98,8 +98,8 @@ services:
     container_name: skysign-collection-analysis-backend
     hostname: skysign-collection-analysis-backend
     build:
-      context: ../../collection-analysis
-      dockerfile: Dockerfile
+      context: ../..
+      dockerfile: ./collection-analysis/Dockerfile
     environment:
      - DB_HOST=skysign-collection-analysis-db
      - MQ_HOST=skysign-mq
@@ -112,16 +112,16 @@ services:
     container_name: skysign-helper-backend
     hostname: skysign-helper-backend
     build:
-      context: ../../helper-api
-      dockerfile: Dockerfile
+      context: ../..
+      dockerfile: ./helper-api/Dockerfile
     command: /app/helper-user-api
 
   skysign-remote-communication-gateway-for-debugging:
     container_name: skysign-remote-communication-gateway
     hostname: skysign-remote-communication-gateway
     build:
-      context: ../../http-gateway
-      dockerfile: Dockerfile
+      context: ../..
+      dockerfile: ./http-gateway/Dockerfile
     command: /app/remote-communication-gateway -backend_host skysign-remote-communication-backend -backend_port 5001
     depends_on:
       - skysign-remote-communication-backend-for-debugging
@@ -130,8 +130,8 @@ services:
     container_name: skysign-fleet-formation-gateway
     hostname: skysign-fleet-formation-gateway
     build:
-      context: ../../http-gateway
-      dockerfile: Dockerfile
+      context: ../..
+      dockerfile: ./http-gateway/Dockerfile
     command: /app/fleet-formation-gateway -backend_host skysign-fleet-formation-backend -backend_port 5001
     depends_on:
       - skysign-fleet-formation-backend-for-debugging
@@ -140,8 +140,8 @@ services:
     container_name: skysign-flight-operation-gateway
     hostname: skysign-flight-operation-gateway
     build:
-      context: ../../http-gateway
-      dockerfile: Dockerfile
+      context: ../..
+      dockerfile: ./http-gateway/Dockerfile
     command: /app/flight-operation-gateway -backend_host skysign-flight-operation-backend -backend_port 5001
     depends_on:
       - skysign-flight-operation-backend-for-debugging
@@ -150,8 +150,8 @@ services:
     container_name: skysign-collection-analysis-gateway
     hostname: skysign-collection-analysis-gateway
     build:
-      context: ../../http-gateway
-      dockerfile: Dockerfile
+      context: ../..
+      dockerfile: ./http-gateway/Dockerfile
     command: /app/collection-analysis-gateway -backend_host skysign-collection-analysis-backend -backend_port 5001
     depends_on:
       - skysign-collection-analysis-backend-for-debugging
@@ -160,8 +160,8 @@ services:
     container_name: skysign-helper-gateway
     hostname: skysign-helper-gateway
     build:
-      context: ../../http-gateway
-      dockerfile: Dockerfile
+      context: ../..
+      dockerfile: ./http-gateway/Dockerfile
     command: /app/helper-gateway -backend_host skysign-helper-backend -backend_port 5001
     depends_on:
       - skysign-helper-backend-for-debugging
