@@ -424,36 +424,50 @@ workflows:
           #   branches:
           #     ignore: master
       - build_and_push_http-gateway:
+          requires:
+            - notify-slack
           # filters:
           #   branches:
           #     only: master
           <<: *slack-fail-post-step
       - build_and_push_helper-api:
+          requires:
+            - notify-slack
           # filters:
           #   branches:
           #     only: master
           <<: *slack-fail-post-step
       - build_and_push_remote-communication:
+          requires:
+            - notify-slack
           # filters:
           #   branches:
           #     only: master
           <<: *slack-fail-post-step
       - build_and_push_fleet-formation:
+          requires:
+            - notify-slack
           # filters:
           #   branches:
           #     only: master
           <<: *slack-fail-post-step
       - build_and_push_flight-operation:
+          requires:
+            - notify-slack
           # filters:
           #   branches:
           #     only: master
           <<: *slack-fail-post-step
       - build_and_push_collection-analysis:
+          requires:
+            - notify-slack
           # filters:
           #   branches:
           #     only: master
           <<: *slack-fail-post-step
       - build_and_push_client:
+          requires:
+            - notify-slack
           # filters:
           #   branches:
           #     only: master
