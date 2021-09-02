@@ -3,11 +3,13 @@ package api
 import (
 	"context"
 
-	pb "github.com/Tomofiles/skysign_cloud/helper-api/pkg/skysign_proto"
+	pb "github.com/Tomofiles/skysign_cloud_v2/skysign-proto/pkg/skysign_proto"
 )
 
 // Server .
-type Server struct{}
+type Server struct {
+	pb.UnimplementedHelperUserServiceServer
+}
 
 // GetEllipsoidHeight .
 func (s *Server) GetEllipsoidHeight(ctx context.Context, in *pb.GetEllipsoidHeightRequest) (*pb.GetEllipsoidHeightResponse, error) {

@@ -5,6 +5,8 @@ import (
 	"regexp"
 	"testing"
 
+	"github.com/Tomofiles/skysign_cloud_v2/skysign-common/pkg/common/adapters/postgresql"
+
 	sqlmock "github.com/DATA-DOG/go-sqlmock"
 	"github.com/stretchr/testify/assert"
 )
@@ -12,7 +14,7 @@ import (
 func TestActionRepositoryGetByID(t *testing.T) {
 	a := assert.New(t)
 
-	db, mock, err := GetNewDbMock()
+	db, mock, err := postgresql.GetNewDbMock()
 	if err != nil {
 		t.Errorf("failed to initialize mock DB: %v", err)
 		return
@@ -99,7 +101,7 @@ func TestActionRepositoryGetByID(t *testing.T) {
 func TestActionRepositoryNotFoundWhenGetByID(t *testing.T) {
 	a := assert.New(t)
 
-	db, mock, err := GetNewDbMock()
+	db, mock, err := postgresql.GetNewDbMock()
 	if err != nil {
 		t.Errorf("failed to initialize mock DB: %v", err)
 		return
@@ -124,7 +126,7 @@ func TestActionRepositoryNotFoundWhenGetByID(t *testing.T) {
 func TestActionRepositoryGetSingleWhenGetAllActiveByFleetID(t *testing.T) {
 	a := assert.New(t)
 
-	db, mock, err := GetNewDbMock()
+	db, mock, err := postgresql.GetNewDbMock()
 	if err != nil {
 		t.Errorf("failed to initialize mock DB: %v", err)
 		return
@@ -218,7 +220,7 @@ func TestActionRepositoryGetMultipleWhenGetAllActiveByFleetID(t *testing.T) {
 		DefaultActionID3 = DefaultActionID + "-3"
 	)
 
-	db, mock, err := GetNewDbMock()
+	db, mock, err := postgresql.GetNewDbMock()
 	if err != nil {
 		t.Errorf("failed to initialize mock DB: %v", err)
 		return
@@ -423,7 +425,7 @@ func TestActionRepositoryGetMultipleWhenGetAllActiveByFleetID(t *testing.T) {
 func TestActionRepositoryGetNoneWhenGetAllActiveByFleetID(t *testing.T) {
 	a := assert.New(t)
 
-	db, mock, err := GetNewDbMock()
+	db, mock, err := postgresql.GetNewDbMock()
 	if err != nil {
 		t.Errorf("failed to initialize mock DB: %v", err)
 		return
@@ -450,7 +452,7 @@ func TestActionRepositoryGetNoneWhenGetAllActiveByFleetID(t *testing.T) {
 func TestActionRepositoryGetActiveByCommunicationID(t *testing.T) {
 	a := assert.New(t)
 
-	db, mock, err := GetNewDbMock()
+	db, mock, err := postgresql.GetNewDbMock()
 	if err != nil {
 		t.Errorf("failed to initialize mock DB: %v", err)
 		return
@@ -537,7 +539,7 @@ func TestActionRepositoryGetActiveByCommunicationID(t *testing.T) {
 func TestActionRepositoryNotFoundWhenGetActiveByCommunicationID(t *testing.T) {
 	a := assert.New(t)
 
-	db, mock, err := GetNewDbMock()
+	db, mock, err := postgresql.GetNewDbMock()
 	if err != nil {
 		t.Errorf("failed to initialize mock DB: %v", err)
 		return
@@ -562,7 +564,7 @@ func TestActionRepositoryNotFoundWhenGetActiveByCommunicationID(t *testing.T) {
 func TestActionRepositorySingleTrajectoryPointDataCreateSave(t *testing.T) {
 	a := assert.New(t)
 
-	db, mock, err := GetNewDbMock()
+	db, mock, err := postgresql.GetNewDbMock()
 	if err != nil {
 		t.Errorf("failed to initialize mock DB: %v", err)
 		return
@@ -651,7 +653,7 @@ func TestActionRepositorySingleTrajectoryPointDataCreateSave(t *testing.T) {
 func TestActionRepositoryNoneTrajectoryPointDataCreateSave(t *testing.T) {
 	a := assert.New(t)
 
-	db, mock, err := GetNewDbMock()
+	db, mock, err := postgresql.GetNewDbMock()
 	if err != nil {
 		t.Errorf("failed to initialize mock DB: %v", err)
 		return
@@ -704,7 +706,7 @@ func TestActionRepositoryNoneTrajectoryPointDataCreateSave(t *testing.T) {
 func TestActionRepositoryMultipleTrajectoryPointDataCreateSave(t *testing.T) {
 	a := assert.New(t)
 
-	db, mock, err := GetNewDbMock()
+	db, mock, err := postgresql.GetNewDbMock()
 	if err != nil {
 		t.Errorf("failed to initialize mock DB: %v", err)
 		return
@@ -820,7 +822,7 @@ func TestActionRepositoryMultipleTrajectoryPointDataCreateSave(t *testing.T) {
 func TestActionRepositorySingleTrajectoryPointDataUpdateSave_NonePreTrajectoryPoint(t *testing.T) {
 	a := assert.New(t)
 
-	db, mock, err := GetNewDbMock()
+	db, mock, err := postgresql.GetNewDbMock()
 	if err != nil {
 		t.Errorf("failed to initialize mock DB: %v", err)
 		return
@@ -910,7 +912,7 @@ func TestActionRepositorySingleTrajectoryPointDataUpdateSave_NonePreTrajectoryPo
 func TestActionRepositorySingleTrajectoryPointDataUpdateSave_ExistPreTrajectoryPoint(t *testing.T) {
 	a := assert.New(t)
 
-	db, mock, err := GetNewDbMock()
+	db, mock, err := postgresql.GetNewDbMock()
 	if err != nil {
 		t.Errorf("failed to initialize mock DB: %v", err)
 		return
@@ -979,7 +981,7 @@ func TestActionRepositorySingleTrajectoryPointDataUpdateSave_ExistPreTrajectoryP
 func TestActionRepositoryMultipeTrajectoryPointDataUpdateSave_NonePreTrajectoryPoint(t *testing.T) {
 	a := assert.New(t)
 
-	db, mock, err := GetNewDbMock()
+	db, mock, err := postgresql.GetNewDbMock()
 	if err != nil {
 		t.Errorf("failed to initialize mock DB: %v", err)
 		return
@@ -1096,7 +1098,7 @@ func TestActionRepositoryMultipeTrajectoryPointDataUpdateSave_NonePreTrajectoryP
 func TestActionRepositoryMultipeTrajectoryPointDataUpdateSave_ExistPreTrajectoryPoint(t *testing.T) {
 	a := assert.New(t)
 
-	db, mock, err := GetNewDbMock()
+	db, mock, err := postgresql.GetNewDbMock()
 	if err != nil {
 		t.Errorf("failed to initialize mock DB: %v", err)
 		return

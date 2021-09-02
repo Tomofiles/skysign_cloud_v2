@@ -5,13 +5,13 @@ WORKDIR /go/src/app
 COPY . .
 
 FROM build-base AS dependency
-RUN go mod download
+RUN make dependency
 
 # FROM dependency AS test
-# RUN go test ./...
+# RUN make unit-test
 
 FROM dependency AS build
-RUN go install ./...
+RUN make install
 
 FROM alpine:latest
 WORKDIR /app/

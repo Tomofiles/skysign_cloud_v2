@@ -1,0 +1,43 @@
+syntax = "proto3";
+
+package skysign_proto;
+
+import "google/api/annotations.proto";
+import "proto/common.proto";
+
+option java_package = "proto.skysign";
+option java_multiple_files = true;
+option go_package = ".;skysign_proto";
+
+service OperateFlightService {
+    rpc ListFlightoperations (Empty) returns (ListFlightoperationsResponses) {
+        option (google.api.http) = {
+            get: "/api/v1/flightoperations"
+        };
+    };
+
+    rpc GetFlightoperation (GetFlightoperationRequest) returns (Flightoperation) {
+        option (google.api.http) = {
+            get: "/api/v1/flightoperations/{id}"
+        };
+    };
+
+    rpc CompleteFlightoperation (CompleteFlightoperationRequest) returns (Empty) {
+        option (google.api.http) = {
+            post: "/api/v1/flightoperations/{id}/complete"
+            body: "*"
+        };
+    };
+}
+
+message GetFlightoperationRequest {
+    string id = 1;
+}
+
+message CompleteFlightoperationRequest {
+    string id = 1;
+}
+
+message ListFlightoperationsResponses {
+    repeated Flightoperation flightoperations = 1;
+}

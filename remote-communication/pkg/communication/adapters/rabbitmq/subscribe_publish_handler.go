@@ -1,8 +1,9 @@
 package rabbitmq
 
 import (
-	crm "remote-communication/pkg/common/adapters/rabbitmq"
 	c "remote-communication/pkg/communication/domain/communication"
+
+	crm "github.com/Tomofiles/skysign_cloud_v2/skysign-common/pkg/common/adapters/rabbitmq"
 
 	"github.com/golang/glog"
 )

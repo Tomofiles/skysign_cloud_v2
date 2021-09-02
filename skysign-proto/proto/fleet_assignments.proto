@@ -1,0 +1,44 @@
+syntax = "proto3";
+
+package skysign_proto;
+
+import "google/api/annotations.proto";
+import "proto/common.proto";
+
+option java_package = "proto.skysign";
+option java_multiple_files = true;
+option go_package = ".;skysign_proto";
+
+service AssignAssetsToFleetService {
+    rpc GetAssignments (GetAssignmentsRequest) returns (GetAssignmentsResponse) {
+        option (google.api.http) = {
+            get: "/api/v1/fleets/{id}/assignments"
+        };
+    };
+
+    rpc UpdateAssignments (UpdateAssignmentsRequest) returns (UpdateAssignmentsResponse) {
+        option (google.api.http) = {
+            put: "/api/v1/fleets/{id}/assignments"
+            body: "*"
+        };
+    };
+}
+
+message GetAssignmentsRequest {
+    string id = 1;
+}
+
+message GetAssignmentsResponse {
+    string id = 1;
+    repeated Assignment assignments = 2;
+}
+
+message UpdateAssignmentsRequest {
+    string id = 1;
+    repeated Assignment assignments = 2;
+}
+
+message UpdateAssignmentsResponse {
+    string id = 1;
+    repeated Assignment assignments = 2;
+}

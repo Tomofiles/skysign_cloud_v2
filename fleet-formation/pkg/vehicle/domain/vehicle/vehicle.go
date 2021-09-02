@@ -2,7 +2,8 @@ package vehicle
 
 import (
 	"errors"
-	"fleet-formation/pkg/common/domain/event"
+
+	"github.com/Tomofiles/skysign_cloud_v2/skysign-common/pkg/common/domain/event"
 )
 
 // ID .

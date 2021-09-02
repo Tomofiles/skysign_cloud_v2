@@ -2,9 +2,10 @@ package communication
 
 import (
 	"errors"
-	"remote-communication/pkg/common/domain/event"
 	"sort"
 	"time"
+
+	"github.com/Tomofiles/skysign_cloud_v2/skysign-common/pkg/common/domain/event"
 )
 
 // ID .

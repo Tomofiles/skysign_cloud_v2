@@ -2,34 +2,11 @@ package postgresql
 
 import (
 	"collection-analysis/pkg/action/domain/action"
-
-	sqlmock "github.com/DATA-DOG/go-sqlmock"
-	"gorm.io/driver/postgres"
-	"gorm.io/gorm"
 )
 
 const DefaultActionID = action.ID("action-id")
 const DefaultActionCommunicationID = action.CommunicationID("communication-id")
 const DefaultActionFleetID = action.FleetID("fleet-id")
-
-func GetNewDbMock() (*gorm.DB, sqlmock.Sqlmock, error) {
-	db, mock, err := sqlmock.New()
-	if err != nil {
-		return nil, nil, err
-	}
-
-	gormDB, err := gorm.Open(
-		postgres.New(
-			postgres.Config{
-				Conn: db,
-			}), &gorm.Config{})
-
-	if err != nil {
-		return nil, nil, err
-	}
-
-	return gormDB, mock, nil
-}
 
 type actionComponentMock struct {
 	ID               string

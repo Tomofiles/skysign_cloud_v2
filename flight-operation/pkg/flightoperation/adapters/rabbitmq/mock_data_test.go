@@ -2,8 +2,9 @@ package rabbitmq
 
 import (
 	"context"
-	crm "flight-operation/pkg/common/adapters/rabbitmq"
 	"flight-operation/pkg/flightoperation/domain/flightoperation"
+
+	crm "github.com/Tomofiles/skysign_cloud_v2/skysign-common/pkg/common/adapters/rabbitmq"
 
 	"github.com/stretchr/testify/mock"
 )

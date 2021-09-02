@@ -2,11 +2,12 @@ package app
 
 import (
 	"context"
-	"flight-operation/pkg/common/domain/event"
-	"flight-operation/pkg/common/domain/txmanager"
 	"flight-operation/pkg/flightoperation/adapters/postgresql"
 	"flight-operation/pkg/flightoperation/adapters/uuid"
 	"flight-operation/pkg/flightoperation/service"
+
+	"github.com/Tomofiles/skysign_cloud_v2/skysign-common/pkg/common/domain/event"
+	"github.com/Tomofiles/skysign_cloud_v2/skysign-common/pkg/common/domain/txmanager"
 )
 
 // NewApplication .
