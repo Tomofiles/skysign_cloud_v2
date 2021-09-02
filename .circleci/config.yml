@@ -39,21 +39,22 @@ jobs:
   #         path: ./helper-api
 
   build_and_test_remote-communication:
+    working_directory: ~/remote-communication
     docker:
       - image: circleci/golang:1.13
     steps:
       - checkout
+      - restore_cache:
+          keys:
+            - go-mod-remote-communication-{{ checksum "remote-communication/go.sum" }}
       - run:
           name: Change directory
           command: cd remote-communication
-      - restore_cache:
-          keys:
-            - go-mod-remote-communication-{{ checksum "go.sum" }}
       - run:
           name: Install Dependencies
           command: make dependency
       - save_cache:
-          key: go-mod-remote-communication-{{ checksum "go.sum" }}
+          key: go-mod-remote-communication-{{ checksum "remote-communication/go.sum" }}
           paths:
             - "/go/pkg/mod"
       - run:
