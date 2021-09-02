@@ -57,49 +57,102 @@ jobs:
           paths:
             - "/go/pkg/mod"
       - run:
-          name: Run tests
+          name: Run builds
+          command: |
+            cd remote-communication
+            make build-test
+      - run:
+          name: Run unit-tests
           command: |
             cd remote-communication
             make unit-test
 
-  # build_and_test_fleet-formation:
-  #   executor: aws-ecr/default
-  #   steps:
-  #     - aws-ecr/build-image:
-  #         region: AWS_DEFAULT_REGION
-  #         account-url: AWS_ACCOUNT_URL
-  #         aws-access-key-id: AWS_ACCESS_KEY_ID
-  #         aws-secret-access-key: AWS_SECRET_ACCESS_KEY
-  #         repo: ${AWS_RESOURCE_NAME_PREFIX}
-  #         tag: "fleet-formation_${CIRCLE_SHA1}"
-  #         checkout: true
-  #         path: ./fleet-formation
+  build_and_test_fleet-formation:
+    working_directory: ~/fleet-formation
+    docker:
+      - image: circleci/golang:1.13
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - go-mod-fleet-formation-{{ checksum "fleet-formation/go.sum" }}
+      - run:
+          name: Install Dependencies
+          command: |
+            cd fleet-formation
+            make dependency
+      - save_cache:
+          key: go-mod-fleet-formation-{{ checksum "fleet-formation/go.sum" }}
+          paths:
+            - "/go/pkg/mod"
+      - run:
+          name: Run builds
+          command: |
+            cd fleet-formation
+            make build-test
+      - run:
+          name: Run unit-tests
+          command: |
+            cd fleet-formation
+            make unit-test
 
-  # build_and_test_flight-operation:
-  #   executor: aws-ecr/default
-  #   steps:
-  #     - aws-ecr/build-image:
-  #         region: AWS_DEFAULT_REGION
-  #         account-url: AWS_ACCOUNT_URL
-  #         aws-access-key-id: AWS_ACCESS_KEY_ID
-  #         aws-secret-access-key: AWS_SECRET_ACCESS_KEY
-  #         repo: ${AWS_RESOURCE_NAME_PREFIX}
-  #         tag: "flight-operation_${CIRCLE_SHA1}"
-  #         checkout: true
-  #         path: ./flight-operation
+  build_and_test_flight-operation:
+    working_directory: ~/flight-operation
+    docker:
+      - image: circleci/golang:1.13
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - go-mod-flight-operation-{{ checksum "flight-operation/go.sum" }}
+      - run:
+          name: Install Dependencies
+          command: |
+            cd flight-operation
+            make dependency
+      - save_cache:
+          key: go-mod-flight-operation-{{ checksum "flight-operation/go.sum" }}
+          paths:
+            - "/go/pkg/mod"
+      - run:
+          name: Run builds
+          command: |
+            cd flight-operation
+            make build-test
+      - run:
+          name: Run unit-tests
+          command: |
+            cd flight-operation
+            make unit-test
 
-  # build_and_test_collection-analysis:
-  #   executor: aws-ecr/default
-  #   steps:
-  #     - aws-ecr/build-image:
-  #         region: AWS_DEFAULT_REGION
-  #         account-url: AWS_ACCOUNT_URL
-  #         aws-access-key-id: AWS_ACCESS_KEY_ID
-  #         aws-secret-access-key: AWS_SECRET_ACCESS_KEY
-  #         repo: ${AWS_RESOURCE_NAME_PREFIX}
-  #         tag: "collection-analysis_${CIRCLE_SHA1}"
-  #         checkout: true
-  #         path: ./collection-analysis
+  build_and_test_collection-analysis:
+    working_directory: ~/collection-analysis
+    docker:
+      - image: circleci/golang:1.13
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - go-mod-collection-analysis-{{ checksum "collection-analysis/go.sum" }}
+      - run:
+          name: Install Dependencies
+          command: |
+            cd collection-analysis
+            make dependency
+      - save_cache:
+          key: go-mod-collection-analysis-{{ checksum "collection-analysis/go.sum" }}
+          paths:
+            - "/go/pkg/mod"
+      - run:
+          name: Run builds
+          command: |
+            cd collection-analysis
+            make build-test
+      - run:
+          name: Run unit-tests
+          command: |
+            cd collection-analysis
+            make unit-test
 
   # build_and_test_client:
   #   executor: aws-ecr/default
@@ -291,21 +344,21 @@ workflows:
             branches:
               ignore: master
           <<: *slack-fail-post-step
-      # - build_and_test_fleet-formation:
-      #     filters:
-      #       branches:
-      #         ignore: master
-      #     <<: *slack-fail-post-step
-      # - build_and_test_flight-operation:
-      #     filters:
-      #       branches:
-      #         ignore: master
-      #     <<: *slack-fail-post-step
-      # - build_and_test_collection-analysis:
-      #     filters:
-      #       branches:
-      #         ignore: master
-      #     <<: *slack-fail-post-step
+      - build_and_test_fleet-formation:
+          filters:
+            branches:
+              ignore: master
+          <<: *slack-fail-post-step
+      - build_and_test_flight-operation:
+          filters:
+            branches:
+              ignore: master
+          <<: *slack-fail-post-step
+      - build_and_test_collection-analysis:
+          filters:
+            branches:
+              ignore: master
+          <<: *slack-fail-post-step
       # - build_and_test_client:
       #     filters:
       #       branches:
@@ -321,9 +374,9 @@ workflows:
             # - build_and_test_http_gateway
             # - build_and_test_helper_api
             - build_and_test_remote-communication
-            # - build_and_test_fleet-formation
-            # - build_and_test_flight-operation
-            # - build_and_test_collection-analysis
+            - build_and_test_fleet-formation
+            - build_and_test_flight-operation
+            - build_and_test_collection-analysis
             # - build_and_test_client
             # - build_and_test_edge
           filters:
