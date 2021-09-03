@@ -5,10 +5,9 @@ import (
 	"errors"
 	"log"
 
-	"google.golang.org/grpc"
-
 	"edge/pkg/edge"
 	"edge/pkg/edge/adapters/glog"
+	"edge/pkg/edge/adapters/grpc"
 	"edge/pkg/edge/common"
 	mavsdk_rpc_mission "edge/pkg/protos/mission"
 )
@@ -19,7 +18,7 @@ var (
 
 // AdapterUpload .
 func AdapterUpload(ctx context.Context, url string, missionModel *edge.Mission) error {
-	gr, err := grpc.Dial(url, grpc.WithInsecure())
+	gr, err := grpc.NewGrpcClientConnectionWithBlock(url)
 	if err != nil {
 		log.Println("grpc client connection error:", err)
 		return err

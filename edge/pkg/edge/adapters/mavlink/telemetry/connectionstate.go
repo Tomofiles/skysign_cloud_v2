@@ -6,10 +6,9 @@ import (
 	"log"
 	"strconv"
 
-	"google.golang.org/grpc"
-
 	"edge/pkg/edge"
 	"edge/pkg/edge/adapters/glog"
+	"edge/pkg/edge/adapters/grpc"
 	"edge/pkg/edge/common"
 
 	mavsdk_rpc_core "edge/pkg/protos/core"
@@ -17,7 +16,7 @@ import (
 
 // AdapterConnectionState .
 func AdapterConnectionState(ctx context.Context, url string) (<-chan *edge.ConnectionState, error) {
-	gr, err := grpc.Dial(url, grpc.WithInsecure(), grpc.WithBlock())
+	gr, err := grpc.NewGrpcClientConnectionWithBlock(url)
 	if err != nil {
 		log.Println("grpc client connection error:", err)
 		return nil, err
