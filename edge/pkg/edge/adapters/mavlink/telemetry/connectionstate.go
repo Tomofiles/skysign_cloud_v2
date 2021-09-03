@@ -3,28 +3,25 @@ package mavlink
 import (
 	"context"
 	"io"
-	"log"
 	"strconv"
 
 	"edge/pkg/edge"
 	"edge/pkg/edge/adapters/glog"
-	"edge/pkg/edge/adapters/grpc"
 	"edge/pkg/edge/common"
 
 	mavsdk_rpc_core "edge/pkg/protos/core"
+
+	"google.golang.org/grpc"
 )
 
 // AdapterConnectionState .
-func AdapterConnectionState(ctx context.Context, url string) (<-chan *edge.ConnectionState, error) {
-	gr, err := grpc.NewGrpcClientConnectionWithBlock(url)
-	if err != nil {
-		log.Println("grpc client connection error:", err)
-		return nil, err
-	}
-
+func AdapterConnectionState(ctx context.Context, gr *grpc.ClientConn) (<-chan *edge.ConnectionState, error) {
 	core := mavsdk_rpc_core.NewCoreServiceClient(gr)
 
 	connectionStateReceiver, err := AdapterConnectionStateInternal(ctx, glog.NewSupport(), core)
+	if err != nil {
+		return nil, err
+	}
 
 	connectionStateStream := AdapterConnectionStateSubscriber(connectionStateReceiver, glog.NewSupport())
 

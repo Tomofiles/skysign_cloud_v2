@@ -3,26 +3,23 @@ package mavlink
 import (
 	"context"
 	"io"
-	"log"
 
 	"edge/pkg/edge"
 	"edge/pkg/edge/adapters/glog"
-	"edge/pkg/edge/adapters/grpc"
 	"edge/pkg/edge/common"
 	mavsdk_rpc_telemetry "edge/pkg/protos/telemetry"
+
+	"google.golang.org/grpc"
 )
 
 // AdapterArmed .
-func AdapterArmed(ctx context.Context, url string) (<-chan *edge.Armed, error) {
-	gr, err := grpc.NewGrpcClientConnectionWithBlock(url)
-	if err != nil {
-		log.Println("grpc client connection error:", err)
-		return nil, err
-	}
-
+func AdapterArmed(ctx context.Context, gr *grpc.ClientConn) (<-chan *edge.Armed, error) {
 	telemetry := mavsdk_rpc_telemetry.NewTelemetryServiceClient(gr)
 
 	armedReceiver, err := AdapterArmedInternal(ctx, glog.NewSupport(), telemetry)
+	if err != nil {
+		return nil, err
+	}
 
 	armedStream := AdapterArmedSubscriber(armedReceiver, glog.NewSupport())
 

@@ -3,26 +3,23 @@ package mavlink
 import (
 	"context"
 	"io"
-	"log"
 
 	"edge/pkg/edge"
 	"edge/pkg/edge/adapters/glog"
-	"edge/pkg/edge/adapters/grpc"
 	"edge/pkg/edge/common"
 	mavsdk_rpc_telemetry "edge/pkg/protos/telemetry"
+
+	"google.golang.org/grpc"
 )
 
 // AdapterVelocity .
-func AdapterVelocity(ctx context.Context, url string) (<-chan *edge.Velocity, error) {
-	gr, err := grpc.NewGrpcClientConnectionWithBlock(url)
-	if err != nil {
-		log.Println("grpc client connection error:", err)
-		return nil, err
-	}
-
+func AdapterVelocity(ctx context.Context, gr *grpc.ClientConn) (<-chan *edge.Velocity, error) {
 	telemetry := mavsdk_rpc_telemetry.NewTelemetryServiceClient(gr)
 
 	velocityReceiver, err := AdapterVelocityInternal(ctx, glog.NewSupport(), telemetry)
+	if err != nil {
+		return nil, err
+	}
 
 	velocityStream := AdapterVelocitySubscriber(velocityReceiver, glog.NewSupport())
 
