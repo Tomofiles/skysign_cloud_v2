@@ -3,12 +3,11 @@ package mavlink
 import (
 	"context"
 	"errors"
-	"log"
 
-	"edge/pkg/edge/adapters/glog"
-	"edge/pkg/edge/adapters/grpc"
 	"edge/pkg/edge/common"
 	mavsdk_rpc_action "edge/pkg/protos/action"
+
+	"google.golang.org/grpc"
 )
 
 var (
@@ -16,16 +15,9 @@ var (
 )
 
 // AdapterReturn .
-func AdapterReturn(ctx context.Context, url string) error {
-	gr, err := grpc.NewGrpcClientConnectionWithBlock(url)
-	if err != nil {
-		log.Println("grpc client connection error:", err)
-		return err
-	}
-
+func AdapterReturn(ctx context.Context, gr *grpc.ClientConn, support common.Support) error {
 	action := mavsdk_rpc_action.NewActionServiceClient(gr)
-
-	return AdapterReturnInternal(ctx, glog.NewSupport(), action)
+	return AdapterReturnInternal(ctx, support, action)
 }
 
 // AdapterReturnInternal .

@@ -9,8 +9,14 @@ import (
 	"time"
 )
 
+// CommandStream .
+type CommandStream struct {
+	CommandStream <-chan *edge.Command
+	MissionStream <-chan *edge.Mission
+}
+
 // Cloudlink .
-func Cloudlink(ctx context.Context, cloud string, telemetry telemetry.Telemetry) (<-chan *edge.Command, <-chan *edge.Mission) {
+func Cloudlink(ctx context.Context, cloud string, telemetry telemetry.Telemetry) *CommandStream {
 	commandStream := make(chan *edge.Command)
 	missionStream := make(chan *edge.Mission)
 
@@ -45,5 +51,9 @@ func Cloudlink(ctx context.Context, cloud string, telemetry telemetry.Telemetry)
 		}
 	}()
 
-	return commandStream, missionStream
+	stream := &CommandStream{
+		CommandStream: commandStream,
+		MissionStream: missionStream,
+	}
+	return stream
 }

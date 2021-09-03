@@ -5,6 +5,7 @@ import (
 	"edge/pkg/edge/adapters/glog"
 	"edge/pkg/edge/adapters/grpc"
 	"edge/pkg/edge/builder"
+	"edge/pkg/edge/telemetry"
 	"log"
 	"os"
 	"os/signal"
@@ -43,16 +44,33 @@ func main() {
 
 				support := glog.NewSupport()
 
-				updateExit, telemetry, err := builder.MavlinkTelemetry(ctx, gr, support)
+				telemetryStream, err := builder.MavlinkTelemetry(ctx, gr, support)
 				if err != nil {
 					log.Println("mavlink telemetry error:", err)
 					cancel()
 					continue
 				}
 
-				commandStream, missionStream := builder.Cloudlink(ctx, cloud, telemetry)
+				telemetry := telemetry.NewTelemetry()
+				updateExit := telemetry.Updater(
+					ctx.Done(),
+					telemetryStream.ConnectionStateStream,
+					telemetryStream.PositionStream,
+					telemetryStream.QuaternionStream,
+					telemetryStream.VelocityStream,
+					telemetryStream.ArmedStream,
+					telemetryStream.FlightModeStream,
+				)
 
-				err = builder.MavlinkCommand(ctx, mavsdk, commandStream, missionStream)
+				commandStream := builder.Cloudlink(ctx, cloud, telemetry)
+
+				err = builder.MavlinkCommand(
+					ctx,
+					gr,
+					support,
+					commandStream.CommandStream,
+					commandStream.MissionStream,
+				)
 				if err != nil {
 					log.Println("mavlink command error:", err)
 					cancel()

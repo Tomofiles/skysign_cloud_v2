@@ -4,46 +4,54 @@ import (
 	"context"
 	"edge/pkg/edge"
 	mavlink "edge/pkg/edge/adapters/mavlink/command"
-	"log"
+	"edge/pkg/edge/common"
+
+	"google.golang.org/grpc"
 )
 
 // MavlinkCommand .
-func MavlinkCommand(ctx context.Context, mavsdk string, commandStream <-chan *edge.Command, missionStream <-chan *edge.Mission) error {
+func MavlinkCommand(
+	ctx context.Context,
+	gr *grpc.ClientConn,
+	support common.Support,
+	commandStream <-chan *edge.Command,
+	missionStream <-chan *edge.Mission,
+) error {
 	go func() {
 		for {
 			select {
 			case <-ctx.Done():
-				log.Println("mavlink command done.")
+				support.NotifyInfo("mavlink command done.")
 				return
 			case command, ok := <-commandStream:
 				if !ok {
-					log.Println("command none.")
+					support.NotifyInfo("command none.")
 					continue
 				}
 				switch command.Type {
 				case "ARM":
-					mavlink.AdapterArm(ctx, mavsdk)
+					mavlink.AdapterArm(ctx, gr, support)
 				case "DISARM":
-					mavlink.AdapterDisarm(ctx, mavsdk)
+					mavlink.AdapterDisarm(ctx, gr, support)
 				case "START":
-					mavlink.AdapterStart(ctx, mavsdk)
+					mavlink.AdapterStart(ctx, gr, support)
 				case "PAUSE":
-					mavlink.AdapterPause(ctx, mavsdk)
+					mavlink.AdapterPause(ctx, gr, support)
 				case "TAKEOFF":
-					mavlink.AdapterTakeOff(ctx, mavsdk)
+					mavlink.AdapterTakeOff(ctx, gr, support)
 				case "LAND":
-					mavlink.AdapterLand(ctx, mavsdk)
+					mavlink.AdapterLand(ctx, gr, support)
 				case "RETURN":
-					mavlink.AdapterReturn(ctx, mavsdk)
+					mavlink.AdapterReturn(ctx, gr, support)
 				default:
 					continue
 				}
 			case mission, ok := <-missionStream:
 				if !ok {
-					log.Println("mission none.")
+					support.NotifyInfo("mission none.")
 					continue
 				}
-				mavlink.AdapterUpload(ctx, mavsdk, mission)
+				mavlink.AdapterUpload(ctx, gr, support, mission)
 			}
 		}
 	}()
