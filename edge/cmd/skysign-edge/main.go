@@ -2,6 +2,8 @@ package main
 
 import (
 	"context"
+	"edge/pkg/edge/adapters/glog"
+	"edge/pkg/edge/adapters/grpc"
 	"edge/pkg/edge/builder"
 	"log"
 	"os"
@@ -33,7 +35,15 @@ func main() {
 				ctx := context.Background()
 				ctx, cancel := context.WithCancel(ctx)
 
-				updateExit, telemetry, err := builder.MavlinkTelemetry(ctx, mavsdk)
+				gr, err := grpc.NewGrpcClientConnectionWithBlock(mavsdk)
+				if err != nil {
+					log.Println("grpc client connection error:", err)
+					continue
+				}
+
+				support := glog.NewSupport()
+
+				updateExit, telemetry, err := builder.MavlinkTelemetry(ctx, gr, support)
 				if err != nil {
 					log.Println("mavlink telemetry error:", err)
 					cancel()

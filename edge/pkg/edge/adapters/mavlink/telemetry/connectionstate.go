@@ -6,7 +6,6 @@ import (
 	"strconv"
 
 	"edge/pkg/edge"
-	"edge/pkg/edge/adapters/glog"
 	"edge/pkg/edge/common"
 
 	mavsdk_rpc_core "edge/pkg/protos/core"
@@ -15,15 +14,15 @@ import (
 )
 
 // AdapterConnectionState .
-func AdapterConnectionState(ctx context.Context, gr *grpc.ClientConn) (<-chan *edge.ConnectionState, error) {
+func AdapterConnectionState(ctx context.Context, gr *grpc.ClientConn, support common.Support) (<-chan *edge.ConnectionState, error) {
 	core := mavsdk_rpc_core.NewCoreServiceClient(gr)
 
-	connectionStateReceiver, err := AdapterConnectionStateInternal(ctx, glog.NewSupport(), core)
+	connectionStateReceiver, err := AdapterConnectionStateInternal(ctx, support, core)
 	if err != nil {
 		return nil, err
 	}
 
-	connectionStateStream := AdapterConnectionStateSubscriber(connectionStateReceiver, glog.NewSupport())
+	connectionStateStream := AdapterConnectionStateSubscriber(connectionStateReceiver, support)
 
 	return connectionStateStream, nil
 }

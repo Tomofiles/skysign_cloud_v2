@@ -5,7 +5,6 @@ import (
 	"io"
 
 	"edge/pkg/edge"
-	"edge/pkg/edge/adapters/glog"
 	"edge/pkg/edge/common"
 	mavsdk_rpc_telemetry "edge/pkg/protos/telemetry"
 
@@ -13,15 +12,15 @@ import (
 )
 
 // AdapterPosition .
-func AdapterPosition(ctx context.Context, gr *grpc.ClientConn) (<-chan *edge.Position, error) {
+func AdapterPosition(ctx context.Context, gr *grpc.ClientConn, support common.Support) (<-chan *edge.Position, error) {
 	telemetry := mavsdk_rpc_telemetry.NewTelemetryServiceClient(gr)
 
-	positionReceiver, err := AdapterPositionInternal(ctx, glog.NewSupport(), telemetry)
+	positionReceiver, err := AdapterPositionInternal(ctx, support, telemetry)
 	if err != nil {
 		return nil, err
 	}
 
-	positionStream := AdapterPositionSubscriber(positionReceiver, glog.NewSupport())
+	positionStream := AdapterPositionSubscriber(positionReceiver, support)
 
 	return positionStream, nil
 }

@@ -5,7 +5,6 @@ import (
 	"io"
 
 	"edge/pkg/edge"
-	"edge/pkg/edge/adapters/glog"
 	"edge/pkg/edge/common"
 	mavsdk_rpc_telemetry "edge/pkg/protos/telemetry"
 
@@ -13,15 +12,15 @@ import (
 )
 
 // AdapterFlightMode .
-func AdapterFlightMode(ctx context.Context, gr *grpc.ClientConn) (<-chan *edge.FlightMode, error) {
+func AdapterFlightMode(ctx context.Context, gr *grpc.ClientConn, support common.Support) (<-chan *edge.FlightMode, error) {
 	telemetry := mavsdk_rpc_telemetry.NewTelemetryServiceClient(gr)
 
-	flightModeReceiver, err := AdapterFlightModeInternal(ctx, glog.NewSupport(), telemetry)
+	flightModeReceiver, err := AdapterFlightModeInternal(ctx, support, telemetry)
 	if err != nil {
 		return nil, err
 	}
 
-	flightModeStream := AdapterFlightModeSubscriber(flightModeReceiver, glog.NewSupport())
+	flightModeStream := AdapterFlightModeSubscriber(flightModeReceiver, support)
 
 	return flightModeStream, nil
 }

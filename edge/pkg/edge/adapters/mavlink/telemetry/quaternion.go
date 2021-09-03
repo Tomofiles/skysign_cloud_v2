@@ -5,7 +5,6 @@ import (
 	"io"
 
 	"edge/pkg/edge"
-	"edge/pkg/edge/adapters/glog"
 	"edge/pkg/edge/common"
 	mavsdk_rpc_telemetry "edge/pkg/protos/telemetry"
 
@@ -13,15 +12,15 @@ import (
 )
 
 // AdapterQuaternion .
-func AdapterQuaternion(ctx context.Context, gr *grpc.ClientConn) (<-chan *edge.Quaternion, error) {
+func AdapterQuaternion(ctx context.Context, gr *grpc.ClientConn, support common.Support) (<-chan *edge.Quaternion, error) {
 	telemetry := mavsdk_rpc_telemetry.NewTelemetryServiceClient(gr)
 
-	quaternionReceiver, err := AdapterQuaternionInternal(ctx, glog.NewSupport(), telemetry)
+	quaternionReceiver, err := AdapterQuaternionInternal(ctx, support, telemetry)
 	if err != nil {
 		return nil, err
 	}
 
-	quaternionStream := AdapterQuaternionSubscriber(quaternionReceiver, glog.NewSupport())
+	quaternionStream := AdapterQuaternionSubscriber(quaternionReceiver, support)
 
 	return quaternionStream, nil
 }
