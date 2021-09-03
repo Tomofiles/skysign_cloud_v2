@@ -7,6 +7,7 @@ import (
 
 	"google.golang.org/grpc"
 
+	"edge/pkg/edge/common"
 	mavsdk_rpc_action "edge/pkg/protos/action"
 )
 
@@ -24,11 +25,11 @@ func AdapterLand(ctx context.Context, url string) error {
 
 	action := mavsdk_rpc_action.NewActionServiceClient(gr)
 
-	return AdapterLandInternal(ctx, nil, action)
+	return AdapterLandInternal(ctx, common.NewSupport(), action)
 }
 
 // AdapterLandInternal .
-func AdapterLandInternal(ctx context.Context, support Support, action mavsdk_rpc_action.ActionServiceClient) (err error) {
+func AdapterLandInternal(ctx context.Context, support common.Support, action mavsdk_rpc_action.ActionServiceClient) (err error) {
 	defer func() {
 		if err != nil {
 			support.NotifyError("land command error: %v", err)

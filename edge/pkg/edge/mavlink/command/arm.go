@@ -7,6 +7,7 @@ import (
 
 	"google.golang.org/grpc"
 
+	"edge/pkg/edge/common"
 	mavsdk_rpc_action "edge/pkg/protos/action"
 )
 
@@ -24,11 +25,11 @@ func AdapterArm(ctx context.Context, url string) error {
 
 	action := mavsdk_rpc_action.NewActionServiceClient(gr)
 
-	return AdapterArmInternal(ctx, nil, action)
+	return AdapterArmInternal(ctx, common.NewSupport(), action)
 }
 
 // AdapterArmInternal .
-func AdapterArmInternal(ctx context.Context, support Support, action mavsdk_rpc_action.ActionServiceClient) (err error) {
+func AdapterArmInternal(ctx context.Context, support common.Support, action mavsdk_rpc_action.ActionServiceClient) (err error) {
 	defer func() {
 		if err != nil {
 			support.NotifyError("arm command error: %v", err)
@@ -47,9 +48,4 @@ func AdapterArmInternal(ctx context.Context, support Support, action mavsdk_rpc_
 	}
 
 	return
-}
-
-// Support .
-type Support interface {
-	NotifyError(format string, args ...interface{})
 }

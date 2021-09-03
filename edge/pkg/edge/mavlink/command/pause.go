@@ -7,6 +7,7 @@ import (
 
 	"google.golang.org/grpc"
 
+	"edge/pkg/edge/common"
 	mavsdk_rpc_mission "edge/pkg/protos/mission"
 )
 
@@ -24,11 +25,11 @@ func AdapterPause(ctx context.Context, url string) error {
 
 	mission := mavsdk_rpc_mission.NewMissionServiceClient(gr)
 
-	return AdapterPauseInternal(ctx, nil, mission)
+	return AdapterPauseInternal(ctx, common.NewSupport(), mission)
 }
 
 // AdapterPauseInternal .
-func AdapterPauseInternal(ctx context.Context, support Support, mission mavsdk_rpc_mission.MissionServiceClient) (err error) {
+func AdapterPauseInternal(ctx context.Context, support common.Support, mission mavsdk_rpc_mission.MissionServiceClient) (err error) {
 	defer func() {
 		if err != nil {
 			support.NotifyError("pause command error: %v", err)

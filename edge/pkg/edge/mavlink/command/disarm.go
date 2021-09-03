@@ -7,6 +7,7 @@ import (
 
 	"google.golang.org/grpc"
 
+	"edge/pkg/edge/common"
 	mavsdk_rpc_action "edge/pkg/protos/action"
 )
 
@@ -24,11 +25,11 @@ func AdapterDisarm(ctx context.Context, url string) error {
 
 	action := mavsdk_rpc_action.NewActionServiceClient(gr)
 
-	return AdapterDisarmInternal(ctx, nil, action)
+	return AdapterDisarmInternal(ctx, common.NewSupport(), action)
 }
 
 // AdapterDisarmInternal .
-func AdapterDisarmInternal(ctx context.Context, support Support, action mavsdk_rpc_action.ActionServiceClient) (err error) {
+func AdapterDisarmInternal(ctx context.Context, support common.Support, action mavsdk_rpc_action.ActionServiceClient) (err error) {
 	defer func() {
 		if err != nil {
 			support.NotifyError("disarm command error: %v", err)

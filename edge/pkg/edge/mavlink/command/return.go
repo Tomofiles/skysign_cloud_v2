@@ -7,6 +7,7 @@ import (
 
 	"google.golang.org/grpc"
 
+	"edge/pkg/edge/common"
 	mavsdk_rpc_action "edge/pkg/protos/action"
 )
 
@@ -24,11 +25,11 @@ func AdapterReturn(ctx context.Context, url string) error {
 
 	action := mavsdk_rpc_action.NewActionServiceClient(gr)
 
-	return AdapterReturnInternal(ctx, nil, action)
+	return AdapterReturnInternal(ctx, common.NewSupport(), action)
 }
 
 // AdapterReturnInternal .
-func AdapterReturnInternal(ctx context.Context, support Support, action mavsdk_rpc_action.ActionServiceClient) (err error) {
+func AdapterReturnInternal(ctx context.Context, support common.Support, action mavsdk_rpc_action.ActionServiceClient) (err error) {
 	defer func() {
 		if err != nil {
 			support.NotifyError("rtl command error: %v", err)

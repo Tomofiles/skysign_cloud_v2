@@ -7,6 +7,7 @@ import (
 
 	"google.golang.org/grpc"
 
+	"edge/pkg/edge/common"
 	mavsdk_rpc_mission "edge/pkg/protos/mission"
 )
 
@@ -24,11 +25,11 @@ func AdapterStart(ctx context.Context, url string) error {
 
 	mission := mavsdk_rpc_mission.NewMissionServiceClient(gr)
 
-	return AdapterStartInternal(ctx, nil, mission)
+	return AdapterStartInternal(ctx, common.NewSupport(), mission)
 }
 
 // AdapterStartInternal .
-func AdapterStartInternal(ctx context.Context, support Support, mission mavsdk_rpc_mission.MissionServiceClient) (err error) {
+func AdapterStartInternal(ctx context.Context, support common.Support, mission mavsdk_rpc_mission.MissionServiceClient) (err error) {
 	defer func() {
 		if err != nil {
 			support.NotifyError("start command error: %v", err)
