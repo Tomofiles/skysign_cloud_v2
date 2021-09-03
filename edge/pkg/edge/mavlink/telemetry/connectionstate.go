@@ -9,13 +9,14 @@ import (
 	"google.golang.org/grpc"
 
 	"edge/pkg/edge"
+	"edge/pkg/edge/common"
 
 	mavsdk_rpc_core "edge/pkg/protos/core"
 )
 
 // AdapterConnectionState .
 func AdapterConnectionState(ctx context.Context, url string) (<-chan *edge.ConnectionState, error) {
-	gr, err := grpc.Dial(url, grpc.WithInsecure())
+	gr, err := grpc.Dial(url, grpc.WithInsecure(), grpc.WithBlock())
 	if err != nil {
 		log.Println("grpc client connection error:", err)
 		return nil, err
@@ -23,33 +24,70 @@ func AdapterConnectionState(ctx context.Context, url string) (<-chan *edge.Conne
 
 	core := mavsdk_rpc_core.NewCoreServiceClient(gr)
 
-	connStateRequest := mavsdk_rpc_core.SubscribeConnectionStateRequest{}
-	connStateReceiver, err := core.SubscribeConnectionState(ctx, &connStateRequest)
-	if err != nil {
-		log.Println("connState request error:", err)
-		return nil, err
-	}
+	connectionStateReceiver, err := AdapterConnectionStateInternal(ctx, common.NewSupport(), core)
 
-	connStateStream := make(chan *edge.ConnectionState)
-	go func() {
-		defer gr.Close()
-		defer close(connStateStream)
-		for {
-			response, err := connStateReceiver.Recv()
-			if err == io.EOF {
-				log.Println("connState response io eof error:", err)
-				return
-			}
-			if err != nil {
-				log.Println("connState response other error:", err)
-				return
-			}
-			connState := &edge.ConnectionState{
-				VehicleID: strconv.FormatUint(response.ConnectionState.GetUuid(), 10),
-			}
-			connStateStream <- connState
+	connectionStateStream := AdapterConnectionStateSubscriber(connectionStateReceiver, common.NewSupport())
+
+	return connectionStateStream, nil
+}
+
+// AdapterConnectionStateInternal .
+func AdapterConnectionStateInternal(
+	ctx context.Context,
+	support common.Support,
+	core mavsdk_rpc_core.CoreServiceClient,
+) (connectionStateReceiver mavsdk_rpc_core.CoreService_SubscribeConnectionStateClient, err error) {
+	defer func() {
+		if err != nil {
+			support.NotifyError("connectionState core error: %v", err)
 		}
 	}()
 
-	return connStateStream, nil
+	connectionStateRequest := mavsdk_rpc_core.SubscribeConnectionStateRequest{}
+	connectionStateReceiver, err = core.SubscribeConnectionState(ctx, &connectionStateRequest)
+
+	return
+}
+
+// AdapterConnectionStateSubscriber .
+func AdapterConnectionStateSubscriber(
+	connectionStateReceiver mavsdk_rpc_core.CoreService_SubscribeConnectionStateClient,
+	support common.Support,
+) <-chan *edge.ConnectionState {
+	connectionStateStream := make(chan *edge.ConnectionState)
+
+	go func() {
+		defer func() {
+			if err := connectionStateReceiver.CloseSend(); err != nil {
+				support.NotifyError("connectionState core error: %v", err)
+			}
+		}()
+		defer close(connectionStateStream)
+		func() {
+			var err error
+			defer func() {
+				if err != nil {
+					support.NotifyError("connectionState receive error: %v", err)
+					return
+				}
+				support.NotifyInfo("connectionState receive finish")
+			}()
+			for {
+				response, ret := connectionStateReceiver.Recv()
+				if ret == io.EOF {
+					return
+				}
+				if ret != nil {
+					err = ret
+					return
+				}
+				connectionState := &edge.ConnectionState{
+					VehicleID: strconv.FormatUint(response.ConnectionState.GetUuid(), 10),
+				}
+				connectionStateStream <- connectionState
+			}
+		}()
+	}()
+
+	return connectionStateStream
 }

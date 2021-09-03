@@ -8,12 +8,13 @@ import (
 	"google.golang.org/grpc"
 
 	"edge/pkg/edge"
+	"edge/pkg/edge/common"
 	mavsdk_rpc_telemetry "edge/pkg/protos/telemetry"
 )
 
 // AdapterArmed .
 func AdapterArmed(ctx context.Context, url string) (<-chan *edge.Armed, error) {
-	gr, err := grpc.Dial(url, grpc.WithInsecure())
+	gr, err := grpc.Dial(url, grpc.WithInsecure(), grpc.WithBlock())
 	if err != nil {
 		log.Println("grpc client connection error:", err)
 		return nil, err
@@ -21,33 +22,70 @@ func AdapterArmed(ctx context.Context, url string) (<-chan *edge.Armed, error) {
 
 	telemetry := mavsdk_rpc_telemetry.NewTelemetryServiceClient(gr)
 
-	armedRequest := mavsdk_rpc_telemetry.SubscribeArmedRequest{}
-	armedReceiver, err := telemetry.SubscribeArmed(ctx, &armedRequest)
-	if err != nil {
-		log.Println("armed request error:", err)
-		return nil, err
-	}
+	armedReceiver, err := AdapterArmedInternal(ctx, common.NewSupport(), telemetry)
 
-	armedStream := make(chan *edge.Armed)
-	go func() {
-		defer gr.Close()
-		defer close(armedStream)
-		for {
-			response, err := armedReceiver.Recv()
-			if err == io.EOF {
-				log.Println("armed response io eof error:", err)
-				return
-			}
-			if err != nil {
-				log.Println("armed response other error:", err)
-				return
-			}
-			armed := &edge.Armed{
-				Armed: response.GetIsArmed(),
-			}
-			armedStream <- armed
+	armedStream := AdapterArmedSubscriber(armedReceiver, common.NewSupport())
+
+	return armedStream, nil
+}
+
+// AdapterArmedInternal .
+func AdapterArmedInternal(
+	ctx context.Context,
+	support common.Support,
+	telemetry mavsdk_rpc_telemetry.TelemetryServiceClient,
+) (armedReceiver mavsdk_rpc_telemetry.TelemetryService_SubscribeArmedClient, err error) {
+	defer func() {
+		if err != nil {
+			support.NotifyError("armed telemetry error: %v", err)
 		}
 	}()
 
-	return armedStream, nil
+	armedRequest := mavsdk_rpc_telemetry.SubscribeArmedRequest{}
+	armedReceiver, err = telemetry.SubscribeArmed(ctx, &armedRequest)
+
+	return
+}
+
+// AdapterArmedSubscriber .
+func AdapterArmedSubscriber(
+	armedReceiver mavsdk_rpc_telemetry.TelemetryService_SubscribeArmedClient,
+	support common.Support,
+) <-chan *edge.Armed {
+	armedStream := make(chan *edge.Armed)
+
+	go func() {
+		defer func() {
+			if err := armedReceiver.CloseSend(); err != nil {
+				support.NotifyError("armed telemetry error: %v", err)
+			}
+		}()
+		defer close(armedStream)
+		func() {
+			var err error
+			defer func() {
+				if err != nil {
+					support.NotifyError("armed receive error: %v", err)
+					return
+				}
+				support.NotifyInfo("armed receive finish")
+			}()
+			for {
+				response, ret := armedReceiver.Recv()
+				if ret == io.EOF {
+					return
+				}
+				if ret != nil {
+					err = ret
+					return
+				}
+				armed := &edge.Armed{
+					Armed: response.GetIsArmed(),
+				}
+				armedStream <- armed
+			}
+		}()
+	}()
+
+	return armedStream
 }

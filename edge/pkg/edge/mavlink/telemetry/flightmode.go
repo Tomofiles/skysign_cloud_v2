@@ -8,12 +8,13 @@ import (
 	"google.golang.org/grpc"
 
 	"edge/pkg/edge"
+	"edge/pkg/edge/common"
 	mavsdk_rpc_telemetry "edge/pkg/protos/telemetry"
 )
 
 // AdapterFlightMode .
 func AdapterFlightMode(ctx context.Context, url string) (<-chan *edge.FlightMode, error) {
-	gr, err := grpc.Dial(url, grpc.WithInsecure())
+	gr, err := grpc.Dial(url, grpc.WithInsecure(), grpc.WithBlock())
 	if err != nil {
 		log.Println("grpc client connection error:", err)
 		return nil, err
@@ -21,33 +22,70 @@ func AdapterFlightMode(ctx context.Context, url string) (<-chan *edge.FlightMode
 
 	telemetry := mavsdk_rpc_telemetry.NewTelemetryServiceClient(gr)
 
-	flightModeRequest := mavsdk_rpc_telemetry.SubscribeFlightModeRequest{}
-	flightModeReceiver, err := telemetry.SubscribeFlightMode(ctx, &flightModeRequest)
-	if err != nil {
-		log.Println("flightMode request error:", err)
-		return nil, err
-	}
+	flightModeReceiver, err := AdapterFlightModeInternal(ctx, common.NewSupport(), telemetry)
 
-	flightModeStream := make(chan *edge.FlightMode)
-	go func() {
-		defer gr.Close()
-		defer close(flightModeStream)
-		for {
-			response, err := flightModeReceiver.Recv()
-			if err == io.EOF {
-				log.Println("flightMode response io eof error:", err)
-				return
-			}
-			if err != nil {
-				log.Println("flightMode response other error:", err)
-				return
-			}
-			flightMode := &edge.FlightMode{
-				FlightMode: response.GetFlightMode().String(),
-			}
-			flightModeStream <- flightMode
+	flightModeStream := AdapterFlightModeSubscriber(flightModeReceiver, common.NewSupport())
+
+	return flightModeStream, nil
+}
+
+// AdapterFlightModeInternal .
+func AdapterFlightModeInternal(
+	ctx context.Context,
+	support common.Support,
+	telemetry mavsdk_rpc_telemetry.TelemetryServiceClient,
+) (flightModeReceiver mavsdk_rpc_telemetry.TelemetryService_SubscribeFlightModeClient, err error) {
+	defer func() {
+		if err != nil {
+			support.NotifyError("flightMode telemetry error: %v", err)
 		}
 	}()
 
-	return flightModeStream, nil
+	flightModeRequest := mavsdk_rpc_telemetry.SubscribeFlightModeRequest{}
+	flightModeReceiver, err = telemetry.SubscribeFlightMode(ctx, &flightModeRequest)
+
+	return
+}
+
+// AdapterFlightModeSubscriber .
+func AdapterFlightModeSubscriber(
+	flightModeReceiver mavsdk_rpc_telemetry.TelemetryService_SubscribeFlightModeClient,
+	support common.Support,
+) <-chan *edge.FlightMode {
+	flightModeStream := make(chan *edge.FlightMode)
+
+	go func() {
+		defer func() {
+			if err := flightModeReceiver.CloseSend(); err != nil {
+				support.NotifyError("flightMode telemetry error: %v", err)
+			}
+		}()
+		defer close(flightModeStream)
+		func() {
+			var err error
+			defer func() {
+				if err != nil {
+					support.NotifyError("flightMode receive error: %v", err)
+					return
+				}
+				support.NotifyInfo("flightMode receive finish")
+			}()
+			for {
+				response, ret := flightModeReceiver.Recv()
+				if ret == io.EOF {
+					return
+				}
+				if ret != nil {
+					err = ret
+					return
+				}
+				flightMode := &edge.FlightMode{
+					FlightMode: response.GetFlightMode().String(),
+				}
+				flightModeStream <- flightMode
+			}
+		}()
+	}()
+
+	return flightModeStream
 }
