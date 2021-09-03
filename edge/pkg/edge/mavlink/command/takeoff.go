@@ -10,6 +10,10 @@ import (
 	mavsdk_rpc_action "edge/pkg/protos/action"
 )
 
+var (
+	ErrTakeoffCommand = errors.New("no takeoff command success")
+)
+
 // AdapterTakeOff .
 func AdapterTakeOff(ctx context.Context, url string) error {
 	gr, err := grpc.Dial(url, grpc.WithInsecure())
@@ -20,16 +24,26 @@ func AdapterTakeOff(ctx context.Context, url string) error {
 
 	action := mavsdk_rpc_action.NewActionServiceClient(gr)
 
+	return AdapterTakeoffInternal(ctx, nil, action)
+}
+
+// AdapterTakeoffInternal .
+func AdapterTakeoffInternal(ctx context.Context, support Support, action mavsdk_rpc_action.ActionServiceClient) (err error) {
+	defer func() {
+		if err != nil {
+			support.NotifyError("takeoff command error: %v", err)
+		}
+	}()
+
 	takeoffRequest := mavsdk_rpc_action.TakeoffRequest{}
 	response, err := action.Takeoff(ctx, &takeoffRequest)
 	if err != nil {
-		log.Println("takeoff command error:", err)
-		return err
+		return
 	}
 	result := response.GetActionResult().GetResult()
 	if result != mavsdk_rpc_action.ActionResult_SUCCESS {
-		log.Println("takeoff command error:", err)
-		return errors.New("no takeoff command success")
+		err = ErrTakeoffCommand
+		return
 	}
 
 	return nil

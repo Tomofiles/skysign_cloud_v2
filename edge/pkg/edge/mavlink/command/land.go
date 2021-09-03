@@ -10,6 +10,10 @@ import (
 	mavsdk_rpc_action "edge/pkg/protos/action"
 )
 
+var (
+	ErrLandCommand = errors.New("no land command success")
+)
+
 // AdapterLand .
 func AdapterLand(ctx context.Context, url string) error {
 	gr, err := grpc.Dial(url, grpc.WithInsecure())
@@ -20,16 +24,26 @@ func AdapterLand(ctx context.Context, url string) error {
 
 	action := mavsdk_rpc_action.NewActionServiceClient(gr)
 
+	return AdapterLandInternal(ctx, nil, action)
+}
+
+// AdapterLandInternal .
+func AdapterLandInternal(ctx context.Context, support Support, action mavsdk_rpc_action.ActionServiceClient) (err error) {
+	defer func() {
+		if err != nil {
+			support.NotifyError("land command error: %v", err)
+		}
+	}()
+
 	landRequest := mavsdk_rpc_action.LandRequest{}
 	response, err := action.Land(ctx, &landRequest)
 	if err != nil {
-		log.Println("land command error:", err)
-		return err
+		return
 	}
 	result := response.GetActionResult().GetResult()
 	if result != mavsdk_rpc_action.ActionResult_SUCCESS {
-		log.Println("land command error:", err)
-		return errors.New("no land command success")
+		err = ErrLandCommand
+		return
 	}
 
 	return nil

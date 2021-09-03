@@ -11,6 +11,10 @@ import (
 	mavsdk_rpc_mission "edge/pkg/protos/mission"
 )
 
+var (
+	ErrUploadCommand = errors.New("no upload command success")
+)
+
 // AdapterUpload .
 func AdapterUpload(ctx context.Context, url string, missionModel *edge.Mission) error {
 	gr, err := grpc.Dial(url, grpc.WithInsecure())
@@ -18,6 +22,19 @@ func AdapterUpload(ctx context.Context, url string, missionModel *edge.Mission) 
 		log.Println("grpc client connection error:", err)
 		return err
 	}
+
+	mission := mavsdk_rpc_mission.NewMissionServiceClient(gr)
+
+	return AdapterUploadInternal(ctx, nil, mission, missionModel)
+}
+
+// AdapterUploadInternal .
+func AdapterUploadInternal(ctx context.Context, support Support, mission mavsdk_rpc_mission.MissionServiceClient, missionModel *edge.Mission) (err error) {
+	defer func() {
+		if err != nil {
+			support.NotifyError("upload command error: %v", err)
+		}
+	}()
 
 	missionItems := make([]*mavsdk_rpc_mission.MissionItem, 0)
 
@@ -32,20 +49,17 @@ func AdapterUpload(ctx context.Context, url string, missionModel *edge.Mission) 
 		)
 	}
 
-	mission := mavsdk_rpc_mission.NewMissionServiceClient(gr)
-
 	uploadRequest := mavsdk_rpc_mission.UploadMissionRequest{
 		MissionItems: missionItems,
 	}
 	response, err := mission.UploadMission(ctx, &uploadRequest)
 	if err != nil {
-		log.Println("upload command error:", err)
-		return err
+		return
 	}
 	result := response.GetMissionResult().GetResult()
 	if result != mavsdk_rpc_mission.MissionResult_SUCCESS {
-		log.Println("upload command error:", err)
-		return errors.New("no upload command success")
+		err = ErrUploadCommand
+		return
 	}
 
 	return nil

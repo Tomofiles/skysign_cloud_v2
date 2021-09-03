@@ -10,6 +10,10 @@ import (
 	mavsdk_rpc_mission "edge/pkg/protos/mission"
 )
 
+var (
+	ErrPauseCommand = errors.New("no pause command success")
+)
+
 // AdapterPause .
 func AdapterPause(ctx context.Context, url string) error {
 	gr, err := grpc.Dial(url, grpc.WithInsecure())
@@ -20,16 +24,26 @@ func AdapterPause(ctx context.Context, url string) error {
 
 	mission := mavsdk_rpc_mission.NewMissionServiceClient(gr)
 
+	return AdapterPauseInternal(ctx, nil, mission)
+}
+
+// AdapterPauseInternal .
+func AdapterPauseInternal(ctx context.Context, support Support, mission mavsdk_rpc_mission.MissionServiceClient) (err error) {
+	defer func() {
+		if err != nil {
+			support.NotifyError("pause command error: %v", err)
+		}
+	}()
+
 	pauseRequest := mavsdk_rpc_mission.PauseMissionRequest{}
 	response, err := mission.PauseMission(ctx, &pauseRequest)
 	if err != nil {
-		log.Println("pause command error:", err)
-		return err
+		return
 	}
 	result := response.GetMissionResult().GetResult()
 	if result != mavsdk_rpc_mission.MissionResult_SUCCESS {
-		log.Println("pause command error:", err)
-		return errors.New("no pause command success")
+		err = ErrPauseCommand
+		return
 	}
 
 	return nil

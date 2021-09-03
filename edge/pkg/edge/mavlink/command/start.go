@@ -10,6 +10,10 @@ import (
 	mavsdk_rpc_mission "edge/pkg/protos/mission"
 )
 
+var (
+	ErrStartCommand = errors.New("no start command success")
+)
+
 // AdapterStart .
 func AdapterStart(ctx context.Context, url string) error {
 	gr, err := grpc.Dial(url, grpc.WithInsecure())
@@ -20,16 +24,26 @@ func AdapterStart(ctx context.Context, url string) error {
 
 	mission := mavsdk_rpc_mission.NewMissionServiceClient(gr)
 
+	return AdapterStartInternal(ctx, nil, mission)
+}
+
+// AdapterStartInternal .
+func AdapterStartInternal(ctx context.Context, support Support, mission mavsdk_rpc_mission.MissionServiceClient) (err error) {
+	defer func() {
+		if err != nil {
+			support.NotifyError("start command error: %v", err)
+		}
+	}()
+
 	startRequest := mavsdk_rpc_mission.StartMissionRequest{}
 	response, err := mission.StartMission(ctx, &startRequest)
 	if err != nil {
-		log.Println("start command error:", err)
-		return err
+		return
 	}
 	result := response.GetMissionResult().GetResult()
 	if result != mavsdk_rpc_mission.MissionResult_SUCCESS {
-		log.Println("start command error:", err)
-		return errors.New("no start command success")
+		err = ErrStartCommand
+		return
 	}
 
 	return nil
