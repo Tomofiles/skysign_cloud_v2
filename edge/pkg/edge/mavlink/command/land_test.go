@@ -29,6 +29,7 @@ func TestAdapterLand(t *testing.T) {
 	ret := AdapterLandInternal(ctx, supportMock, actionMock)
 
 	a.Nil(ret)
+	a.Empty(supportMock.message)
 }
 
 // TestRequestErrorWhenAdapterLand .

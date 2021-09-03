@@ -29,6 +29,7 @@ func TestAdapterDisarm(t *testing.T) {
 	ret := AdapterDisarmInternal(ctx, supportMock, actionMock)
 
 	a.Nil(ret)
+	a.Empty(supportMock.message)
 }
 
 // TestRequestErrorWhenAdapterDisarm .

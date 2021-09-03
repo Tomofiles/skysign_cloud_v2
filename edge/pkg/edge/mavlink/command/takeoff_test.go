@@ -29,6 +29,7 @@ func TestAdapterTakeoff(t *testing.T) {
 	ret := AdapterTakeoffInternal(ctx, supportMock, actionMock)
 
 	a.Nil(ret)
+	a.Empty(supportMock.message)
 }
 
 // TestRequestErrorWhenAdapterTakeoff .

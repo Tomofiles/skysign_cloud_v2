@@ -29,6 +29,7 @@ func TestAdapterReturn(t *testing.T) {
 	ret := AdapterReturnInternal(ctx, supportMock, actionMock)
 
 	a.Nil(ret)
+	a.Empty(supportMock.message)
 }
 
 // TestRequestErrorWhenAdapterReturn .

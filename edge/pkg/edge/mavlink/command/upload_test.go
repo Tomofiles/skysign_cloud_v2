@@ -33,6 +33,7 @@ func TestAdapterUploadNoItems(t *testing.T) {
 	expectMissionItems := []*mavsdk_rpc_mission.MissionItem{}
 	a.Nil(ret)
 	a.Equal(expectMissionItems, missionMock.MissionItems)
+	a.Empty(supportMock.message)
 }
 
 // TestAdapterUploadSingleItems .
@@ -73,6 +74,7 @@ func TestAdapterUploadSingleItems(t *testing.T) {
 	}
 	a.Nil(ret)
 	a.Equal(expectMissionItems, missionMock.MissionItems)
+	a.Empty(supportMock.message)
 }
 
 // TestAdapterUploadMultipleItems .
@@ -137,6 +139,7 @@ func TestAdapterUploadMultipleItems(t *testing.T) {
 	}
 	a.Nil(ret)
 	a.Equal(expectMissionItems, missionMock.MissionItems)
+	a.Empty(supportMock.message)
 }
 
 // TestRequestErrorWhenAdapterUpload .

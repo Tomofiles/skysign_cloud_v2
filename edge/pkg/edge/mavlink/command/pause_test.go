@@ -29,6 +29,7 @@ func TestAdapterPause(t *testing.T) {
 	ret := AdapterPauseInternal(ctx, supportMock, missionMock)
 
 	a.Nil(ret)
+	a.Empty(supportMock.message)
 }
 
 // TestRequestErrorWhenAdapterPause .

@@ -29,6 +29,7 @@ func TestAdapterStart(t *testing.T) {
 	ret := AdapterStartInternal(ctx, supportMock, missionMock)
 
 	a.Nil(ret)
+	a.Empty(supportMock.message)
 }
 
 // TestRequestErrorWhenAdapterStart .

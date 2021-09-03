@@ -29,6 +29,7 @@ func TestAdapterArm(t *testing.T) {
 	ret := AdapterArmInternal(ctx, supportMock, actionMock)
 
 	a.Nil(ret)
+	a.Empty(supportMock.message)
 }
 
 // TestRequestErrorWhenAdapterArm .
