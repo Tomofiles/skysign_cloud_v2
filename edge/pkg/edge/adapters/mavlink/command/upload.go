@@ -8,6 +8,7 @@ import (
 	"google.golang.org/grpc"
 
 	"edge/pkg/edge"
+	"edge/pkg/edge/adapters/glog"
 	"edge/pkg/edge/common"
 	mavsdk_rpc_mission "edge/pkg/protos/mission"
 )
@@ -26,7 +27,7 @@ func AdapterUpload(ctx context.Context, url string, missionModel *edge.Mission) 
 
 	mission := mavsdk_rpc_mission.NewMissionServiceClient(gr)
 
-	return AdapterUploadInternal(ctx, common.NewSupport(), mission, missionModel)
+	return AdapterUploadInternal(ctx, glog.NewSupport(), mission, missionModel)
 }
 
 // AdapterUploadInternal .

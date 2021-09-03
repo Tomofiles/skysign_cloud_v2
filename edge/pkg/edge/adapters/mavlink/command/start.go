@@ -7,6 +7,7 @@ import (
 
 	"google.golang.org/grpc"
 
+	"edge/pkg/edge/adapters/glog"
 	"edge/pkg/edge/common"
 	mavsdk_rpc_mission "edge/pkg/protos/mission"
 )
@@ -25,7 +26,7 @@ func AdapterStart(ctx context.Context, url string) error {
 
 	mission := mavsdk_rpc_mission.NewMissionServiceClient(gr)
 
-	return AdapterStartInternal(ctx, common.NewSupport(), mission)
+	return AdapterStartInternal(ctx, glog.NewSupport(), mission)
 }
 
 // AdapterStartInternal .

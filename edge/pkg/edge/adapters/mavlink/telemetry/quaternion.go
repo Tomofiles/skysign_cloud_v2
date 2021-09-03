@@ -8,6 +8,7 @@ import (
 	"google.golang.org/grpc"
 
 	"edge/pkg/edge"
+	"edge/pkg/edge/adapters/glog"
 	"edge/pkg/edge/common"
 	mavsdk_rpc_telemetry "edge/pkg/protos/telemetry"
 )
@@ -22,9 +23,9 @@ func AdapterQuaternion(ctx context.Context, url string) (<-chan *edge.Quaternion
 
 	telemetry := mavsdk_rpc_telemetry.NewTelemetryServiceClient(gr)
 
-	quaternionReceiver, err := AdapterQuaternionInternal(ctx, common.NewSupport(), telemetry)
+	quaternionReceiver, err := AdapterQuaternionInternal(ctx, glog.NewSupport(), telemetry)
 
-	quaternionStream := AdapterQuaternionSubscriber(quaternionReceiver, common.NewSupport())
+	quaternionStream := AdapterQuaternionSubscriber(quaternionReceiver, glog.NewSupport())
 
 	return quaternionStream, nil
 }

@@ -9,6 +9,7 @@ import (
 	"google.golang.org/grpc"
 
 	"edge/pkg/edge"
+	"edge/pkg/edge/adapters/glog"
 	"edge/pkg/edge/common"
 
 	mavsdk_rpc_core "edge/pkg/protos/core"
@@ -24,9 +25,9 @@ func AdapterConnectionState(ctx context.Context, url string) (<-chan *edge.Conne
 
 	core := mavsdk_rpc_core.NewCoreServiceClient(gr)
 
-	connectionStateReceiver, err := AdapterConnectionStateInternal(ctx, common.NewSupport(), core)
+	connectionStateReceiver, err := AdapterConnectionStateInternal(ctx, glog.NewSupport(), core)
 
-	connectionStateStream := AdapterConnectionStateSubscriber(connectionStateReceiver, common.NewSupport())
+	connectionStateStream := AdapterConnectionStateSubscriber(connectionStateReceiver, glog.NewSupport())
 
 	return connectionStateStream, nil
 }

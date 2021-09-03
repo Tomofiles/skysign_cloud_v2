@@ -8,6 +8,7 @@ import (
 	"google.golang.org/grpc"
 
 	"edge/pkg/edge"
+	"edge/pkg/edge/adapters/glog"
 	"edge/pkg/edge/common"
 	mavsdk_rpc_telemetry "edge/pkg/protos/telemetry"
 )
@@ -22,9 +23,9 @@ func AdapterFlightMode(ctx context.Context, url string) (<-chan *edge.FlightMode
 
 	telemetry := mavsdk_rpc_telemetry.NewTelemetryServiceClient(gr)
 
-	flightModeReceiver, err := AdapterFlightModeInternal(ctx, common.NewSupport(), telemetry)
+	flightModeReceiver, err := AdapterFlightModeInternal(ctx, glog.NewSupport(), telemetry)
 
-	flightModeStream := AdapterFlightModeSubscriber(flightModeReceiver, common.NewSupport())
+	flightModeStream := AdapterFlightModeSubscriber(flightModeReceiver, glog.NewSupport())
 
 	return flightModeStream, nil
 }

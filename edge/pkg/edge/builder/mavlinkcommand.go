@@ -3,7 +3,7 @@ package builder
 import (
 	"context"
 	"edge/pkg/edge"
-	mavlink "edge/pkg/edge/mavlink/command"
+	mavlink "edge/pkg/edge/adapters/mavlink/command"
 	"log"
 )
 

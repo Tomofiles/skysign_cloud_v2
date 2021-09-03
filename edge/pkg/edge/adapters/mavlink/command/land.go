@@ -7,6 +7,7 @@ import (
 
 	"google.golang.org/grpc"
 
+	"edge/pkg/edge/adapters/glog"
 	"edge/pkg/edge/common"
 	mavsdk_rpc_action "edge/pkg/protos/action"
 )
@@ -25,7 +26,7 @@ func AdapterLand(ctx context.Context, url string) error {
 
 	action := mavsdk_rpc_action.NewActionServiceClient(gr)
 
-	return AdapterLandInternal(ctx, common.NewSupport(), action)
+	return AdapterLandInternal(ctx, glog.NewSupport(), action)
 }
 
 // AdapterLandInternal .

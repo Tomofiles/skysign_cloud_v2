@@ -2,7 +2,7 @@ package builder
 
 import (
 	"context"
-	mavlink "edge/pkg/edge/mavlink/telemetry"
+	mavlink "edge/pkg/edge/adapters/mavlink/telemetry"
 	"edge/pkg/edge/telemetry"
 	"log"
 )

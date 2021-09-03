@@ -8,6 +8,7 @@ import (
 	"google.golang.org/grpc"
 
 	"edge/pkg/edge"
+	"edge/pkg/edge/adapters/glog"
 	"edge/pkg/edge/common"
 	mavsdk_rpc_telemetry "edge/pkg/protos/telemetry"
 )
@@ -22,9 +23,9 @@ func AdapterArmed(ctx context.Context, url string) (<-chan *edge.Armed, error) {
 
 	telemetry := mavsdk_rpc_telemetry.NewTelemetryServiceClient(gr)
 
-	armedReceiver, err := AdapterArmedInternal(ctx, common.NewSupport(), telemetry)
+	armedReceiver, err := AdapterArmedInternal(ctx, glog.NewSupport(), telemetry)
 
-	armedStream := AdapterArmedSubscriber(armedReceiver, common.NewSupport())
+	armedStream := AdapterArmedSubscriber(armedReceiver, glog.NewSupport())
 
 	return armedStream, nil
 }

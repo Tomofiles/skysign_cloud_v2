@@ -8,6 +8,7 @@ import (
 	"google.golang.org/grpc"
 
 	"edge/pkg/edge"
+	"edge/pkg/edge/adapters/glog"
 	"edge/pkg/edge/common"
 	mavsdk_rpc_telemetry "edge/pkg/protos/telemetry"
 )
@@ -22,9 +23,9 @@ func AdapterPosition(ctx context.Context, url string) (<-chan *edge.Position, er
 
 	telemetry := mavsdk_rpc_telemetry.NewTelemetryServiceClient(gr)
 
-	positionReceiver, err := AdapterPositionInternal(ctx, common.NewSupport(), telemetry)
+	positionReceiver, err := AdapterPositionInternal(ctx, glog.NewSupport(), telemetry)
 
-	positionStream := AdapterPositionSubscriber(positionReceiver, common.NewSupport())
+	positionStream := AdapterPositionSubscriber(positionReceiver, glog.NewSupport())
 
 	return positionStream, nil
 }

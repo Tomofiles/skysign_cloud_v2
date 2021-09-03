@@ -8,6 +8,7 @@ import (
 	"google.golang.org/grpc"
 
 	"edge/pkg/edge"
+	"edge/pkg/edge/adapters/glog"
 	"edge/pkg/edge/common"
 	mavsdk_rpc_telemetry "edge/pkg/protos/telemetry"
 )
@@ -22,9 +23,9 @@ func AdapterVelocity(ctx context.Context, url string) (<-chan *edge.Velocity, er
 
 	telemetry := mavsdk_rpc_telemetry.NewTelemetryServiceClient(gr)
 
-	velocityReceiver, err := AdapterVelocityInternal(ctx, common.NewSupport(), telemetry)
+	velocityReceiver, err := AdapterVelocityInternal(ctx, glog.NewSupport(), telemetry)
 
-	velocityStream := AdapterVelocitySubscriber(velocityReceiver, common.NewSupport())
+	velocityStream := AdapterVelocitySubscriber(velocityReceiver, glog.NewSupport())
 
 	return velocityStream, nil
 }
