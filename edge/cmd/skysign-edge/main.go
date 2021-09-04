@@ -5,8 +5,8 @@ import (
 	"edge/pkg/edge/adapters/glog"
 	"edge/pkg/edge/adapters/grpc"
 	"edge/pkg/edge/builder"
+	"edge/pkg/edge/command"
 	"edge/pkg/edge/telemetry"
-	"log"
 	"os"
 	"os/signal"
 	"time"
@@ -40,20 +40,20 @@ func main() {
 
 				gr, err := grpc.NewGrpcClientConnectionWithBlock(mavsdk)
 				if err != nil {
-					log.Println("grpc client connection error:", err)
+					support.NotifyError("grpc client connection error: %v", err)
 					continue
 				}
 
 				telemetryStream, err := builder.MavlinkTelemetry(ctx, gr, support)
 				if err != nil {
-					log.Println("mavlink telemetry error:", err)
+					support.NotifyError("mavlink telemetry error: %v", err)
 					cancel()
 					continue
 				}
 
 				tlm := telemetry.NewTelemetry()
 				updateExit := telemetry.Updater(
-					ctx.Done(),
+					ctx,
 					support,
 					tlm,
 					telemetryStream.ConnectionStateStream,
@@ -66,20 +66,25 @@ func main() {
 
 				commandStream := builder.Cloudlink(ctx, cloud, tlm)
 
-				err = builder.MavlinkCommand(
+				cStream := command.CommandDistributer(ctx, support, commandStream.CommandStream)
+				mStream := command.MissionDistributer(ctx, support, commandStream.MissionStream)
+
+				adapters := builder.MavlinkCommand(
 					ctx,
 					gr,
 					support,
-					commandStream.CommandStream,
-					commandStream.MissionStream,
 				)
-				if err != nil {
-					log.Println("mavlink command error:", err)
-					cancel()
-					continue
-				}
 
-				// 障害時動作確認用
+				armSendExit := command.CommandSender(ctx, support, cStream.ArmStream, adapters.AdapterArm, "ARM")
+				disarmSendExit := command.CommandSender(ctx, support, cStream.DisarmStream, adapters.AdapterDisarm, "DISARM")
+				startSendExit := command.CommandSender(ctx, support, cStream.StartStream, adapters.AdapterStart, "START")
+				pauseSendExit := command.CommandSender(ctx, support, cStream.PauseStream, adapters.AdapterPause, "PAUSE")
+				takeoffSendExit := command.CommandSender(ctx, support, cStream.TakeoffStream, adapters.AdapterTakeoff, "TAKEOFF")
+				landSendExit := command.CommandSender(ctx, support, cStream.LandStream, adapters.AdapterLand, "LAND")
+				returnSendExit := command.CommandSender(ctx, support, cStream.ReturnStream, adapters.AdapterReturn, "RETURN")
+				uploadSendExit := command.MissionSender(ctx, support, mStream, adapters.AdapterUpload)
+
+				// // 障害時動作確認用
 				// go func() {
 				// 	t := time.NewTimer(5 * time.Second)
 				// 	select {
@@ -88,9 +93,34 @@ func main() {
 				// 	}
 				// }()
 
-				<-updateExit
-				log.Println("update exit.")
-				cancel()
+				func() {
+					defer func() {
+						support.NotifyInfo("main loop exit")
+						cancel()
+					}()
+					for {
+						select {
+						case <-updateExit:
+							return
+						case <-armSendExit:
+							return
+						case <-disarmSendExit:
+							return
+						case <-startSendExit:
+							return
+						case <-pauseSendExit:
+							return
+						case <-takeoffSendExit:
+							return
+						case <-landSendExit:
+							return
+						case <-returnSendExit:
+							return
+						case <-uploadSendExit:
+							return
+						}
+					}
+				}()
 			}
 		}
 	}()
@@ -102,5 +132,5 @@ func main() {
 
 	time.Sleep(1 * time.Second)
 
-	defer log.Printf("Skysign Edge end.")
+	defer support.NotifyInfo("Skysign Edge end.")
 }

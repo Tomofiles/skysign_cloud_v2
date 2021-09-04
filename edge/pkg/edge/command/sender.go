@@ -11,7 +11,7 @@ func CommandSender(
 	ctx context.Context,
 	support common.Support,
 	stream <-chan struct{},
-	fnc func() error,
+	adapter func() error,
 	name string,
 ) <-chan struct{} {
 	sendExit := make(chan struct{})
@@ -28,7 +28,7 @@ func CommandSender(
 					support.NotifyInfo("command %s close", name)
 					return
 				}
-				if err := fnc(); err != nil {
+				if err := adapter(); err != nil {
 					support.NotifyError("command %s error: %v", name, err)
 				}
 			}
@@ -43,7 +43,7 @@ func MissionSender(
 	ctx context.Context,
 	support common.Support,
 	stream <-chan *edge.Mission,
-	fnc func(*edge.Mission) error,
+	adapter func(*edge.Mission) error,
 ) <-chan struct{} {
 	sendExit := make(chan struct{})
 
@@ -59,7 +59,7 @@ func MissionSender(
 					support.NotifyInfo("mission close")
 					return
 				}
-				if err := fnc(mission); err != nil {
+				if err := adapter(mission); err != nil {
 					support.NotifyError("mission error: %v", err)
 				}
 			}

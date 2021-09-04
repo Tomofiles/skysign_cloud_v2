@@ -1,12 +1,13 @@
 package telemetry
 
 import (
+	"context"
 	"edge/pkg/edge"
 	"edge/pkg/edge/common"
 )
 
 func Updater(
-	done <-chan struct{},
+	ctx context.Context,
 	support common.Support,
 	telemetry Telemetry,
 	connectionStateStream <-chan *edge.ConnectionState,
@@ -22,7 +23,7 @@ func Updater(
 		defer close(updateExit)
 		for {
 			select {
-			case <-done:
+			case <-ctx.Done():
 				support.NotifyInfo("telemetry updater done")
 				return
 			case connectionState, ok := <-connectionStateStream:

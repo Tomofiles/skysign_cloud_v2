@@ -9,52 +9,58 @@ import (
 	"google.golang.org/grpc"
 )
 
+// CommandAdapter .
+type CommandAdapter struct {
+	AdapterArm     func() error
+	AdapterDisarm  func() error
+	AdapterStart   func() error
+	AdapterPause   func() error
+	AdapterTakeoff func() error
+	AdapterLand    func() error
+	AdapterReturn  func() error
+	AdapterUpload  func(*edge.Mission) error
+}
+
 // MavlinkCommand .
 func MavlinkCommand(
 	ctx context.Context,
 	gr *grpc.ClientConn,
 	support common.Support,
-	commandStream <-chan *edge.Command,
-	missionStream <-chan *edge.Mission,
-) error {
-	go func() {
-		for {
-			select {
-			case <-ctx.Done():
-				support.NotifyInfo("mavlink command done.")
-				return
-			case command, ok := <-commandStream:
-				if !ok {
-					support.NotifyInfo("command none.")
-					continue
-				}
-				switch command.Type {
-				case "ARM":
-					mavlink.AdapterArm(ctx, gr, support)
-				case "DISARM":
-					mavlink.AdapterDisarm(ctx, gr, support)
-				case "START":
-					mavlink.AdapterStart(ctx, gr, support)
-				case "PAUSE":
-					mavlink.AdapterPause(ctx, gr, support)
-				case "TAKEOFF":
-					mavlink.AdapterTakeoff(ctx, gr, support)
-				case "LAND":
-					mavlink.AdapterLand(ctx, gr, support)
-				case "RETURN":
-					mavlink.AdapterReturn(ctx, gr, support)
-				default:
-					continue
-				}
-			case mission, ok := <-missionStream:
-				if !ok {
-					support.NotifyInfo("mission none.")
-					continue
-				}
-				mavlink.AdapterUpload(ctx, gr, support, mission)
-			}
-		}
-	}()
+) *CommandAdapter {
+	adapterArm := func() error {
+		return mavlink.AdapterArm(ctx, gr, support)
+	}
+	adapterDisarm := func() error {
+		return mavlink.AdapterDisarm(ctx, gr, support)
+	}
+	adapterStart := func() error {
+		return mavlink.AdapterStart(ctx, gr, support)
+	}
+	adapterPause := func() error {
+		return mavlink.AdapterPause(ctx, gr, support)
+	}
+	adapterTakeoff := func() error {
+		return mavlink.AdapterTakeoff(ctx, gr, support)
+	}
+	adapterLand := func() error {
+		return mavlink.AdapterLand(ctx, gr, support)
+	}
+	adapterReturn := func() error {
+		return mavlink.AdapterReturn(ctx, gr, support)
+	}
+	adapterUpload := func(mission *edge.Mission) error {
+		return mavlink.AdapterUpload(ctx, gr, support, mission)
+	}
 
-	return nil
+	commandAdapter := &CommandAdapter{
+		AdapterArm:     adapterArm,
+		AdapterDisarm:  adapterDisarm,
+		AdapterStart:   adapterStart,
+		AdapterPause:   adapterPause,
+		AdapterTakeoff: adapterTakeoff,
+		AdapterLand:    adapterLand,
+		AdapterReturn:  adapterReturn,
+		AdapterUpload:  adapterUpload,
+	}
+	return commandAdapter
 }
