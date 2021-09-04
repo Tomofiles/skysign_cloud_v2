@@ -27,9 +27,10 @@ func TestTelemetryUpdaterContextDone(t *testing.T) {
 	armedStream := make(chan *edge.Armed)
 	flightModeStream := make(chan *edge.FlightMode)
 
-	updateExit := tlm.Updater(
+	updateExit := Updater(
 		ctx.Done(),
 		supportMock,
+		tlm,
 		connectionStateStream,
 		positionStream,
 		quaternionStream,
@@ -65,9 +66,10 @@ func TestTelemetryUpdaterConnectionState(t *testing.T) {
 	armedStream := make(chan *edge.Armed)
 	flightModeStream := make(chan *edge.FlightMode)
 
-	updateExit := tlm.Updater(
+	updateExit := Updater(
 		ctx.Done(),
 		supportMock,
+		tlm,
 		connectionStateStream,
 		positionStream,
 		quaternionStream,
@@ -109,9 +111,10 @@ func TestTelemetryUpdaterPosition(t *testing.T) {
 	armedStream := make(chan *edge.Armed)
 	flightModeStream := make(chan *edge.FlightMode)
 
-	updateExit := tlm.Updater(
+	updateExit := Updater(
 		ctx.Done(),
 		supportMock,
+		tlm,
 		connectionStateStream,
 		positionStream,
 		quaternionStream,
@@ -159,9 +162,10 @@ func TestTelemetryUpdaterQuaternion(t *testing.T) {
 	armedStream := make(chan *edge.Armed)
 	flightModeStream := make(chan *edge.FlightMode)
 
-	updateExit := tlm.Updater(
+	updateExit := Updater(
 		ctx.Done(),
 		supportMock,
+		tlm,
 		connectionStateStream,
 		positionStream,
 		quaternionStream,
@@ -209,9 +213,10 @@ func TestTelemetryUpdaterVelocity(t *testing.T) {
 	armedStream := make(chan *edge.Armed)
 	flightModeStream := make(chan *edge.FlightMode)
 
-	updateExit := tlm.Updater(
+	updateExit := Updater(
 		ctx.Done(),
 		supportMock,
+		tlm,
 		connectionStateStream,
 		positionStream,
 		quaternionStream,
@@ -256,9 +261,10 @@ func TestTelemetryUpdaterArmed(t *testing.T) {
 	armedStream := make(chan *edge.Armed)
 	flightModeStream := make(chan *edge.FlightMode)
 
-	updateExit := tlm.Updater(
+	updateExit := Updater(
 		ctx.Done(),
 		supportMock,
+		tlm,
 		connectionStateStream,
 		positionStream,
 		quaternionStream,
@@ -300,9 +306,10 @@ func TestTelemetryUpdaterFlightMode(t *testing.T) {
 	armedStream := make(chan *edge.Armed)
 	flightModeStream := make(chan *edge.FlightMode)
 
-	updateExit := tlm.Updater(
+	updateExit := Updater(
 		ctx.Done(),
 		supportMock,
+		tlm,
 		connectionStateStream,
 		positionStream,
 		quaternionStream,

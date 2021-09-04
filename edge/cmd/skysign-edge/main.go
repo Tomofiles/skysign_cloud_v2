@@ -51,10 +51,11 @@ func main() {
 					continue
 				}
 
-				telemetry := telemetry.NewTelemetry()
+				tlm := telemetry.NewTelemetry()
 				updateExit := telemetry.Updater(
 					ctx.Done(),
 					support,
+					tlm,
 					telemetryStream.ConnectionStateStream,
 					telemetryStream.PositionStream,
 					telemetryStream.QuaternionStream,
@@ -63,7 +64,7 @@ func main() {
 					telemetryStream.FlightModeStream,
 				)
 
-				commandStream := builder.Cloudlink(ctx, cloud, telemetry)
+				commandStream := builder.Cloudlink(ctx, cloud, tlm)
 
 				err = builder.MavlinkCommand(
 					ctx,
