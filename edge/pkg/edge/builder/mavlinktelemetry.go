@@ -27,7 +27,7 @@ func MavlinkTelemetry(
 ) (*TelemetryStream, error) {
 	connectionStateStream, err := mavlink.AdapterConnectionState(ctx, gr, support)
 	if err != nil {
-		support.NotifyError("mavlink connState adapter error: %v", err)
+		support.NotifyError("mavlink connectionStateStream adapter error: %v", err)
 		return nil, err
 	}
 	positionStream, err := mavlink.AdapterPosition(ctx, gr, support)

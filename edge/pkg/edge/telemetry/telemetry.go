@@ -2,7 +2,7 @@ package telemetry
 
 import (
 	"edge/pkg/edge"
-	"log"
+	"edge/pkg/edge/common"
 	"math"
 	"sync"
 )
@@ -11,10 +11,11 @@ import (
 type Telemetry interface {
 	Updater(
 		done <-chan struct{},
-		connStateStream <-chan *edge.ConnectionState,
+		support common.Support,
+		connectionStateStream <-chan *edge.ConnectionState,
 		positionStream <-chan *edge.Position,
 		quaternionStream <-chan *edge.Quaternion,
-		velosityStream <-chan *edge.Velocity,
+		velocityStream <-chan *edge.Velocity,
 		armedStream <-chan *edge.Armed,
 		flightModeStream <-chan *edge.FlightMode) <-chan interface{}
 	Get() *edge.Telemetry
@@ -44,12 +45,14 @@ func NewTelemetry() Telemetry {
 
 func (t *telemetry) Updater(
 	done <-chan struct{},
-	connStateStream <-chan *edge.ConnectionState,
+	support common.Support,
+	connectionStateStream <-chan *edge.ConnectionState,
 	positionStream <-chan *edge.Position,
 	quaternionStream <-chan *edge.Quaternion,
-	velosityStream <-chan *edge.Velocity,
+	velocityStream <-chan *edge.Velocity,
 	armedStream <-chan *edge.Armed,
-	flightModeStream <-chan *edge.FlightMode) <-chan interface{} {
+	flightModeStream <-chan *edge.FlightMode,
+) <-chan interface{} {
 	updateExit := make(chan interface{})
 
 	go func() {
@@ -57,19 +60,19 @@ func (t *telemetry) Updater(
 		for {
 			select {
 			case <-done:
-				log.Println("telemetry updater done.")
+				support.NotifyInfo("telemetry updater done")
 				return
-			case connState, ok := <-connStateStream:
+			case connectionState, ok := <-connectionStateStream:
 				if !ok {
-					log.Println("connStateStream close.")
+					support.NotifyInfo("connectionStateStream close")
 					return
 				}
 				rwm.Lock()
-				t.id = connState.VehicleID
+				t.id = connectionState.VehicleID
 				rwm.Unlock()
 			case position, ok := <-positionStream:
 				if !ok {
-					log.Println("positionStream close.")
+					support.NotifyInfo("positionStream close")
 					return
 				}
 				rwm.Lock()
@@ -80,7 +83,7 @@ func (t *telemetry) Updater(
 				rwm.Unlock()
 			case quaternion, ok := <-quaternionStream:
 				if !ok {
-					log.Println("quaternionStream close.")
+					support.NotifyInfo("quaternionStream close")
 					return
 				}
 				rwm.Lock()
@@ -89,18 +92,18 @@ func (t *telemetry) Updater(
 				t.orientationZ = quaternion.Z
 				t.orientationW = quaternion.W
 				rwm.Unlock()
-			case velosity, ok := <-velosityStream:
+			case velocity, ok := <-velocityStream:
 				if !ok {
-					log.Println("velosityStream close.")
+					support.NotifyInfo("velocityStream close")
 					return
 				}
 				rwm.Lock()
 				// NEDフレームから速度の合成（GroundSpeed = √n^2+e^2）
-				t.speed = math.Sqrt(velosity.North*velosity.North + velosity.East*velosity.East)
+				t.speed = math.Sqrt(velocity.North*velocity.North + velocity.East*velocity.East)
 				rwm.Unlock()
 			case armed, ok := <-armedStream:
 				if !ok {
-					log.Println("armedStream close.")
+					support.NotifyInfo("armedStream close")
 					return
 				}
 				rwm.Lock()
@@ -108,7 +111,7 @@ func (t *telemetry) Updater(
 				rwm.Unlock()
 			case flightMode, ok := <-flightModeStream:
 				if !ok {
-					log.Println("flightModeStream close.")
+					support.NotifyInfo("flightModeStream close")
 					return
 				}
 				rwm.Lock()

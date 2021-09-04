@@ -28,6 +28,8 @@ func main() {
 		cloud = cloudAddressEnv
 	}
 
+	support := glog.NewSupport()
+
 	go func() {
 		for {
 			t := time.NewTimer(1 * time.Second)
@@ -42,8 +44,6 @@ func main() {
 					continue
 				}
 
-				support := glog.NewSupport()
-
 				telemetryStream, err := builder.MavlinkTelemetry(ctx, gr, support)
 				if err != nil {
 					log.Println("mavlink telemetry error:", err)
@@ -54,6 +54,7 @@ func main() {
 				telemetry := telemetry.NewTelemetry()
 				updateExit := telemetry.Updater(
 					ctx.Done(),
+					support,
 					telemetryStream.ConnectionStateStream,
 					telemetryStream.PositionStream,
 					telemetryStream.QuaternionStream,
