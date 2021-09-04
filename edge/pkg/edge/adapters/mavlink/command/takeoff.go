@@ -4,7 +4,7 @@ import (
 	"context"
 	"errors"
 
-	"edge/pkg/edge/common"
+	"edge/pkg/edge/domain/common"
 	mavsdk_rpc_action "edge/pkg/protos/action"
 
 	"google.golang.org/grpc"

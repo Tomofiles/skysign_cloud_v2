@@ -6,7 +6,7 @@ import (
 	"strconv"
 
 	"edge/pkg/edge"
-	"edge/pkg/edge/common"
+	"edge/pkg/edge/domain/common"
 
 	mavsdk_rpc_core "edge/pkg/protos/core"
 

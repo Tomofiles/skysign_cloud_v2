@@ -4,7 +4,7 @@ import (
 	"context"
 	"edge/pkg/edge"
 	"edge/pkg/edge/cloudlink"
-	"edge/pkg/edge/telemetry"
+	"edge/pkg/edge/domain/telemetry"
 	"log"
 	"time"
 )

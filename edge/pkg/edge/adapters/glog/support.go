@@ -1,7 +1,7 @@
 package glog
 
 import (
-	"edge/pkg/edge/common"
+	"edge/pkg/edge/domain/common"
 
 	"github.com/golang/glog"
 )

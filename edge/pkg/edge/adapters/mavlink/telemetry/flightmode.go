@@ -5,7 +5,7 @@ import (
 	"io"
 
 	"edge/pkg/edge"
-	"edge/pkg/edge/common"
+	"edge/pkg/edge/domain/common"
 	mavsdk_rpc_telemetry "edge/pkg/protos/telemetry"
 
 	"google.golang.org/grpc"

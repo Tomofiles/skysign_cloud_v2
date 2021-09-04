@@ -4,7 +4,7 @@ import (
 	"context"
 	"edge/pkg/edge"
 	mavlink "edge/pkg/edge/adapters/mavlink/command"
-	"edge/pkg/edge/common"
+	"edge/pkg/edge/domain/common"
 
 	"google.golang.org/grpc"
 )

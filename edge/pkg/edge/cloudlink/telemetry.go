@@ -2,7 +2,7 @@ package cloudlink
 
 import (
 	"edge/pkg/edge"
-	"edge/pkg/edge/telemetry"
+	"edge/pkg/edge/domain/telemetry"
 	"encoding/json"
 	"io/ioutil"
 	"log"

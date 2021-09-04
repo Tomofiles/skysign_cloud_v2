@@ -3,7 +3,7 @@ package command
 import (
 	"context"
 	"edge/pkg/edge"
-	"edge/pkg/edge/common"
+	"edge/pkg/edge/domain/common"
 )
 
 // CommandSender .
