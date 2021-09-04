@@ -12,7 +12,7 @@ type CommandStream struct {
 	DisarmStream  <-chan struct{}
 	StartStream   <-chan struct{}
 	PauseStream   <-chan struct{}
-	TakeOffStream <-chan struct{}
+	TakeoffStream <-chan struct{}
 	LandStream    <-chan struct{}
 	ReturnStream  <-chan struct{}
 }
@@ -27,7 +27,7 @@ func CommandDistributer(
 	disarmStream := make(chan struct{})
 	startStream := make(chan struct{})
 	pauseStream := make(chan struct{})
-	takeOffStream := make(chan struct{})
+	takeoffStream := make(chan struct{})
 	landStream := make(chan struct{})
 	returnStream := make(chan struct{})
 
@@ -36,7 +36,7 @@ func CommandDistributer(
 		defer close(disarmStream)
 		defer close(startStream)
 		defer close(pauseStream)
-		defer close(takeOffStream)
+		defer close(takeoffStream)
 		defer close(landStream)
 		defer close(returnStream)
 		for {
@@ -59,7 +59,7 @@ func CommandDistributer(
 				case "PAUSE":
 					pauseStream <- struct{}{}
 				case "TAKEOFF":
-					takeOffStream <- struct{}{}
+					takeoffStream <- struct{}{}
 				case "LAND":
 					landStream <- struct{}{}
 				case "RETURN":
@@ -76,7 +76,7 @@ func CommandDistributer(
 		DisarmStream:  disarmStream,
 		StartStream:   startStream,
 		PauseStream:   pauseStream,
-		TakeOffStream: takeOffStream,
+		TakeoffStream: takeoffStream,
 		LandStream:    landStream,
 		ReturnStream:  returnStream,
 	}

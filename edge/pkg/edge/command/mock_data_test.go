@@ -25,7 +25,7 @@ func (m *supportMock) NotifyError(format string, args ...interface{}) {
 // WaitCommandSender .
 func WaitCommandSender(ret *CommandStream) (bool, bool, bool, bool, bool, bool, bool) {
 	var wg sync.WaitGroup
-	var resArm, resDisarm, resStart, resPause, resTakeOff, resLand, resReturn bool
+	var resArm, resDisarm, resStart, resPause, resTakeoff, resLand, resReturn bool
 
 	wg.Add(1)
 	go func() {
@@ -52,11 +52,11 @@ func WaitCommandSender(ret *CommandStream) (bool, bool, bool, bool, bool, bool, 
 					return
 				}
 				resPause = true
-			case _, ok := <-ret.TakeOffStream:
+			case _, ok := <-ret.TakeoffStream:
 				if !ok {
 					return
 				}
-				resTakeOff = true
+				resTakeoff = true
 			case _, ok := <-ret.LandStream:
 				if !ok {
 					return
@@ -73,5 +73,5 @@ func WaitCommandSender(ret *CommandStream) (bool, bool, bool, bool, bool, bool, 
 
 	wg.Wait()
 
-	return resArm, resDisarm, resStart, resPause, resTakeOff, resLand, resReturn
+	return resArm, resDisarm, resStart, resPause, resTakeoff, resLand, resReturn
 }

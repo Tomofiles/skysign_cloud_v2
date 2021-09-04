@@ -38,7 +38,7 @@ func MavlinkCommand(
 				case "PAUSE":
 					mavlink.AdapterPause(ctx, gr, support)
 				case "TAKEOFF":
-					mavlink.AdapterTakeOff(ctx, gr, support)
+					mavlink.AdapterTakeoff(ctx, gr, support)
 				case "LAND":
 					mavlink.AdapterLand(ctx, gr, support)
 				case "RETURN":

@@ -14,8 +14,8 @@ var (
 	ErrTakeoffCommand = errors.New("no takeoff command success")
 )
 
-// AdapterTakeOff .
-func AdapterTakeOff(ctx context.Context, gr *grpc.ClientConn, support common.Support) error {
+// AdapterTakeoff .
+func AdapterTakeoff(ctx context.Context, gr *grpc.ClientConn, support common.Support) error {
 	action := mavsdk_rpc_action.NewActionServiceClient(gr)
 	return AdapterTakeoffInternal(ctx, support, action)
 }

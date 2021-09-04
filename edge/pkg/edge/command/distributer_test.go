@@ -23,13 +23,13 @@ func TestCommandDistributerContextDone(t *testing.T) {
 
 	cancel()
 
-	resArm, resDisarm, resStart, resPause, resTakeOff, resLand, resReturn := WaitCommandSender(ret)
+	resArm, resDisarm, resStart, resPause, resTakeoff, resLand, resReturn := WaitCommandSender(ret)
 
 	a.False(resArm)
 	a.False(resDisarm)
 	a.False(resStart)
 	a.False(resPause)
-	a.False(resTakeOff)
+	a.False(resTakeoff)
 	a.False(resLand)
 	a.False(resReturn)
 	a.Equal([]string{"command distributer done"}, supportMock.messages)
@@ -52,13 +52,13 @@ func TestCommandDistributerARM(t *testing.T) {
 	stream <- command
 	close(stream)
 
-	resArm, resDisarm, resStart, resPause, resTakeOff, resLand, resReturn := WaitCommandSender(ret)
+	resArm, resDisarm, resStart, resPause, resTakeoff, resLand, resReturn := WaitCommandSender(ret)
 
 	a.True(resArm)
 	a.False(resDisarm)
 	a.False(resStart)
 	a.False(resPause)
-	a.False(resTakeOff)
+	a.False(resTakeoff)
 	a.False(resLand)
 	a.False(resReturn)
 	a.Equal([]string{"command distributer close"}, supportMock.messages)
@@ -81,13 +81,13 @@ func TestCommandDistributerDISARM(t *testing.T) {
 	stream <- command
 	close(stream)
 
-	resArm, resDisarm, resStart, resPause, resTakeOff, resLand, resReturn := WaitCommandSender(ret)
+	resArm, resDisarm, resStart, resPause, resTakeoff, resLand, resReturn := WaitCommandSender(ret)
 
 	a.False(resArm)
 	a.True(resDisarm)
 	a.False(resStart)
 	a.False(resPause)
-	a.False(resTakeOff)
+	a.False(resTakeoff)
 	a.False(resLand)
 	a.False(resReturn)
 	a.Equal([]string{"command distributer close"}, supportMock.messages)
@@ -110,13 +110,13 @@ func TestCommandDistributerSTART(t *testing.T) {
 	stream <- command
 	close(stream)
 
-	resArm, resDisarm, resStart, resPause, resTakeOff, resLand, resReturn := WaitCommandSender(ret)
+	resArm, resDisarm, resStart, resPause, resTakeoff, resLand, resReturn := WaitCommandSender(ret)
 
 	a.False(resArm)
 	a.False(resDisarm)
 	a.True(resStart)
 	a.False(resPause)
-	a.False(resTakeOff)
+	a.False(resTakeoff)
 	a.False(resLand)
 	a.False(resReturn)
 	a.Equal([]string{"command distributer close"}, supportMock.messages)
@@ -139,13 +139,13 @@ func TestCommandDistributerPAUSE(t *testing.T) {
 	stream <- command
 	close(stream)
 
-	resArm, resDisarm, resStart, resPause, resTakeOff, resLand, resReturn := WaitCommandSender(ret)
+	resArm, resDisarm, resStart, resPause, resTakeoff, resLand, resReturn := WaitCommandSender(ret)
 
 	a.False(resArm)
 	a.False(resDisarm)
 	a.False(resStart)
 	a.True(resPause)
-	a.False(resTakeOff)
+	a.False(resTakeoff)
 	a.False(resLand)
 	a.False(resReturn)
 	a.Equal([]string{"command distributer close"}, supportMock.messages)
@@ -168,13 +168,13 @@ func TestCommandDistributerTAKEOFF(t *testing.T) {
 	stream <- command
 	close(stream)
 
-	resArm, resDisarm, resStart, resPause, resTakeOff, resLand, resReturn := WaitCommandSender(ret)
+	resArm, resDisarm, resStart, resPause, resTakeoff, resLand, resReturn := WaitCommandSender(ret)
 
 	a.False(resArm)
 	a.False(resDisarm)
 	a.False(resStart)
 	a.False(resPause)
-	a.True(resTakeOff)
+	a.True(resTakeoff)
 	a.False(resLand)
 	a.False(resReturn)
 	a.Equal([]string{"command distributer close"}, supportMock.messages)
@@ -197,13 +197,13 @@ func TestCommandDistributerLAND(t *testing.T) {
 	stream <- command
 	close(stream)
 
-	resArm, resDisarm, resStart, resPause, resTakeOff, resLand, resReturn := WaitCommandSender(ret)
+	resArm, resDisarm, resStart, resPause, resTakeoff, resLand, resReturn := WaitCommandSender(ret)
 
 	a.False(resArm)
 	a.False(resDisarm)
 	a.False(resStart)
 	a.False(resPause)
-	a.False(resTakeOff)
+	a.False(resTakeoff)
 	a.True(resLand)
 	a.False(resReturn)
 	a.Equal([]string{"command distributer close"}, supportMock.messages)
@@ -226,13 +226,13 @@ func TestCommandDistributerRETURN(t *testing.T) {
 	stream <- command
 	close(stream)
 
-	resArm, resDisarm, resStart, resPause, resTakeOff, resLand, resReturn := WaitCommandSender(ret)
+	resArm, resDisarm, resStart, resPause, resTakeoff, resLand, resReturn := WaitCommandSender(ret)
 
 	a.False(resArm)
 	a.False(resDisarm)
 	a.False(resStart)
 	a.False(resPause)
-	a.False(resTakeOff)
+	a.False(resTakeoff)
 	a.False(resLand)
 	a.True(resReturn)
 	a.Equal([]string{"command distributer close"}, supportMock.messages)
@@ -255,13 +255,13 @@ func TestCommandDistributerNONE(t *testing.T) {
 	stream <- command
 	close(stream)
 
-	resArm, resDisarm, resStart, resPause, resTakeOff, resLand, resReturn := WaitCommandSender(ret)
+	resArm, resDisarm, resStart, resPause, resTakeoff, resLand, resReturn := WaitCommandSender(ret)
 
 	a.False(resArm)
 	a.False(resDisarm)
 	a.False(resStart)
 	a.False(resPause)
-	a.False(resTakeOff)
+	a.False(resTakeoff)
 	a.False(resLand)
 	a.False(resReturn)
 	a.Equal([]string{"command cannot distribute", "command distributer close"}, supportMock.messages)
