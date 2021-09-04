@@ -15,8 +15,8 @@ func Updater(
 	velocityStream <-chan *edge.Velocity,
 	armedStream <-chan *edge.Armed,
 	flightModeStream <-chan *edge.FlightMode,
-) <-chan interface{} {
-	updateExit := make(chan interface{})
+) <-chan struct{} {
+	updateExit := make(chan struct{})
 
 	go func() {
 		defer close(updateExit)
