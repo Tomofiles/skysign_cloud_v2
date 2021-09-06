@@ -2,9 +2,9 @@ package cloudlink
 
 import (
 	"edge/pkg/edge"
+	"edge/pkg/edge/adapters/http"
 	"edge/pkg/edge/domain/common"
 	"encoding/json"
-	"net/http"
 )
 
 // PullCommand .
@@ -15,7 +15,7 @@ func PullCommand(
 ) (*edge.Command, error) {
 	support.NotifyInfo("Send CLOUD data=%s", "{}")
 
-	respBody, err := HttpClientDo(
+	respBody, err := http.HttpClientDo(
 		support,
 		http.MethodPost,
 		cloud+"/api/v1/communications/"+vehicleID+"/commands/"+commandID,

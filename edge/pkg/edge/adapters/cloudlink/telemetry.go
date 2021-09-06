@@ -2,10 +2,10 @@ package cloudlink
 
 import (
 	"edge/pkg/edge"
+	"edge/pkg/edge/adapters/http"
 	"edge/pkg/edge/domain/common"
 	"edge/pkg/edge/domain/telemetry"
 	"encoding/json"
-	"net/http"
 )
 
 // PushTelemetry .
@@ -23,7 +23,7 @@ func PushTelemetry(
 	jsonData, _ := json.Marshal(telem)
 	support.NotifyInfo("Send CLOUD data=%s", jsonData)
 
-	respBody, err := HttpClientDo(
+	respBody, err := http.HttpClientDo(
 		support,
 		http.MethodPost,
 		cloud+"/api/v1/communications/"+telem.ID+"/telemetry",

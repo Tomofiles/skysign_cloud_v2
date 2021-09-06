@@ -3,7 +3,7 @@ package builder
 import (
 	"context"
 	"edge/pkg/edge"
-	"edge/pkg/edge/cloudlink"
+	"edge/pkg/edge/adapters/cloudlink"
 	"edge/pkg/edge/domain/common"
 	"edge/pkg/edge/domain/telemetry"
 	"log"

@@ -1,4 +1,4 @@
-package cloudlink
+package http
 
 import (
 	"edge/pkg/edge/domain/common"

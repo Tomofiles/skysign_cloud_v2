@@ -2,9 +2,9 @@ package cloudlink
 
 import (
 	"edge/pkg/edge"
+	"edge/pkg/edge/adapters/http"
 	"edge/pkg/edge/domain/common"
 	"encoding/json"
-	"net/http"
 )
 
 // GetUploadMission .
@@ -15,7 +15,7 @@ func GetUploadMission(
 ) (*edge.Mission, error) {
 	support.NotifyInfo("Send CLOUD data=%s", "{}")
 
-	respBody, err := HttpClientDo(
+	respBody, err := http.HttpClientDo(
 		support,
 		http.MethodGet,
 		cloud+"/api/v1/uploadmissions/"+missionID,
