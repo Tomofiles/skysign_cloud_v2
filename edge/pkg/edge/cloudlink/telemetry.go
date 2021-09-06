@@ -2,57 +2,46 @@ package cloudlink
 
 import (
 	"edge/pkg/edge"
+	"edge/pkg/edge/domain/common"
 	"edge/pkg/edge/domain/telemetry"
 	"encoding/json"
-	"io/ioutil"
-	"log"
 	"net/http"
-	"strings"
 )
 
 // PushTelemetry .
-func PushTelemetry(cloud string, telemetry telemetry.Telemetry) (string, *edge.CommandIDs, error) {
-	telem := telemetry.Get()
-	if telem.State.FlightMode == "" {
-		log.Println("no telemetry prepared.")
-		return telem.ID, &edge.CommandIDs{CommandIds: make([]string, 0)}, nil
+func PushTelemetry(
+	cloud string,
+	support common.Support,
+	telemetry telemetry.Telemetry,
+) (string, *edge.CommandIDs, error) {
+	telem, err := telemetry.Get()
+	if err != nil {
+		support.NotifyInfo("cloud telemetry request error: %v", err)
+		return "", nil, err
 	}
 
 	jsonData, _ := json.Marshal(telem)
-	log.Printf("Send CLOUD data=%s\n", jsonData)
+	support.NotifyInfo("Send CLOUD data=%s", jsonData)
 
-	req, err := http.NewRequest(
-		"POST",
+	respBody, err := HttpClientDo(
+		support,
+		http.MethodPost,
 		cloud+"/api/v1/communications/"+telem.ID+"/telemetry",
-		strings.NewReader(string(jsonData)),
+		jsonData,
 	)
 	if err != nil {
-		log.Println("cloud telemetry request error:", err)
-		return "", nil, err
-	}
-
-	client := &http.Client{}
-	resp, err := client.Do(req)
-	if err != nil {
-		log.Println("cloud telemetry request error:", err)
-		return "", nil, err
-	}
-
-	requestBody, err := ioutil.ReadAll(resp.Body)
-	defer resp.Body.Close()
-	if err != nil {
-		log.Println("cloud telemetry response error:", err)
+		support.NotifyError("cloud telemetry http client error: %v", err)
 		return "", nil, err
 	}
 
 	var commandIDs edge.CommandIDs
-	err = json.Unmarshal(requestBody, &commandIDs)
+	err = json.Unmarshal(respBody, &commandIDs)
 	if err != nil {
-		log.Println("cloud telemetry response error:", err)
+		support.NotifyError("cloud telemetry response error: %v", err)
 		return "", nil, err
 	}
 
-	log.Printf("Receive CLOUD data=%s\n", requestBody)
+	support.NotifyInfo("Receive CLOUD data=%s", respBody)
 
 	return telem.ID, &commandIDs, nil
 }

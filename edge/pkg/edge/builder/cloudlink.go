@@ -4,6 +4,7 @@ import (
 	"context"
 	"edge/pkg/edge"
 	"edge/pkg/edge/cloudlink"
+	"edge/pkg/edge/domain/common"
 	"edge/pkg/edge/domain/telemetry"
 	"log"
 	"time"
@@ -16,7 +17,7 @@ type CommandStream struct {
 }
 
 // Cloudlink .
-func Cloudlink(ctx context.Context, cloud string, telemetry telemetry.Telemetry) *CommandStream {
+func Cloudlink(ctx context.Context, cloud string, support common.Support, telemetry telemetry.Telemetry) *CommandStream {
 	commandStream := make(chan *edge.Command)
 	missionStream := make(chan *edge.Mission)
 
@@ -31,15 +32,18 @@ func Cloudlink(ctx context.Context, cloud string, telemetry telemetry.Telemetry)
 				t.Stop()
 				return
 			case <-t.C:
-				id, commIDs, err := cloudlink.PushTelemetry(cloud, telemetry)
+				id, commIDs, err := cloudlink.PushTelemetry(cloud, support, telemetry)
 				if err == nil {
 					for _, commID := range commIDs.CommandIds {
-						command, err := cloudlink.PullCommand(cloud, id, commID)
+						command, err := cloudlink.PullCommand(cloud, support, id, commID)
 						if err == nil {
 							if command.Type == "UPLOAD" {
-								mission, err := cloudlink.PullMission(cloud, id, commID)
+								upload, err := cloudlink.PullUploadMission(cloud, support, id, commID)
 								if err == nil {
-									missionStream <- mission
+									mission, err := cloudlink.GetUploadMission(cloud, support, upload.MissionID)
+									if err == nil {
+										missionStream <- mission
+									}
 								}
 							} else {
 								commandStream <- command

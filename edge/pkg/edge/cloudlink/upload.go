@@ -7,33 +7,33 @@ import (
 	"net/http"
 )
 
-// PullCommand .
-func PullCommand(
+// PullUploadMission .
+func PullUploadMission(
 	cloud string,
 	support common.Support,
 	vehicleID, commandID string,
-) (*edge.Command, error) {
+) (*edge.UploadMission, error) {
 	support.NotifyInfo("Send CLOUD data=%s", "{}")
 
 	respBody, err := HttpClientDo(
 		support,
 		http.MethodPost,
-		cloud+"/api/v1/communications/"+vehicleID+"/commands/"+commandID,
+		cloud+"/api/v1/communications/"+vehicleID+"/uploadmissions/"+commandID,
 		[]byte("{}"),
 	)
 	if err != nil {
-		support.NotifyError("cloud command http client error: %v", err)
+		support.NotifyError("cloud upload http client error: %v", err)
 		return nil, err
 	}
 
-	var command edge.Command
-	err = json.Unmarshal(respBody, &command)
+	var uploadMission edge.UploadMission
+	err = json.Unmarshal(respBody, &uploadMission)
 	if err != nil {
-		support.NotifyError("cloud command response error: %v", err)
+		support.NotifyError("cloud upload response error: %v", err)
 		return nil, err
 	}
 
 	support.NotifyInfo("Receive CLOUD data=%s", respBody)
 
-	return &command, nil
+	return &uploadMission, nil
 }

@@ -2,84 +2,38 @@ package cloudlink
 
 import (
 	"edge/pkg/edge"
+	"edge/pkg/edge/domain/common"
 	"encoding/json"
-	"io/ioutil"
-	"log"
 	"net/http"
-	"strings"
 )
 
-// PullMission .
-func PullMission(cloud string, vehicleID string, commandID string) (*edge.Mission, error) {
-	log.Printf("Send CLOUD UploadMission data=%s\n", "{}")
+// GetUploadMission .
+func GetUploadMission(
+	cloud string,
+	support common.Support,
+	missionID string,
+) (*edge.Mission, error) {
+	support.NotifyInfo("Send CLOUD data=%s", "{}")
 
-	req, err := http.NewRequest(
-		"POST",
-		cloud+"/api/v1/communications/"+vehicleID+"/uploadmissions/"+commandID,
-		strings.NewReader("{}"),
+	respBody, err := HttpClientDo(
+		support,
+		http.MethodGet,
+		cloud+"/api/v1/uploadmissions/"+missionID,
+		[]byte("{}"),
 	)
 	if err != nil {
-		log.Println("cloud uploadMission request error:", err)
-		return nil, err
-	}
-
-	client := &http.Client{}
-	resp, err := client.Do(req)
-	if err != nil {
-		log.Println("cloud uploadMission request error:", err)
-		return nil, err
-	}
-
-	requestBody, err := ioutil.ReadAll(resp.Body)
-	defer resp.Body.Close()
-	if err != nil {
-		log.Println("cloud uploadMission response error:", err)
-		return nil, err
-	}
-
-	var uploadMission edge.UploadMission
-	err = json.Unmarshal(requestBody, &uploadMission)
-	if err != nil {
-		log.Println("cloud uploadMission response error:", err)
-		return nil, err
-	}
-
-	log.Printf("Receive CLOUD UploadMission data=%s\n", requestBody)
-
-	log.Printf("Send CLOUD Mission data=%s\n", "{}")
-
-	req, err = http.NewRequest(
-		"GET",
-		cloud+"/api/v1/uploadmissions/"+uploadMission.MissionID,
-		strings.NewReader("{}"),
-	)
-	if err != nil {
-		log.Println("cloud mission request error:", err)
-		return nil, err
-	}
-
-	client = &http.Client{}
-	resp, err = client.Do(req)
-	if err != nil {
-		log.Println("cloud mission request error:", err)
-		return nil, err
-	}
-
-	requestBody, err = ioutil.ReadAll(resp.Body)
-	defer resp.Body.Close()
-	if err != nil {
-		log.Println("cloud mission response error:", err)
+		support.NotifyError("cloud mission http client error: %v", err)
 		return nil, err
 	}
 
 	var mission edge.Mission
-	err = json.Unmarshal(requestBody, &mission)
+	err = json.Unmarshal(respBody, &mission)
 	if err != nil {
-		log.Println("cloud mission response error:", err)
+		support.NotifyError("cloud mission response error: %v", err)
 		return nil, err
 	}
 
-	log.Printf("Receive CLOUD mission data=%s\n", requestBody)
+	support.NotifyInfo("Receive CLOUD data=%s", respBody)
 
 	return &mission, nil
 }

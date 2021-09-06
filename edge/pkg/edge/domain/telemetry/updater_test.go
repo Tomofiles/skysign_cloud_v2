@@ -352,7 +352,7 @@ func TestTelemetryGet(t *testing.T) {
 	tlm.orientationZ = 8.0
 	tlm.orientationW = 9.0
 
-	snapshot := tlm.Get()
+	snapshot, err := tlm.Get()
 
 	expectTelemetry := &edge.Telemetry{
 		ID: DefaultEdgeVehicleID,
@@ -372,4 +372,5 @@ func TestTelemetryGet(t *testing.T) {
 	}
 
 	a.Equal(expectTelemetry, snapshot)
+	a.Nil(err)
 }

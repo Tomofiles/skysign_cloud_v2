@@ -2,8 +2,13 @@ package telemetry
 
 import (
 	"edge/pkg/edge"
+	"errors"
 	"math"
 	"sync"
+)
+
+var (
+	ErrNotPrepared = errors.New("no telemetry prepared")
 )
 
 // Telemetry struct
@@ -14,7 +19,7 @@ type Telemetry interface {
 	SetVelocity(velocity *edge.Velocity)
 	SetArmed(armed *edge.Armed)
 	SetFlightMode(flightMode *edge.FlightMode)
-	Get() *edge.Telemetry
+	Get() (*edge.Telemetry, error)
 }
 
 type telemetry struct {
@@ -87,10 +92,14 @@ func (t *telemetry) SetFlightMode(flightMode *edge.FlightMode) {
 	t.flightMode = flightMode.FlightMode
 }
 
-func (t *telemetry) Get() *edge.Telemetry {
+func (t *telemetry) Get() (*edge.Telemetry, error) {
 	rwmLocker := t.rwm.RLocker()
 	rwmLocker.Lock()
 	defer rwmLocker.Unlock()
+
+	if t.flightMode == "" {
+		return nil, ErrNotPrepared
+	}
 
 	telemetry := &edge.Telemetry{
 		ID: t.id,
@@ -109,5 +118,5 @@ func (t *telemetry) Get() *edge.Telemetry {
 		},
 	}
 
-	return telemetry
+	return telemetry, nil
 }

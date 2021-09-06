@@ -64,7 +64,7 @@ func main() {
 					telemetryStream.FlightModeStream,
 				)
 
-				commandStream := builder.Cloudlink(ctx, cloud, tlm)
+				commandStream := builder.Cloudlink(ctx, cloud, support, tlm)
 
 				cStream := command.CommandDistributer(ctx, support, commandStream.CommandStream)
 				mStream := command.MissionDistributer(ctx, support, commandStream.MissionStream)
