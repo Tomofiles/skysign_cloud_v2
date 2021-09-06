@@ -5,7 +5,7 @@ import (
 	"edge/pkg/edge"
 	"edge/pkg/edge/adapters/cloudlink"
 	"edge/pkg/edge/domain/common"
-	"edge/pkg/edge/domain/telemetry"
+	"edge/pkg/edge/domain/mavlink/telemetry"
 	"log"
 	"time"
 )
