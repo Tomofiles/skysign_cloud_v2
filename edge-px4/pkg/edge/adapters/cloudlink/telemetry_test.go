@@ -2,14 +2,16 @@ package cloudlink
 
 import (
 	"edge-px4/pkg/edge"
+	"edge-px4/pkg/edge/adapters/json"
 	"edge-px4/pkg/edge/domain/telemetry"
-	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"math"
 	"net/http"
 	"net/http/httptest"
 	"testing"
+
+	"github.com/Tomofiles/skysign_cloud_v2/skysign-proto/pkg/skysign_proto"
 
 	"github.com/stretchr/testify/assert"
 )
@@ -22,7 +24,8 @@ func TestNoCommandIDsResponsePushTelemetry(t *testing.T) {
 
 	var resMethod, resPath string
 	var resBody []byte
-	respJson, _ := json.Marshal(edge.CommandIDs{
+	respJson := json.Marshal(&skysign_proto.PushTelemetryResponse{
+		Id:         DefaultEdgeVehicleID,
 		CommandIds: []string{},
 	})
 	h := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -45,9 +48,9 @@ func TestNoCommandIDsResponsePushTelemetry(t *testing.T) {
 
 	id, commandIDs, err := PushTelemetry(ts.URL, support, telemetry)
 
-	expectBody, _ := json.Marshal(edge.Telemetry{
-		ID: DefaultEdgeVehicleID,
-		State: &edge.State{
+	expectBody := json.Marshal(&skysign_proto.PushTelemetryRequest{
+		Id: DefaultEdgeVehicleID,
+		Telemetry: &skysign_proto.Telemetry{
 			Latitude:         1.0,
 			Longitude:        2.0,
 			Altitude:         3.0,
@@ -89,7 +92,8 @@ func TestMultipleCommandIDsResponsePushTelemetry(t *testing.T) {
 
 	var resMethod, resPath string
 	var resBody []byte
-	respJson, _ := json.Marshal(edge.CommandIDs{
+	respJson := json.Marshal(&skysign_proto.PushTelemetryResponse{
+		Id:         DefaultEdgeVehicleID,
 		CommandIds: []string{DefaultEdgeCommandID1, DefaultEdgeCommandID2, DefaultEdgeCommandID3},
 	})
 	h := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -112,9 +116,9 @@ func TestMultipleCommandIDsResponsePushTelemetry(t *testing.T) {
 
 	id, commandIDs, err := PushTelemetry(ts.URL, support, telemetry)
 
-	expectBody, _ := json.Marshal(edge.Telemetry{
-		ID: DefaultEdgeVehicleID,
-		State: &edge.State{
+	expectBody := json.Marshal(&skysign_proto.PushTelemetryRequest{
+		Id: DefaultEdgeVehicleID,
+		Telemetry: &skysign_proto.Telemetry{
 			Latitude:         1.0,
 			Longitude:        2.0,
 			Altitude:         3.0,
@@ -148,7 +152,8 @@ func TestNotPreparedWhenPushTelemetry(t *testing.T) {
 
 	support := &supportMock{}
 
-	respJson, _ := json.Marshal(edge.CommandIDs{
+	respJson := json.Marshal(&skysign_proto.PushTelemetryResponse{
+		Id:         DefaultEdgeVehicleID,
 		CommandIds: []string{},
 	})
 	h := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -188,9 +193,9 @@ func TestHttpClientErrorWhenPushTelemetry(t *testing.T) {
 
 	id, commandIDs, err := PushTelemetry("http://"+dummyHost, support, telemetry)
 
-	expectBody, _ := json.Marshal(edge.Telemetry{
-		ID: DefaultEdgeVehicleID,
-		State: &edge.State{
+	expectBody := json.Marshal(&skysign_proto.PushTelemetryRequest{
+		Id: DefaultEdgeVehicleID,
+		Telemetry: &skysign_proto.Telemetry{
 			Latitude:         1.0,
 			Longitude:        2.0,
 			Altitude:         3.0,
@@ -221,11 +226,8 @@ func TestResponseJsonParseErrorWhenPushTelemetry(t *testing.T) {
 
 	support := &supportMock{}
 
-	respJson, _ := json.Marshal(edge.CommandIDs{
-		CommandIds: []string{},
-	})
 	h := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		fmt.Fprintln(w, string(respJson)+"{")
+		fmt.Fprintln(w, "{")
 	})
 	ts := httptest.NewServer(h)
 	defer ts.Close()
@@ -240,9 +242,9 @@ func TestResponseJsonParseErrorWhenPushTelemetry(t *testing.T) {
 
 	id, commandIDs, err := PushTelemetry(ts.URL, support, telemetry)
 
-	expectBody, _ := json.Marshal(edge.Telemetry{
-		ID: DefaultEdgeVehicleID,
-		State: &edge.State{
+	expectBody := json.Marshal(&skysign_proto.PushTelemetryRequest{
+		Id: DefaultEdgeVehicleID,
+		Telemetry: &skysign_proto.Telemetry{
 			Latitude:         1.0,
 			Longitude:        2.0,
 			Altitude:         3.0,
@@ -258,7 +260,7 @@ func TestResponseJsonParseErrorWhenPushTelemetry(t *testing.T) {
 	})
 
 	expectMessage1 := fmt.Sprintf("Send CLOUD data=%s", expectBody)
-	expectMessage2 := "cloud telemetry response error: invalid character '{' after top-level value"
+	expectMessage2 := "cloud telemetry response error: unexpected EOF"
 
 	a.Empty(id)
 	a.Empty(commandIDs)

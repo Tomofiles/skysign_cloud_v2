@@ -3,8 +3,10 @@ package cloudlink
 import (
 	"edge-px4/pkg/edge"
 	"edge-px4/pkg/edge/adapters/http"
+	"edge-px4/pkg/edge/adapters/json"
 	"edge-px4/pkg/edge/domain/common"
-	"encoding/json"
+
+	"github.com/Tomofiles/skysign_cloud_v2/skysign-proto/pkg/skysign_proto"
 )
 
 // GetUploadMission .
@@ -13,21 +15,23 @@ func GetUploadMission(
 	support common.Support,
 	missionID string,
 ) (*edge.Mission, error) {
-	support.NotifyInfo("Send CLOUD data=%s", "{}")
+	request := json.Marshal(&skysign_proto.GetUploadMissionRequest{})
+
+	support.NotifyInfo("Send CLOUD data=%s", request)
 
 	respBody, err := http.HttpClientDo(
 		support,
 		http.MethodGet,
 		cloud+"/api/v1/uploadmissions/"+missionID,
-		[]byte("{}"),
+		request,
 	)
 	if err != nil {
 		support.NotifyError("cloud mission http client error: %v", err)
 		return nil, err
 	}
 
-	var mission edge.Mission
-	err = json.Unmarshal(respBody, &mission)
+	var response skysign_proto.UploadMission
+	err = json.Unmarshal(respBody, &response)
 	if err != nil {
 		support.NotifyError("cloud mission response error: %v", err)
 		return nil, err
@@ -35,5 +39,18 @@ func GetUploadMission(
 
 	support.NotifyInfo("Receive CLOUD data=%s", respBody)
 
-	return &mission, nil
+	mission := &edge.Mission{
+		ID:        response.Id,
+		Waypoints: []*edge.Waypoints{},
+	}
+	for _, waypoint := range response.Waypoints {
+		mission.Waypoints = append(mission.Waypoints, &edge.Waypoints{
+			Latitude:       waypoint.Latitude,
+			Longitude:      waypoint.Longitude,
+			RelativeHeight: waypoint.RelativeHeight,
+			Speed:          waypoint.Speed,
+		})
+	}
+
+	return mission, nil
 }

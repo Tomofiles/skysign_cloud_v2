@@ -2,13 +2,14 @@ package cloudlink
 
 import (
 	"edge-px4/pkg/edge"
-	"encoding/json"
+	"edge-px4/pkg/edge/adapters/json"
 	"fmt"
 	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
 	"testing"
 
+	"github.com/Tomofiles/skysign_cloud_v2/skysign-proto/pkg/skysign_proto"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -20,9 +21,10 @@ func TestPullUploadMission(t *testing.T) {
 
 	var resMethod, resPath string
 	var resBody []byte
-	respJson, _ := json.Marshal(edge.UploadMission{
-		ID:        DefaultEdgeCommandID,
-		MissionID: DefaultEdgeMissionID,
+	respJson := json.Marshal(&skysign_proto.PullUploadMissionResponse{
+		Id:        DefaultEdgeCommandID,
+		CommandId: DefaultEdgeCommandID,
+		MissionId: DefaultEdgeMissionID,
 	})
 	h := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		resMethod = r.Method
@@ -36,7 +38,9 @@ func TestPullUploadMission(t *testing.T) {
 
 	upload, err := PullUploadMission(ts.URL, support, DefaultEdgeVehicleID, DefaultEdgeCommandID)
 
-	expectMessage1 := fmt.Sprintf("Send CLOUD data=%s", "{}")
+	expectBody := json.Marshal(&skysign_proto.PullUploadMissionRequest{})
+
+	expectMessage1 := fmt.Sprintf("Send CLOUD data=%s", expectBody)
 	expectMessage2 := fmt.Sprintf("Receive CLOUD data=%s\n", respJson)
 
 	expectUpload := &edge.UploadMission{
@@ -46,7 +50,7 @@ func TestPullUploadMission(t *testing.T) {
 
 	a.Equal(http.MethodPost, resMethod)
 	a.Equal("/api/v1/communications/vehicle-id/uploadmissions/command-id", resPath)
-	a.Equal([]byte("{}"), resBody)
+	a.Equal(expectBody, resBody)
 
 	a.Equal(expectUpload, upload)
 	a.Nil(err)
@@ -63,7 +67,9 @@ func TestHttpClientErrorWhenPullUploadMission(t *testing.T) {
 
 	upload, err := PullUploadMission("http://"+dummyHost, support, DefaultEdgeVehicleID, DefaultEdgeCommandID)
 
-	expectMessage1 := fmt.Sprintf("Send CLOUD data=%s", "{}")
+	expectBody := json.Marshal(&skysign_proto.PullUploadMissionRequest{})
+
+	expectMessage1 := fmt.Sprintf("Send CLOUD data=%s", expectBody)
 	expectMessage2 := fmt.Sprintf("http client do error: Post http://%s/api/v1/communications/vehicle-id/uploadmissions/command-id: dial tcp: lookup %s: no such host", dummyHost, dummyHost)
 	expectMessage3 := fmt.Sprintf("cloud upload http client error: Post http://%s/api/v1/communications/vehicle-id/uploadmissions/command-id: dial tcp: lookup %s: no such host", dummyHost, dummyHost)
 
@@ -78,20 +84,18 @@ func TestResponseJsonParseErrorWhenPullUploadMission(t *testing.T) {
 
 	support := &supportMock{}
 
-	respJson, _ := json.Marshal(edge.UploadMission{
-		ID:        DefaultEdgeCommandID,
-		MissionID: DefaultEdgeMissionID,
-	})
 	h := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		fmt.Fprintln(w, string(respJson)+"{")
+		fmt.Fprintln(w, "{")
 	})
 	ts := httptest.NewServer(h)
 	defer ts.Close()
 
 	upload, err := PullUploadMission(ts.URL, support, DefaultEdgeVehicleID, DefaultEdgeCommandID)
 
-	expectMessage1 := fmt.Sprintf("Send CLOUD data=%s", "{}")
-	expectMessage2 := "cloud upload response error: invalid character '{' after top-level value"
+	expectBody := json.Marshal(&skysign_proto.PullUploadMissionRequest{})
+
+	expectMessage1 := fmt.Sprintf("Send CLOUD data=%s", expectBody)
+	expectMessage2 := "cloud upload response error: unexpected EOF"
 
 	a.Nil(upload)
 	a.NotNil(err)

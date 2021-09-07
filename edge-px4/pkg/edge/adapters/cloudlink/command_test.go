@@ -2,13 +2,14 @@ package cloudlink
 
 import (
 	"edge-px4/pkg/edge"
-	"encoding/json"
+	"edge-px4/pkg/edge/adapters/json"
 	"fmt"
 	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
 	"testing"
 
+	"github.com/Tomofiles/skysign_cloud_v2/skysign-proto/pkg/skysign_proto"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -20,8 +21,10 @@ func TestPullCommand(t *testing.T) {
 
 	var resMethod, resPath string
 	var resBody []byte
-	respJson, _ := json.Marshal(edge.Command{
-		Type: "XXX",
+	respJson := json.Marshal(&skysign_proto.PullCommandResponse{
+		Id:        DefaultEdgeVehicleID,
+		CommandId: DefaultEdgeCommandID,
+		Type:      skysign_proto.CommandType_ARM,
 	})
 	h := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		resMethod = r.Method
@@ -35,16 +38,18 @@ func TestPullCommand(t *testing.T) {
 
 	command, err := PullCommand(ts.URL, support, DefaultEdgeVehicleID, DefaultEdgeCommandID)
 
-	expectMessage1 := fmt.Sprintf("Send CLOUD data=%s", "{}")
+	expectBody := json.Marshal(&skysign_proto.PullCommandRequest{})
+
+	expectMessage1 := fmt.Sprintf("Send CLOUD data=%s", expectBody)
 	expectMessage2 := fmt.Sprintf("Receive CLOUD data=%s\n", respJson)
 
 	expectCommand := &edge.Command{
-		Type: "XXX",
+		Type: "ARM",
 	}
 
 	a.Equal(http.MethodPost, resMethod)
 	a.Equal("/api/v1/communications/vehicle-id/commands/command-id", resPath)
-	a.Equal([]byte("{}"), resBody)
+	a.Equal(expectBody, resBody)
 
 	a.Equal(expectCommand, command)
 	a.Nil(err)
@@ -61,7 +66,9 @@ func TestHttpClientErrorWhenPullCommand(t *testing.T) {
 
 	command, err := PullCommand("http://"+dummyHost, support, DefaultEdgeVehicleID, DefaultEdgeCommandID)
 
-	expectMessage1 := fmt.Sprintf("Send CLOUD data=%s", "{}")
+	expectBody := json.Marshal(&skysign_proto.PullCommandRequest{})
+
+	expectMessage1 := fmt.Sprintf("Send CLOUD data=%s", expectBody)
 	expectMessage2 := fmt.Sprintf("http client do error: Post http://%s/api/v1/communications/vehicle-id/commands/command-id: dial tcp: lookup %s: no such host", dummyHost, dummyHost)
 	expectMessage3 := fmt.Sprintf("cloud command http client error: Post http://%s/api/v1/communications/vehicle-id/commands/command-id: dial tcp: lookup %s: no such host", dummyHost, dummyHost)
 
@@ -76,19 +83,18 @@ func TestResponseJsonParseErrorWhenPullCommand(t *testing.T) {
 
 	support := &supportMock{}
 
-	respJson, _ := json.Marshal(edge.Command{
-		Type: "XXX",
-	})
 	h := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		fmt.Fprintln(w, string(respJson)+"{")
+		fmt.Fprintln(w, "{")
 	})
 	ts := httptest.NewServer(h)
 	defer ts.Close()
 
 	command, err := PullCommand(ts.URL, support, DefaultEdgeVehicleID, DefaultEdgeCommandID)
 
-	expectMessage1 := fmt.Sprintf("Send CLOUD data=%s", "{}")
-	expectMessage2 := "cloud command response error: invalid character '{' after top-level value"
+	expectBody := json.Marshal(&skysign_proto.PullCommandRequest{})
+
+	expectMessage1 := fmt.Sprintf("Send CLOUD data=%s", expectBody)
+	expectMessage2 := "cloud command response error: unexpected EOF"
 
 	a.Nil(command)
 	a.NotNil(err)

@@ -40,51 +40,51 @@ type FlightMode struct {
 
 // Telemetry struct
 type Telemetry struct {
-	ID    string `json:"id"`
-	State *State `json:"telemetry"`
+	ID    string
+	State *State
 }
 
 // State struct
 type State struct {
-	Latitude         float64 `json:"latitude"`
-	Longitude        float64 `json:"longitude"`
-	Altitude         float64 `json:"altitude"`
-	RelativeAltitude float64 `json:"relative_altitude"`
-	Speed            float64 `json:"speed"`
-	Armed            bool    `json:"armed"`
-	FlightMode       string  `json:"flight_mode"`
-	OrientationX     float64 `json:"orientation_x"`
-	OrientationY     float64 `json:"orientation_y"`
-	OrientationZ     float64 `json:"orientation_z"`
-	OrientationW     float64 `json:"orientation_w"`
+	Latitude         float64
+	Longitude        float64
+	Altitude         float64
+	RelativeAltitude float64
+	Speed            float64
+	Armed            bool
+	FlightMode       string
+	OrientationX     float64
+	OrientationY     float64
+	OrientationZ     float64
+	OrientationW     float64
 }
 
 // CommandIDs .
 type CommandIDs struct {
-	CommandIds []string `json:"command_ids"`
+	CommandIds []string
 }
 
 // Command .
 type Command struct {
-	Type string `json:"type"`
+	Type string
 }
 
 // UploadMission .
 type UploadMission struct {
-	ID        string `json:"id"`
-	MissionID string `json:"mission_id"`
+	ID        string
+	MissionID string
 }
 
 // Mission .
 type Mission struct {
-	ID        string       `json:"id"`
-	Waypoints []*Waypoints `json:"waypoints"`
+	ID        string
+	Waypoints []*Waypoints
 }
 
 // Waypoints .
 type Waypoints struct {
-	Latitude       float64 `json:"latitude"`
-	Longitude      float64 `json:"longitude"`
-	RelativeHeight float64 `json:"relative_height"`
-	Speed          float64 `json:"speed"`
+	Latitude       float64
+	Longitude      float64
+	RelativeHeight float64
+	Speed          float64
 }

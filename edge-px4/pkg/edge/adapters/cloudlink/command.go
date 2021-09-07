@@ -3,8 +3,10 @@ package cloudlink
 import (
 	"edge-px4/pkg/edge"
 	"edge-px4/pkg/edge/adapters/http"
+	"edge-px4/pkg/edge/adapters/json"
 	"edge-px4/pkg/edge/domain/common"
-	"encoding/json"
+
+	"github.com/Tomofiles/skysign_cloud_v2/skysign-proto/pkg/skysign_proto"
 )
 
 // PullCommand .
@@ -13,21 +15,23 @@ func PullCommand(
 	support common.Support,
 	vehicleID, commandID string,
 ) (*edge.Command, error) {
-	support.NotifyInfo("Send CLOUD data=%s", "{}")
+	request := json.Marshal(&skysign_proto.PullCommandRequest{})
+
+	support.NotifyInfo("Send CLOUD data=%s", request)
 
 	respBody, err := http.HttpClientDo(
 		support,
 		http.MethodPost,
 		cloud+"/api/v1/communications/"+vehicleID+"/commands/"+commandID,
-		[]byte("{}"),
+		request,
 	)
 	if err != nil {
 		support.NotifyError("cloud command http client error: %v", err)
 		return nil, err
 	}
 
-	var command edge.Command
-	err = json.Unmarshal(respBody, &command)
+	var response skysign_proto.PullCommandResponse
+	err = json.Unmarshal(respBody, &response)
 	if err != nil {
 		support.NotifyError("cloud command response error: %v", err)
 		return nil, err
@@ -35,5 +39,9 @@ func PullCommand(
 
 	support.NotifyInfo("Receive CLOUD data=%s", respBody)
 
-	return &command, nil
+	command := &edge.Command{
+		Type: response.Type.String(),
+	}
+
+	return command, nil
 }
