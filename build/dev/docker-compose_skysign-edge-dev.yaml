@@ -25,7 +25,7 @@ services:
     container_name: skysign-mavsdk-grpc-server
     hostname: skysign-mavsdk-grpc-server
     build:
-      context: ../../edge/mavsdk
+      context: ../../edge-px4/mavsdk
       dockerfile: Dockerfile
     command: /mavsdk_server_manylinux1-x64 udp://skysign-px4-gazebo:14540 -p 50051
     ports:
@@ -34,16 +34,16 @@ services:
     depends_on:
       - skysign-px4-gazebo-for-debugging
 
-  skysign-edge-for-debugging:
-    container_name: skysign-edge
-    hostname: skysign-edge
+  skysign-edge-px4-for-debugging:
+    container_name: skysign-edge-px4
+    hostname: skysign-edge-px4
     build:
-      context: ../../edge
+      context: ../../edge-px4
       dockerfile: Dockerfile
     environment:
      - CLOUD_ADDRESS=${CLOUD_ADDRESS}
      - MAVSDK_ADDRESS=skysign-mavsdk-grpc-server:50051
-    command: /app/skysign-edge
+    command: /app/edge-px4 -logtostderr
     depends_on:
       - skysign-mavsdk-grpc-server-for-debugging
 
