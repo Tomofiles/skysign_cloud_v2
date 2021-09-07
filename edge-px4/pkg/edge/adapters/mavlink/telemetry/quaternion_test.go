@@ -8,7 +8,7 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
 
-	"edge-px4/pkg/edge"
+	"edge-px4/pkg/edge/domain/model"
 	mavsdk_rpc_telemetry "edge-px4/pkg/protos/telemetry"
 )
 
@@ -85,7 +85,7 @@ func TestAdapterQuaternionSubscriber(t *testing.T) {
 
 	stream := AdapterQuaternionSubscriber(receiverMock, supportMock)
 
-	var resQuaternions []*edge.Quaternion
+	var resQuaternions []*model.Quaternion
 	for {
 		a, ok := <-stream
 		if !ok {
@@ -94,7 +94,7 @@ func TestAdapterQuaternionSubscriber(t *testing.T) {
 		resQuaternions = append(resQuaternions, a)
 	}
 
-	expectQuaternions := []*edge.Quaternion{
+	expectQuaternions := []*model.Quaternion{
 		{
 			X: 11.0,
 			Y: 21.0,
@@ -126,7 +126,7 @@ func TestReceiveErrorWhenAdapterQuaternionSubscriber(t *testing.T) {
 
 	stream := AdapterQuaternionSubscriber(receiverMock, supportMock)
 
-	var resQuaternions []*edge.Quaternion
+	var resQuaternions []*model.Quaternion
 	for {
 		a, ok := <-stream
 		if !ok {
@@ -153,7 +153,7 @@ func TestCloseErrorWhenAdapterQuaternionSubscriber(t *testing.T) {
 
 	stream := AdapterQuaternionSubscriber(receiverMock, supportMock)
 
-	var resQuaternions []*edge.Quaternion
+	var resQuaternions []*model.Quaternion
 	for {
 		a, ok := <-stream
 		if !ok {
@@ -180,7 +180,7 @@ func TestReceiveAndCloseErrorWhenAdapterQuaternionSubscriber(t *testing.T) {
 
 	stream := AdapterQuaternionSubscriber(receiverMock, supportMock)
 
-	var resQuaternions []*edge.Quaternion
+	var resQuaternions []*model.Quaternion
 	for {
 		a, ok := <-stream
 		if !ok {

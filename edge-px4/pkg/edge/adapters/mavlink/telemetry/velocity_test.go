@@ -8,7 +8,7 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
 
-	"edge-px4/pkg/edge"
+	"edge-px4/pkg/edge/domain/model"
 	mavsdk_rpc_telemetry "edge-px4/pkg/protos/telemetry"
 )
 
@@ -83,7 +83,7 @@ func TestAdapterVelocitySubscriber(t *testing.T) {
 
 	stream := AdapterVelocitySubscriber(receiverMock, supportMock)
 
-	var resVelocitys []*edge.Velocity
+	var resVelocitys []*model.Velocity
 	for {
 		a, ok := <-stream
 		if !ok {
@@ -92,7 +92,7 @@ func TestAdapterVelocitySubscriber(t *testing.T) {
 		resVelocitys = append(resVelocitys, a)
 	}
 
-	expectVelocitys := []*edge.Velocity{
+	expectVelocitys := []*model.Velocity{
 		{
 			North: 11.0,
 			East:  21.0,
@@ -122,7 +122,7 @@ func TestReceiveErrorWhenAdapterVelocitySubscriber(t *testing.T) {
 
 	stream := AdapterVelocitySubscriber(receiverMock, supportMock)
 
-	var resVelocitys []*edge.Velocity
+	var resVelocitys []*model.Velocity
 	for {
 		a, ok := <-stream
 		if !ok {
@@ -149,7 +149,7 @@ func TestCloseErrorWhenAdapterVelocitySubscriber(t *testing.T) {
 
 	stream := AdapterVelocitySubscriber(receiverMock, supportMock)
 
-	var resVelocitys []*edge.Velocity
+	var resVelocitys []*model.Velocity
 	for {
 		a, ok := <-stream
 		if !ok {
@@ -176,7 +176,7 @@ func TestReceiveAndCloseErrorWhenAdapterVelocitySubscriber(t *testing.T) {
 
 	stream := AdapterVelocitySubscriber(receiverMock, supportMock)
 
-	var resVelocitys []*edge.Velocity
+	var resVelocitys []*model.Velocity
 	for {
 		a, ok := <-stream
 		if !ok {

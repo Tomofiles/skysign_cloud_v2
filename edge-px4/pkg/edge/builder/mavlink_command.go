@@ -2,9 +2,9 @@ package builder
 
 import (
 	"context"
-	"edge-px4/pkg/edge"
 	mavlink_command_adapter "edge-px4/pkg/edge/adapters/mavlink/command"
 	"edge-px4/pkg/edge/domain/common"
+	"edge-px4/pkg/edge/domain/model"
 
 	"google.golang.org/grpc"
 )
@@ -18,7 +18,7 @@ type CommandAdapter struct {
 	AdapterTakeoff func() error
 	AdapterLand    func() error
 	AdapterReturn  func() error
-	AdapterUpload  func(*edge.Mission) error
+	AdapterUpload  func(*model.Mission) error
 }
 
 // MavlinkCommand .
@@ -48,7 +48,7 @@ func MavlinkCommand(
 	adapterReturn := func() error {
 		return mavlink_command_adapter.AdapterReturn(ctx, gr, support)
 	}
-	adapterUpload := func(mission *edge.Mission) error {
+	adapterUpload := func(mission *model.Mission) error {
 		return mavlink_command_adapter.AdapterUpload(ctx, gr, support, mission)
 	}
 

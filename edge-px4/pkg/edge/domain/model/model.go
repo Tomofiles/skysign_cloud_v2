@@ -1,11 +1,11 @@
-package edge
+package model
 
-// ConnectionState struct
+// ConnectionState .
 type ConnectionState struct {
 	VehicleID string
 }
 
-// Position struct
+// Position .
 type Position struct {
 	Latitude         float64
 	Longitude        float64
@@ -13,7 +13,7 @@ type Position struct {
 	RelativeAltitude float64
 }
 
-// Quaternion struct
+// Quaternion .
 type Quaternion struct {
 	X float64
 	Y float64
@@ -21,30 +21,30 @@ type Quaternion struct {
 	W float64
 }
 
-// Velocity struct
+// Velocity .
 type Velocity struct {
 	North float64
 	East  float64
 	Down  float64
 }
 
-// Armed struct
+// Armed .
 type Armed struct {
 	Armed bool
 }
 
-// FlightMode struct
+// FlightMode .
 type FlightMode struct {
 	FlightMode string
 }
 
-// Telemetry struct
-type Telemetry struct {
+// PushTelemetry .
+type PushTelemetry struct {
 	ID    string
 	State *State
 }
 
-// State struct
+// State .
 type State struct {
 	Latitude         float64
 	Longitude        float64

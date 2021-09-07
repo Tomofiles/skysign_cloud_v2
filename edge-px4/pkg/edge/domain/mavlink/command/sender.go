@@ -2,8 +2,8 @@ package command
 
 import (
 	"context"
-	"edge-px4/pkg/edge"
 	"edge-px4/pkg/edge/domain/common"
+	"edge-px4/pkg/edge/domain/model"
 )
 
 // CommandSender .
@@ -42,8 +42,8 @@ func CommandSender(
 func MissionSender(
 	ctx context.Context,
 	support common.Support,
-	stream <-chan *edge.Mission,
-	adapter func(*edge.Mission) error,
+	stream <-chan *model.Mission,
+	adapter func(*model.Mission) error,
 ) <-chan struct{} {
 	sendExit := make(chan struct{})
 

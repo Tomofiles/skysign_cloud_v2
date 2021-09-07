@@ -2,7 +2,7 @@ package command
 
 import (
 	"context"
-	"edge-px4/pkg/edge"
+	"edge-px4/pkg/edge/domain/model"
 	"sync"
 	"testing"
 
@@ -17,7 +17,7 @@ func TestCommandDistributerContextDone(t *testing.T) {
 	ctx, cancel := context.WithCancel(ctx)
 
 	supportMock := &supportMock{}
-	stream := make(chan *edge.Command)
+	stream := make(chan *model.Command)
 
 	ret := CommandDistributer(ctx, supportMock, stream)
 
@@ -42,11 +42,11 @@ func TestCommandDistributerARM(t *testing.T) {
 	ctx := context.Background()
 
 	supportMock := &supportMock{}
-	stream := make(chan *edge.Command)
+	stream := make(chan *model.Command)
 
 	ret := CommandDistributer(ctx, supportMock, stream)
 
-	command := &edge.Command{
+	command := &model.Command{
 		Type: "ARM",
 	}
 	stream <- command
@@ -71,11 +71,11 @@ func TestCommandDistributerDISARM(t *testing.T) {
 	ctx := context.Background()
 
 	supportMock := &supportMock{}
-	stream := make(chan *edge.Command)
+	stream := make(chan *model.Command)
 
 	ret := CommandDistributer(ctx, supportMock, stream)
 
-	command := &edge.Command{
+	command := &model.Command{
 		Type: "DISARM",
 	}
 	stream <- command
@@ -100,11 +100,11 @@ func TestCommandDistributerSTART(t *testing.T) {
 	ctx := context.Background()
 
 	supportMock := &supportMock{}
-	stream := make(chan *edge.Command)
+	stream := make(chan *model.Command)
 
 	ret := CommandDistributer(ctx, supportMock, stream)
 
-	command := &edge.Command{
+	command := &model.Command{
 		Type: "START",
 	}
 	stream <- command
@@ -129,11 +129,11 @@ func TestCommandDistributerPAUSE(t *testing.T) {
 	ctx := context.Background()
 
 	supportMock := &supportMock{}
-	stream := make(chan *edge.Command)
+	stream := make(chan *model.Command)
 
 	ret := CommandDistributer(ctx, supportMock, stream)
 
-	command := &edge.Command{
+	command := &model.Command{
 		Type: "PAUSE",
 	}
 	stream <- command
@@ -158,11 +158,11 @@ func TestCommandDistributerTAKEOFF(t *testing.T) {
 	ctx := context.Background()
 
 	supportMock := &supportMock{}
-	stream := make(chan *edge.Command)
+	stream := make(chan *model.Command)
 
 	ret := CommandDistributer(ctx, supportMock, stream)
 
-	command := &edge.Command{
+	command := &model.Command{
 		Type: "TAKEOFF",
 	}
 	stream <- command
@@ -187,11 +187,11 @@ func TestCommandDistributerLAND(t *testing.T) {
 	ctx := context.Background()
 
 	supportMock := &supportMock{}
-	stream := make(chan *edge.Command)
+	stream := make(chan *model.Command)
 
 	ret := CommandDistributer(ctx, supportMock, stream)
 
-	command := &edge.Command{
+	command := &model.Command{
 		Type: "LAND",
 	}
 	stream <- command
@@ -216,11 +216,11 @@ func TestCommandDistributerRETURN(t *testing.T) {
 	ctx := context.Background()
 
 	supportMock := &supportMock{}
-	stream := make(chan *edge.Command)
+	stream := make(chan *model.Command)
 
 	ret := CommandDistributer(ctx, supportMock, stream)
 
-	command := &edge.Command{
+	command := &model.Command{
 		Type: "RETURN",
 	}
 	stream <- command
@@ -245,11 +245,11 @@ func TestCommandDistributerNONE(t *testing.T) {
 	ctx := context.Background()
 
 	supportMock := &supportMock{}
-	stream := make(chan *edge.Command)
+	stream := make(chan *model.Command)
 
 	ret := CommandDistributer(ctx, supportMock, stream)
 
-	command := &edge.Command{
+	command := &model.Command{
 		Type: "NONE",
 	}
 	stream <- command
@@ -275,7 +275,7 @@ func TestMissionDistributerContextDone(t *testing.T) {
 	ctx, cancel := context.WithCancel(ctx)
 
 	supportMock := &supportMock{}
-	stream := make(chan *edge.Mission)
+	stream := make(chan *model.Mission)
 
 	ret := MissionDistributer(ctx, supportMock, stream)
 
@@ -311,11 +311,11 @@ func TestMissionDistributer(t *testing.T) {
 	ctx := context.Background()
 
 	supportMock := &supportMock{}
-	stream := make(chan *edge.Mission)
+	stream := make(chan *model.Mission)
 
 	ret := MissionDistributer(ctx, supportMock, stream)
 
-	mission := &edge.Mission{}
+	mission := &model.Mission{}
 	stream <- mission
 	close(stream)
 

@@ -2,8 +2,7 @@ package telemetry
 
 import (
 	"context"
-	"edge-px4/pkg/edge"
-	"edge-px4/pkg/edge/domain/telemetry"
+	"edge-px4/pkg/edge/domain/model"
 	"math"
 	"testing"
 
@@ -19,14 +18,14 @@ func TestTelemetryUpdaterContextDone(t *testing.T) {
 
 	supportMock := &supportMock{}
 
-	tlm := telemetry.NewTelemetry()
+	tlm := model.NewTelemetry()
 
-	connectionStateStream := make(chan *edge.ConnectionState)
-	positionStream := make(chan *edge.Position)
-	quaternionStream := make(chan *edge.Quaternion)
-	velocityStream := make(chan *edge.Velocity)
-	armedStream := make(chan *edge.Armed)
-	flightModeStream := make(chan *edge.FlightMode)
+	connectionStateStream := make(chan *model.ConnectionState)
+	positionStream := make(chan *model.Position)
+	quaternionStream := make(chan *model.Quaternion)
+	velocityStream := make(chan *model.Velocity)
+	armedStream := make(chan *model.Armed)
+	flightModeStream := make(chan *model.FlightMode)
 
 	updateExit := Updater(
 		ctx,
@@ -44,7 +43,7 @@ func TestTelemetryUpdaterContextDone(t *testing.T) {
 
 	<-updateExit
 
-	expectTelemetry := telemetry.NewTelemetry()
+	expectTelemetry := model.NewTelemetry()
 
 	a.Equal(expectTelemetry, tlm)
 	a.Equal([]string{"telemetry updater done"}, supportMock.messages)
@@ -58,14 +57,14 @@ func TestTelemetryUpdaterConnectionState(t *testing.T) {
 
 	supportMock := &supportMock{}
 
-	tlm := telemetry.NewTelemetry()
+	tlm := model.NewTelemetry()
 
-	connectionStateStream := make(chan *edge.ConnectionState)
-	positionStream := make(chan *edge.Position)
-	quaternionStream := make(chan *edge.Quaternion)
-	velocityStream := make(chan *edge.Velocity)
-	armedStream := make(chan *edge.Armed)
-	flightModeStream := make(chan *edge.FlightMode)
+	connectionStateStream := make(chan *model.ConnectionState)
+	positionStream := make(chan *model.Position)
+	quaternionStream := make(chan *model.Quaternion)
+	velocityStream := make(chan *model.Velocity)
+	armedStream := make(chan *model.Armed)
+	flightModeStream := make(chan *model.FlightMode)
 
 	updateExit := Updater(
 		ctx,
@@ -79,7 +78,7 @@ func TestTelemetryUpdaterConnectionState(t *testing.T) {
 		flightModeStream,
 	)
 
-	response1 := &edge.ConnectionState{
+	response1 := &model.ConnectionState{
 		VehicleID: DefaultEdgeVehicleID,
 	}
 	connectionStateStream <- response1
@@ -87,8 +86,8 @@ func TestTelemetryUpdaterConnectionState(t *testing.T) {
 
 	<-updateExit
 
-	expectTelemetry := telemetry.NewTelemetry()
-	expectTelemetry.SetConnectionState(&edge.ConnectionState{VehicleID: DefaultEdgeVehicleID})
+	expectTelemetry := model.NewTelemetry()
+	expectTelemetry.SetConnectionState(&model.ConnectionState{VehicleID: DefaultEdgeVehicleID})
 
 	a.Equal(expectTelemetry, tlm)
 	a.Equal([]string{"connectionStateStream close"}, supportMock.messages)
@@ -102,14 +101,14 @@ func TestTelemetryUpdaterPosition(t *testing.T) {
 
 	supportMock := &supportMock{}
 
-	tlm := telemetry.NewTelemetry()
+	tlm := model.NewTelemetry()
 
-	connectionStateStream := make(chan *edge.ConnectionState)
-	positionStream := make(chan *edge.Position)
-	quaternionStream := make(chan *edge.Quaternion)
-	velocityStream := make(chan *edge.Velocity)
-	armedStream := make(chan *edge.Armed)
-	flightModeStream := make(chan *edge.FlightMode)
+	connectionStateStream := make(chan *model.ConnectionState)
+	positionStream := make(chan *model.Position)
+	quaternionStream := make(chan *model.Quaternion)
+	velocityStream := make(chan *model.Velocity)
+	armedStream := make(chan *model.Armed)
+	flightModeStream := make(chan *model.FlightMode)
 
 	updateExit := Updater(
 		ctx,
@@ -123,7 +122,7 @@ func TestTelemetryUpdaterPosition(t *testing.T) {
 		flightModeStream,
 	)
 
-	response1 := &edge.Position{
+	response1 := &model.Position{
 		Latitude:         1.0,
 		Longitude:        2.0,
 		Altitude:         3.0,
@@ -134,8 +133,8 @@ func TestTelemetryUpdaterPosition(t *testing.T) {
 
 	<-updateExit
 
-	expectTelemetry := telemetry.NewTelemetry()
-	expectTelemetry.SetPosition(&edge.Position{
+	expectTelemetry := model.NewTelemetry()
+	expectTelemetry.SetPosition(&model.Position{
 		Latitude:         1.0,
 		Longitude:        2.0,
 		Altitude:         3.0,
@@ -154,14 +153,14 @@ func TestTelemetryUpdaterQuaternion(t *testing.T) {
 
 	supportMock := &supportMock{}
 
-	tlm := telemetry.NewTelemetry()
+	tlm := model.NewTelemetry()
 
-	connectionStateStream := make(chan *edge.ConnectionState)
-	positionStream := make(chan *edge.Position)
-	quaternionStream := make(chan *edge.Quaternion)
-	velocityStream := make(chan *edge.Velocity)
-	armedStream := make(chan *edge.Armed)
-	flightModeStream := make(chan *edge.FlightMode)
+	connectionStateStream := make(chan *model.ConnectionState)
+	positionStream := make(chan *model.Position)
+	quaternionStream := make(chan *model.Quaternion)
+	velocityStream := make(chan *model.Velocity)
+	armedStream := make(chan *model.Armed)
+	flightModeStream := make(chan *model.FlightMode)
 
 	updateExit := Updater(
 		ctx,
@@ -175,7 +174,7 @@ func TestTelemetryUpdaterQuaternion(t *testing.T) {
 		flightModeStream,
 	)
 
-	response1 := &edge.Quaternion{
+	response1 := &model.Quaternion{
 		X: 1.0,
 		Y: 2.0,
 		Z: 3.0,
@@ -186,8 +185,8 @@ func TestTelemetryUpdaterQuaternion(t *testing.T) {
 
 	<-updateExit
 
-	expectTelemetry := telemetry.NewTelemetry()
-	expectTelemetry.SetQuaternion(&edge.Quaternion{
+	expectTelemetry := model.NewTelemetry()
+	expectTelemetry.SetQuaternion(&model.Quaternion{
 		X: 1.0,
 		Y: 2.0,
 		Z: 3.0,
@@ -206,15 +205,15 @@ func TestTelemetryUpdaterVelocity(t *testing.T) {
 
 	supportMock := &supportMock{}
 
-	tlm := telemetry.NewTelemetry()
-	tlm.SetFlightMode(&edge.FlightMode{FlightMode: "XXX"})
+	tlm := model.NewTelemetry()
+	tlm.SetFlightMode(&model.FlightMode{FlightMode: "XXX"})
 
-	connectionStateStream := make(chan *edge.ConnectionState)
-	positionStream := make(chan *edge.Position)
-	quaternionStream := make(chan *edge.Quaternion)
-	velocityStream := make(chan *edge.Velocity)
-	armedStream := make(chan *edge.Armed)
-	flightModeStream := make(chan *edge.FlightMode)
+	connectionStateStream := make(chan *model.ConnectionState)
+	positionStream := make(chan *model.Position)
+	quaternionStream := make(chan *model.Quaternion)
+	velocityStream := make(chan *model.Velocity)
+	armedStream := make(chan *model.Armed)
+	flightModeStream := make(chan *model.FlightMode)
 
 	updateExit := Updater(
 		ctx,
@@ -228,7 +227,7 @@ func TestTelemetryUpdaterVelocity(t *testing.T) {
 		flightModeStream,
 	)
 
-	response1 := &edge.Velocity{
+	response1 := &model.Velocity{
 		North: 1.0,
 		East:  2.0,
 		Down:  3.0,
@@ -253,14 +252,14 @@ func TestTelemetryUpdaterArmed(t *testing.T) {
 
 	supportMock := &supportMock{}
 
-	tlm := telemetry.NewTelemetry()
+	tlm := model.NewTelemetry()
 
-	connectionStateStream := make(chan *edge.ConnectionState)
-	positionStream := make(chan *edge.Position)
-	quaternionStream := make(chan *edge.Quaternion)
-	velocityStream := make(chan *edge.Velocity)
-	armedStream := make(chan *edge.Armed)
-	flightModeStream := make(chan *edge.FlightMode)
+	connectionStateStream := make(chan *model.ConnectionState)
+	positionStream := make(chan *model.Position)
+	quaternionStream := make(chan *model.Quaternion)
+	velocityStream := make(chan *model.Velocity)
+	armedStream := make(chan *model.Armed)
+	flightModeStream := make(chan *model.FlightMode)
 
 	updateExit := Updater(
 		ctx,
@@ -274,7 +273,7 @@ func TestTelemetryUpdaterArmed(t *testing.T) {
 		flightModeStream,
 	)
 
-	response1 := &edge.Armed{
+	response1 := &model.Armed{
 		Armed: true,
 	}
 	armedStream <- response1
@@ -282,8 +281,8 @@ func TestTelemetryUpdaterArmed(t *testing.T) {
 
 	<-updateExit
 
-	expectTelemetry := telemetry.NewTelemetry()
-	expectTelemetry.SetArmed(&edge.Armed{
+	expectTelemetry := model.NewTelemetry()
+	expectTelemetry.SetArmed(&model.Armed{
 		Armed: true,
 	})
 
@@ -299,14 +298,14 @@ func TestTelemetryUpdaterFlightMode(t *testing.T) {
 
 	supportMock := &supportMock{}
 
-	tlm := telemetry.NewTelemetry()
+	tlm := model.NewTelemetry()
 
-	connectionStateStream := make(chan *edge.ConnectionState)
-	positionStream := make(chan *edge.Position)
-	quaternionStream := make(chan *edge.Quaternion)
-	velocityStream := make(chan *edge.Velocity)
-	armedStream := make(chan *edge.Armed)
-	flightModeStream := make(chan *edge.FlightMode)
+	connectionStateStream := make(chan *model.ConnectionState)
+	positionStream := make(chan *model.Position)
+	quaternionStream := make(chan *model.Quaternion)
+	velocityStream := make(chan *model.Velocity)
+	armedStream := make(chan *model.Armed)
+	flightModeStream := make(chan *model.FlightMode)
 
 	updateExit := Updater(
 		ctx,
@@ -320,7 +319,7 @@ func TestTelemetryUpdaterFlightMode(t *testing.T) {
 		flightModeStream,
 	)
 
-	response1 := &edge.FlightMode{
+	response1 := &model.FlightMode{
 		FlightMode: "XXX",
 	}
 	flightModeStream <- response1
@@ -328,8 +327,8 @@ func TestTelemetryUpdaterFlightMode(t *testing.T) {
 
 	<-updateExit
 
-	expectTelemetry := telemetry.NewTelemetry()
-	expectTelemetry.SetFlightMode(&edge.FlightMode{
+	expectTelemetry := model.NewTelemetry()
+	expectTelemetry.SetFlightMode(&model.FlightMode{
 		FlightMode: "XXX",
 	})
 
@@ -341,37 +340,37 @@ func TestTelemetryUpdaterFlightMode(t *testing.T) {
 func TestTelemetryGet(t *testing.T) {
 	a := assert.New(t)
 
-	tlm := telemetry.NewTelemetry()
-	tlm.SetConnectionState(&edge.ConnectionState{VehicleID: DefaultEdgeVehicleID})
-	tlm.SetPosition(&edge.Position{
+	tlm := model.NewTelemetry()
+	tlm.SetConnectionState(&model.ConnectionState{VehicleID: DefaultEdgeVehicleID})
+	tlm.SetPosition(&model.Position{
 		Latitude:         1.0,
 		Longitude:        2.0,
 		Altitude:         3.0,
 		RelativeAltitude: 4.0,
 	})
-	tlm.SetQuaternion(&edge.Quaternion{
+	tlm.SetQuaternion(&model.Quaternion{
 		X: 6.0,
 		Y: 7.0,
 		Z: 8.0,
 		W: 9.0,
 	})
-	tlm.SetVelocity(&edge.Velocity{
+	tlm.SetVelocity(&model.Velocity{
 		North: 1.0,
 		East:  2.0,
 		Down:  3.0,
 	})
-	tlm.SetArmed(&edge.Armed{
+	tlm.SetArmed(&model.Armed{
 		Armed: true,
 	})
-	tlm.SetFlightMode(&edge.FlightMode{
+	tlm.SetFlightMode(&model.FlightMode{
 		FlightMode: "XXX",
 	})
 
 	snapshot, err := tlm.Get()
 
-	expectTelemetry := &edge.Telemetry{
+	expectTelemetry := &model.PushTelemetry{
 		ID: DefaultEdgeVehicleID,
-		State: &edge.State{
+		State: &model.State{
 			Latitude:         1.0,
 			Longitude:        2.0,
 			Altitude:         3.0,

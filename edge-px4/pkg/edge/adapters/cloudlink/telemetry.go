@@ -1,11 +1,10 @@
 package cloudlink
 
 import (
-	"edge-px4/pkg/edge"
 	"edge-px4/pkg/edge/adapters/http"
 	"edge-px4/pkg/edge/adapters/json"
 	"edge-px4/pkg/edge/domain/common"
-	"edge-px4/pkg/edge/domain/telemetry"
+	"edge-px4/pkg/edge/domain/model"
 
 	"github.com/Tomofiles/skysign_cloud_v2/skysign-proto/pkg/skysign_proto"
 )
@@ -14,8 +13,8 @@ import (
 func PushTelemetry(
 	cloud string,
 	support common.Support,
-	telemetry telemetry.Telemetry,
-) (string, *edge.CommandIDs, error) {
+	telemetry model.Telemetry,
+) (string, *model.CommandIDs, error) {
 	snapshot, err := telemetry.Get()
 	if err != nil {
 		support.NotifyInfo("cloud telemetry request error: %v", err)
@@ -61,7 +60,7 @@ func PushTelemetry(
 
 	support.NotifyInfo("Receive CLOUD data=%s", respBody)
 
-	commandIDs := &edge.CommandIDs{
+	commandIDs := &model.CommandIDs{
 		CommandIds: []string{},
 	}
 	for _, commandID := range response.CommandIds {

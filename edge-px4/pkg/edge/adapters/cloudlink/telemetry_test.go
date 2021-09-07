@@ -1,9 +1,8 @@
 package cloudlink
 
 import (
-	"edge-px4/pkg/edge"
 	"edge-px4/pkg/edge/adapters/json"
-	"edge-px4/pkg/edge/domain/telemetry"
+	"edge-px4/pkg/edge/domain/model"
 	"fmt"
 	"io/ioutil"
 	"math"
@@ -38,13 +37,13 @@ func TestNoCommandIDsResponsePushTelemetry(t *testing.T) {
 	ts := httptest.NewServer(h)
 	defer ts.Close()
 
-	telemetry := telemetry.NewTelemetry()
-	telemetry.SetConnectionState(&edge.ConnectionState{VehicleID: DefaultEdgeVehicleID})
-	telemetry.SetPosition(&edge.Position{Latitude: 1.0, Longitude: 2.0, Altitude: 3.0, RelativeAltitude: 4.0})
-	telemetry.SetQuaternion(&edge.Quaternion{X: 6.0, Y: 7.0, Z: 8.0, W: 9.0})
-	telemetry.SetVelocity(&edge.Velocity{North: 1.0, East: 2.0, Down: 3.0})
-	telemetry.SetArmed(&edge.Armed{Armed: true})
-	telemetry.SetFlightMode(&edge.FlightMode{FlightMode: "XXX"})
+	telemetry := model.NewTelemetry()
+	telemetry.SetConnectionState(&model.ConnectionState{VehicleID: DefaultEdgeVehicleID})
+	telemetry.SetPosition(&model.Position{Latitude: 1.0, Longitude: 2.0, Altitude: 3.0, RelativeAltitude: 4.0})
+	telemetry.SetQuaternion(&model.Quaternion{X: 6.0, Y: 7.0, Z: 8.0, W: 9.0})
+	telemetry.SetVelocity(&model.Velocity{North: 1.0, East: 2.0, Down: 3.0})
+	telemetry.SetArmed(&model.Armed{Armed: true})
+	telemetry.SetFlightMode(&model.FlightMode{FlightMode: "XXX"})
 
 	id, commandIDs, err := PushTelemetry(ts.URL, support, telemetry)
 
@@ -106,13 +105,13 @@ func TestMultipleCommandIDsResponsePushTelemetry(t *testing.T) {
 	ts := httptest.NewServer(h)
 	defer ts.Close()
 
-	telemetry := telemetry.NewTelemetry()
-	telemetry.SetConnectionState(&edge.ConnectionState{VehicleID: DefaultEdgeVehicleID})
-	telemetry.SetPosition(&edge.Position{Latitude: 1.0, Longitude: 2.0, Altitude: 3.0, RelativeAltitude: 4.0})
-	telemetry.SetQuaternion(&edge.Quaternion{X: 6.0, Y: 7.0, Z: 8.0, W: 9.0})
-	telemetry.SetVelocity(&edge.Velocity{North: 1.0, East: 2.0, Down: 3.0})
-	telemetry.SetArmed(&edge.Armed{Armed: true})
-	telemetry.SetFlightMode(&edge.FlightMode{FlightMode: "XXX"})
+	telemetry := model.NewTelemetry()
+	telemetry.SetConnectionState(&model.ConnectionState{VehicleID: DefaultEdgeVehicleID})
+	telemetry.SetPosition(&model.Position{Latitude: 1.0, Longitude: 2.0, Altitude: 3.0, RelativeAltitude: 4.0})
+	telemetry.SetQuaternion(&model.Quaternion{X: 6.0, Y: 7.0, Z: 8.0, W: 9.0})
+	telemetry.SetVelocity(&model.Velocity{North: 1.0, East: 2.0, Down: 3.0})
+	telemetry.SetArmed(&model.Armed{Armed: true})
+	telemetry.SetFlightMode(&model.FlightMode{FlightMode: "XXX"})
 
 	id, commandIDs, err := PushTelemetry(ts.URL, support, telemetry)
 
@@ -162,8 +161,8 @@ func TestNotPreparedWhenPushTelemetry(t *testing.T) {
 	ts := httptest.NewServer(h)
 	defer ts.Close()
 
-	tlm := telemetry.NewTelemetry()
-	tlm.SetConnectionState(&edge.ConnectionState{VehicleID: DefaultEdgeVehicleID})
+	tlm := model.NewTelemetry()
+	tlm.SetConnectionState(&model.ConnectionState{VehicleID: DefaultEdgeVehicleID})
 
 	id, commandIDs, err := PushTelemetry(ts.URL, support, tlm)
 
@@ -171,7 +170,7 @@ func TestNotPreparedWhenPushTelemetry(t *testing.T) {
 
 	a.Empty(id)
 	a.Nil(commandIDs)
-	a.Equal(telemetry.ErrNotPrepared, err)
+	a.Equal(model.ErrNotPrepared, err)
 	a.Equal([]string{expectMessage1}, support.messages)
 }
 
@@ -183,13 +182,13 @@ func TestHttpClientErrorWhenPushTelemetry(t *testing.T) {
 
 	support := &supportMock{}
 
-	telemetry := telemetry.NewTelemetry()
-	telemetry.SetConnectionState(&edge.ConnectionState{VehicleID: DefaultEdgeVehicleID})
-	telemetry.SetPosition(&edge.Position{Latitude: 1.0, Longitude: 2.0, Altitude: 3.0, RelativeAltitude: 4.0})
-	telemetry.SetQuaternion(&edge.Quaternion{X: 6.0, Y: 7.0, Z: 8.0, W: 9.0})
-	telemetry.SetVelocity(&edge.Velocity{North: 1.0, East: 2.0, Down: 3.0})
-	telemetry.SetArmed(&edge.Armed{Armed: true})
-	telemetry.SetFlightMode(&edge.FlightMode{FlightMode: "XXX"})
+	telemetry := model.NewTelemetry()
+	telemetry.SetConnectionState(&model.ConnectionState{VehicleID: DefaultEdgeVehicleID})
+	telemetry.SetPosition(&model.Position{Latitude: 1.0, Longitude: 2.0, Altitude: 3.0, RelativeAltitude: 4.0})
+	telemetry.SetQuaternion(&model.Quaternion{X: 6.0, Y: 7.0, Z: 8.0, W: 9.0})
+	telemetry.SetVelocity(&model.Velocity{North: 1.0, East: 2.0, Down: 3.0})
+	telemetry.SetArmed(&model.Armed{Armed: true})
+	telemetry.SetFlightMode(&model.FlightMode{FlightMode: "XXX"})
 
 	id, commandIDs, err := PushTelemetry("http://"+dummyHost, support, telemetry)
 
@@ -232,13 +231,13 @@ func TestResponseJsonParseErrorWhenPushTelemetry(t *testing.T) {
 	ts := httptest.NewServer(h)
 	defer ts.Close()
 
-	telemetry := telemetry.NewTelemetry()
-	telemetry.SetConnectionState(&edge.ConnectionState{VehicleID: DefaultEdgeVehicleID})
-	telemetry.SetPosition(&edge.Position{Latitude: 1.0, Longitude: 2.0, Altitude: 3.0, RelativeAltitude: 4.0})
-	telemetry.SetQuaternion(&edge.Quaternion{X: 6.0, Y: 7.0, Z: 8.0, W: 9.0})
-	telemetry.SetVelocity(&edge.Velocity{North: 1.0, East: 2.0, Down: 3.0})
-	telemetry.SetArmed(&edge.Armed{Armed: true})
-	telemetry.SetFlightMode(&edge.FlightMode{FlightMode: "XXX"})
+	telemetry := model.NewTelemetry()
+	telemetry.SetConnectionState(&model.ConnectionState{VehicleID: DefaultEdgeVehicleID})
+	telemetry.SetPosition(&model.Position{Latitude: 1.0, Longitude: 2.0, Altitude: 3.0, RelativeAltitude: 4.0})
+	telemetry.SetQuaternion(&model.Quaternion{X: 6.0, Y: 7.0, Z: 8.0, W: 9.0})
+	telemetry.SetVelocity(&model.Velocity{North: 1.0, East: 2.0, Down: 3.0})
+	telemetry.SetArmed(&model.Armed{Armed: true})
+	telemetry.SetFlightMode(&model.FlightMode{FlightMode: "XXX"})
 
 	id, commandIDs, err := PushTelemetry(ts.URL, support, telemetry)
 

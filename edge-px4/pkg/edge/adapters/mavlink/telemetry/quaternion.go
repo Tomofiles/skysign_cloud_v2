@@ -4,15 +4,15 @@ import (
 	"context"
 	"io"
 
-	"edge-px4/pkg/edge"
 	"edge-px4/pkg/edge/domain/common"
+	"edge-px4/pkg/edge/domain/model"
 	mavsdk_rpc_telemetry "edge-px4/pkg/protos/telemetry"
 
 	"google.golang.org/grpc"
 )
 
 // AdapterQuaternion .
-func AdapterQuaternion(ctx context.Context, gr *grpc.ClientConn, support common.Support) (<-chan *edge.Quaternion, error) {
+func AdapterQuaternion(ctx context.Context, gr *grpc.ClientConn, support common.Support) (<-chan *model.Quaternion, error) {
 	telemetry := mavsdk_rpc_telemetry.NewTelemetryServiceClient(gr)
 
 	quaternionReceiver, err := AdapterQuaternionInternal(ctx, support, telemetry)
@@ -46,8 +46,8 @@ func AdapterQuaternionInternal(
 func AdapterQuaternionSubscriber(
 	quaternionReceiver mavsdk_rpc_telemetry.TelemetryService_SubscribeAttitudeQuaternionClient,
 	support common.Support,
-) <-chan *edge.Quaternion {
-	quaternionStream := make(chan *edge.Quaternion)
+) <-chan *model.Quaternion {
+	quaternionStream := make(chan *model.Quaternion)
 
 	go func() {
 		defer func() {
@@ -74,7 +74,7 @@ func AdapterQuaternionSubscriber(
 					err = ret
 					return
 				}
-				quaternion := &edge.Quaternion{
+				quaternion := &model.Quaternion{
 					X: float64(response.GetAttitudeQuaternion().GetX()),
 					Y: float64(response.GetAttitudeQuaternion().GetY()),
 					Z: float64(response.GetAttitudeQuaternion().GetZ()),

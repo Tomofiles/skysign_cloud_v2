@@ -2,21 +2,21 @@ package builder
 
 import (
 	"context"
-	"edge-px4/pkg/edge"
 	mavlink_telemetry_adapter "edge-px4/pkg/edge/adapters/mavlink/telemetry"
 	"edge-px4/pkg/edge/domain/common"
+	"edge-px4/pkg/edge/domain/model"
 
 	"google.golang.org/grpc"
 )
 
 // TelemetryStream .
 type TelemetryStream struct {
-	ConnectionStateStream <-chan *edge.ConnectionState
-	PositionStream        <-chan *edge.Position
-	QuaternionStream      <-chan *edge.Quaternion
-	VelocityStream        <-chan *edge.Velocity
-	ArmedStream           <-chan *edge.Armed
-	FlightModeStream      <-chan *edge.FlightMode
+	ConnectionStateStream <-chan *model.ConnectionState
+	PositionStream        <-chan *model.Position
+	QuaternionStream      <-chan *model.Quaternion
+	VelocityStream        <-chan *model.Velocity
+	ArmedStream           <-chan *model.Armed
+	FlightModeStream      <-chan *model.FlightMode
 }
 
 // MavlinkTelemetry .

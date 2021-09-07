@@ -8,7 +8,7 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
 
-	"edge-px4/pkg/edge"
+	"edge-px4/pkg/edge/domain/model"
 	mavsdk_rpc_telemetry "edge-px4/pkg/protos/telemetry"
 )
 
@@ -75,7 +75,7 @@ func TestAdapterArmedSubscriber(t *testing.T) {
 
 	stream := AdapterArmedSubscriber(receiverMock, supportMock)
 
-	var resArmeds []*edge.Armed
+	var resArmeds []*model.Armed
 	for {
 		a, ok := <-stream
 		if !ok {
@@ -84,7 +84,7 @@ func TestAdapterArmedSubscriber(t *testing.T) {
 		resArmeds = append(resArmeds, a)
 	}
 
-	expectArmeds := []*edge.Armed{
+	expectArmeds := []*model.Armed{
 		{
 			Armed: true,
 		},
@@ -110,7 +110,7 @@ func TestReceiveErrorWhenAdapterArmedSubscriber(t *testing.T) {
 
 	stream := AdapterArmedSubscriber(receiverMock, supportMock)
 
-	var resArmeds []*edge.Armed
+	var resArmeds []*model.Armed
 	for {
 		a, ok := <-stream
 		if !ok {
@@ -137,7 +137,7 @@ func TestCloseErrorWhenAdapterArmedSubscriber(t *testing.T) {
 
 	stream := AdapterArmedSubscriber(receiverMock, supportMock)
 
-	var resArmeds []*edge.Armed
+	var resArmeds []*model.Armed
 	for {
 		a, ok := <-stream
 		if !ok {
@@ -164,7 +164,7 @@ func TestReceiveAndCloseErrorWhenAdapterArmedSubscriber(t *testing.T) {
 
 	stream := AdapterArmedSubscriber(receiverMock, supportMock)
 
-	var resArmeds []*edge.Armed
+	var resArmeds []*model.Armed
 	for {
 		a, ok := <-stream
 		if !ok {

@@ -4,15 +4,15 @@ import (
 	"context"
 	"io"
 
-	"edge-px4/pkg/edge"
 	"edge-px4/pkg/edge/domain/common"
+	"edge-px4/pkg/edge/domain/model"
 	mavsdk_rpc_telemetry "edge-px4/pkg/protos/telemetry"
 
 	"google.golang.org/grpc"
 )
 
 // AdapterPosition .
-func AdapterPosition(ctx context.Context, gr *grpc.ClientConn, support common.Support) (<-chan *edge.Position, error) {
+func AdapterPosition(ctx context.Context, gr *grpc.ClientConn, support common.Support) (<-chan *model.Position, error) {
 	telemetry := mavsdk_rpc_telemetry.NewTelemetryServiceClient(gr)
 
 	positionReceiver, err := AdapterPositionInternal(ctx, support, telemetry)
@@ -47,8 +47,8 @@ func AdapterPositionInternal(
 func AdapterPositionSubscriber(
 	positionReceiver mavsdk_rpc_telemetry.TelemetryService_SubscribePositionClient,
 	support common.Support,
-) <-chan *edge.Position {
-	positionStream := make(chan *edge.Position)
+) <-chan *model.Position {
+	positionStream := make(chan *model.Position)
 
 	go func() {
 		defer func() {
@@ -75,7 +75,7 @@ func AdapterPositionSubscriber(
 					err = ret
 					return
 				}
-				position := &edge.Position{
+				position := &model.Position{
 					Latitude:         response.GetPosition().LatitudeDeg,
 					Longitude:        response.GetPosition().LongitudeDeg,
 					Altitude:         float64(response.GetPosition().AbsoluteAltitudeM),

@@ -1,7 +1,6 @@
-package telemetry
+package model
 
 import (
-	"edge-px4/pkg/edge"
 	"errors"
 	"math"
 	"sync"
@@ -11,15 +10,15 @@ var (
 	ErrNotPrepared = errors.New("no telemetry prepared")
 )
 
-// Telemetry struct
+// Telemetry .
 type Telemetry interface {
-	SetConnectionState(connectionState *edge.ConnectionState)
-	SetPosition(position *edge.Position)
-	SetQuaternion(quaternion *edge.Quaternion)
-	SetVelocity(velocity *edge.Velocity)
-	SetArmed(armed *edge.Armed)
-	SetFlightMode(flightMode *edge.FlightMode)
-	Get() (*edge.Telemetry, error)
+	SetConnectionState(connectionState *ConnectionState)
+	SetPosition(position *Position)
+	SetQuaternion(quaternion *Quaternion)
+	SetVelocity(velocity *Velocity)
+	SetArmed(armed *Armed)
+	SetFlightMode(flightMode *FlightMode)
+	Get() (*PushTelemetry, error)
 }
 
 type telemetry struct {
@@ -43,14 +42,14 @@ func NewTelemetry() Telemetry {
 	return &telemetry{}
 }
 
-func (t *telemetry) SetConnectionState(connectionState *edge.ConnectionState) {
+func (t *telemetry) SetConnectionState(connectionState *ConnectionState) {
 	t.rwm.Lock()
 	defer t.rwm.Unlock()
 
 	t.id = connectionState.VehicleID
 }
 
-func (t *telemetry) SetPosition(position *edge.Position) {
+func (t *telemetry) SetPosition(position *Position) {
 	t.rwm.Lock()
 	defer t.rwm.Unlock()
 
@@ -60,7 +59,7 @@ func (t *telemetry) SetPosition(position *edge.Position) {
 	t.relativeAltitude = position.RelativeAltitude
 }
 
-func (t *telemetry) SetQuaternion(quaternion *edge.Quaternion) {
+func (t *telemetry) SetQuaternion(quaternion *Quaternion) {
 	t.rwm.Lock()
 	defer t.rwm.Unlock()
 
@@ -70,7 +69,7 @@ func (t *telemetry) SetQuaternion(quaternion *edge.Quaternion) {
 	t.orientationW = quaternion.W
 }
 
-func (t *telemetry) SetVelocity(velocity *edge.Velocity) {
+func (t *telemetry) SetVelocity(velocity *Velocity) {
 	t.rwm.Lock()
 	defer t.rwm.Unlock()
 
@@ -78,21 +77,21 @@ func (t *telemetry) SetVelocity(velocity *edge.Velocity) {
 	t.speed = math.Sqrt(velocity.North*velocity.North + velocity.East*velocity.East)
 }
 
-func (t *telemetry) SetArmed(armed *edge.Armed) {
+func (t *telemetry) SetArmed(armed *Armed) {
 	t.rwm.Lock()
 	defer t.rwm.Unlock()
 
 	t.armed = armed.Armed
 }
 
-func (t *telemetry) SetFlightMode(flightMode *edge.FlightMode) {
+func (t *telemetry) SetFlightMode(flightMode *FlightMode) {
 	t.rwm.Lock()
 	defer t.rwm.Unlock()
 
 	t.flightMode = flightMode.FlightMode
 }
 
-func (t *telemetry) Get() (*edge.Telemetry, error) {
+func (t *telemetry) Get() (*PushTelemetry, error) {
 	rwmLocker := t.rwm.RLocker()
 	rwmLocker.Lock()
 	defer rwmLocker.Unlock()
@@ -101,9 +100,9 @@ func (t *telemetry) Get() (*edge.Telemetry, error) {
 		return nil, ErrNotPrepared
 	}
 
-	telemetry := &edge.Telemetry{
+	telemetry := &PushTelemetry{
 		ID: t.id,
-		State: &edge.State{
+		State: &State{
 			Latitude:         t.latitude,
 			Longitude:        t.longitude,
 			Altitude:         t.altitude,

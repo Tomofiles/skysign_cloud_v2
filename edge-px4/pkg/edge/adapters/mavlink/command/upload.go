@@ -4,8 +4,8 @@ import (
 	"context"
 	"errors"
 
-	"edge-px4/pkg/edge"
 	"edge-px4/pkg/edge/domain/common"
+	"edge-px4/pkg/edge/domain/model"
 	mavsdk_rpc_mission "edge-px4/pkg/protos/mission"
 
 	"google.golang.org/grpc"
@@ -16,13 +16,13 @@ var (
 )
 
 // AdapterUpload .
-func AdapterUpload(ctx context.Context, gr *grpc.ClientConn, support common.Support, missionModel *edge.Mission) error {
+func AdapterUpload(ctx context.Context, gr *grpc.ClientConn, support common.Support, missionModel *model.Mission) error {
 	mission := mavsdk_rpc_mission.NewMissionServiceClient(gr)
 	return AdapterUploadInternal(ctx, support, mission, missionModel)
 }
 
 // AdapterUploadInternal .
-func AdapterUploadInternal(ctx context.Context, support common.Support, mission mavsdk_rpc_mission.MissionServiceClient, missionModel *edge.Mission) (err error) {
+func AdapterUploadInternal(ctx context.Context, support common.Support, mission mavsdk_rpc_mission.MissionServiceClient, missionModel *model.Mission) (err error) {
 	defer func() {
 		if err != nil {
 			support.NotifyError("upload command error: %v", err)

@@ -8,7 +8,7 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
 
-	"edge-px4/pkg/edge"
+	"edge-px4/pkg/edge/domain/model"
 	mavsdk_rpc_core "edge-px4/pkg/protos/core"
 )
 
@@ -79,7 +79,7 @@ func TestAdapterConnectionStateSubscriber(t *testing.T) {
 
 	stream := AdapterConnectionStateSubscriber(receiverMock, supportMock)
 
-	var resConnectionStates []*edge.ConnectionState
+	var resConnectionStates []*model.ConnectionState
 	for {
 		a, ok := <-stream
 		if !ok {
@@ -88,7 +88,7 @@ func TestAdapterConnectionStateSubscriber(t *testing.T) {
 		resConnectionStates = append(resConnectionStates, a)
 	}
 
-	expectConnectionStates := []*edge.ConnectionState{
+	expectConnectionStates := []*model.ConnectionState{
 		{
 			VehicleID: "1234567890",
 		},
@@ -114,7 +114,7 @@ func TestReceiveErrorWhenAdapterConnectionStateSubscriber(t *testing.T) {
 
 	stream := AdapterConnectionStateSubscriber(receiverMock, supportMock)
 
-	var resConnectionStates []*edge.ConnectionState
+	var resConnectionStates []*model.ConnectionState
 	for {
 		a, ok := <-stream
 		if !ok {
@@ -141,7 +141,7 @@ func TestCloseErrorWhenAdapterConnectionStateSubscriber(t *testing.T) {
 
 	stream := AdapterConnectionStateSubscriber(receiverMock, supportMock)
 
-	var resConnectionStates []*edge.ConnectionState
+	var resConnectionStates []*model.ConnectionState
 	for {
 		a, ok := <-stream
 		if !ok {
@@ -168,7 +168,7 @@ func TestReceiveAndCloseErrorWhenAdapterConnectionStateSubscriber(t *testing.T) 
 
 	stream := AdapterConnectionStateSubscriber(receiverMock, supportMock)
 
-	var resConnectionStates []*edge.ConnectionState
+	var resConnectionStates []*model.ConnectionState
 	for {
 		a, ok := <-stream
 		if !ok {

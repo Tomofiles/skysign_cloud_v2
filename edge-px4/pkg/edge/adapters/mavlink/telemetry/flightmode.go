@@ -4,15 +4,15 @@ import (
 	"context"
 	"io"
 
-	"edge-px4/pkg/edge"
 	"edge-px4/pkg/edge/domain/common"
+	"edge-px4/pkg/edge/domain/model"
 	mavsdk_rpc_telemetry "edge-px4/pkg/protos/telemetry"
 
 	"google.golang.org/grpc"
 )
 
 // AdapterFlightMode .
-func AdapterFlightMode(ctx context.Context, gr *grpc.ClientConn, support common.Support) (<-chan *edge.FlightMode, error) {
+func AdapterFlightMode(ctx context.Context, gr *grpc.ClientConn, support common.Support) (<-chan *model.FlightMode, error) {
 	telemetry := mavsdk_rpc_telemetry.NewTelemetryServiceClient(gr)
 
 	flightModeReceiver, err := AdapterFlightModeInternal(ctx, support, telemetry)
@@ -47,8 +47,8 @@ func AdapterFlightModeInternal(
 func AdapterFlightModeSubscriber(
 	flightModeReceiver mavsdk_rpc_telemetry.TelemetryService_SubscribeFlightModeClient,
 	support common.Support,
-) <-chan *edge.FlightMode {
-	flightModeStream := make(chan *edge.FlightMode)
+) <-chan *model.FlightMode {
+	flightModeStream := make(chan *model.FlightMode)
 
 	go func() {
 		defer func() {
@@ -75,7 +75,7 @@ func AdapterFlightModeSubscriber(
 					err = ret
 					return
 				}
-				flightMode := &edge.FlightMode{
+				flightMode := &model.FlightMode{
 					FlightMode: response.GetFlightMode().String(),
 				}
 				flightModeStream <- flightMode

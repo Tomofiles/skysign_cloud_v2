@@ -1,8 +1,8 @@
 package cloudlink
 
 import (
-	"edge-px4/pkg/edge"
 	"edge-px4/pkg/edge/adapters/json"
+	"edge-px4/pkg/edge/domain/model"
 	"fmt"
 	"io/ioutil"
 	"net/http"
@@ -43,7 +43,7 @@ func TestPullCommand(t *testing.T) {
 	expectMessage1 := fmt.Sprintf("Send CLOUD data=%s", expectBody)
 	expectMessage2 := fmt.Sprintf("Receive CLOUD data=%s\n", respJson)
 
-	expectCommand := &edge.Command{
+	expectCommand := &model.Command{
 		Type: "ARM",
 	}
 

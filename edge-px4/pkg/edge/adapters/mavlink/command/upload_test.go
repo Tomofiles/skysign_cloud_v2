@@ -7,7 +7,7 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
 
-	"edge-px4/pkg/edge"
+	"edge-px4/pkg/edge/domain/model"
 	mavsdk_rpc_mission "edge-px4/pkg/protos/mission"
 )
 
@@ -27,7 +27,7 @@ func TestAdapterUploadNoItems(t *testing.T) {
 	missionMock := &missionServiceClientMock{}
 	missionMock.On("UploadMission", mock.Anything, mock.Anything).Return(response, nil)
 
-	model := &edge.Mission{}
+	model := &model.Mission{}
 	ret := AdapterUploadInternal(ctx, supportMock, missionMock, model)
 
 	expectMissionItems := []*mavsdk_rpc_mission.MissionItem{}
@@ -52,8 +52,8 @@ func TestAdapterUploadSingleItems(t *testing.T) {
 	missionMock := &missionServiceClientMock{}
 	missionMock.On("UploadMission", mock.Anything, mock.Anything).Return(response, nil)
 
-	model := &edge.Mission{
-		Waypoints: []*edge.Waypoints{
+	model := &model.Mission{
+		Waypoints: []*model.Waypoints{
 			{
 				Latitude:       1.0,
 				Longitude:      2.0,
@@ -93,8 +93,8 @@ func TestAdapterUploadMultipleItems(t *testing.T) {
 	missionMock := &missionServiceClientMock{}
 	missionMock.On("UploadMission", mock.Anything, mock.Anything).Return(response, nil)
 
-	model := &edge.Mission{
-		Waypoints: []*edge.Waypoints{
+	model := &model.Mission{
+		Waypoints: []*model.Waypoints{
 			{
 				Latitude:       11.0,
 				Longitude:      21.0,
@@ -153,7 +153,7 @@ func TestRequestErrorWhenAdapterUpload(t *testing.T) {
 	missionMock := &missionServiceClientMock{}
 	missionMock.On("UploadMission", mock.Anything, mock.Anything).Return(nil, ErrRequest)
 
-	model := &edge.Mission{}
+	model := &model.Mission{}
 	ret := AdapterUploadInternal(ctx, supportMock, missionMock, model)
 
 	a.Equal(ret, ErrRequest)
@@ -176,7 +176,7 @@ func TestResponseErrorWhenAdapterUpload(t *testing.T) {
 	missionMock := &missionServiceClientMock{}
 	missionMock.On("UploadMission", mock.Anything, mock.Anything).Return(response, nil)
 
-	model := &edge.Mission{}
+	model := &model.Mission{}
 	ret := AdapterUploadInternal(ctx, supportMock, missionMock, model)
 
 	a.Equal(ret, ErrUploadCommand)

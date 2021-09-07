@@ -4,15 +4,15 @@ import (
 	"context"
 	"io"
 
-	"edge-px4/pkg/edge"
 	"edge-px4/pkg/edge/domain/common"
+	"edge-px4/pkg/edge/domain/model"
 	mavsdk_rpc_telemetry "edge-px4/pkg/protos/telemetry"
 
 	"google.golang.org/grpc"
 )
 
 // AdapterVelocity .
-func AdapterVelocity(ctx context.Context, gr *grpc.ClientConn, support common.Support) (<-chan *edge.Velocity, error) {
+func AdapterVelocity(ctx context.Context, gr *grpc.ClientConn, support common.Support) (<-chan *model.Velocity, error) {
 	telemetry := mavsdk_rpc_telemetry.NewTelemetryServiceClient(gr)
 
 	velocityReceiver, err := AdapterVelocityInternal(ctx, support, telemetry)
@@ -47,8 +47,8 @@ func AdapterVelocityInternal(
 func AdapterVelocitySubscriber(
 	velocityReceiver mavsdk_rpc_telemetry.TelemetryService_SubscribeGroundSpeedNedClient,
 	support common.Support,
-) <-chan *edge.Velocity {
-	velocityStream := make(chan *edge.Velocity)
+) <-chan *model.Velocity {
+	velocityStream := make(chan *model.Velocity)
 
 	go func() {
 		defer func() {
@@ -75,7 +75,7 @@ func AdapterVelocitySubscriber(
 					err = ret
 					return
 				}
-				velocity := &edge.Velocity{
+				velocity := &model.Velocity{
 					North: float64(response.GetGroundSpeedNed().GetVelocityNorthMS()),
 					East:  float64(response.GetGroundSpeedNed().GetVelocityEastMS()),
 					Down:  float64(response.GetGroundSpeedNed().GetVelocityDownMS()),

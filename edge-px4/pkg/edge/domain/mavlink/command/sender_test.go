@@ -2,7 +2,7 @@ package command
 
 import (
 	"context"
-	"edge-px4/pkg/edge"
+	"edge-px4/pkg/edge/domain/model"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -84,16 +84,16 @@ func TestMissionSender(t *testing.T) {
 	ctx := context.Background()
 
 	supportMock := &supportMock{}
-	stream := make(chan *edge.Mission)
-	var resMission *edge.Mission
-	fnc := func(mission *edge.Mission) error {
+	stream := make(chan *model.Mission)
+	var resMission *model.Mission
+	fnc := func(mission *model.Mission) error {
 		resMission = mission
 		return nil
 	}
 
 	sendExit := MissionSender(ctx, supportMock, stream, fnc)
 
-	response1 := &edge.Mission{}
+	response1 := &model.Mission{}
 	stream <- response1
 	close(stream)
 
@@ -111,9 +111,9 @@ func TestMissionSenderContextDone(t *testing.T) {
 	ctx, cancel := context.WithCancel(ctx)
 
 	supportMock := &supportMock{}
-	stream := make(chan *edge.Mission)
-	var resMission *edge.Mission
-	fnc := func(mission *edge.Mission) error {
+	stream := make(chan *model.Mission)
+	var resMission *model.Mission
+	fnc := func(mission *model.Mission) error {
 		resMission = mission
 		return nil
 	}
@@ -135,16 +135,16 @@ func TestErrorWhenMissionSender(t *testing.T) {
 	ctx := context.Background()
 
 	supportMock := &supportMock{}
-	stream := make(chan *edge.Mission)
-	var resMission *edge.Mission
-	fnc := func(mission *edge.Mission) error {
+	stream := make(chan *model.Mission)
+	var resMission *model.Mission
+	fnc := func(mission *model.Mission) error {
 		resMission = mission
 		return ErrSend
 	}
 
 	sendExit := MissionSender(ctx, supportMock, stream, fnc)
 
-	response1 := &edge.Mission{}
+	response1 := &model.Mission{}
 	stream <- response1
 	close(stream)
 

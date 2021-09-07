@@ -8,7 +8,7 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
 
-	"edge-px4/pkg/edge"
+	"edge-px4/pkg/edge/domain/model"
 	mavsdk_rpc_telemetry "edge-px4/pkg/protos/telemetry"
 )
 
@@ -75,7 +75,7 @@ func TestAdapterFlightModeSubscriber(t *testing.T) {
 
 	stream := AdapterFlightModeSubscriber(receiverMock, supportMock)
 
-	var resFlightModes []*edge.FlightMode
+	var resFlightModes []*model.FlightMode
 	for {
 		a, ok := <-stream
 		if !ok {
@@ -84,7 +84,7 @@ func TestAdapterFlightModeSubscriber(t *testing.T) {
 		resFlightModes = append(resFlightModes, a)
 	}
 
-	expectFlightModes := []*edge.FlightMode{
+	expectFlightModes := []*model.FlightMode{
 		{
 			FlightMode: mavsdk_rpc_telemetry.FlightMode_HOLD.String(),
 		},
@@ -110,7 +110,7 @@ func TestReceiveErrorWhenAdapterFlightModeSubscriber(t *testing.T) {
 
 	stream := AdapterFlightModeSubscriber(receiverMock, supportMock)
 
-	var resFlightModes []*edge.FlightMode
+	var resFlightModes []*model.FlightMode
 	for {
 		a, ok := <-stream
 		if !ok {
@@ -137,7 +137,7 @@ func TestCloseErrorWhenAdapterFlightModeSubscriber(t *testing.T) {
 
 	stream := AdapterFlightModeSubscriber(receiverMock, supportMock)
 
-	var resFlightModes []*edge.FlightMode
+	var resFlightModes []*model.FlightMode
 	for {
 		a, ok := <-stream
 		if !ok {
@@ -164,7 +164,7 @@ func TestReceiveAndCloseErrorWhenAdapterFlightModeSubscriber(t *testing.T) {
 
 	stream := AdapterFlightModeSubscriber(receiverMock, supportMock)
 
-	var resFlightModes []*edge.FlightMode
+	var resFlightModes []*model.FlightMode
 	for {
 		a, ok := <-stream
 		if !ok {

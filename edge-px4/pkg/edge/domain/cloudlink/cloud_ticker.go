@@ -2,14 +2,14 @@ package cloudlink
 
 import (
 	"context"
-	"edge-px4/pkg/edge"
 	"edge-px4/pkg/edge/domain/common"
+	"edge-px4/pkg/edge/domain/model"
 )
 
 // CommandStream .
 type CommandStream struct {
-	CommandStream <-chan *edge.Command
-	MissionStream <-chan *edge.Mission
+	CommandStream <-chan *model.Command
+	MissionStream <-chan *model.Mission
 }
 
 // CloudTicker .
@@ -17,13 +17,13 @@ func CloudTicker(
 	ctx context.Context,
 	support common.Support,
 	ticker common.Ticker,
-	pushTelemetry func() (string, *edge.CommandIDs, error),
-	pullCommand func(vehicleID, commandID string) (*edge.Command, error),
-	pullUploadMission func(vehicleID, commandID string) (*edge.UploadMission, error),
-	getUploadMission func(missionID string) (*edge.Mission, error),
+	pushTelemetry func() (string, *model.CommandIDs, error),
+	pullCommand func(vehicleID, commandID string) (*model.Command, error),
+	pullUploadMission func(vehicleID, commandID string) (*model.UploadMission, error),
+	getUploadMission func(missionID string) (*model.Mission, error),
 ) *CommandStream {
-	commandStream := make(chan *edge.Command)
-	missionStream := make(chan *edge.Mission)
+	commandStream := make(chan *model.Command)
+	missionStream := make(chan *model.Mission)
 
 	go func() {
 		defer close(commandStream)
@@ -59,12 +59,12 @@ func CloudTicker(
 
 // CloudTickerInternal .
 func CloudTickerInternal(
-	pushTelemetry func() (string, *edge.CommandIDs, error),
-	pullCommand func(vehicleID, commandID string) (*edge.Command, error),
-	pullUploadMission func(vehicleID, commandID string) (*edge.UploadMission, error),
-	getUploadMission func(missionID string) (*edge.Mission, error),
-	commandStream chan<- *edge.Command,
-	missionStream chan<- *edge.Mission,
+	pushTelemetry func() (string, *model.CommandIDs, error),
+	pullCommand func(vehicleID, commandID string) (*model.Command, error),
+	pullUploadMission func(vehicleID, commandID string) (*model.UploadMission, error),
+	getUploadMission func(missionID string) (*model.Mission, error),
+	commandStream chan<- *model.Command,
+	missionStream chan<- *model.Mission,
 ) error {
 	id, commandIDs, err := pushTelemetry()
 	if err != nil {

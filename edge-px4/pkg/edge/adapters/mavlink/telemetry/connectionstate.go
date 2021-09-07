@@ -5,8 +5,8 @@ import (
 	"io"
 	"strconv"
 
-	"edge-px4/pkg/edge"
 	"edge-px4/pkg/edge/domain/common"
+	"edge-px4/pkg/edge/domain/model"
 
 	mavsdk_rpc_core "edge-px4/pkg/protos/core"
 
@@ -14,7 +14,7 @@ import (
 )
 
 // AdapterConnectionState .
-func AdapterConnectionState(ctx context.Context, gr *grpc.ClientConn, support common.Support) (<-chan *edge.ConnectionState, error) {
+func AdapterConnectionState(ctx context.Context, gr *grpc.ClientConn, support common.Support) (<-chan *model.ConnectionState, error) {
 	core := mavsdk_rpc_core.NewCoreServiceClient(gr)
 
 	connectionStateReceiver, err := AdapterConnectionStateInternal(ctx, support, core)
@@ -49,8 +49,8 @@ func AdapterConnectionStateInternal(
 func AdapterConnectionStateSubscriber(
 	connectionStateReceiver mavsdk_rpc_core.CoreService_SubscribeConnectionStateClient,
 	support common.Support,
-) <-chan *edge.ConnectionState {
-	connectionStateStream := make(chan *edge.ConnectionState)
+) <-chan *model.ConnectionState {
+	connectionStateStream := make(chan *model.ConnectionState)
 
 	go func() {
 		defer func() {
@@ -77,7 +77,7 @@ func AdapterConnectionStateSubscriber(
 					err = ret
 					return
 				}
-				connectionState := &edge.ConnectionState{
+				connectionState := &model.ConnectionState{
 					VehicleID: strconv.FormatUint(response.ConnectionState.GetUuid(), 10),
 				}
 				connectionStateStream <- connectionState

@@ -2,22 +2,21 @@ package telemetry
 
 import (
 	"context"
-	"edge-px4/pkg/edge"
 	"edge-px4/pkg/edge/domain/common"
-	"edge-px4/pkg/edge/domain/telemetry"
+	"edge-px4/pkg/edge/domain/model"
 )
 
 // Updater .
 func Updater(
 	ctx context.Context,
 	support common.Support,
-	telemetry telemetry.Telemetry,
-	connectionStateStream <-chan *edge.ConnectionState,
-	positionStream <-chan *edge.Position,
-	quaternionStream <-chan *edge.Quaternion,
-	velocityStream <-chan *edge.Velocity,
-	armedStream <-chan *edge.Armed,
-	flightModeStream <-chan *edge.FlightMode,
+	telemetry model.Telemetry,
+	connectionStateStream <-chan *model.ConnectionState,
+	positionStream <-chan *model.Position,
+	quaternionStream <-chan *model.Quaternion,
+	velocityStream <-chan *model.Velocity,
+	armedStream <-chan *model.Armed,
+	flightModeStream <-chan *model.FlightMode,
 ) <-chan struct{} {
 	updateExit := make(chan struct{})
 

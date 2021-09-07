@@ -4,15 +4,15 @@ import (
 	"context"
 	"io"
 
-	"edge-px4/pkg/edge"
 	"edge-px4/pkg/edge/domain/common"
+	"edge-px4/pkg/edge/domain/model"
 	mavsdk_rpc_telemetry "edge-px4/pkg/protos/telemetry"
 
 	"google.golang.org/grpc"
 )
 
 // AdapterArmed .
-func AdapterArmed(ctx context.Context, gr *grpc.ClientConn, support common.Support) (<-chan *edge.Armed, error) {
+func AdapterArmed(ctx context.Context, gr *grpc.ClientConn, support common.Support) (<-chan *model.Armed, error) {
 	telemetry := mavsdk_rpc_telemetry.NewTelemetryServiceClient(gr)
 
 	armedReceiver, err := AdapterArmedInternal(ctx, support, telemetry)
@@ -47,8 +47,8 @@ func AdapterArmedInternal(
 func AdapterArmedSubscriber(
 	armedReceiver mavsdk_rpc_telemetry.TelemetryService_SubscribeArmedClient,
 	support common.Support,
-) <-chan *edge.Armed {
-	armedStream := make(chan *edge.Armed)
+) <-chan *model.Armed {
+	armedStream := make(chan *model.Armed)
 
 	go func() {
 		defer func() {
@@ -75,7 +75,7 @@ func AdapterArmedSubscriber(
 					err = ret
 					return
 				}
-				armed := &edge.Armed{
+				armed := &model.Armed{
 					Armed: response.GetIsArmed(),
 				}
 				armedStream <- armed

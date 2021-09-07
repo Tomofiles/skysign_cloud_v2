@@ -2,8 +2,8 @@ package command
 
 import (
 	"context"
-	"edge-px4/pkg/edge"
 	"edge-px4/pkg/edge/domain/common"
+	"edge-px4/pkg/edge/domain/model"
 )
 
 // CommandStream .
@@ -21,7 +21,7 @@ type CommandStream struct {
 func CommandDistributer(
 	ctx context.Context,
 	support common.Support,
-	commandStream <-chan *edge.Command,
+	commandStream <-chan *model.Command,
 ) *CommandStream {
 	armStream := make(chan struct{})
 	disarmStream := make(chan struct{})
@@ -87,9 +87,9 @@ func CommandDistributer(
 func MissionDistributer(
 	ctx context.Context,
 	support common.Support,
-	missionStream <-chan *edge.Mission,
-) <-chan *edge.Mission {
-	stream := make(chan *edge.Mission)
+	missionStream <-chan *model.Mission,
+) <-chan *model.Mission {
+	stream := make(chan *model.Mission)
 
 	go func() {
 		defer close(stream)

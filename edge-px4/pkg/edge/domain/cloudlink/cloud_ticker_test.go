@@ -2,7 +2,7 @@ package cloudlink
 
 import (
 	"context"
-	"edge-px4/pkg/edge"
+	"edge-px4/pkg/edge/domain/model"
 	"sync"
 	"testing"
 
@@ -15,21 +15,21 @@ func TestCloudTicker(t *testing.T) {
 
 	ctx := context.Background()
 
-	mission := &edge.Mission{ID: DefaultEdgeMissionID, Waypoints: []*edge.Waypoints{}}
+	mission := &model.Mission{ID: DefaultEdgeMissionID, Waypoints: []*model.Waypoints{}}
 
 	supportMock := &supportMock{}
 	tickerMock := &tickerMock{}
 
-	pushTelemetry := func() (string, *edge.CommandIDs, error) {
-		return DefaultEdgeVehicleID, &edge.CommandIDs{CommandIds: []string{DefaultEdgeCommandID}}, nil
+	pushTelemetry := func() (string, *model.CommandIDs, error) {
+		return DefaultEdgeVehicleID, &model.CommandIDs{CommandIds: []string{DefaultEdgeCommandID}}, nil
 	}
-	pullCommand := func(vehicleID, commandID string) (*edge.Command, error) {
-		return &edge.Command{Type: "UPLOAD"}, nil
+	pullCommand := func(vehicleID, commandID string) (*model.Command, error) {
+		return &model.Command{Type: "UPLOAD"}, nil
 	}
-	pullUploadMission := func(vehicleID, commandID string) (*edge.UploadMission, error) {
-		return &edge.UploadMission{ID: DefaultEdgeCommandID, MissionID: DefaultEdgeMissionID}, nil
+	pullUploadMission := func(vehicleID, commandID string) (*model.UploadMission, error) {
+		return &model.UploadMission{ID: DefaultEdgeCommandID, MissionID: DefaultEdgeMissionID}, nil
 	}
-	getUploadMission := func(missionID string) (*edge.Mission, error) {
+	getUploadMission := func(missionID string) (*model.Mission, error) {
 		return mission, nil
 	}
 
@@ -44,7 +44,7 @@ func TestCloudTicker(t *testing.T) {
 	)
 
 	var wg sync.WaitGroup
-	var resMission *edge.Mission
+	var resMission *model.Mission
 
 	wg.Add(1)
 	go func() {
@@ -80,7 +80,7 @@ func TestInternalErrorWhenCloudTicker(t *testing.T) {
 	supportMock := &supportMock{}
 	tickerMock := &tickerMock{}
 
-	pushTelemetry := func() (string, *edge.CommandIDs, error) {
+	pushTelemetry := func() (string, *model.CommandIDs, error) {
 		cancel() // tickerが動いた後cancelしたいため、無理やりだがここでcancel呼び出し
 		return "", nil, ErrPushTelemetry
 	}
@@ -167,23 +167,23 @@ func TestCloudTickerContextDone(t *testing.T) {
 func TestCloudTickerInternalMission(t *testing.T) {
 	a := assert.New(t)
 
-	mission := &edge.Mission{ID: DefaultEdgeMissionID, Waypoints: []*edge.Waypoints{}}
+	mission := &model.Mission{ID: DefaultEdgeMissionID, Waypoints: []*model.Waypoints{}}
 
-	pushTelemetry := func() (string, *edge.CommandIDs, error) {
-		return DefaultEdgeVehicleID, &edge.CommandIDs{CommandIds: []string{DefaultEdgeCommandID}}, nil
+	pushTelemetry := func() (string, *model.CommandIDs, error) {
+		return DefaultEdgeVehicleID, &model.CommandIDs{CommandIds: []string{DefaultEdgeCommandID}}, nil
 	}
-	pullCommand := func(vehicleID, commandID string) (*edge.Command, error) {
-		return &edge.Command{Type: "UPLOAD"}, nil
+	pullCommand := func(vehicleID, commandID string) (*model.Command, error) {
+		return &model.Command{Type: "UPLOAD"}, nil
 	}
-	pullUploadMission := func(vehicleID, commandID string) (*edge.UploadMission, error) {
-		return &edge.UploadMission{ID: DefaultEdgeCommandID, MissionID: DefaultEdgeMissionID}, nil
+	pullUploadMission := func(vehicleID, commandID string) (*model.UploadMission, error) {
+		return &model.UploadMission{ID: DefaultEdgeCommandID, MissionID: DefaultEdgeMissionID}, nil
 	}
-	getUploadMission := func(missionID string) (*edge.Mission, error) {
+	getUploadMission := func(missionID string) (*model.Mission, error) {
 		return mission, nil
 	}
 
-	commandStream := make(chan *edge.Command, 1)
-	missionStream := make(chan *edge.Mission, 1)
+	commandStream := make(chan *model.Command, 1)
+	missionStream := make(chan *model.Mission, 1)
 
 	err := CloudTickerInternal(
 		pushTelemetry,
@@ -195,7 +195,7 @@ func TestCloudTickerInternalMission(t *testing.T) {
 	)
 
 	var wg sync.WaitGroup
-	var resMission *edge.Mission
+	var resMission *model.Mission
 
 	wg.Add(1)
 	go func() {
@@ -225,8 +225,8 @@ func TestCloudTickerInternalMission(t *testing.T) {
 func TestNoCommandIDsCloudTickerInternalCommand(t *testing.T) {
 	a := assert.New(t)
 
-	pushTelemetry := func() (string, *edge.CommandIDs, error) {
-		return DefaultEdgeVehicleID, &edge.CommandIDs{CommandIds: []string{}}, nil
+	pushTelemetry := func() (string, *model.CommandIDs, error) {
+		return DefaultEdgeVehicleID, &model.CommandIDs{CommandIds: []string{}}, nil
 	}
 
 	err := CloudTickerInternal(
@@ -245,17 +245,17 @@ func TestNoCommandIDsCloudTickerInternalCommand(t *testing.T) {
 func TestSingleCommandIDCloudTickerInternalCommand(t *testing.T) {
 	a := assert.New(t)
 
-	command := &edge.Command{Type: "ARM"}
+	command := &model.Command{Type: "ARM"}
 
-	pushTelemetry := func() (string, *edge.CommandIDs, error) {
-		return DefaultEdgeVehicleID, &edge.CommandIDs{CommandIds: []string{DefaultEdgeCommandID}}, nil
+	pushTelemetry := func() (string, *model.CommandIDs, error) {
+		return DefaultEdgeVehicleID, &model.CommandIDs{CommandIds: []string{DefaultEdgeCommandID}}, nil
 	}
-	pullCommand := func(vehicleID, commandID string) (*edge.Command, error) {
+	pullCommand := func(vehicleID, commandID string) (*model.Command, error) {
 		return command, nil
 	}
 
-	commandStream := make(chan *edge.Command, 1)
-	missionStream := make(chan *edge.Mission, 1)
+	commandStream := make(chan *model.Command, 1)
+	missionStream := make(chan *model.Mission, 1)
 
 	err := CloudTickerInternal(
 		pushTelemetry,
@@ -267,7 +267,7 @@ func TestSingleCommandIDCloudTickerInternalCommand(t *testing.T) {
 	)
 
 	var wg sync.WaitGroup
-	var resCommand *edge.Command
+	var resCommand *model.Command
 
 	wg.Add(1)
 	go func() {
@@ -303,15 +303,15 @@ func TestMultipleCommandIDsCloudTickerInternalCommand(t *testing.T) {
 		DefaultEdgeCommandID3 = DefaultEdgeCommandID + "-3"
 	)
 
-	command1 := &edge.Command{Type: "ARM"}
-	command2 := &edge.Command{Type: "DISARM"}
-	command3 := &edge.Command{Type: "LAND"}
-	commands := []*edge.Command{command1, command2, command3}
+	command1 := &model.Command{Type: "ARM"}
+	command2 := &model.Command{Type: "DISARM"}
+	command3 := &model.Command{Type: "LAND"}
+	commands := []*model.Command{command1, command2, command3}
 
-	pushTelemetry := func() (string, *edge.CommandIDs, error) {
-		return DefaultEdgeVehicleID, &edge.CommandIDs{CommandIds: []string{DefaultEdgeCommandID1, DefaultEdgeCommandID2, DefaultEdgeCommandID3}}, nil
+	pushTelemetry := func() (string, *model.CommandIDs, error) {
+		return DefaultEdgeVehicleID, &model.CommandIDs{CommandIds: []string{DefaultEdgeCommandID1, DefaultEdgeCommandID2, DefaultEdgeCommandID3}}, nil
 	}
-	pullCommand := func(vehicleID, commandID string) (*edge.Command, error) {
+	pullCommand := func(vehicleID, commandID string) (*model.Command, error) {
 		switch commandID {
 		case DefaultEdgeCommandID1:
 			return command1, nil
@@ -323,8 +323,8 @@ func TestMultipleCommandIDsCloudTickerInternalCommand(t *testing.T) {
 		return command1, nil
 	}
 
-	commandStream := make(chan *edge.Command, 3)
-	missionStream := make(chan *edge.Mission, 3)
+	commandStream := make(chan *model.Command, 3)
+	missionStream := make(chan *model.Mission, 3)
 
 	err := CloudTickerInternal(
 		pushTelemetry,
@@ -336,7 +336,7 @@ func TestMultipleCommandIDsCloudTickerInternalCommand(t *testing.T) {
 	)
 
 	var wg sync.WaitGroup
-	var resCommands []*edge.Command
+	var resCommands []*model.Command
 
 	wg.Add(3)
 	go func() {
@@ -368,7 +368,7 @@ func TestMultipleCommandIDsCloudTickerInternalCommand(t *testing.T) {
 func TestPushTelemetryErrorWhenCloudTickerInternal(t *testing.T) {
 	a := assert.New(t)
 
-	pushTelemetry := func() (string, *edge.CommandIDs, error) {
+	pushTelemetry := func() (string, *model.CommandIDs, error) {
 		return "", nil, ErrPushTelemetry
 	}
 
@@ -388,10 +388,10 @@ func TestPushTelemetryErrorWhenCloudTickerInternal(t *testing.T) {
 func TestPullCommandErrorWhenCloudTickerInternal(t *testing.T) {
 	a := assert.New(t)
 
-	pushTelemetry := func() (string, *edge.CommandIDs, error) {
-		return DefaultEdgeVehicleID, &edge.CommandIDs{CommandIds: []string{DefaultEdgeCommandID}}, nil
+	pushTelemetry := func() (string, *model.CommandIDs, error) {
+		return DefaultEdgeVehicleID, &model.CommandIDs{CommandIds: []string{DefaultEdgeCommandID}}, nil
 	}
-	pullCommand := func(vehicleID, commandID string) (*edge.Command, error) {
+	pullCommand := func(vehicleID, commandID string) (*model.Command, error) {
 		return nil, ErrPullCommand
 	}
 
@@ -411,13 +411,13 @@ func TestPullCommandErrorWhenCloudTickerInternal(t *testing.T) {
 func TestPullUploadMissionErrorWhenCloudTickerInternal(t *testing.T) {
 	a := assert.New(t)
 
-	pushTelemetry := func() (string, *edge.CommandIDs, error) {
-		return DefaultEdgeVehicleID, &edge.CommandIDs{CommandIds: []string{DefaultEdgeCommandID}}, nil
+	pushTelemetry := func() (string, *model.CommandIDs, error) {
+		return DefaultEdgeVehicleID, &model.CommandIDs{CommandIds: []string{DefaultEdgeCommandID}}, nil
 	}
-	pullCommand := func(vehicleID, commandID string) (*edge.Command, error) {
-		return &edge.Command{Type: "UPLOAD"}, nil
+	pullCommand := func(vehicleID, commandID string) (*model.Command, error) {
+		return &model.Command{Type: "UPLOAD"}, nil
 	}
-	pullUploadMission := func(vehicleID, commandID string) (*edge.UploadMission, error) {
+	pullUploadMission := func(vehicleID, commandID string) (*model.UploadMission, error) {
 		return nil, ErrPullUploadMission
 	}
 
@@ -437,16 +437,16 @@ func TestPullUploadMissionErrorWhenCloudTickerInternal(t *testing.T) {
 func TestGetUploadMissionErrorWhenCloudTickerInternal(t *testing.T) {
 	a := assert.New(t)
 
-	pushTelemetry := func() (string, *edge.CommandIDs, error) {
-		return DefaultEdgeVehicleID, &edge.CommandIDs{CommandIds: []string{DefaultEdgeCommandID}}, nil
+	pushTelemetry := func() (string, *model.CommandIDs, error) {
+		return DefaultEdgeVehicleID, &model.CommandIDs{CommandIds: []string{DefaultEdgeCommandID}}, nil
 	}
-	pullCommand := func(vehicleID, commandID string) (*edge.Command, error) {
-		return &edge.Command{Type: "UPLOAD"}, nil
+	pullCommand := func(vehicleID, commandID string) (*model.Command, error) {
+		return &model.Command{Type: "UPLOAD"}, nil
 	}
-	pullUploadMission := func(vehicleID, commandID string) (*edge.UploadMission, error) {
-		return &edge.UploadMission{ID: DefaultEdgeCommandID, MissionID: DefaultEdgeMissionID}, nil
+	pullUploadMission := func(vehicleID, commandID string) (*model.UploadMission, error) {
+		return &model.UploadMission{ID: DefaultEdgeCommandID, MissionID: DefaultEdgeMissionID}, nil
 	}
-	getUploadMission := func(missionID string) (*edge.Mission, error) {
+	getUploadMission := func(missionID string) (*model.Mission, error) {
 		return nil, ErrGetUploadMission
 	}
 

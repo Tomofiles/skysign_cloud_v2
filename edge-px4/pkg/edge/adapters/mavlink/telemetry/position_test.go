@@ -8,7 +8,7 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
 
-	"edge-px4/pkg/edge"
+	"edge-px4/pkg/edge/domain/model"
 	mavsdk_rpc_telemetry "edge-px4/pkg/protos/telemetry"
 )
 
@@ -85,7 +85,7 @@ func TestAdapterPositionSubscriber(t *testing.T) {
 
 	stream := AdapterPositionSubscriber(receiverMock, supportMock)
 
-	var resPositions []*edge.Position
+	var resPositions []*model.Position
 	for {
 		a, ok := <-stream
 		if !ok {
@@ -94,7 +94,7 @@ func TestAdapterPositionSubscriber(t *testing.T) {
 		resPositions = append(resPositions, a)
 	}
 
-	expectPositions := []*edge.Position{
+	expectPositions := []*model.Position{
 		{
 			Latitude:         11.0,
 			Longitude:        21.0,
@@ -126,7 +126,7 @@ func TestReceiveErrorWhenAdapterPositionSubscriber(t *testing.T) {
 
 	stream := AdapterPositionSubscriber(receiverMock, supportMock)
 
-	var resPositions []*edge.Position
+	var resPositions []*model.Position
 	for {
 		a, ok := <-stream
 		if !ok {
@@ -153,7 +153,7 @@ func TestCloseErrorWhenAdapterPositionSubscriber(t *testing.T) {
 
 	stream := AdapterPositionSubscriber(receiverMock, supportMock)
 
-	var resPositions []*edge.Position
+	var resPositions []*model.Position
 	for {
 		a, ok := <-stream
 		if !ok {
@@ -180,7 +180,7 @@ func TestReceiveAndCloseErrorWhenAdapterPositionSubscriber(t *testing.T) {
 
 	stream := AdapterPositionSubscriber(receiverMock, supportMock)
 
-	var resPositions []*edge.Position
+	var resPositions []*model.Position
 	for {
 		a, ok := <-stream
 		if !ok {

@@ -1,10 +1,10 @@
 package cloudlink
 
 import (
-	"edge-px4/pkg/edge"
 	"edge-px4/pkg/edge/adapters/http"
 	"edge-px4/pkg/edge/adapters/json"
 	"edge-px4/pkg/edge/domain/common"
+	"edge-px4/pkg/edge/domain/model"
 
 	"github.com/Tomofiles/skysign_cloud_v2/skysign-proto/pkg/skysign_proto"
 )
@@ -14,7 +14,7 @@ func PullCommand(
 	cloud string,
 	support common.Support,
 	vehicleID, commandID string,
-) (*edge.Command, error) {
+) (*model.Command, error) {
 	request := json.Marshal(&skysign_proto.PullCommandRequest{})
 
 	support.NotifyInfo("Send CLOUD data=%s", request)
@@ -39,7 +39,7 @@ func PullCommand(
 
 	support.NotifyInfo("Receive CLOUD data=%s", respBody)
 
-	command := &edge.Command{
+	command := &model.Command{
 		Type: response.Type.String(),
 	}
 
