@@ -2,11 +2,13 @@ package main
 
 import (
 	"context"
-	"edge/pkg/edge/adapters/glog"
-	"edge/pkg/edge/adapters/grpc"
+	glog_adapter "edge/pkg/edge/adapters/glog"
+	grpc_adapter "edge/pkg/edge/adapters/grpc"
+	time_adapter "edge/pkg/edge/adapters/time"
 	"edge/pkg/edge/builder"
-	"edge/pkg/edge/domain/mavlink/command"
-	"edge/pkg/edge/domain/mavlink/telemetry"
+	"edge/pkg/edge/domain/cloudlink"
+	mavlink_command "edge/pkg/edge/domain/mavlink/command"
+	mavlink_telemetry "edge/pkg/edge/domain/mavlink/telemetry"
 	"os"
 	"os/signal"
 	"time"
@@ -28,7 +30,8 @@ func main() {
 		cloud = cloudAddressEnv
 	}
 
-	support := glog.NewSupport()
+	support := glog_adapter.NewSupport()
+	ticker := time_adapter.NewTicker(500 * time.Millisecond)
 
 	go func() {
 		for {
@@ -38,7 +41,7 @@ func main() {
 				ctx := context.Background()
 				ctx, cancel := context.WithCancel(ctx)
 
-				gr, err := grpc.NewGrpcClientConnectionWithBlock(mavsdk)
+				gr, err := grpc_adapter.NewGrpcClientConnectionWithBlock(mavsdk)
 				if err != nil {
 					support.NotifyError("grpc client connection error: %v", err)
 					continue
@@ -51,11 +54,11 @@ func main() {
 					continue
 				}
 
-				tlm := telemetry.NewTelemetry()
-				updateExit := telemetry.Updater(
+				telemetry := mavlink_telemetry.NewTelemetry()
+				updateExit := mavlink_telemetry.Updater(
 					ctx,
 					support,
-					tlm,
+					telemetry,
 					telemetryStream.ConnectionStateStream,
 					telemetryStream.PositionStream,
 					telemetryStream.QuaternionStream,
@@ -64,25 +67,40 @@ func main() {
 					telemetryStream.FlightModeStream,
 				)
 
-				commandStream := builder.Cloudlink(ctx, cloud, support, tlm)
+				cloudlinkAdapters := builder.Cloudlink(
+					ctx,
+					cloud,
+					support,
+					telemetry,
+				)
 
-				cStream := command.CommandDistributer(ctx, support, commandStream.CommandStream)
-				mStream := command.MissionDistributer(ctx, support, commandStream.MissionStream)
+				commandStream := cloudlink.CloudTicker(
+					ctx,
+					support,
+					ticker,
+					cloudlinkAdapters.PushTelemetry,
+					cloudlinkAdapters.PullCommand,
+					cloudlinkAdapters.PullUploadMission,
+					cloudlinkAdapters.GetUploadMission,
+				)
 
-				adapters := builder.MavlinkCommand(
+				cStream := mavlink_command.CommandDistributer(ctx, support, commandStream.CommandStream)
+				mStream := mavlink_command.MissionDistributer(ctx, support, commandStream.MissionStream)
+
+				mavlinkAdapters := builder.MavlinkCommand(
 					ctx,
 					gr,
 					support,
 				)
 
-				armSendExit := command.CommandSender(ctx, support, cStream.ArmStream, adapters.AdapterArm, "ARM")
-				disarmSendExit := command.CommandSender(ctx, support, cStream.DisarmStream, adapters.AdapterDisarm, "DISARM")
-				startSendExit := command.CommandSender(ctx, support, cStream.StartStream, adapters.AdapterStart, "START")
-				pauseSendExit := command.CommandSender(ctx, support, cStream.PauseStream, adapters.AdapterPause, "PAUSE")
-				takeoffSendExit := command.CommandSender(ctx, support, cStream.TakeoffStream, adapters.AdapterTakeoff, "TAKEOFF")
-				landSendExit := command.CommandSender(ctx, support, cStream.LandStream, adapters.AdapterLand, "LAND")
-				returnSendExit := command.CommandSender(ctx, support, cStream.ReturnStream, adapters.AdapterReturn, "RETURN")
-				uploadSendExit := command.MissionSender(ctx, support, mStream, adapters.AdapterUpload)
+				armSendExit := mavlink_command.CommandSender(ctx, support, cStream.ArmStream, mavlinkAdapters.AdapterArm, "ARM")
+				disarmSendExit := mavlink_command.CommandSender(ctx, support, cStream.DisarmStream, mavlinkAdapters.AdapterDisarm, "DISARM")
+				startSendExit := mavlink_command.CommandSender(ctx, support, cStream.StartStream, mavlinkAdapters.AdapterStart, "START")
+				pauseSendExit := mavlink_command.CommandSender(ctx, support, cStream.PauseStream, mavlinkAdapters.AdapterPause, "PAUSE")
+				takeoffSendExit := mavlink_command.CommandSender(ctx, support, cStream.TakeoffStream, mavlinkAdapters.AdapterTakeoff, "TAKEOFF")
+				landSendExit := mavlink_command.CommandSender(ctx, support, cStream.LandStream, mavlinkAdapters.AdapterLand, "LAND")
+				returnSendExit := mavlink_command.CommandSender(ctx, support, cStream.ReturnStream, mavlinkAdapters.AdapterReturn, "RETURN")
+				uploadSendExit := mavlink_command.MissionSender(ctx, support, mStream, mavlinkAdapters.AdapterUpload)
 
 				// // 障害時動作確認用
 				// go func() {
@@ -132,5 +150,5 @@ func main() {
 
 	time.Sleep(1 * time.Second)
 
-	defer support.NotifyInfo("Skysign Edge end.")
+	defer support.NotifyInfo("Skysign Edge end")
 }

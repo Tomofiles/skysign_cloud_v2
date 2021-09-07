@@ -6,58 +6,35 @@ import (
 	"edge/pkg/edge/adapters/cloudlink"
 	"edge/pkg/edge/domain/common"
 	"edge/pkg/edge/domain/mavlink/telemetry"
-	"log"
-	"time"
 )
 
-// CommandStream .
-type CommandStream struct {
-	CommandStream <-chan *edge.Command
-	MissionStream <-chan *edge.Mission
+// CloudlinkAdapter .
+type CloudlinkAdapter struct {
+	PushTelemetry     func() (string, *edge.CommandIDs, error)
+	PullCommand       func(vehicleID, commandID string) (*edge.Command, error)
+	PullUploadMission func(vehicleID, commandID string) (*edge.UploadMission, error)
+	GetUploadMission  func(missionID string) (*edge.Mission, error)
 }
 
 // Cloudlink .
-func Cloudlink(ctx context.Context, cloud string, support common.Support, telemetry telemetry.Telemetry) *CommandStream {
-	commandStream := make(chan *edge.Command)
-	missionStream := make(chan *edge.Mission)
-
-	go func() {
-		defer close(commandStream)
-		defer close(missionStream)
-		t := time.NewTicker(500 * time.Millisecond)
-		for {
-			select {
-			case <-ctx.Done():
-				log.Println("telemetry ticker stop.")
-				t.Stop()
-				return
-			case <-t.C:
-				id, commIDs, err := cloudlink.PushTelemetry(cloud, support, telemetry)
-				if err == nil {
-					for _, commID := range commIDs.CommandIds {
-						command, err := cloudlink.PullCommand(cloud, support, id, commID)
-						if err == nil {
-							if command.Type == "UPLOAD" {
-								upload, err := cloudlink.PullUploadMission(cloud, support, id, commID)
-								if err == nil {
-									mission, err := cloudlink.GetUploadMission(cloud, support, upload.MissionID)
-									if err == nil {
-										missionStream <- mission
-									}
-								}
-							} else {
-								commandStream <- command
-							}
-						}
-					}
-				}
-			}
-		}
-	}()
-
-	stream := &CommandStream{
-		CommandStream: commandStream,
-		MissionStream: missionStream,
+func Cloudlink(
+	ctx context.Context,
+	cloud string,
+	support common.Support,
+	telemetry telemetry.Telemetry,
+) *CloudlinkAdapter {
+	return &CloudlinkAdapter{
+		PushTelemetry: func() (string, *edge.CommandIDs, error) {
+			return cloudlink.PushTelemetry(cloud, support, telemetry)
+		},
+		PullCommand: func(vehicleID, commandID string) (*edge.Command, error) {
+			return cloudlink.PullCommand(cloud, support, vehicleID, commandID)
+		},
+		PullUploadMission: func(vehicleID, commandID string) (*edge.UploadMission, error) {
+			return cloudlink.PullUploadMission(cloud, support, vehicleID, commandID)
+		},
+		GetUploadMission: func(missionID string) (*edge.Mission, error) {
+			return cloudlink.GetUploadMission(cloud, support, missionID)
+		},
 	}
-	return stream
 }
