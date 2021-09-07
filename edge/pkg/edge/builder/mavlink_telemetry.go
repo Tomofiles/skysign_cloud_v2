@@ -3,7 +3,7 @@ package builder
 import (
 	"context"
 	"edge/pkg/edge"
-	mavlink "edge/pkg/edge/adapters/mavlink/telemetry"
+	mavlink_telemetry_adapter "edge/pkg/edge/adapters/mavlink/telemetry"
 	"edge/pkg/edge/domain/common"
 
 	"google.golang.org/grpc"
@@ -25,32 +25,32 @@ func MavlinkTelemetry(
 	gr *grpc.ClientConn,
 	support common.Support,
 ) (*TelemetryStream, error) {
-	connectionStateStream, err := mavlink.AdapterConnectionState(ctx, gr, support)
+	connectionStateStream, err := mavlink_telemetry_adapter.AdapterConnectionState(ctx, gr, support)
 	if err != nil {
 		support.NotifyError("mavlink connectionStateStream adapter error: %v", err)
 		return nil, err
 	}
-	positionStream, err := mavlink.AdapterPosition(ctx, gr, support)
+	positionStream, err := mavlink_telemetry_adapter.AdapterPosition(ctx, gr, support)
 	if err != nil {
 		support.NotifyError("mavlink position adapter error: %v", err)
 		return nil, err
 	}
-	quaternionStream, err := mavlink.AdapterQuaternion(ctx, gr, support)
+	quaternionStream, err := mavlink_telemetry_adapter.AdapterQuaternion(ctx, gr, support)
 	if err != nil {
 		support.NotifyError("mavlink quaternion adapter error: %v", err)
 		return nil, err
 	}
-	velocityStream, err := mavlink.AdapterVelocity(ctx, gr, support)
+	velocityStream, err := mavlink_telemetry_adapter.AdapterVelocity(ctx, gr, support)
 	if err != nil {
 		support.NotifyError("mavlink velocity adapter error: %v", err)
 		return nil, err
 	}
-	armedStream, err := mavlink.AdapterArmed(ctx, gr, support)
+	armedStream, err := mavlink_telemetry_adapter.AdapterArmed(ctx, gr, support)
 	if err != nil {
 		support.NotifyError("mavlink armed adapter error: %v", err)
 		return nil, err
 	}
-	flightModeStream, err := mavlink.AdapterFlightMode(ctx, gr, support)
+	flightModeStream, err := mavlink_telemetry_adapter.AdapterFlightMode(ctx, gr, support)
 	if err != nil {
 		support.NotifyError("mavlink flightMode adapter error: %v", err)
 		return nil, err

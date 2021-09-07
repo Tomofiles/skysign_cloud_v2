@@ -4,12 +4,14 @@ import (
 	"context"
 	"edge/pkg/edge"
 	"edge/pkg/edge/domain/common"
+	"edge/pkg/edge/domain/telemetry"
 )
 
+// Updater .
 func Updater(
 	ctx context.Context,
 	support common.Support,
-	telemetry Telemetry,
+	telemetry telemetry.Telemetry,
 	connectionStateStream <-chan *edge.ConnectionState,
 	positionStream <-chan *edge.Position,
 	quaternionStream <-chan *edge.Quaternion,

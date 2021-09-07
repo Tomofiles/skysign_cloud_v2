@@ -9,6 +9,7 @@ import (
 	"edge/pkg/edge/domain/cloudlink"
 	mavlink_command "edge/pkg/edge/domain/mavlink/command"
 	mavlink_telemetry "edge/pkg/edge/domain/mavlink/telemetry"
+	"edge/pkg/edge/domain/telemetry"
 	"os"
 	"os/signal"
 	"time"
@@ -54,7 +55,7 @@ func main() {
 					continue
 				}
 
-				telemetry := mavlink_telemetry.NewTelemetry()
+				telemetry := telemetry.NewTelemetry()
 				updateExit := mavlink_telemetry.Updater(
 					ctx,
 					support,

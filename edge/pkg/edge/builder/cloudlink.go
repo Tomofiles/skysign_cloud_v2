@@ -3,9 +3,9 @@ package builder
 import (
 	"context"
 	"edge/pkg/edge"
-	"edge/pkg/edge/adapters/cloudlink"
+	cloudlink_adapter "edge/pkg/edge/adapters/cloudlink"
 	"edge/pkg/edge/domain/common"
-	"edge/pkg/edge/domain/mavlink/telemetry"
+	"edge/pkg/edge/domain/telemetry"
 )
 
 // CloudlinkAdapter .
@@ -25,16 +25,16 @@ func Cloudlink(
 ) *CloudlinkAdapter {
 	return &CloudlinkAdapter{
 		PushTelemetry: func() (string, *edge.CommandIDs, error) {
-			return cloudlink.PushTelemetry(cloud, support, telemetry)
+			return cloudlink_adapter.PushTelemetry(cloud, support, telemetry)
 		},
 		PullCommand: func(vehicleID, commandID string) (*edge.Command, error) {
-			return cloudlink.PullCommand(cloud, support, vehicleID, commandID)
+			return cloudlink_adapter.PullCommand(cloud, support, vehicleID, commandID)
 		},
 		PullUploadMission: func(vehicleID, commandID string) (*edge.UploadMission, error) {
-			return cloudlink.PullUploadMission(cloud, support, vehicleID, commandID)
+			return cloudlink_adapter.PullUploadMission(cloud, support, vehicleID, commandID)
 		},
 		GetUploadMission: func(missionID string) (*edge.Mission, error) {
-			return cloudlink.GetUploadMission(cloud, support, missionID)
+			return cloudlink_adapter.GetUploadMission(cloud, support, missionID)
 		},
 	}
 }

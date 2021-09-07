@@ -9,6 +9,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+// TestCloudTicker .
 func TestCloudTicker(t *testing.T) {
 	a := assert.New(t)
 
@@ -69,6 +70,7 @@ func TestCloudTicker(t *testing.T) {
 	a.Empty(supportMock.messages)
 }
 
+// TestInternalErrorWhenCloudTicker .
 func TestInternalErrorWhenCloudTicker(t *testing.T) {
 	a := assert.New(t)
 
@@ -116,6 +118,7 @@ func TestInternalErrorWhenCloudTicker(t *testing.T) {
 	a.Equal([]string{"cloud ticker error: push telemetry error", "cloud ticker done"}, supportMock.messages)
 }
 
+// TestCloudTickerContextDone .
 func TestCloudTickerContextDone(t *testing.T) {
 	a := assert.New(t)
 
@@ -160,6 +163,7 @@ func TestCloudTickerContextDone(t *testing.T) {
 	a.Equal([]string{"cloud ticker done"}, supportMock.messages)
 }
 
+// TestCloudTickerInternalMission .
 func TestCloudTickerInternalMission(t *testing.T) {
 	a := assert.New(t)
 
@@ -217,6 +221,7 @@ func TestCloudTickerInternalMission(t *testing.T) {
 	a.Equal(mission, resMission)
 }
 
+// TestNoCommandIDsCloudTickerInternalCommand .
 func TestNoCommandIDsCloudTickerInternalCommand(t *testing.T) {
 	a := assert.New(t)
 
@@ -236,6 +241,7 @@ func TestNoCommandIDsCloudTickerInternalCommand(t *testing.T) {
 	a.Nil(err)
 }
 
+// TestSingleCommandIDCloudTickerInternalCommand .
 func TestSingleCommandIDCloudTickerInternalCommand(t *testing.T) {
 	a := assert.New(t)
 
@@ -287,6 +293,7 @@ func TestSingleCommandIDCloudTickerInternalCommand(t *testing.T) {
 	a.Equal(command, resCommand)
 }
 
+// TestMultipleCommandIDsCloudTickerInternalCommand .
 func TestMultipleCommandIDsCloudTickerInternalCommand(t *testing.T) {
 	a := assert.New(t)
 
@@ -357,6 +364,7 @@ func TestMultipleCommandIDsCloudTickerInternalCommand(t *testing.T) {
 	a.Equal(commands, resCommands)
 }
 
+// TestPushTelemetryErrorWhenCloudTickerInternal .
 func TestPushTelemetryErrorWhenCloudTickerInternal(t *testing.T) {
 	a := assert.New(t)
 
@@ -376,6 +384,7 @@ func TestPushTelemetryErrorWhenCloudTickerInternal(t *testing.T) {
 	a.Equal(ErrPushTelemetry, err)
 }
 
+// TestPullCommandErrorWhenCloudTickerInternal .
 func TestPullCommandErrorWhenCloudTickerInternal(t *testing.T) {
 	a := assert.New(t)
 
@@ -398,6 +407,7 @@ func TestPullCommandErrorWhenCloudTickerInternal(t *testing.T) {
 	a.Equal(ErrPullCommand, err)
 }
 
+// TestPullUploadMissionErrorWhenCloudTickerInternal .
 func TestPullUploadMissionErrorWhenCloudTickerInternal(t *testing.T) {
 	a := assert.New(t)
 
@@ -423,6 +433,7 @@ func TestPullUploadMissionErrorWhenCloudTickerInternal(t *testing.T) {
 	a.Equal(ErrPullUploadMission, err)
 }
 
+// TestGetUploadMissionErrorWhenCloudTickerInternal .
 func TestGetUploadMissionErrorWhenCloudTickerInternal(t *testing.T) {
 	a := assert.New(t)
 

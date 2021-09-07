@@ -2,7 +2,7 @@ package cloudlink
 
 import (
 	"edge/pkg/edge"
-	"edge/pkg/edge/domain/mavlink/telemetry"
+	"edge/pkg/edge/domain/telemetry"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
@@ -14,6 +14,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+// TestNoCommandIDsResponsePushTelemetry .
 func TestNoCommandIDsResponsePushTelemetry(t *testing.T) {
 	a := assert.New(t)
 
@@ -74,6 +75,7 @@ func TestNoCommandIDsResponsePushTelemetry(t *testing.T) {
 	a.Equal([]string{expectMessage1, expectMessage2}, support.messages)
 }
 
+// TestMultipleCommandIDsResponsePushTelemetry .
 func TestMultipleCommandIDsResponsePushTelemetry(t *testing.T) {
 	a := assert.New(t)
 
@@ -140,6 +142,7 @@ func TestMultipleCommandIDsResponsePushTelemetry(t *testing.T) {
 	a.Equal([]string{expectMessage1, expectMessage2}, support.messages)
 }
 
+// TestNotPreparedWhenPushTelemetry .
 func TestNotPreparedWhenPushTelemetry(t *testing.T) {
 	a := assert.New(t)
 
@@ -167,6 +170,7 @@ func TestNotPreparedWhenPushTelemetry(t *testing.T) {
 	a.Equal([]string{expectMessage1}, support.messages)
 }
 
+// TestHttpClientErrorWhenPushTelemetry .
 func TestHttpClientErrorWhenPushTelemetry(t *testing.T) {
 	a := assert.New(t)
 
@@ -211,6 +215,7 @@ func TestHttpClientErrorWhenPushTelemetry(t *testing.T) {
 	a.Equal([]string{expectMessage1, expectMessage2, expectMessage3}, support.messages)
 }
 
+// TestResponseJsonParseErrorWhenPushTelemetry .
 func TestResponseJsonParseErrorWhenPushTelemetry(t *testing.T) {
 	a := assert.New(t)
 

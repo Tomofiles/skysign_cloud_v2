@@ -4,7 +4,7 @@ import (
 	"edge/pkg/edge"
 	"edge/pkg/edge/adapters/http"
 	"edge/pkg/edge/domain/common"
-	"edge/pkg/edge/domain/mavlink/telemetry"
+	"edge/pkg/edge/domain/telemetry"
 	"encoding/json"
 )
 

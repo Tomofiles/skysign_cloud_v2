@@ -12,6 +12,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+// TestGetUploadMission .
 func TestGetUploadMission(t *testing.T) {
 	a := assert.New(t)
 
@@ -90,6 +91,7 @@ func TestGetUploadMission(t *testing.T) {
 	a.Equal([]string{expectMessage1, expectMessage2}, support.messages)
 }
 
+// TestHttpClientErrorWhenGetUploadMission .
 func TestHttpClientErrorWhenGetUploadMission(t *testing.T) {
 	a := assert.New(t)
 
@@ -108,6 +110,7 @@ func TestHttpClientErrorWhenGetUploadMission(t *testing.T) {
 	a.Equal([]string{expectMessage1, expectMessage2, expectMessage3}, support.messages)
 }
 
+// TestResponseJsonParseErrorWhenGetUploadMission .
 func TestResponseJsonParseErrorWhenGetUploadMission(t *testing.T) {
 	a := assert.New(t)
 

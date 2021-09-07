@@ -12,6 +12,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+// TestPullCommand .
 func TestPullCommand(t *testing.T) {
 	a := assert.New(t)
 
@@ -50,6 +51,7 @@ func TestPullCommand(t *testing.T) {
 	a.Equal([]string{expectMessage1, expectMessage2}, support.messages)
 }
 
+// TestHttpClientErrorWhenPullCommand .
 func TestHttpClientErrorWhenPullCommand(t *testing.T) {
 	a := assert.New(t)
 
@@ -68,6 +70,7 @@ func TestHttpClientErrorWhenPullCommand(t *testing.T) {
 	a.Equal([]string{expectMessage1, expectMessage2, expectMessage3}, support.messages)
 }
 
+// TestResponseJsonParseErrorWhenPullCommand .
 func TestResponseJsonParseErrorWhenPullCommand(t *testing.T) {
 	a := assert.New(t)
 

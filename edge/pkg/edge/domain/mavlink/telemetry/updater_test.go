@@ -3,6 +3,7 @@ package telemetry
 import (
 	"context"
 	"edge/pkg/edge"
+	"edge/pkg/edge/domain/telemetry"
 	"math"
 	"testing"
 
@@ -18,7 +19,7 @@ func TestTelemetryUpdaterContextDone(t *testing.T) {
 
 	supportMock := &supportMock{}
 
-	tlm := NewTelemetry()
+	tlm := telemetry.NewTelemetry()
 
 	connectionStateStream := make(chan *edge.ConnectionState)
 	positionStream := make(chan *edge.Position)
@@ -43,7 +44,7 @@ func TestTelemetryUpdaterContextDone(t *testing.T) {
 
 	<-updateExit
 
-	expectTelemetry := &telemetry{}
+	expectTelemetry := telemetry.NewTelemetry()
 
 	a.Equal(expectTelemetry, tlm)
 	a.Equal([]string{"telemetry updater done"}, supportMock.messages)
@@ -57,7 +58,7 @@ func TestTelemetryUpdaterConnectionState(t *testing.T) {
 
 	supportMock := &supportMock{}
 
-	tlm := NewTelemetry()
+	tlm := telemetry.NewTelemetry()
 
 	connectionStateStream := make(chan *edge.ConnectionState)
 	positionStream := make(chan *edge.Position)
@@ -86,9 +87,8 @@ func TestTelemetryUpdaterConnectionState(t *testing.T) {
 
 	<-updateExit
 
-	expectTelemetry := &telemetry{
-		id: DefaultEdgeVehicleID,
-	}
+	expectTelemetry := telemetry.NewTelemetry()
+	expectTelemetry.SetConnectionState(&edge.ConnectionState{VehicleID: DefaultEdgeVehicleID})
 
 	a.Equal(expectTelemetry, tlm)
 	a.Equal([]string{"connectionStateStream close"}, supportMock.messages)
@@ -102,7 +102,7 @@ func TestTelemetryUpdaterPosition(t *testing.T) {
 
 	supportMock := &supportMock{}
 
-	tlm := NewTelemetry()
+	tlm := telemetry.NewTelemetry()
 
 	connectionStateStream := make(chan *edge.ConnectionState)
 	positionStream := make(chan *edge.Position)
@@ -134,12 +134,13 @@ func TestTelemetryUpdaterPosition(t *testing.T) {
 
 	<-updateExit
 
-	expectTelemetry := &telemetry{
-		latitude:         1.0,
-		longitude:        2.0,
-		altitude:         3.0,
-		relativeAltitude: 4.0,
-	}
+	expectTelemetry := telemetry.NewTelemetry()
+	expectTelemetry.SetPosition(&edge.Position{
+		Latitude:         1.0,
+		Longitude:        2.0,
+		Altitude:         3.0,
+		RelativeAltitude: 4.0,
+	})
 
 	a.Equal(expectTelemetry, tlm)
 	a.Equal([]string{"positionStream close"}, supportMock.messages)
@@ -153,7 +154,7 @@ func TestTelemetryUpdaterQuaternion(t *testing.T) {
 
 	supportMock := &supportMock{}
 
-	tlm := NewTelemetry()
+	tlm := telemetry.NewTelemetry()
 
 	connectionStateStream := make(chan *edge.ConnectionState)
 	positionStream := make(chan *edge.Position)
@@ -185,12 +186,13 @@ func TestTelemetryUpdaterQuaternion(t *testing.T) {
 
 	<-updateExit
 
-	expectTelemetry := &telemetry{
-		orientationX: 1.0,
-		orientationY: 2.0,
-		orientationZ: 3.0,
-		orientationW: 4.0,
-	}
+	expectTelemetry := telemetry.NewTelemetry()
+	expectTelemetry.SetQuaternion(&edge.Quaternion{
+		X: 1.0,
+		Y: 2.0,
+		Z: 3.0,
+		W: 4.0,
+	})
 
 	a.Equal(expectTelemetry, tlm)
 	a.Equal([]string{"quaternionStream close"}, supportMock.messages)
@@ -204,7 +206,8 @@ func TestTelemetryUpdaterVelocity(t *testing.T) {
 
 	supportMock := &supportMock{}
 
-	tlm := NewTelemetry()
+	tlm := telemetry.NewTelemetry()
+	tlm.SetFlightMode(&edge.FlightMode{FlightMode: "XXX"})
 
 	connectionStateStream := make(chan *edge.ConnectionState)
 	positionStream := make(chan *edge.Position)
@@ -235,12 +238,10 @@ func TestTelemetryUpdaterVelocity(t *testing.T) {
 
 	<-updateExit
 
-	// GroundSpeed = √n^2+e^2）
-	expectTelemetry := &telemetry{
-		speed: math.Sqrt(1.0*1.0 + 2.0*2.0),
-	}
+	snapshot, err := tlm.Get()
 
-	a.Equal(expectTelemetry, tlm)
+	a.Nil(err)
+	a.Equal(math.Sqrt(1.0*1.0+2.0*2.0), snapshot.State.Speed) // GroundSpeed = √n^2+e^2）
 	a.Equal([]string{"velocityStream close"}, supportMock.messages)
 }
 
@@ -252,7 +253,7 @@ func TestTelemetryUpdaterArmed(t *testing.T) {
 
 	supportMock := &supportMock{}
 
-	tlm := NewTelemetry()
+	tlm := telemetry.NewTelemetry()
 
 	connectionStateStream := make(chan *edge.ConnectionState)
 	positionStream := make(chan *edge.Position)
@@ -281,9 +282,10 @@ func TestTelemetryUpdaterArmed(t *testing.T) {
 
 	<-updateExit
 
-	expectTelemetry := &telemetry{
-		armed: true,
-	}
+	expectTelemetry := telemetry.NewTelemetry()
+	expectTelemetry.SetArmed(&edge.Armed{
+		Armed: true,
+	})
 
 	a.Equal(expectTelemetry, tlm)
 	a.Equal([]string{"armedStream close"}, supportMock.messages)
@@ -297,7 +299,7 @@ func TestTelemetryUpdaterFlightMode(t *testing.T) {
 
 	supportMock := &supportMock{}
 
-	tlm := NewTelemetry()
+	tlm := telemetry.NewTelemetry()
 
 	connectionStateStream := make(chan *edge.ConnectionState)
 	positionStream := make(chan *edge.Position)
@@ -326,9 +328,10 @@ func TestTelemetryUpdaterFlightMode(t *testing.T) {
 
 	<-updateExit
 
-	expectTelemetry := &telemetry{
-		flightMode: "XXX",
-	}
+	expectTelemetry := telemetry.NewTelemetry()
+	expectTelemetry.SetFlightMode(&edge.FlightMode{
+		FlightMode: "XXX",
+	})
 
 	a.Equal(expectTelemetry, tlm)
 	a.Equal([]string{"flightModeStream close"}, supportMock.messages)
@@ -338,19 +341,31 @@ func TestTelemetryUpdaterFlightMode(t *testing.T) {
 func TestTelemetryGet(t *testing.T) {
 	a := assert.New(t)
 
-	tlm := NewTelemetry().(*telemetry)
-	tlm.id = DefaultEdgeVehicleID
-	tlm.latitude = 1.0
-	tlm.longitude = 2.0
-	tlm.altitude = 3.0
-	tlm.relativeAltitude = 4.0
-	tlm.speed = 5.0
-	tlm.armed = true
-	tlm.flightMode = "XXX"
-	tlm.orientationX = 6.0
-	tlm.orientationY = 7.0
-	tlm.orientationZ = 8.0
-	tlm.orientationW = 9.0
+	tlm := telemetry.NewTelemetry()
+	tlm.SetConnectionState(&edge.ConnectionState{VehicleID: DefaultEdgeVehicleID})
+	tlm.SetPosition(&edge.Position{
+		Latitude:         1.0,
+		Longitude:        2.0,
+		Altitude:         3.0,
+		RelativeAltitude: 4.0,
+	})
+	tlm.SetQuaternion(&edge.Quaternion{
+		X: 6.0,
+		Y: 7.0,
+		Z: 8.0,
+		W: 9.0,
+	})
+	tlm.SetVelocity(&edge.Velocity{
+		North: 1.0,
+		East:  2.0,
+		Down:  3.0,
+	})
+	tlm.SetArmed(&edge.Armed{
+		Armed: true,
+	})
+	tlm.SetFlightMode(&edge.FlightMode{
+		FlightMode: "XXX",
+	})
 
 	snapshot, err := tlm.Get()
 
@@ -361,7 +376,7 @@ func TestTelemetryGet(t *testing.T) {
 			Longitude:        2.0,
 			Altitude:         3.0,
 			RelativeAltitude: 4.0,
-			Speed:            5.0,
+			Speed:            math.Sqrt(1.0*1.0 + 2.0*2.0),
 			Armed:            true,
 			FlightMode:       "XXX",
 			OrientationX:     6.0,
