@@ -3,8 +3,8 @@ package mavlink
 import (
 	"context"
 	"errors"
+	"fmt"
 
-	"edge-px4/pkg/edge/domain/common"
 	mavsdk_rpc_action "edge-px4/pkg/protos/action"
 
 	"google.golang.org/grpc"
@@ -15,16 +15,16 @@ var (
 )
 
 // AdapterTakeoff .
-func AdapterTakeoff(ctx context.Context, gr *grpc.ClientConn, support common.Support) error {
+func AdapterTakeoff(ctx context.Context, gr *grpc.ClientConn) error {
 	action := mavsdk_rpc_action.NewActionServiceClient(gr)
-	return AdapterTakeoffInternal(ctx, support, action)
+	return AdapterTakeoffInternal(ctx, action)
 }
 
 // AdapterTakeoffInternal .
-func AdapterTakeoffInternal(ctx context.Context, support common.Support, action mavsdk_rpc_action.ActionServiceClient) (err error) {
+func AdapterTakeoffInternal(ctx context.Context, action mavsdk_rpc_action.ActionServiceClient) (err error) {
 	defer func() {
 		if err != nil {
-			support.NotifyError("takeoff command error: %v", err)
+			err = fmt.Errorf("takeoff command error: %w", err)
 		}
 	}()
 

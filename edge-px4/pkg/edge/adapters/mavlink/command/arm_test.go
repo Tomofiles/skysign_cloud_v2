@@ -16,8 +16,6 @@ func TestAdapterArm(t *testing.T) {
 
 	ctx := context.Background()
 
-	supportMock := &supportMock{}
-
 	response := &mavsdk_rpc_action.ArmResponse{
 		ActionResult: &mavsdk_rpc_action.ActionResult{
 			Result: mavsdk_rpc_action.ActionResult_SUCCESS,
@@ -26,10 +24,9 @@ func TestAdapterArm(t *testing.T) {
 	actionMock := &actionServiceClientMock{}
 	actionMock.On("Arm", mock.Anything, mock.Anything).Return(response, nil)
 
-	ret := AdapterArmInternal(ctx, supportMock, actionMock)
+	ret := AdapterArmInternal(ctx, actionMock)
 
 	a.Nil(ret)
-	a.Empty(supportMock.message)
 }
 
 // TestRequestErrorWhenAdapterArm .
@@ -38,15 +35,12 @@ func TestRequestErrorWhenAdapterArm(t *testing.T) {
 
 	ctx := context.Background()
 
-	supportMock := &supportMock{}
-
 	actionMock := &actionServiceClientMock{}
 	actionMock.On("Arm", mock.Anything, mock.Anything).Return(nil, ErrRequest)
 
-	ret := AdapterArmInternal(ctx, supportMock, actionMock)
+	ret := AdapterArmInternal(ctx, actionMock)
 
-	a.Equal(ret, ErrRequest)
-	a.Equal("arm command error: request error", supportMock.message)
+	a.Equal("arm command error: request error", ret.Error())
 }
 
 // TestResponseErrorWhenAdapterArm .
@@ -54,8 +48,6 @@ func TestResponseErrorWhenAdapterArm(t *testing.T) {
 	a := assert.New(t)
 
 	ctx := context.Background()
-
-	supportMock := &supportMock{}
 
 	response := &mavsdk_rpc_action.ArmResponse{
 		ActionResult: &mavsdk_rpc_action.ActionResult{
@@ -65,8 +57,7 @@ func TestResponseErrorWhenAdapterArm(t *testing.T) {
 	actionMock := &actionServiceClientMock{}
 	actionMock.On("Arm", mock.Anything, mock.Anything).Return(response, nil)
 
-	ret := AdapterArmInternal(ctx, supportMock, actionMock)
+	ret := AdapterArmInternal(ctx, actionMock)
 
-	a.Equal(ret, ErrArmCommand)
-	a.Equal("arm command error: no arm command success", supportMock.message)
+	a.Equal("arm command error: no arm command success", ret.Error())
 }

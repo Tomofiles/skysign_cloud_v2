@@ -16,8 +16,6 @@ func TestAdapterLand(t *testing.T) {
 
 	ctx := context.Background()
 
-	supportMock := &supportMock{}
-
 	response := &mavsdk_rpc_action.LandResponse{
 		ActionResult: &mavsdk_rpc_action.ActionResult{
 			Result: mavsdk_rpc_action.ActionResult_SUCCESS,
@@ -26,10 +24,9 @@ func TestAdapterLand(t *testing.T) {
 	actionMock := &actionServiceClientMock{}
 	actionMock.On("Land", mock.Anything, mock.Anything).Return(response, nil)
 
-	ret := AdapterLandInternal(ctx, supportMock, actionMock)
+	ret := AdapterLandInternal(ctx, actionMock)
 
 	a.Nil(ret)
-	a.Empty(supportMock.message)
 }
 
 // TestRequestErrorWhenAdapterLand .
@@ -38,15 +35,12 @@ func TestRequestErrorWhenAdapterLand(t *testing.T) {
 
 	ctx := context.Background()
 
-	supportMock := &supportMock{}
-
 	actionMock := &actionServiceClientMock{}
 	actionMock.On("Land", mock.Anything, mock.Anything).Return(nil, ErrRequest)
 
-	ret := AdapterLandInternal(ctx, supportMock, actionMock)
+	ret := AdapterLandInternal(ctx, actionMock)
 
-	a.Equal(ret, ErrRequest)
-	a.Equal("land command error: request error", supportMock.message)
+	a.Equal("land command error: request error", ret.Error())
 }
 
 // TestResponseErrorWhenAdapterLand .
@@ -54,8 +48,6 @@ func TestResponseErrorWhenAdapterLand(t *testing.T) {
 	a := assert.New(t)
 
 	ctx := context.Background()
-
-	supportMock := &supportMock{}
 
 	response := &mavsdk_rpc_action.LandResponse{
 		ActionResult: &mavsdk_rpc_action.ActionResult{
@@ -65,8 +57,7 @@ func TestResponseErrorWhenAdapterLand(t *testing.T) {
 	actionMock := &actionServiceClientMock{}
 	actionMock.On("Land", mock.Anything, mock.Anything).Return(response, nil)
 
-	ret := AdapterLandInternal(ctx, supportMock, actionMock)
+	ret := AdapterLandInternal(ctx, actionMock)
 
-	a.Equal(ret, ErrLandCommand)
-	a.Equal("land command error: no land command success", supportMock.message)
+	a.Equal("land command error: no land command success", ret.Error())
 }

@@ -3,8 +3,8 @@ package mavlink
 import (
 	"context"
 	"errors"
+	"fmt"
 
-	"edge-px4/pkg/edge/domain/common"
 	mavsdk_rpc_mission "edge-px4/pkg/protos/mission"
 
 	"google.golang.org/grpc"
@@ -15,16 +15,16 @@ var (
 )
 
 // AdapterStart .
-func AdapterStart(ctx context.Context, gr *grpc.ClientConn, support common.Support) error {
+func AdapterStart(ctx context.Context, gr *grpc.ClientConn) error {
 	mission := mavsdk_rpc_mission.NewMissionServiceClient(gr)
-	return AdapterStartInternal(ctx, support, mission)
+	return AdapterStartInternal(ctx, mission)
 }
 
 // AdapterStartInternal .
-func AdapterStartInternal(ctx context.Context, support common.Support, mission mavsdk_rpc_mission.MissionServiceClient) (err error) {
+func AdapterStartInternal(ctx context.Context, mission mavsdk_rpc_mission.MissionServiceClient) (err error) {
 	defer func() {
 		if err != nil {
-			support.NotifyError("start command error: %v", err)
+			err = fmt.Errorf("start command error: %w", err)
 		}
 	}()
 

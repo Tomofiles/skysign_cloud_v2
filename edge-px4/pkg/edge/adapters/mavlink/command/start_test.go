@@ -16,8 +16,6 @@ func TestAdapterStart(t *testing.T) {
 
 	ctx := context.Background()
 
-	supportMock := &supportMock{}
-
 	response := &mavsdk_rpc_mission.StartMissionResponse{
 		MissionResult: &mavsdk_rpc_mission.MissionResult{
 			Result: mavsdk_rpc_mission.MissionResult_SUCCESS,
@@ -26,10 +24,9 @@ func TestAdapterStart(t *testing.T) {
 	missionMock := &missionServiceClientMock{}
 	missionMock.On("StartMission", mock.Anything, mock.Anything).Return(response, nil)
 
-	ret := AdapterStartInternal(ctx, supportMock, missionMock)
+	ret := AdapterStartInternal(ctx, missionMock)
 
 	a.Nil(ret)
-	a.Empty(supportMock.message)
 }
 
 // TestRequestErrorWhenAdapterStart .
@@ -38,15 +35,12 @@ func TestRequestErrorWhenAdapterStart(t *testing.T) {
 
 	ctx := context.Background()
 
-	supportMock := &supportMock{}
-
 	missionMock := &missionServiceClientMock{}
 	missionMock.On("StartMission", mock.Anything, mock.Anything).Return(nil, ErrRequest)
 
-	ret := AdapterStartInternal(ctx, supportMock, missionMock)
+	ret := AdapterStartInternal(ctx, missionMock)
 
-	a.Equal(ret, ErrRequest)
-	a.Equal("start command error: request error", supportMock.message)
+	a.Equal("start command error: request error", ret.Error())
 }
 
 // TestResponseErrorWhenAdapterStart .
@@ -54,8 +48,6 @@ func TestResponseErrorWhenAdapterStart(t *testing.T) {
 	a := assert.New(t)
 
 	ctx := context.Background()
-
-	supportMock := &supportMock{}
 
 	response := &mavsdk_rpc_mission.StartMissionResponse{
 		MissionResult: &mavsdk_rpc_mission.MissionResult{
@@ -65,8 +57,7 @@ func TestResponseErrorWhenAdapterStart(t *testing.T) {
 	missionMock := &missionServiceClientMock{}
 	missionMock.On("StartMission", mock.Anything, mock.Anything).Return(response, nil)
 
-	ret := AdapterStartInternal(ctx, supportMock, missionMock)
+	ret := AdapterStartInternal(ctx, missionMock)
 
-	a.Equal(ret, ErrStartCommand)
-	a.Equal("start command error: no start command success", supportMock.message)
+	a.Equal("start command error: no start command success", ret.Error())
 }

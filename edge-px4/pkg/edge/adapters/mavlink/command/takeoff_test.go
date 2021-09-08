@@ -16,8 +16,6 @@ func TestAdapterTakeoff(t *testing.T) {
 
 	ctx := context.Background()
 
-	supportMock := &supportMock{}
-
 	response := &mavsdk_rpc_action.TakeoffResponse{
 		ActionResult: &mavsdk_rpc_action.ActionResult{
 			Result: mavsdk_rpc_action.ActionResult_SUCCESS,
@@ -26,10 +24,9 @@ func TestAdapterTakeoff(t *testing.T) {
 	actionMock := &actionServiceClientMock{}
 	actionMock.On("Takeoff", mock.Anything, mock.Anything).Return(response, nil)
 
-	ret := AdapterTakeoffInternal(ctx, supportMock, actionMock)
+	ret := AdapterTakeoffInternal(ctx, actionMock)
 
 	a.Nil(ret)
-	a.Empty(supportMock.message)
 }
 
 // TestRequestErrorWhenAdapterTakeoff .
@@ -38,15 +35,12 @@ func TestRequestErrorWhenAdapterTakeoff(t *testing.T) {
 
 	ctx := context.Background()
 
-	supportMock := &supportMock{}
-
 	actionMock := &actionServiceClientMock{}
 	actionMock.On("Takeoff", mock.Anything, mock.Anything).Return(nil, ErrRequest)
 
-	ret := AdapterTakeoffInternal(ctx, supportMock, actionMock)
+	ret := AdapterTakeoffInternal(ctx, actionMock)
 
-	a.Equal(ret, ErrRequest)
-	a.Equal("takeoff command error: request error", supportMock.message)
+	a.Equal("takeoff command error: request error", ret.Error())
 }
 
 // TestResponseErrorWhenAdapterTakeoff .
@@ -54,8 +48,6 @@ func TestResponseErrorWhenAdapterTakeoff(t *testing.T) {
 	a := assert.New(t)
 
 	ctx := context.Background()
-
-	supportMock := &supportMock{}
 
 	response := &mavsdk_rpc_action.TakeoffResponse{
 		ActionResult: &mavsdk_rpc_action.ActionResult{
@@ -65,8 +57,7 @@ func TestResponseErrorWhenAdapterTakeoff(t *testing.T) {
 	actionMock := &actionServiceClientMock{}
 	actionMock.On("Takeoff", mock.Anything, mock.Anything).Return(response, nil)
 
-	ret := AdapterTakeoffInternal(ctx, supportMock, actionMock)
+	ret := AdapterTakeoffInternal(ctx, actionMock)
 
-	a.Equal(ret, ErrTakeoffCommand)
-	a.Equal("takeoff command error: no takeoff command success", supportMock.message)
+	a.Equal("takeoff command error: no takeoff command success", ret.Error())
 }

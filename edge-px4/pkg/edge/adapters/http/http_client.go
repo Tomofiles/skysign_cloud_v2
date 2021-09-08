@@ -1,7 +1,7 @@
 package http
 
 import (
-	"edge-px4/pkg/edge/domain/common"
+	"fmt"
 	"io/ioutil"
 	"net/http"
 	"strings"
@@ -9,29 +9,25 @@ import (
 
 // HttpClientDo .
 func HttpClientDo(
-	support common.Support,
 	method string,
 	url string,
 	reqBody []byte,
 ) ([]byte, error) {
 	req, err := http.NewRequest(method, url, strings.NewReader(string(reqBody)))
 	if err != nil {
-		support.NotifyError("http request error: %v", err)
-		return nil, err
+		return nil, fmt.Errorf("http request error: %w", err)
 	}
 
 	client := &http.Client{}
 	resp, err := client.Do(req)
 	if err != nil {
-		support.NotifyError("http client do error: %v", err)
-		return nil, err
+		return nil, fmt.Errorf("http client do error: %w", err)
 	}
 
 	respBody, err := ioutil.ReadAll(resp.Body)
 	defer resp.Body.Close()
 	if err != nil {
-		support.NotifyError("http response error: %v", err)
-		return nil, err
+		return nil, fmt.Errorf("http response error: %w", err)
 	}
 
 	return respBody, nil

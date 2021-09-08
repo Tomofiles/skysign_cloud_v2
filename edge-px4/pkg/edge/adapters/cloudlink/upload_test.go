@@ -67,13 +67,13 @@ func TestHttpClientErrorWhenPullUploadMission(t *testing.T) {
 
 	expectBody := json.Marshal(&skysign_proto.PullUploadMissionRequest{})
 
-	expectMessage1 := fmt.Sprintf("Send CLOUD data=%s", expectBody)
-	expectMessage2 := "http client do error: Post $/api/v1/communications/vehicle-id/uploadmissions/command-id: unsupported protocol scheme \"\""
-	expectMessage3 := "cloud upload http client error: Post $/api/v1/communications/vehicle-id/uploadmissions/command-id: unsupported protocol scheme \"\""
+	expectMessage := fmt.Sprintf("Send CLOUD data=%s", expectBody)
+
+	expectError := "cloud upload http client error: http client do error: Post $/api/v1/communications/vehicle-id/uploadmissions/command-id: unsupported protocol scheme \"\""
 
 	a.Nil(upload)
-	a.NotNil(err)
-	a.Equal([]string{expectMessage1, expectMessage2, expectMessage3}, support.messages)
+	a.Equal(expectError, err.Error())
+	a.Equal([]string{expectMessage}, support.messages)
 }
 
 // TestResponseJsonParseErrorWhenPullUploadMission .
@@ -92,10 +92,11 @@ func TestResponseJsonParseErrorWhenPullUploadMission(t *testing.T) {
 
 	expectBody := json.Marshal(&skysign_proto.PullUploadMissionRequest{})
 
-	expectMessage1 := fmt.Sprintf("Send CLOUD data=%s", expectBody)
-	expectMessage2 := "cloud upload response error: unexpected EOF"
+	expectMessage := fmt.Sprintf("Send CLOUD data=%s", expectBody)
+
+	expectError := "cloud upload response error: unexpected EOF"
 
 	a.Nil(upload)
-	a.NotNil(err)
-	a.Equal([]string{expectMessage1, expectMessage2}, support.messages)
+	a.Equal(expectError, err.Error())
+	a.Equal([]string{expectMessage}, support.messages)
 }

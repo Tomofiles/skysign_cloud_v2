@@ -3,8 +3,8 @@ package mavlink
 import (
 	"context"
 	"errors"
+	"fmt"
 
-	"edge-px4/pkg/edge/domain/common"
 	mavsdk_rpc_action "edge-px4/pkg/protos/action"
 
 	"google.golang.org/grpc"
@@ -15,16 +15,16 @@ var (
 )
 
 // AdapterDisarm .
-func AdapterDisarm(ctx context.Context, gr *grpc.ClientConn, support common.Support) error {
+func AdapterDisarm(ctx context.Context, gr *grpc.ClientConn) error {
 	action := mavsdk_rpc_action.NewActionServiceClient(gr)
-	return AdapterDisarmInternal(ctx, support, action)
+	return AdapterDisarmInternal(ctx, action)
 }
 
 // AdapterDisarmInternal .
-func AdapterDisarmInternal(ctx context.Context, support common.Support, action mavsdk_rpc_action.ActionServiceClient) (err error) {
+func AdapterDisarmInternal(ctx context.Context, action mavsdk_rpc_action.ActionServiceClient) (err error) {
 	defer func() {
 		if err != nil {
-			support.NotifyError("disarm command error: %v", err)
+			err = fmt.Errorf("disarm command error: %w", err)
 		}
 	}()
 

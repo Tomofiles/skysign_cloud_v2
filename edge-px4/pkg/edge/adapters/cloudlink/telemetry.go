@@ -5,6 +5,7 @@ import (
 	"edge-px4/pkg/edge/adapters/json"
 	"edge-px4/pkg/edge/domain/common"
 	"edge-px4/pkg/edge/domain/model"
+	"fmt"
 
 	"github.com/Tomofiles/skysign_cloud_v2/skysign-proto/pkg/skysign_proto"
 )
@@ -17,8 +18,7 @@ func PushTelemetry(
 ) (string, *model.CommandIDs, error) {
 	snapshot, err := telemetry.Get()
 	if err != nil {
-		support.NotifyInfo("cloud telemetry request error: %v", err)
-		return "", nil, err
+		return "", nil, fmt.Errorf("cloud telemetry request error: %w", err)
 	}
 
 	request := json.Marshal(&skysign_proto.PushTelemetryRequest{
@@ -41,21 +41,18 @@ func PushTelemetry(
 	support.NotifyInfo("Send CLOUD data=%s", request)
 
 	respBody, err := http.HttpClientDo(
-		support,
 		http.MethodPost,
 		cloud+"/api/v1/communications/"+snapshot.ID+"/telemetry",
 		request,
 	)
 	if err != nil {
-		support.NotifyError("cloud telemetry http client error: %v", err)
-		return "", nil, err
+		return "", nil, fmt.Errorf("cloud telemetry http client error: %w", err)
 	}
 
 	var response skysign_proto.PushTelemetryResponse
 	err = json.Unmarshal(respBody, &response)
 	if err != nil {
-		support.NotifyError("cloud telemetry response error: %v", err)
-		return "", nil, err
+		return "", nil, fmt.Errorf("cloud telemetry response error: %w", err)
 	}
 
 	support.NotifyInfo("Receive CLOUD data=%s", respBody)

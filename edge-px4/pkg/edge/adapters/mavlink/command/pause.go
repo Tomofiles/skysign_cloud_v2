@@ -3,8 +3,8 @@ package mavlink
 import (
 	"context"
 	"errors"
+	"fmt"
 
-	"edge-px4/pkg/edge/domain/common"
 	mavsdk_rpc_mission "edge-px4/pkg/protos/mission"
 
 	"google.golang.org/grpc"
@@ -15,16 +15,16 @@ var (
 )
 
 // AdapterPause .
-func AdapterPause(ctx context.Context, gr *grpc.ClientConn, support common.Support) error {
+func AdapterPause(ctx context.Context, gr *grpc.ClientConn) error {
 	mission := mavsdk_rpc_mission.NewMissionServiceClient(gr)
-	return AdapterPauseInternal(ctx, support, mission)
+	return AdapterPauseInternal(ctx, mission)
 }
 
 // AdapterPauseInternal .
-func AdapterPauseInternal(ctx context.Context, support common.Support, mission mavsdk_rpc_mission.MissionServiceClient) (err error) {
+func AdapterPauseInternal(ctx context.Context, mission mavsdk_rpc_mission.MissionServiceClient) (err error) {
 	defer func() {
 		if err != nil {
-			support.NotifyError("pause command error: %v", err)
+			err = fmt.Errorf("pause command error: %w", err)
 		}
 	}()
 

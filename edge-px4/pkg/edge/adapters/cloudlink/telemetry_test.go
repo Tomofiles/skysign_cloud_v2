@@ -166,12 +166,12 @@ func TestNotPreparedWhenPushTelemetry(t *testing.T) {
 
 	id, commandIDs, err := PushTelemetry(ts.URL, support, tlm)
 
-	expectMessage1 := "cloud telemetry request error: no telemetry prepared"
+	expectError := "cloud telemetry request error: no telemetry prepared"
 
 	a.Empty(id)
 	a.Nil(commandIDs)
-	a.Equal(model.ErrNotPrepared, err)
-	a.Equal([]string{expectMessage1}, support.messages)
+	a.Equal(expectError, err.Error())
+	a.Empty(support.messages)
 }
 
 // TestHttpClientErrorWhenPushTelemetry .
@@ -207,14 +207,14 @@ func TestHttpClientErrorWhenPushTelemetry(t *testing.T) {
 		},
 	})
 
-	expectMessage1 := fmt.Sprintf("Send CLOUD data=%s", expectBody)
-	expectMessage2 := "http client do error: Post $/api/v1/communications/vehicle-id/telemetry: unsupported protocol scheme \"\""
-	expectMessage3 := "cloud telemetry http client error: Post $/api/v1/communications/vehicle-id/telemetry: unsupported protocol scheme \"\""
+	expectMessage := fmt.Sprintf("Send CLOUD data=%s", expectBody)
+
+	expectError := "cloud telemetry http client error: http client do error: Post $/api/v1/communications/vehicle-id/telemetry: unsupported protocol scheme \"\""
 
 	a.Empty(id)
 	a.Empty(commandIDs)
-	a.NotNil(err)
-	a.Equal([]string{expectMessage1, expectMessage2, expectMessage3}, support.messages)
+	a.Equal(expectError, err.Error())
+	a.Equal([]string{expectMessage}, support.messages)
 }
 
 // TestResponseJsonParseErrorWhenPushTelemetry .
@@ -256,11 +256,12 @@ func TestResponseJsonParseErrorWhenPushTelemetry(t *testing.T) {
 		},
 	})
 
-	expectMessage1 := fmt.Sprintf("Send CLOUD data=%s", expectBody)
-	expectMessage2 := "cloud telemetry response error: unexpected EOF"
+	expectMessage := fmt.Sprintf("Send CLOUD data=%s", expectBody)
+
+	expectError := "cloud telemetry response error: unexpected EOF"
 
 	a.Empty(id)
 	a.Empty(commandIDs)
-	a.NotNil(err)
-	a.Equal([]string{expectMessage1, expectMessage2}, support.messages)
+	a.Equal(expectError, err.Error())
+	a.Equal([]string{expectMessage}, support.messages)
 }

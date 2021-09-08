@@ -3,8 +3,8 @@ package mavlink
 import (
 	"context"
 	"errors"
+	"fmt"
 
-	"edge-px4/pkg/edge/domain/common"
 	mavsdk_rpc_action "edge-px4/pkg/protos/action"
 
 	"google.golang.org/grpc"
@@ -15,16 +15,16 @@ var (
 )
 
 // AdapterLand .
-func AdapterLand(ctx context.Context, gr *grpc.ClientConn, support common.Support) error {
+func AdapterLand(ctx context.Context, gr *grpc.ClientConn) error {
 	action := mavsdk_rpc_action.NewActionServiceClient(gr)
-	return AdapterLandInternal(ctx, support, action)
+	return AdapterLandInternal(ctx, action)
 }
 
 // AdapterLandInternal .
-func AdapterLandInternal(ctx context.Context, support common.Support, action mavsdk_rpc_action.ActionServiceClient) (err error) {
+func AdapterLandInternal(ctx context.Context, action mavsdk_rpc_action.ActionServiceClient) (err error) {
 	defer func() {
 		if err != nil {
-			support.NotifyError("land command error: %v", err)
+			err = fmt.Errorf("land command error: %w", err)
 		}
 	}()
 

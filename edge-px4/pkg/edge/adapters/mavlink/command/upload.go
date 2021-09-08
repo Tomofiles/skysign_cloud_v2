@@ -3,8 +3,8 @@ package mavlink
 import (
 	"context"
 	"errors"
+	"fmt"
 
-	"edge-px4/pkg/edge/domain/common"
 	"edge-px4/pkg/edge/domain/model"
 	mavsdk_rpc_mission "edge-px4/pkg/protos/mission"
 
@@ -16,16 +16,16 @@ var (
 )
 
 // AdapterUpload .
-func AdapterUpload(ctx context.Context, gr *grpc.ClientConn, support common.Support, missionModel *model.Mission) error {
+func AdapterUpload(ctx context.Context, gr *grpc.ClientConn, missionModel *model.Mission) error {
 	mission := mavsdk_rpc_mission.NewMissionServiceClient(gr)
-	return AdapterUploadInternal(ctx, support, mission, missionModel)
+	return AdapterUploadInternal(ctx, mission, missionModel)
 }
 
 // AdapterUploadInternal .
-func AdapterUploadInternal(ctx context.Context, support common.Support, mission mavsdk_rpc_mission.MissionServiceClient, missionModel *model.Mission) (err error) {
+func AdapterUploadInternal(ctx context.Context, mission mavsdk_rpc_mission.MissionServiceClient, missionModel *model.Mission) (err error) {
 	defer func() {
 		if err != nil {
-			support.NotifyError("upload command error: %v", err)
+			err = fmt.Errorf("upload command error: %w", err)
 		}
 	}()
 

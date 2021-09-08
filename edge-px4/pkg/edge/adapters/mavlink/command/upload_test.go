@@ -17,8 +17,6 @@ func TestAdapterUploadNoItems(t *testing.T) {
 
 	ctx := context.Background()
 
-	supportMock := &supportMock{}
-
 	response := &mavsdk_rpc_mission.UploadMissionResponse{
 		MissionResult: &mavsdk_rpc_mission.MissionResult{
 			Result: mavsdk_rpc_mission.MissionResult_SUCCESS,
@@ -28,12 +26,11 @@ func TestAdapterUploadNoItems(t *testing.T) {
 	missionMock.On("UploadMission", mock.Anything, mock.Anything).Return(response, nil)
 
 	model := &model.Mission{}
-	ret := AdapterUploadInternal(ctx, supportMock, missionMock, model)
+	ret := AdapterUploadInternal(ctx, missionMock, model)
 
 	expectMissionItems := []*mavsdk_rpc_mission.MissionItem{}
 	a.Nil(ret)
 	a.Equal(expectMissionItems, missionMock.MissionItems)
-	a.Empty(supportMock.message)
 }
 
 // TestAdapterUploadSingleItems .
@@ -41,8 +38,6 @@ func TestAdapterUploadSingleItems(t *testing.T) {
 	a := assert.New(t)
 
 	ctx := context.Background()
-
-	supportMock := &supportMock{}
 
 	response := &mavsdk_rpc_mission.UploadMissionResponse{
 		MissionResult: &mavsdk_rpc_mission.MissionResult{
@@ -62,7 +57,7 @@ func TestAdapterUploadSingleItems(t *testing.T) {
 			},
 		},
 	}
-	ret := AdapterUploadInternal(ctx, supportMock, missionMock, model)
+	ret := AdapterUploadInternal(ctx, missionMock, model)
 
 	expectMissionItems := []*mavsdk_rpc_mission.MissionItem{
 		{
@@ -74,7 +69,6 @@ func TestAdapterUploadSingleItems(t *testing.T) {
 	}
 	a.Nil(ret)
 	a.Equal(expectMissionItems, missionMock.MissionItems)
-	a.Empty(supportMock.message)
 }
 
 // TestAdapterUploadMultipleItems .
@@ -82,8 +76,6 @@ func TestAdapterUploadMultipleItems(t *testing.T) {
 	a := assert.New(t)
 
 	ctx := context.Background()
-
-	supportMock := &supportMock{}
 
 	response := &mavsdk_rpc_mission.UploadMissionResponse{
 		MissionResult: &mavsdk_rpc_mission.MissionResult{
@@ -115,7 +107,7 @@ func TestAdapterUploadMultipleItems(t *testing.T) {
 			},
 		},
 	}
-	ret := AdapterUploadInternal(ctx, supportMock, missionMock, model)
+	ret := AdapterUploadInternal(ctx, missionMock, model)
 
 	expectMissionItems := []*mavsdk_rpc_mission.MissionItem{
 		{
@@ -139,7 +131,6 @@ func TestAdapterUploadMultipleItems(t *testing.T) {
 	}
 	a.Nil(ret)
 	a.Equal(expectMissionItems, missionMock.MissionItems)
-	a.Empty(supportMock.message)
 }
 
 // TestRequestErrorWhenAdapterUpload .
@@ -148,16 +139,13 @@ func TestRequestErrorWhenAdapterUpload(t *testing.T) {
 
 	ctx := context.Background()
 
-	supportMock := &supportMock{}
-
 	missionMock := &missionServiceClientMock{}
 	missionMock.On("UploadMission", mock.Anything, mock.Anything).Return(nil, ErrRequest)
 
 	model := &model.Mission{}
-	ret := AdapterUploadInternal(ctx, supportMock, missionMock, model)
+	ret := AdapterUploadInternal(ctx, missionMock, model)
 
-	a.Equal(ret, ErrRequest)
-	a.Equal("upload command error: request error", supportMock.message)
+	a.Equal("upload command error: request error", ret.Error())
 }
 
 // TestResponseErrorWhenAdapterUpload .
@@ -165,8 +153,6 @@ func TestResponseErrorWhenAdapterUpload(t *testing.T) {
 	a := assert.New(t)
 
 	ctx := context.Background()
-
-	supportMock := &supportMock{}
 
 	response := &mavsdk_rpc_mission.UploadMissionResponse{
 		MissionResult: &mavsdk_rpc_mission.MissionResult{
@@ -177,8 +163,7 @@ func TestResponseErrorWhenAdapterUpload(t *testing.T) {
 	missionMock.On("UploadMission", mock.Anything, mock.Anything).Return(response, nil)
 
 	model := &model.Mission{}
-	ret := AdapterUploadInternal(ctx, supportMock, missionMock, model)
+	ret := AdapterUploadInternal(ctx, missionMock, model)
 
-	a.Equal(ret, ErrUploadCommand)
-	a.Equal("upload command error: no upload command success", supportMock.message)
+	a.Equal("upload command error: no upload command success", ret.Error())
 }

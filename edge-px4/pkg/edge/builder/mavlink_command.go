@@ -3,7 +3,6 @@ package builder
 import (
 	"context"
 	mavlink_command_adapter "edge-px4/pkg/edge/adapters/mavlink/command"
-	"edge-px4/pkg/edge/domain/common"
 	"edge-px4/pkg/edge/domain/model"
 
 	"google.golang.org/grpc"
@@ -25,31 +24,30 @@ type CommandAdapter struct {
 func MavlinkCommand(
 	ctx context.Context,
 	gr *grpc.ClientConn,
-	support common.Support,
 ) *CommandAdapter {
 	adapterArm := func() error {
-		return mavlink_command_adapter.AdapterArm(ctx, gr, support)
+		return mavlink_command_adapter.AdapterArm(ctx, gr)
 	}
 	adapterDisarm := func() error {
-		return mavlink_command_adapter.AdapterDisarm(ctx, gr, support)
+		return mavlink_command_adapter.AdapterDisarm(ctx, gr)
 	}
 	adapterStart := func() error {
-		return mavlink_command_adapter.AdapterStart(ctx, gr, support)
+		return mavlink_command_adapter.AdapterStart(ctx, gr)
 	}
 	adapterPause := func() error {
-		return mavlink_command_adapter.AdapterPause(ctx, gr, support)
+		return mavlink_command_adapter.AdapterPause(ctx, gr)
 	}
 	adapterTakeoff := func() error {
-		return mavlink_command_adapter.AdapterTakeoff(ctx, gr, support)
+		return mavlink_command_adapter.AdapterTakeoff(ctx, gr)
 	}
 	adapterLand := func() error {
-		return mavlink_command_adapter.AdapterLand(ctx, gr, support)
+		return mavlink_command_adapter.AdapterLand(ctx, gr)
 	}
 	adapterReturn := func() error {
-		return mavlink_command_adapter.AdapterReturn(ctx, gr, support)
+		return mavlink_command_adapter.AdapterReturn(ctx, gr)
 	}
 	adapterUpload := func(mission *model.Mission) error {
-		return mavlink_command_adapter.AdapterUpload(ctx, gr, support, mission)
+		return mavlink_command_adapter.AdapterUpload(ctx, gr, mission)
 	}
 
 	commandAdapter := &CommandAdapter{

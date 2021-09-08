@@ -13,8 +13,6 @@ import (
 func TestHttpClientDo(t *testing.T) {
 	a := assert.New(t)
 
-	support := &supportMock{}
-
 	var resMethod, resPath string
 	var resBody []byte
 	h := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -27,21 +25,20 @@ func TestHttpClientDo(t *testing.T) {
 	ts := httptest.NewServer(h)
 	defer ts.Close()
 
-	respBody, err := HttpClientDo(support, http.MethodPost, ts.URL+"/path/aaa", []byte("{}"))
+	respBody, err := HttpClientDo(http.MethodPost, ts.URL+"/path/aaa", []byte("{}"))
+
+	expectBody := []byte("{}\n")
 
 	a.Equal(http.MethodPost, resMethod)
 	a.Equal("/path/aaa", resPath)
 	a.Equal([]byte("{}"), resBody)
 
-	a.Equal([]byte("{}\n"), respBody)
+	a.Equal(expectBody, respBody)
 	a.Nil(err)
-	a.Empty(support.messages)
 }
 
 func TestCLientDoErrorWhenHttpClientDo(t *testing.T) {
 	a := assert.New(t)
-
-	support := &supportMock{}
 
 	h := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprintln(w, "{}")
@@ -49,11 +46,10 @@ func TestCLientDoErrorWhenHttpClientDo(t *testing.T) {
 	ts := httptest.NewServer(h)
 	defer ts.Close()
 
-	respBody, err := HttpClientDo(support, http.MethodGet, "", []byte("{}"))
+	respBody, err := HttpClientDo(http.MethodGet, "", []byte("{}"))
 
-	expectMessage := "http client do error: Get : unsupported protocol scheme \"\""
+	expectError := "http client do error: Get : unsupported protocol scheme \"\""
 
 	a.Nil(respBody)
-	a.NotNil(err)
-	a.Equal([]string{expectMessage}, support.messages)
+	a.Equal(expectError, err.Error())
 }

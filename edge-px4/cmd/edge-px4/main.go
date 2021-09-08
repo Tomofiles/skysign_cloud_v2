@@ -92,11 +92,7 @@ func main() {
 				cStream := mavlink_command.CommandDistributer(ctx, support, commandStream.CommandStream)
 				mStream := mavlink_command.MissionDistributer(ctx, support, commandStream.MissionStream)
 
-				mavlinkAdapters := builder.MavlinkCommand(
-					ctx,
-					gr,
-					support,
-				)
+				mavlinkAdapters := builder.MavlinkCommand(ctx, gr)
 
 				armSendExit := mavlink_command.CommandSender(ctx, support, cStream.ArmStream, mavlinkAdapters.AdapterArm, "ARM")
 				disarmSendExit := mavlink_command.CommandSender(ctx, support, cStream.DisarmStream, mavlinkAdapters.AdapterDisarm, "DISARM")

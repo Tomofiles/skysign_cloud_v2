@@ -16,8 +16,6 @@ func TestAdapterReturn(t *testing.T) {
 
 	ctx := context.Background()
 
-	supportMock := &supportMock{}
-
 	response := &mavsdk_rpc_action.ReturnToLaunchResponse{
 		ActionResult: &mavsdk_rpc_action.ActionResult{
 			Result: mavsdk_rpc_action.ActionResult_SUCCESS,
@@ -26,10 +24,9 @@ func TestAdapterReturn(t *testing.T) {
 	actionMock := &actionServiceClientMock{}
 	actionMock.On("ReturnToLaunch", mock.Anything, mock.Anything).Return(response, nil)
 
-	ret := AdapterReturnInternal(ctx, supportMock, actionMock)
+	ret := AdapterReturnInternal(ctx, actionMock)
 
 	a.Nil(ret)
-	a.Empty(supportMock.message)
 }
 
 // TestRequestErrorWhenAdapterReturn .
@@ -38,15 +35,12 @@ func TestRequestErrorWhenAdapterReturn(t *testing.T) {
 
 	ctx := context.Background()
 
-	supportMock := &supportMock{}
-
 	actionMock := &actionServiceClientMock{}
 	actionMock.On("ReturnToLaunch", mock.Anything, mock.Anything).Return(nil, ErrRequest)
 
-	ret := AdapterReturnInternal(ctx, supportMock, actionMock)
+	ret := AdapterReturnInternal(ctx, actionMock)
 
-	a.Equal(ret, ErrRequest)
-	a.Equal("rtl command error: request error", supportMock.message)
+	a.Equal("rtl command error: request error", ret.Error())
 }
 
 // TestResponseErrorWhenAdapterReturn .
@@ -54,8 +48,6 @@ func TestResponseErrorWhenAdapterReturn(t *testing.T) {
 	a := assert.New(t)
 
 	ctx := context.Background()
-
-	supportMock := &supportMock{}
 
 	response := &mavsdk_rpc_action.ReturnToLaunchResponse{
 		ActionResult: &mavsdk_rpc_action.ActionResult{
@@ -65,8 +57,7 @@ func TestResponseErrorWhenAdapterReturn(t *testing.T) {
 	actionMock := &actionServiceClientMock{}
 	actionMock.On("ReturnToLaunch", mock.Anything, mock.Anything).Return(response, nil)
 
-	ret := AdapterReturnInternal(ctx, supportMock, actionMock)
+	ret := AdapterReturnInternal(ctx, actionMock)
 
-	a.Equal(ret, ErrReturnCommand)
-	a.Equal("rtl command error: no rtl command success", supportMock.message)
+	a.Equal("rtl command error: no rtl command success", ret.Error())
 }

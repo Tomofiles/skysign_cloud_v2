@@ -16,8 +16,6 @@ func TestAdapterPause(t *testing.T) {
 
 	ctx := context.Background()
 
-	supportMock := &supportMock{}
-
 	response := &mavsdk_rpc_mission.PauseMissionResponse{
 		MissionResult: &mavsdk_rpc_mission.MissionResult{
 			Result: mavsdk_rpc_mission.MissionResult_SUCCESS,
@@ -26,10 +24,9 @@ func TestAdapterPause(t *testing.T) {
 	missionMock := &missionServiceClientMock{}
 	missionMock.On("PauseMission", mock.Anything, mock.Anything).Return(response, nil)
 
-	ret := AdapterPauseInternal(ctx, supportMock, missionMock)
+	ret := AdapterPauseInternal(ctx, missionMock)
 
 	a.Nil(ret)
-	a.Empty(supportMock.message)
 }
 
 // TestRequestErrorWhenAdapterPause .
@@ -38,15 +35,12 @@ func TestRequestErrorWhenAdapterPause(t *testing.T) {
 
 	ctx := context.Background()
 
-	supportMock := &supportMock{}
-
 	missionMock := &missionServiceClientMock{}
 	missionMock.On("PauseMission", mock.Anything, mock.Anything).Return(nil, ErrRequest)
 
-	ret := AdapterPauseInternal(ctx, supportMock, missionMock)
+	ret := AdapterPauseInternal(ctx, missionMock)
 
-	a.Equal(ret, ErrRequest)
-	a.Equal("pause command error: request error", supportMock.message)
+	a.Equal("pause command error: request error", ret.Error())
 }
 
 // TestResponseErrorWhenAdapterPause .
@@ -54,8 +48,6 @@ func TestResponseErrorWhenAdapterPause(t *testing.T) {
 	a := assert.New(t)
 
 	ctx := context.Background()
-
-	supportMock := &supportMock{}
 
 	response := &mavsdk_rpc_mission.PauseMissionResponse{
 		MissionResult: &mavsdk_rpc_mission.MissionResult{
@@ -65,8 +57,7 @@ func TestResponseErrorWhenAdapterPause(t *testing.T) {
 	missionMock := &missionServiceClientMock{}
 	missionMock.On("PauseMission", mock.Anything, mock.Anything).Return(response, nil)
 
-	ret := AdapterPauseInternal(ctx, supportMock, missionMock)
+	ret := AdapterPauseInternal(ctx, missionMock)
 
-	a.Equal(ret, ErrPauseCommand)
-	a.Equal("pause command error: no pause command success", supportMock.message)
+	a.Equal("pause command error: no pause command success", ret.Error())
 }

@@ -5,6 +5,7 @@ import (
 	"edge-px4/pkg/edge/adapters/json"
 	"edge-px4/pkg/edge/domain/common"
 	"edge-px4/pkg/edge/domain/model"
+	"fmt"
 
 	"github.com/Tomofiles/skysign_cloud_v2/skysign-proto/pkg/skysign_proto"
 )
@@ -20,21 +21,18 @@ func GetUploadMission(
 	support.NotifyInfo("Send CLOUD data=%s", request)
 
 	respBody, err := http.HttpClientDo(
-		support,
 		http.MethodGet,
 		cloud+"/api/v1/uploadmissions/"+missionID,
 		request,
 	)
 	if err != nil {
-		support.NotifyError("cloud mission http client error: %v", err)
-		return nil, err
+		return nil, fmt.Errorf("cloud mission http client error: %w", err)
 	}
 
 	var response skysign_proto.UploadMission
 	err = json.Unmarshal(respBody, &response)
 	if err != nil {
-		support.NotifyError("cloud mission response error: %v", err)
-		return nil, err
+		return nil, fmt.Errorf("cloud mission response error: %w", err)
 	}
 
 	support.NotifyInfo("Receive CLOUD data=%s", respBody)
