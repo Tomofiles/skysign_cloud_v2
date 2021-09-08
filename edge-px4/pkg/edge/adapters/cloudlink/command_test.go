@@ -38,17 +38,19 @@ func TestPullCommand(t *testing.T) {
 
 	command, err := PullCommand(ts.URL, support, DefaultEdgeVehicleID, DefaultEdgeCommandID)
 
+	expectMethod := http.MethodPost
+	expectUrl := "/api/v1/communications/vehicle-id/commands/command-id"
 	expectBody := json.Marshal(&skysign_proto.PullCommandRequest{})
 
-	expectMessage1 := fmt.Sprintf("Send CLOUD data=%s", expectBody)
-	expectMessage2 := fmt.Sprintf("Receive CLOUD data=%s\n", respJson)
+	expectMessage1 := fmt.Sprintf("SEND   , Command  , Method=%s, API=%s, Message=%s", expectMethod, expectUrl, expectBody)
+	expectMessage2 := fmt.Sprintf("RECEIVE, Command  , data=%s\n", respJson)
 
 	expectCommand := &model.Command{
 		Type: "ARM",
 	}
 
-	a.Equal(http.MethodPost, resMethod)
-	a.Equal("/api/v1/communications/vehicle-id/commands/command-id", resPath)
+	a.Equal(expectMethod, resMethod)
+	a.Equal(expectUrl, resPath)
 	a.Equal(expectBody, resBody)
 
 	a.Equal(expectCommand, command)
@@ -64,9 +66,11 @@ func TestHttpClientErrorWhenPullCommand(t *testing.T) {
 
 	command, err := PullCommand("$", support, DefaultEdgeVehicleID, DefaultEdgeCommandID)
 
+	expectMethod := http.MethodPost
+	expectUrl := "/api/v1/communications/vehicle-id/commands/command-id"
 	expectBody := json.Marshal(&skysign_proto.PullCommandRequest{})
 
-	expectMessage := fmt.Sprintf("Send CLOUD data=%s", expectBody)
+	expectMessage := fmt.Sprintf("SEND   , Command  , Method=%s, API=%s, Message=%s", expectMethod, expectUrl, expectBody)
 
 	expectError := "cloud command http client error: http client do error: Post $/api/v1/communications/vehicle-id/commands/command-id: unsupported protocol scheme \"\""
 
@@ -89,9 +93,11 @@ func TestResponseJsonParseErrorWhenPullCommand(t *testing.T) {
 
 	command, err := PullCommand(ts.URL, support, DefaultEdgeVehicleID, DefaultEdgeCommandID)
 
+	expectMethod := http.MethodPost
+	expectUrl := "/api/v1/communications/vehicle-id/commands/command-id"
 	expectBody := json.Marshal(&skysign_proto.PullCommandRequest{})
 
-	expectMessage := fmt.Sprintf("Send CLOUD data=%s", expectBody)
+	expectMessage := fmt.Sprintf("SEND   , Command  , Method=%s, API=%s, Message=%s", expectMethod, expectUrl, expectBody)
 
 	expectError := "cloud command response error: unexpected EOF"
 

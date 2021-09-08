@@ -21,6 +21,8 @@ func PushTelemetry(
 		return "", nil, fmt.Errorf("cloud telemetry request error: %w", err)
 	}
 
+	method := http.MethodPost
+	url := fmt.Sprintf("/api/v1/communications/%s/telemetry", snapshot.ID)
 	request := json.Marshal(&skysign_proto.PushTelemetryRequest{
 		Id: snapshot.ID,
 		Telemetry: &skysign_proto.Telemetry{
@@ -38,11 +40,11 @@ func PushTelemetry(
 		},
 	})
 
-	support.NotifyInfo("Send CLOUD data=%s", request)
+	support.NotifyInfo("SEND   , Telemetry, Method=%s, API=%s, Message=%s", method, url, request)
 
 	respBody, err := http.HttpClientDo(
-		http.MethodPost,
-		cloud+"/api/v1/communications/"+snapshot.ID+"/telemetry",
+		method,
+		cloud+url,
 		request,
 	)
 	if err != nil {
@@ -55,7 +57,7 @@ func PushTelemetry(
 		return "", nil, fmt.Errorf("cloud telemetry response error: %w", err)
 	}
 
-	support.NotifyInfo("Receive CLOUD data=%s", respBody)
+	support.NotifyInfo("RECEIVE, Telemetry, data=%s", respBody)
 
 	commandIDs := &model.CommandIDs{
 		CommandIds: []string{},

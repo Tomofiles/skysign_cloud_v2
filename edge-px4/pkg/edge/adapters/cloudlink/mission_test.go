@@ -56,10 +56,12 @@ func TestGetUploadMission(t *testing.T) {
 
 	mission, err := GetUploadMission(ts.URL, support, DefaultEdgeMissionID)
 
+	expectMethod := http.MethodGet
+	expectUrl := "/api/v1/uploadmissions/mission-id"
 	expectBody := json.Marshal(&skysign_proto.GetUploadMissionRequest{})
 
-	expectMessage1 := fmt.Sprintf("Send CLOUD data=%s", expectBody)
-	expectMessage2 := fmt.Sprintf("Receive CLOUD data=%s\n", respJson)
+	expectMessage1 := fmt.Sprintf("SEND   , Mission  , Method=%s , API=%s, Message=%s", expectMethod, expectUrl, expectBody)
+	expectMessage2 := fmt.Sprintf("RECEIVE, Mission  , data=%s\n", respJson)
 
 	expectMission := &model.Mission{
 		ID: DefaultEdgeMissionID,
@@ -85,8 +87,8 @@ func TestGetUploadMission(t *testing.T) {
 		},
 	}
 
-	a.Equal(http.MethodGet, resMethod)
-	a.Equal("/api/v1/uploadmissions/mission-id", resPath)
+	a.Equal(expectMethod, resMethod)
+	a.Equal(expectUrl, resPath)
 	a.Equal(expectBody, resBody)
 
 	a.Equal(expectMission, mission)
@@ -102,9 +104,11 @@ func TestHttpClientErrorWhenGetUploadMission(t *testing.T) {
 
 	mission, err := GetUploadMission("$", support, DefaultEdgeMissionID)
 
+	expectMethod := http.MethodGet
+	expectUrl := "/api/v1/uploadmissions/mission-id"
 	expectBody := json.Marshal(&skysign_proto.GetUploadMissionRequest{})
 
-	expectMessage := fmt.Sprintf("Send CLOUD data=%s", expectBody)
+	expectMessage := fmt.Sprintf("SEND   , Mission  , Method=%s , API=%s, Message=%s", expectMethod, expectUrl, expectBody)
 
 	expectError := "cloud mission http client error: http client do error: Get $/api/v1/uploadmissions/mission-id: unsupported protocol scheme \"\""
 
@@ -127,9 +131,11 @@ func TestResponseJsonParseErrorWhenGetUploadMission(t *testing.T) {
 
 	mission, err := GetUploadMission(ts.URL, support, DefaultEdgeMissionID)
 
+	expectMethod := http.MethodGet
+	expectUrl := "/api/v1/uploadmissions/mission-id"
 	expectBody := json.Marshal(&skysign_proto.GetUploadMissionRequest{})
 
-	expectMessage := fmt.Sprintf("Send CLOUD data=%s", expectBody)
+	expectMessage := fmt.Sprintf("SEND   , Mission  , Method=%s , API=%s, Message=%s", expectMethod, expectUrl, expectBody)
 
 	expectError := "cloud mission response error: unexpected EOF"
 

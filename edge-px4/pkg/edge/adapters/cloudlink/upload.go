@@ -16,13 +16,15 @@ func PullUploadMission(
 	support common.Support,
 	vehicleID, commandID string,
 ) (*model.UploadMission, error) {
+	method := http.MethodPost
+	url := fmt.Sprintf("/api/v1/communications/%s/uploadmissions/%s", vehicleID, commandID)
 	request := json.Marshal(&skysign_proto.PullUploadMissionRequest{})
 
-	support.NotifyInfo("Send CLOUD data=%s", request)
+	support.NotifyInfo("SEND   , Upload   , Method=%s, API=%s, Message=%s", method, url, request)
 
 	respBody, err := http.HttpClientDo(
-		http.MethodPost,
-		cloud+"/api/v1/communications/"+vehicleID+"/uploadmissions/"+commandID,
+		method,
+		cloud+url,
 		request,
 	)
 	if err != nil {
@@ -35,7 +37,7 @@ func PullUploadMission(
 		return nil, fmt.Errorf("cloud upload response error: %w", err)
 	}
 
-	support.NotifyInfo("Receive CLOUD data=%s", respBody)
+	support.NotifyInfo("RECEIVE, Upload   , data=%s", respBody)
 
 	uploadMission := &model.UploadMission{
 		ID:        response.CommandId,

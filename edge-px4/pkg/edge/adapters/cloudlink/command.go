@@ -16,13 +16,15 @@ func PullCommand(
 	support common.Support,
 	vehicleID, commandID string,
 ) (*model.Command, error) {
+	method := http.MethodPost
+	url := fmt.Sprintf("/api/v1/communications/%s/commands/%s", vehicleID, commandID)
 	request := json.Marshal(&skysign_proto.PullCommandRequest{})
 
-	support.NotifyInfo("Send CLOUD data=%s", request)
+	support.NotifyInfo("SEND   , Command  , Method=%s, API=%s, Message=%s", method, url, request)
 
 	respBody, err := http.HttpClientDo(
-		http.MethodPost,
-		cloud+"/api/v1/communications/"+vehicleID+"/commands/"+commandID,
+		method,
+		cloud+url,
 		request,
 	)
 	if err != nil {
@@ -35,7 +37,7 @@ func PullCommand(
 		return nil, fmt.Errorf("cloud command response error: %w", err)
 	}
 
-	support.NotifyInfo("Receive CLOUD data=%s", respBody)
+	support.NotifyInfo("RECEIVE, Command  , data=%s", respBody)
 
 	command := &model.Command{
 		Type: response.Type.String(),

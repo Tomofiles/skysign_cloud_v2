@@ -47,6 +47,8 @@ func TestNoCommandIDsResponsePushTelemetry(t *testing.T) {
 
 	id, commandIDs, err := PushTelemetry(ts.URL, support, telemetry)
 
+	expectMethod := http.MethodPost
+	expectUrl := "/api/v1/communications/vehicle-id/telemetry"
 	expectBody := json.Marshal(&skysign_proto.PushTelemetryRequest{
 		Id: DefaultEdgeVehicleID,
 		Telemetry: &skysign_proto.Telemetry{
@@ -64,11 +66,11 @@ func TestNoCommandIDsResponsePushTelemetry(t *testing.T) {
 		},
 	})
 
-	expectMessage1 := fmt.Sprintf("Send CLOUD data=%s", expectBody)
-	expectMessage2 := fmt.Sprintf("Receive CLOUD data=%s\n", respJson)
+	expectMessage1 := fmt.Sprintf("SEND   , Telemetry, Method=%s, API=%s, Message=%s", expectMethod, expectUrl, expectBody)
+	expectMessage2 := fmt.Sprintf("RECEIVE, Telemetry, data=%s\n", respJson)
 
-	a.Equal(http.MethodPost, resMethod)
-	a.Equal("/api/v1/communications/vehicle-id/telemetry", resPath)
+	a.Equal(expectMethod, resMethod)
+	a.Equal(expectUrl, resPath)
 	a.Equal(expectBody, resBody)
 
 	a.Equal(DefaultEdgeVehicleID, id)
@@ -115,6 +117,8 @@ func TestMultipleCommandIDsResponsePushTelemetry(t *testing.T) {
 
 	id, commandIDs, err := PushTelemetry(ts.URL, support, telemetry)
 
+	expectMethod := http.MethodPost
+	expectUrl := "/api/v1/communications/vehicle-id/telemetry"
 	expectBody := json.Marshal(&skysign_proto.PushTelemetryRequest{
 		Id: DefaultEdgeVehicleID,
 		Telemetry: &skysign_proto.Telemetry{
@@ -132,11 +136,11 @@ func TestMultipleCommandIDsResponsePushTelemetry(t *testing.T) {
 		},
 	})
 
-	expectMessage1 := fmt.Sprintf("Send CLOUD data=%s", expectBody)
-	expectMessage2 := fmt.Sprintf("Receive CLOUD data=%s\n", respJson)
+	expectMessage1 := fmt.Sprintf("SEND   , Telemetry, Method=%s, API=%s, Message=%s", expectMethod, expectUrl, expectBody)
+	expectMessage2 := fmt.Sprintf("RECEIVE, Telemetry, data=%s\n", respJson)
 
-	a.Equal(http.MethodPost, resMethod)
-	a.Equal("/api/v1/communications/vehicle-id/telemetry", resPath)
+	a.Equal(expectMethod, resMethod)
+	a.Equal(expectUrl, resPath)
 	a.Equal(expectBody, resBody)
 
 	a.Equal(DefaultEdgeVehicleID, id)
@@ -190,6 +194,8 @@ func TestHttpClientErrorWhenPushTelemetry(t *testing.T) {
 
 	id, commandIDs, err := PushTelemetry("$", support, telemetry)
 
+	expectMethod := http.MethodPost
+	expectUrl := "/api/v1/communications/vehicle-id/telemetry"
 	expectBody := json.Marshal(&skysign_proto.PushTelemetryRequest{
 		Id: DefaultEdgeVehicleID,
 		Telemetry: &skysign_proto.Telemetry{
@@ -207,7 +213,7 @@ func TestHttpClientErrorWhenPushTelemetry(t *testing.T) {
 		},
 	})
 
-	expectMessage := fmt.Sprintf("Send CLOUD data=%s", expectBody)
+	expectMessage := fmt.Sprintf("SEND   , Telemetry, Method=%s, API=%s, Message=%s", expectMethod, expectUrl, expectBody)
 
 	expectError := "cloud telemetry http client error: http client do error: Post $/api/v1/communications/vehicle-id/telemetry: unsupported protocol scheme \"\""
 
@@ -239,6 +245,8 @@ func TestResponseJsonParseErrorWhenPushTelemetry(t *testing.T) {
 
 	id, commandIDs, err := PushTelemetry(ts.URL, support, telemetry)
 
+	expectMethod := http.MethodPost
+	expectUrl := "/api/v1/communications/vehicle-id/telemetry"
 	expectBody := json.Marshal(&skysign_proto.PushTelemetryRequest{
 		Id: DefaultEdgeVehicleID,
 		Telemetry: &skysign_proto.Telemetry{
@@ -256,7 +264,7 @@ func TestResponseJsonParseErrorWhenPushTelemetry(t *testing.T) {
 		},
 	})
 
-	expectMessage := fmt.Sprintf("Send CLOUD data=%s", expectBody)
+	expectMessage := fmt.Sprintf("SEND   , Telemetry, Method=%s, API=%s, Message=%s", expectMethod, expectUrl, expectBody)
 
 	expectError := "cloud telemetry response error: unexpected EOF"
 

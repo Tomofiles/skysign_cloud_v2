@@ -38,18 +38,20 @@ func TestPullUploadMission(t *testing.T) {
 
 	upload, err := PullUploadMission(ts.URL, support, DefaultEdgeVehicleID, DefaultEdgeCommandID)
 
+	expectMethod := http.MethodPost
+	expectUrl := "/api/v1/communications/vehicle-id/uploadmissions/command-id"
 	expectBody := json.Marshal(&skysign_proto.PullUploadMissionRequest{})
 
-	expectMessage1 := fmt.Sprintf("Send CLOUD data=%s", expectBody)
-	expectMessage2 := fmt.Sprintf("Receive CLOUD data=%s\n", respJson)
+	expectMessage1 := fmt.Sprintf("SEND   , Upload   , Method=%s, API=%s, Message=%s", expectMethod, expectUrl, expectBody)
+	expectMessage2 := fmt.Sprintf("RECEIVE, Upload   , data=%s\n", respJson)
 
 	expectUpload := &model.UploadMission{
 		ID:        DefaultEdgeCommandID,
 		MissionID: DefaultEdgeMissionID,
 	}
 
-	a.Equal(http.MethodPost, resMethod)
-	a.Equal("/api/v1/communications/vehicle-id/uploadmissions/command-id", resPath)
+	a.Equal(expectMethod, resMethod)
+	a.Equal(expectUrl, resPath)
 	a.Equal(expectBody, resBody)
 
 	a.Equal(expectUpload, upload)
@@ -65,9 +67,11 @@ func TestHttpClientErrorWhenPullUploadMission(t *testing.T) {
 
 	upload, err := PullUploadMission("$", support, DefaultEdgeVehicleID, DefaultEdgeCommandID)
 
+	expectMethod := http.MethodPost
+	expectUrl := "/api/v1/communications/vehicle-id/uploadmissions/command-id"
 	expectBody := json.Marshal(&skysign_proto.PullUploadMissionRequest{})
 
-	expectMessage := fmt.Sprintf("Send CLOUD data=%s", expectBody)
+	expectMessage := fmt.Sprintf("SEND   , Upload   , Method=%s, API=%s, Message=%s", expectMethod, expectUrl, expectBody)
 
 	expectError := "cloud upload http client error: http client do error: Post $/api/v1/communications/vehicle-id/uploadmissions/command-id: unsupported protocol scheme \"\""
 
@@ -90,9 +94,11 @@ func TestResponseJsonParseErrorWhenPullUploadMission(t *testing.T) {
 
 	upload, err := PullUploadMission(ts.URL, support, DefaultEdgeVehicleID, DefaultEdgeCommandID)
 
+	expectMethod := http.MethodPost
+	expectUrl := "/api/v1/communications/vehicle-id/uploadmissions/command-id"
 	expectBody := json.Marshal(&skysign_proto.PullUploadMissionRequest{})
 
-	expectMessage := fmt.Sprintf("Send CLOUD data=%s", expectBody)
+	expectMessage := fmt.Sprintf("SEND   , Upload   , Method=%s, API=%s, Message=%s", expectMethod, expectUrl, expectBody)
 
 	expectError := "cloud upload response error: unexpected EOF"
 
