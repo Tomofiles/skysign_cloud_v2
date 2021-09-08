@@ -98,17 +98,15 @@ func TestGetUploadMission(t *testing.T) {
 func TestHttpClientErrorWhenGetUploadMission(t *testing.T) {
 	a := assert.New(t)
 
-	dummyHost := "dummy-address.com"
-
 	support := &supportMock{}
 
-	mission, err := GetUploadMission("http://"+dummyHost, support, DefaultEdgeMissionID)
+	mission, err := GetUploadMission("$", support, DefaultEdgeMissionID)
 
 	expectBody := json.Marshal(&skysign_proto.GetUploadMissionRequest{})
 
 	expectMessage1 := fmt.Sprintf("Send CLOUD data=%s", expectBody)
-	expectMessage2 := fmt.Sprintf("http client do error: Get http://%s/api/v1/uploadmissions/mission-id: dial tcp: lookup %s: no such host", dummyHost, dummyHost)
-	expectMessage3 := fmt.Sprintf("cloud mission http client error: Get http://%s/api/v1/uploadmissions/mission-id: dial tcp: lookup %s: no such host", dummyHost, dummyHost)
+	expectMessage2 := "http client do error: Get $/api/v1/uploadmissions/mission-id: unsupported protocol scheme \"\""
+	expectMessage3 := "cloud mission http client error: Get $/api/v1/uploadmissions/mission-id: unsupported protocol scheme \"\""
 
 	a.Nil(mission)
 	a.NotNil(err)
