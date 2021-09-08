@@ -219,28 +219,28 @@ jobs:
   #         path: ./client
   #         extra-build-args: "--build-arg CESIUM_KEY=${CESIUM_KEY}"
 
-  build_and_test_edge:
-    working_directory: ~/edge
+  build_and_test_edge-px4:
+    working_directory: ~/edge-px4
     docker:
       - image: circleci/golang:1.13
     steps:
       - checkout
       - restore_cache:
           keys:
-            - go-mod-edge-{{ checksum "edge/go.sum" }}
+            - go-mod-edge-px4-{{ checksum "edge-px4/go.sum" }}
       - run:
           name: Install Dependencies
           command: |
-            cd edge
+            cd edge-px4
             make dependency
       - save_cache:
-          key: go-mod-edge-{{ checksum "edge/go.sum" }}
+          key: go-mod-edge-px4-{{ checksum "edge-px4/go.sum" }}
           paths:
             - "/go/pkg/mod"
       - run:
           name: Run builds
           command: |
-            cd edge
+            cd edge-px4
             make build-test
   
   build_and_push_http-gateway:
@@ -407,7 +407,7 @@ workflows:
           <<: *slack-fail-post-step
       # - build_and_test_client:
       #     <<: *slack-fail-post-step
-      - build_and_test_edge:
+      - build_and_test_edge-px4:
           <<: *slack-fail-post-step
       - notify-slack:
           requires:
@@ -419,7 +419,7 @@ workflows:
             - build_and_test_flight-operation
             - build_and_test_collection-analysis
             # - build_and_test_client
-            - build_and_test_edge
+            - build_and_test_edge-px4
           # filters:
           #   branches:
           #     ignore: master
