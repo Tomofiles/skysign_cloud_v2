@@ -38,8 +38,8 @@ services:
     container_name: skysign-edge-px4
     hostname: skysign-edge-px4
     build:
-      context: ../../edge-px4
-      dockerfile: Dockerfile
+      context: ../..
+      dockerfile: ./edge-px4/Dockerfile
     environment:
      - CLOUD_ADDRESS=${CLOUD_ADDRESS}
      - MAVSDK_ADDRESS=skysign-mavsdk-grpc-server:50051
