@@ -2,11 +2,8 @@ package postgresql
 
 import (
 	c "remote-communication/pkg/communication/domain/communication"
-	"time"
 
-	sqlmock "github.com/DATA-DOG/go-sqlmock"
-	"gorm.io/driver/postgres"
-	"gorm.io/gorm"
+	"time"
 )
 
 const DefaultCommunicationID = c.ID("communication-id")
@@ -14,25 +11,6 @@ const DefaultCommunicationCommandID = c.CommandID("command-id")
 const DefaultCommunicationMissionID = c.MissionID("mission-id")
 
 var DefaultCommunicationTime = time.Now()
-
-func GetNewDbMock() (*gorm.DB, sqlmock.Sqlmock, error) {
-	db, mock, err := sqlmock.New()
-	if err != nil {
-		return nil, nil, err
-	}
-
-	gormDB, err := gorm.Open(
-		postgres.New(
-			postgres.Config{
-				Conn: db,
-			}), &gorm.Config{})
-
-	if err != nil {
-		return nil, nil, err
-	}
-
-	return gormDB, mock, nil
-}
 
 // Communication構成オブジェクトモック
 type communicationComponentMock struct {

@@ -1,9 +1,10 @@
 package service
 
 import (
-	"remote-communication/pkg/common/domain/event"
-	"remote-communication/pkg/common/domain/txmanager"
 	c "remote-communication/pkg/communication/domain/communication"
+
+	"github.com/Tomofiles/skysign_cloud_v2/skysign-common/pkg/common/domain/event"
+	"github.com/Tomofiles/skysign_cloud_v2/skysign-common/pkg/common/domain/txmanager"
 )
 
 // EdgeCommunicationService .

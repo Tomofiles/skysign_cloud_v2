@@ -64,7 +64,7 @@ gRPCにて提供されるビジネスロジックと中継するサーバーコ�
 
 ### Business backend
 Skysignが提供するビジネスロジックおよびエンティティを提供するコンポーネント。
-[Spring Boot](https://spring.io/projects/spring-boot)をベースに、
+[grpc-gateway](https://github.com/grpc-ecosystem/grpc-gateway)から生成されたgRPCサーバをベースに、
 DDD(ドメイン駆動設計)を採用したマイクロサービス・アーキテクチャを目指しています。
 
 ### PostgreSQL (DB)

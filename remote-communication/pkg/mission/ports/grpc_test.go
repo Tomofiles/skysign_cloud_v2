@@ -3,8 +3,9 @@ package ports
 import (
 	"remote-communication/pkg/mission/app"
 	"remote-communication/pkg/mission/service"
-	"remote-communication/pkg/skysign_proto"
 	"testing"
+
+	proto "github.com/Tomofiles/skysign_cloud_v2/skysign-proto/pkg/skysign_proto"
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
@@ -33,7 +34,7 @@ func TestGetUploadMission(t *testing.T) {
 
 	grpc := NewGrpcServer(app)
 
-	request := &skysign_proto.GetUploadMissionRequest{
+	request := &proto.GetUploadMissionRequest{
 		Id: DefaultMissionUploadID,
 	}
 	response, err := grpc.GetUploadMission(
@@ -41,9 +42,9 @@ func TestGetUploadMission(t *testing.T) {
 		request,
 	)
 
-	expectResponse := &skysign_proto.UploadMission{
+	expectResponse := &proto.UploadMission{
 		Id: DefaultMissionUploadID,
-		Waypoints: []*skysign_proto.Waypoint{
+		Waypoints: []*proto.Waypoint{
 			{
 				Latitude:       1.0,
 				Longitude:      2.0,

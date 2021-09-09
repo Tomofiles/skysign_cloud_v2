@@ -4,8 +4,9 @@ import (
 	"flight-operation/pkg/flightplan/app"
 	f "flight-operation/pkg/flightplan/domain/flightplan"
 	s "flight-operation/pkg/flightplan/service"
-	"flight-operation/pkg/skysign_proto"
 	"testing"
+
+	"github.com/Tomofiles/skysign_cloud_v2/skysign-proto/pkg/skysign_proto"
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"

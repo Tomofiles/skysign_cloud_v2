@@ -2,10 +2,6 @@ package postgresql
 
 import (
 	"fleet-formation/pkg/fleet/domain/fleet"
-
-	sqlmock "github.com/DATA-DOG/go-sqlmock"
-	"gorm.io/driver/postgres"
-	"gorm.io/gorm"
 )
 
 const DefaultFleetID = fleet.ID("fleet-id")
@@ -14,25 +10,6 @@ const DefaultFleetEventID = fleet.EventID("event-id")
 const DefaultFleetVehicleID = fleet.VehicleID("vehicle-id")
 const DefaultFleetMissionID = fleet.MissionID("mission-id")
 const DefaultFleetVersion = fleet.Version("version")
-
-func GetNewDbMock() (*gorm.DB, sqlmock.Sqlmock, error) {
-	db, mock, err := sqlmock.New()
-	if err != nil {
-		return nil, nil, err
-	}
-
-	gormDB, err := gorm.Open(
-		postgres.New(
-			postgres.Config{
-				Conn: db,
-			}), &gorm.Config{})
-
-	if err != nil {
-		return nil, nil, err
-	}
-
-	return gormDB, mock, nil
-}
 
 // Fleet構成オブジェクトモック
 type fleetComponentMock struct {

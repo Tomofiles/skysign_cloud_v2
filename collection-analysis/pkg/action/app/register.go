@@ -3,8 +3,9 @@ package app
 import (
 	"collection-analysis/pkg/action/adapters/postgresql"
 	"collection-analysis/pkg/action/service"
-	"collection-analysis/pkg/common/domain/txmanager"
 	"context"
+
+	"github.com/Tomofiles/skysign_cloud_v2/skysign-common/pkg/common/domain/txmanager"
 )
 
 // NewApplication .

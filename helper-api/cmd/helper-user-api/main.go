@@ -4,11 +4,12 @@ import (
 	"flag"
 	"net"
 
-	"google.golang.org/grpc"
+	"helper-api/pkg/api"
 
-	"github.com/Tomofiles/skysign_cloud/helper-api/pkg/api"
-	pb "github.com/Tomofiles/skysign_cloud/helper-api/pkg/skysign_proto"
+	pb "github.com/Tomofiles/skysign_cloud_v2/skysign-proto/pkg/skysign_proto"
+
 	"github.com/golang/glog"
+	"google.golang.org/grpc"
 )
 
 var (

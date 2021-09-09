@@ -4,7 +4,8 @@ import (
 	"context"
 	"flight-operation/pkg/flightoperation/app"
 	"flight-operation/pkg/flightoperation/service"
-	"flight-operation/pkg/skysign_proto"
+
+	"github.com/Tomofiles/skysign_cloud_v2/skysign-proto/pkg/skysign_proto"
 
 	"github.com/golang/glog"
 	"google.golang.org/protobuf/proto"

@@ -1,9 +1,11 @@
 package rabbitmq
 
 import (
-	crm "fleet-formation/pkg/common/adapters/rabbitmq"
 	"fleet-formation/pkg/mission/domain/mission"
-	"fleet-formation/pkg/skysign_proto"
+
+	"github.com/Tomofiles/skysign_cloud_v2/skysign-proto/pkg/skysign_proto"
+
+	crm "github.com/Tomofiles/skysign_cloud_v2/skysign-common/pkg/common/adapters/rabbitmq"
 
 	"github.com/golang/glog"
 	"google.golang.org/protobuf/proto"

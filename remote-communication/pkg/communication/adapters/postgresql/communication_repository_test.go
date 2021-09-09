@@ -7,6 +7,8 @@ import (
 	"testing"
 	"time"
 
+	"github.com/Tomofiles/skysign_cloud_v2/skysign-common/pkg/common/adapters/postgresql"
+
 	sqlmock "github.com/DATA-DOG/go-sqlmock"
 	"github.com/stretchr/testify/assert"
 )
@@ -14,7 +16,7 @@ import (
 func TestCommunicationRepositoryGetByID(t *testing.T) {
 	a := assert.New(t)
 
-	db, mock, err := GetNewDbMock()
+	db, mock, err := postgresql.GetNewDbMock()
 	if err != nil {
 		t.Errorf("failed to initialize mock DB: %v", err)
 		return
@@ -102,7 +104,7 @@ func TestCommunicationRepositoryGetByID(t *testing.T) {
 func TestCommunicationRepositoryNotFoundWhenGetByID(t *testing.T) {
 	a := assert.New(t)
 
-	db, mock, err := GetNewDbMock()
+	db, mock, err := postgresql.GetNewDbMock()
 	if err != nil {
 		t.Errorf("failed to initialize mock DB: %v", err)
 		return
@@ -128,7 +130,7 @@ func TestCommunicationRepositoryNotFoundWhenGetByID(t *testing.T) {
 func TestCommunicationRepositorySingleDataCreateSave(t *testing.T) {
 	a := assert.New(t)
 
-	db, mock, err := GetNewDbMock()
+	db, mock, err := postgresql.GetNewDbMock()
 	if err != nil {
 		t.Errorf("failed to initialize mock DB: %v", err)
 		return
@@ -222,7 +224,7 @@ func TestCommunicationRepositorySingleDataCreateSave(t *testing.T) {
 func TestCommunicationRepositoryNoneDataCreateSave(t *testing.T) {
 	a := assert.New(t)
 
-	db, mock, err := GetNewDbMock()
+	db, mock, err := postgresql.GetNewDbMock()
 	if err != nil {
 		t.Errorf("failed to initialize mock DB: %v", err)
 		return
@@ -289,7 +291,7 @@ func TestCommunicationRepositoryNoneDataCreateSave(t *testing.T) {
 func TestCommunicationRepositoryMultipleDataCreateSave(t *testing.T) {
 	a := assert.New(t)
 
-	db, mock, err := GetNewDbMock()
+	db, mock, err := postgresql.GetNewDbMock()
 	if err != nil {
 		t.Errorf("failed to initialize mock DB: %v", err)
 		return
@@ -432,7 +434,7 @@ func TestCommunicationRepositoryMultipleDataCreateSave(t *testing.T) {
 func TestCommunicationRepositorySingleDataUpdateSave(t *testing.T) {
 	a := assert.New(t)
 
-	db, mock, err := GetNewDbMock()
+	db, mock, err := postgresql.GetNewDbMock()
 	if err != nil {
 		t.Errorf("failed to initialize mock DB: %v", err)
 		return
@@ -552,7 +554,7 @@ func TestCommunicationRepositorySingleDataUpdateSave(t *testing.T) {
 func TestCommunicationRepositoryNoneDataUpdateSave(t *testing.T) {
 	a := assert.New(t)
 
-	db, mock, err := GetNewDbMock()
+	db, mock, err := postgresql.GetNewDbMock()
 	if err != nil {
 		t.Errorf("failed to initialize mock DB: %v", err)
 		return
@@ -645,7 +647,7 @@ func TestCommunicationRepositoryNoneDataUpdateSave(t *testing.T) {
 func TestCommunicationRepositoryMultipleDataUpdateSave(t *testing.T) {
 	a := assert.New(t)
 
-	db, mock, err := GetNewDbMock()
+	db, mock, err := postgresql.GetNewDbMock()
 	if err != nil {
 		t.Errorf("failed to initialize mock DB: %v", err)
 		return
@@ -814,7 +816,7 @@ func TestCommunicationRepositoryMultipleDataUpdateSave(t *testing.T) {
 func TestCommunicationRepositoryDelete(t *testing.T) {
 	a := assert.New(t)
 
-	db, mock, err := GetNewDbMock()
+	db, mock, err := postgresql.GetNewDbMock()
 	if err != nil {
 		t.Errorf("failed to initialize mock DB: %v", err)
 		return
@@ -872,7 +874,7 @@ func TestCommunicationRepositoryDelete(t *testing.T) {
 func TestCommunicationRepositoryNotFoundWhenDelete(t *testing.T) {
 	a := assert.New(t)
 
-	db, mock, err := GetNewDbMock()
+	db, mock, err := postgresql.GetNewDbMock()
 	if err != nil {
 		t.Errorf("failed to initialize mock DB: %v", err)
 		return

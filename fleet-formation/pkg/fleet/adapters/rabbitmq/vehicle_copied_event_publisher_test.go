@@ -3,8 +3,9 @@ package rabbitmq
 import (
 	"errors"
 	"fleet-formation/pkg/fleet/domain/fleet"
-	"fleet-formation/pkg/skysign_proto"
 	"testing"
+
+	"github.com/Tomofiles/skysign_cloud_v2/skysign-proto/pkg/skysign_proto"
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"

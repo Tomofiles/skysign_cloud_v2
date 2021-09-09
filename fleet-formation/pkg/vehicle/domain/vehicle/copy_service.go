@@ -2,8 +2,9 @@ package vehicle
 
 import (
 	"errors"
-	"fleet-formation/pkg/common/domain/event"
-	"fleet-formation/pkg/common/domain/txmanager"
+
+	"github.com/Tomofiles/skysign_cloud_v2/skysign-common/pkg/common/domain/event"
+	"github.com/Tomofiles/skysign_cloud_v2/skysign-common/pkg/common/domain/txmanager"
 )
 
 // CarbonCopyVehicle .

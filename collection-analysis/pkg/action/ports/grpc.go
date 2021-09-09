@@ -5,31 +5,13 @@ import (
 
 	"collection-analysis/pkg/action/app"
 	"collection-analysis/pkg/action/domain/action"
-	proto "collection-analysis/pkg/skysign_proto"
 
-	"github.com/golang/glog"
-	"google.golang.org/grpc"
+	proto "github.com/Tomofiles/skysign_cloud_v2/skysign-proto/pkg/skysign_proto"
 )
-
-// LogBodyInterceptor .
-func LogBodyInterceptor() grpc.UnaryServerInterceptor {
-	return func(ctx context.Context, req interface{}, info *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (resp interface{}, err error) {
-		glog.Infof("REQUEST , API: %s, Message: %+v", info.FullMethod, req)
-		defer func() {
-			if err != nil {
-				glog.Errorf("RESPONSE, API: %s, Error: %+v", info.FullMethod, err)
-			} else {
-				glog.Infof("RESPONSE, API: %s, Message: %+v", info.FullMethod, resp)
-			}
-		}()
-
-		resp, err = handler(ctx, req)
-		return
-	}
-}
 
 // GrpcServer .
 type GrpcServer struct {
+	proto.UnimplementedActionServiceServer
 	app app.Application
 }
 

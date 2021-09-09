@@ -2,11 +2,12 @@ package app
 
 import (
 	"context"
-	"remote-communication/pkg/common/domain/event"
-	"remote-communication/pkg/common/domain/txmanager"
 	"remote-communication/pkg/communication/adapters/postgresql"
 	"remote-communication/pkg/communication/adapters/uuid"
 	"remote-communication/pkg/communication/service"
+
+	"github.com/Tomofiles/skysign_cloud_v2/skysign-common/pkg/common/domain/event"
+	"github.com/Tomofiles/skysign_cloud_v2/skysign-common/pkg/common/domain/txmanager"
 )
 
 // NewApplication .

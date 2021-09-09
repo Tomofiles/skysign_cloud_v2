@@ -1,9 +1,10 @@
 package service
 
 import (
-	"fleet-formation/pkg/common/domain/event"
-	"fleet-formation/pkg/common/domain/txmanager"
 	fl "fleet-formation/pkg/fleet/domain/fleet"
+
+	"github.com/Tomofiles/skysign_cloud_v2/skysign-common/pkg/common/domain/event"
+	"github.com/Tomofiles/skysign_cloud_v2/skysign-common/pkg/common/domain/txmanager"
 
 	"github.com/stretchr/testify/mock"
 )

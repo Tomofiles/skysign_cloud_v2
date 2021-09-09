@@ -12,112 +12,238 @@ slack-fail-post-step: &slack-fail-post-step
           fail_only: true
 
 jobs:
-  build_and_test_http_gateway:
-    executor: aws-ecr/default
+  build_and_test_common:
+    working_directory: ~/skysign-common
+    docker:
+      - image: circleci/golang:1.13
     steps:
-      - aws-ecr/build-image:
-          region: AWS_DEFAULT_REGION
-          account-url: AWS_ACCOUNT_URL
-          aws-access-key-id: AWS_ACCESS_KEY_ID
-          aws-secret-access-key: AWS_SECRET_ACCESS_KEY
-          repo: ${AWS_RESOURCE_NAME_PREFIX}
-          tag: "http-gateway_${CIRCLE_SHA1}"
-          checkout: true
-          path: ./http-gateway
+      - checkout
+      - restore_cache:
+          keys:
+            - go-mod-skysign-common-{{ checksum "skysign-common/go.sum" }}
+      - run:
+          name: Install Dependencies
+          command: |
+            cd skysign-common
+            make dependency
+      - save_cache:
+          key: go-mod-skysign-common-{{ checksum "skysign-common/go.sum" }}
+          paths:
+            - "/go/pkg/mod"
+      - run:
+          name: Run builds
+          command: |
+            cd skysign-common
+            make build-test
+      - run:
+          name: Run unit-tests
+          command: |
+            cd skysign-common
+            make unit-test
 
-  build_and_test_helper_api:
-    executor: aws-ecr/default
+  build_and_test_http-gateway:
+    working_directory: ~/http-gateway
+    docker:
+      - image: circleci/golang:1.13
     steps:
-      - aws-ecr/build-image:
-          region: AWS_DEFAULT_REGION
-          account-url: AWS_ACCOUNT_URL
-          aws-access-key-id: AWS_ACCESS_KEY_ID
-          aws-secret-access-key: AWS_SECRET_ACCESS_KEY
-          repo: ${AWS_RESOURCE_NAME_PREFIX}
-          tag: "helper-api_${CIRCLE_SHA1}"
-          checkout: true
-          path: ./helper-api
+      - checkout
+      - restore_cache:
+          keys:
+            - go-mod-http-gateway-{{ checksum "http-gateway/go.sum" }}
+      - run:
+          name: Install Dependencies
+          command: |
+            cd http-gateway
+            make dependency
+      - save_cache:
+          key: go-mod-http-gateway-{{ checksum "http-gateway/go.sum" }}
+          paths:
+            - "/go/pkg/mod"
+      - run:
+          name: Run builds
+          command: |
+            cd http-gateway
+            make build-test
+
+  build_and_test_helper-api:
+    working_directory: ~/helper-api
+    docker:
+      - image: circleci/golang:1.13
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - go-mod-helper-api-{{ checksum "helper-api/go.sum" }}
+      - run:
+          name: Install Dependencies
+          command: |
+            cd helper-api
+            make dependency
+      - save_cache:
+          key: go-mod-helper-api-{{ checksum "helper-api/go.sum" }}
+          paths:
+            - "/go/pkg/mod"
+      - run:
+          name: Run builds
+          command: |
+            cd helper-api
+            make build-test
 
   build_and_test_remote-communication:
-    executor: aws-ecr/default
+    working_directory: ~/remote-communication
+    docker:
+      - image: circleci/golang:1.13
     steps:
-      - aws-ecr/build-image:
-          region: AWS_DEFAULT_REGION
-          account-url: AWS_ACCOUNT_URL
-          aws-access-key-id: AWS_ACCESS_KEY_ID
-          aws-secret-access-key: AWS_SECRET_ACCESS_KEY
-          repo: ${AWS_RESOURCE_NAME_PREFIX}
-          tag: "remote-communication_${CIRCLE_SHA1}"
-          checkout: true
-          path: ./remote-communication
+      - checkout
+      - restore_cache:
+          keys:
+            - go-mod-remote-communication-{{ checksum "remote-communication/go.sum" }}
+      - run:
+          name: Install Dependencies
+          command: |
+            cd remote-communication
+            make dependency
+      - save_cache:
+          key: go-mod-remote-communication-{{ checksum "remote-communication/go.sum" }}
+          paths:
+            - "/go/pkg/mod"
+      - run:
+          name: Run builds
+          command: |
+            cd remote-communication
+            make build-test
+      - run:
+          name: Run unit-tests
+          command: |
+            cd remote-communication
+            make unit-test
 
   build_and_test_fleet-formation:
-    executor: aws-ecr/default
+    working_directory: ~/fleet-formation
+    docker:
+      - image: circleci/golang:1.13
     steps:
-      - aws-ecr/build-image:
-          region: AWS_DEFAULT_REGION
-          account-url: AWS_ACCOUNT_URL
-          aws-access-key-id: AWS_ACCESS_KEY_ID
-          aws-secret-access-key: AWS_SECRET_ACCESS_KEY
-          repo: ${AWS_RESOURCE_NAME_PREFIX}
-          tag: "fleet-formation_${CIRCLE_SHA1}"
-          checkout: true
-          path: ./fleet-formation
+      - checkout
+      - restore_cache:
+          keys:
+            - go-mod-fleet-formation-{{ checksum "fleet-formation/go.sum" }}
+      - run:
+          name: Install Dependencies
+          command: |
+            cd fleet-formation
+            make dependency
+      - save_cache:
+          key: go-mod-fleet-formation-{{ checksum "fleet-formation/go.sum" }}
+          paths:
+            - "/go/pkg/mod"
+      - run:
+          name: Run builds
+          command: |
+            cd fleet-formation
+            make build-test
+      - run:
+          name: Run unit-tests
+          command: |
+            cd fleet-formation
+            make unit-test
 
   build_and_test_flight-operation:
-    executor: aws-ecr/default
+    working_directory: ~/flight-operation
+    docker:
+      - image: circleci/golang:1.13
     steps:
-      - aws-ecr/build-image:
-          region: AWS_DEFAULT_REGION
-          account-url: AWS_ACCOUNT_URL
-          aws-access-key-id: AWS_ACCESS_KEY_ID
-          aws-secret-access-key: AWS_SECRET_ACCESS_KEY
-          repo: ${AWS_RESOURCE_NAME_PREFIX}
-          tag: "flight-operation_${CIRCLE_SHA1}"
-          checkout: true
-          path: ./flight-operation
+      - checkout
+      - restore_cache:
+          keys:
+            - go-mod-flight-operation-{{ checksum "flight-operation/go.sum" }}
+      - run:
+          name: Install Dependencies
+          command: |
+            cd flight-operation
+            make dependency
+      - save_cache:
+          key: go-mod-flight-operation-{{ checksum "flight-operation/go.sum" }}
+          paths:
+            - "/go/pkg/mod"
+      - run:
+          name: Run builds
+          command: |
+            cd flight-operation
+            make build-test
+      - run:
+          name: Run unit-tests
+          command: |
+            cd flight-operation
+            make unit-test
 
   build_and_test_collection-analysis:
-    executor: aws-ecr/default
+    working_directory: ~/collection-analysis
+    docker:
+      - image: circleci/golang:1.13
     steps:
-      - aws-ecr/build-image:
-          region: AWS_DEFAULT_REGION
-          account-url: AWS_ACCOUNT_URL
-          aws-access-key-id: AWS_ACCESS_KEY_ID
-          aws-secret-access-key: AWS_SECRET_ACCESS_KEY
-          repo: ${AWS_RESOURCE_NAME_PREFIX}
-          tag: "collection-analysis_${CIRCLE_SHA1}"
-          checkout: true
-          path: ./collection-analysis
+      - checkout
+      - restore_cache:
+          keys:
+            - go-mod-collection-analysis-{{ checksum "collection-analysis/go.sum" }}
+      - run:
+          name: Install Dependencies
+          command: |
+            cd collection-analysis
+            make dependency
+      - save_cache:
+          key: go-mod-collection-analysis-{{ checksum "collection-analysis/go.sum" }}
+          paths:
+            - "/go/pkg/mod"
+      - run:
+          name: Run builds
+          command: |
+            cd collection-analysis
+            make build-test
+      - run:
+          name: Run unit-tests
+          command: |
+            cd collection-analysis
+            make unit-test
 
-  build_and_test_client:
-    executor: aws-ecr/default
+  # build_and_test_client:
+  #   executor: aws-ecr/default
+  #   steps:
+  #     - aws-ecr/build-image:
+  #         region: AWS_DEFAULT_REGION
+  #         account-url: AWS_ACCOUNT_URL
+  #         aws-access-key-id: AWS_ACCESS_KEY_ID
+  #         aws-secret-access-key: AWS_SECRET_ACCESS_KEY
+  #         repo: ${AWS_RESOURCE_NAME_PREFIX}
+  #         tag: "client_${CIRCLE_SHA1}"
+  #         checkout: true
+  #         path: ./client
+  #         extra-build-args: "--build-arg CESIUM_KEY=${CESIUM_KEY}"
+
+  build_and_test_edge-px4:
+    working_directory: ~/edge-px4
+    docker:
+      - image: circleci/golang:1.13
     steps:
-      - aws-ecr/build-image:
-          region: AWS_DEFAULT_REGION
-          account-url: AWS_ACCOUNT_URL
-          aws-access-key-id: AWS_ACCESS_KEY_ID
-          aws-secret-access-key: AWS_SECRET_ACCESS_KEY
-          repo: ${AWS_RESOURCE_NAME_PREFIX}
-          tag: "client_${CIRCLE_SHA1}"
-          checkout: true
-          path: ./client
-          extra-build-args: "--build-arg CESIUM_KEY=${CESIUM_KEY}"
-
-  build_and_test_edge:
-    executor: aws-ecr/default
-    steps:
-      - aws-ecr/build-image:
-          region: AWS_DEFAULT_REGION
-          account-url: AWS_ACCOUNT_URL
-          aws-access-key-id: AWS_ACCESS_KEY_ID
-          aws-secret-access-key: AWS_SECRET_ACCESS_KEY
-          repo: ${AWS_RESOURCE_NAME_PREFIX}
-          tag: "edge_${CIRCLE_SHA1}"
-          checkout: true
-          path: ./edge
-
-  build_and_push_http_gateway:
+      - checkout
+      - restore_cache:
+          keys:
+            - go-mod-edge-px4-{{ checksum "edge-px4/go.sum" }}
+      - run:
+          name: Install Dependencies
+          command: |
+            cd edge-px4
+            make dependency
+      - save_cache:
+          key: go-mod-edge-px4-{{ checksum "edge-px4/go.sum" }}
+          paths:
+            - "/go/pkg/mod"
+      - run:
+          name: Run builds
+          command: |
+            cd edge-px4
+            make build-test
+  
+  build_and_push_http-gateway:
     executor: aws-ecr/default
     steps:
       - aws-ecr/build-and-push-image:
@@ -127,9 +253,9 @@ jobs:
           aws-secret-access-key: AWS_SECRET_ACCESS_KEY
           repo: ${AWS_RESOURCE_NAME_PREFIX}
           tag: "http-gateway_${CIRCLE_SHA1}"
-          path: ./http-gateway
+          dockerfile: ./http-gateway/Dockerfile
 
-  build_and_push_helper_api:
+  build_and_push_helper-api:
     executor: aws-ecr/default
     steps:
       - aws-ecr/build-and-push-image:
@@ -139,7 +265,7 @@ jobs:
           aws-secret-access-key: AWS_SECRET_ACCESS_KEY
           repo: ${AWS_RESOURCE_NAME_PREFIX}
           tag: "helper-api_${CIRCLE_SHA1}"
-          path: ./helper-api
+          dockerfile: ./helper-api/Dockerfile
 
   build_and_push_remote-communication:
     executor: aws-ecr/default
@@ -151,7 +277,7 @@ jobs:
           aws-secret-access-key: AWS_SECRET_ACCESS_KEY
           repo: ${AWS_RESOURCE_NAME_PREFIX}
           tag: "remote-communication_${CIRCLE_SHA1}"
-          path: ./remote-communication
+          dockerfile: ./remote-communication/Dockerfile
 
   build_and_push_fleet-formation:
     executor: aws-ecr/default
@@ -163,7 +289,7 @@ jobs:
           aws-secret-access-key: AWS_SECRET_ACCESS_KEY
           repo: ${AWS_RESOURCE_NAME_PREFIX}
           tag: "fleet-formation_${CIRCLE_SHA1}"
-          path: ./fleet-formation
+          dockerfile: ./fleet-formation/Dockerfile
 
   build_and_push_flight-operation:
     executor: aws-ecr/default
@@ -175,7 +301,7 @@ jobs:
           aws-secret-access-key: AWS_SECRET_ACCESS_KEY
           repo: ${AWS_RESOURCE_NAME_PREFIX}
           tag: "flight-operation_${CIRCLE_SHA1}"
-          path: ./flight-operation
+          dockerfile: ./flight-operation/Dockerfile
 
   build_and_push_collection-analysis:
     executor: aws-ecr/default
@@ -187,7 +313,7 @@ jobs:
           aws-secret-access-key: AWS_SECRET_ACCESS_KEY
           repo: ${AWS_RESOURCE_NAME_PREFIX}
           tag: "collection-analysis_${CIRCLE_SHA1}"
-          path: ./collection-analysis
+          dockerfile: ./collection-analysis/Dockerfile
 
   build_and_push_client:
     executor: aws-ecr/default
@@ -265,109 +391,102 @@ jobs:
 workflows:
   skysign-cicd-workflow:
     jobs:
-      - build_and_test_http_gateway:
-          filters:
-            branches:
-              ignore: master
+      - build_and_test_common:
           <<: *slack-fail-post-step
-      - build_and_test_helper_api:
-          filters:
-            branches:
-              ignore: master
+      - build_and_test_http-gateway:
+          <<: *slack-fail-post-step
+      - build_and_test_helper-api:
           <<: *slack-fail-post-step
       - build_and_test_remote-communication:
-          filters:
-            branches:
-              ignore: master
           <<: *slack-fail-post-step
       - build_and_test_fleet-formation:
-          filters:
-            branches:
-              ignore: master
           <<: *slack-fail-post-step
       - build_and_test_flight-operation:
-          filters:
-            branches:
-              ignore: master
           <<: *slack-fail-post-step
       - build_and_test_collection-analysis:
-          filters:
-            branches:
-              ignore: master
           <<: *slack-fail-post-step
-      - build_and_test_client:
-          filters:
-            branches:
-              ignore: master
-          <<: *slack-fail-post-step
-      - build_and_test_edge:
-          filters:
-            branches:
-              ignore: master
+      # - build_and_test_client:
+      #     <<: *slack-fail-post-step
+      - build_and_test_edge-px4:
           <<: *slack-fail-post-step
       - notify-slack:
           requires:
-            - build_and_test_http_gateway
-            - build_and_test_helper_api
+            - build_and_test_common
+            - build_and_test_http-gateway
+            - build_and_test_helper-api
             - build_and_test_remote-communication
             - build_and_test_fleet-formation
             - build_and_test_flight-operation
             - build_and_test_collection-analysis
-            - build_and_test_client
-            - build_and_test_edge
-          filters:
-            branches:
-              ignore: master
-      - build_and_push_http_gateway:
-          filters:
-            branches:
-              only: master
+            # - build_and_test_client
+            - build_and_test_edge-px4
+          # filters:
+          #   branches:
+          #     ignore: master
+      - build_and_push_http-gateway:
+          requires:
+            - notify-slack
+          # filters:
+          #   branches:
+          #     only: master
           <<: *slack-fail-post-step
-      - build_and_push_helper_api:
-          filters:
-            branches:
-              only: master
+      - build_and_push_helper-api:
+          requires:
+            - notify-slack
+          # filters:
+          #   branches:
+          #     only: master
           <<: *slack-fail-post-step
       - build_and_push_remote-communication:
-          filters:
-            branches:
-              only: master
+          requires:
+            - notify-slack
+          # filters:
+          #   branches:
+          #     only: master
           <<: *slack-fail-post-step
       - build_and_push_fleet-formation:
-          filters:
-            branches:
-              only: master
+          requires:
+            - notify-slack
+          # filters:
+          #   branches:
+          #     only: master
           <<: *slack-fail-post-step
       - build_and_push_flight-operation:
-          filters:
-            branches:
-              only: master
+          requires:
+            - notify-slack
+          # filters:
+          #   branches:
+          #     only: master
           <<: *slack-fail-post-step
       - build_and_push_collection-analysis:
-          filters:
-            branches:
-              only: master
+          requires:
+            - notify-slack
+          # filters:
+          #   branches:
+          #     only: master
           <<: *slack-fail-post-step
       - build_and_push_client:
-          filters:
-            branches:
-              only: master
+          requires:
+            - notify-slack
+          # filters:
+          #   branches:
+          #     only: master
           <<: *slack-fail-post-step
       - notify-slack-master:
           requires:
-            - build_and_push_http_gateway
-            - build_and_push_helper_api
+            - build_and_push_http-gateway
+            - build_and_push_helper-api
             - build_and_push_remote-communication
             - build_and_push_fleet-formation
             - build_and_push_flight-operation
             - build_and_push_collection-analysis
             - build_and_push_client
-          filters:
-            branches:
-              only: master
+          # filters:
+          #   branches:
+          #     only: master
       - create_pull_request:
           requires:
             - notify-slack-master
-          filters:
-            branches:
-              only: master
+          # filters:
+          #   branches:
+          #     only: master

@@ -6,6 +6,8 @@ import (
 	"regexp"
 	"testing"
 
+	"github.com/Tomofiles/skysign_cloud_v2/skysign-common/pkg/common/adapters/postgresql"
+
 	sqlmock "github.com/DATA-DOG/go-sqlmock"
 	"github.com/stretchr/testify/assert"
 )
@@ -13,7 +15,7 @@ import (
 func TestMissionRepositoryGetSingleWhenGetAll(t *testing.T) {
 	a := assert.New(t)
 
-	db, mock, err := GetNewDbMock()
+	db, mock, err := postgresql.GetNewDbMock()
 	if err != nil {
 		t.Errorf("failed to initialize mock DB: %v", err)
 		return
@@ -100,7 +102,7 @@ func TestMissionRepositoryGetSingleWhenGetAll(t *testing.T) {
 func TestMissionRepositoryGetMultipleWhenGetAll(t *testing.T) {
 	a := assert.New(t)
 
-	db, mock, err := GetNewDbMock()
+	db, mock, err := postgresql.GetNewDbMock()
 	if err != nil {
 		t.Errorf("failed to initialize mock DB: %v", err)
 		return
@@ -259,7 +261,7 @@ func TestMissionRepositoryGetMultipleWhenGetAll(t *testing.T) {
 func TestMissionRepositoryGetNoneWhenGetAll(t *testing.T) {
 	a := assert.New(t)
 
-	db, mock, err := GetNewDbMock()
+	db, mock, err := postgresql.GetNewDbMock()
 	if err != nil {
 		t.Errorf("failed to initialize mock DB: %v", err)
 		return
@@ -284,7 +286,7 @@ func TestMissionRepositoryGetNoneWhenGetAll(t *testing.T) {
 func TestMissionRepositoryGetSingleWhenGetAllOrigin(t *testing.T) {
 	a := assert.New(t)
 
-	db, mock, err := GetNewDbMock()
+	db, mock, err := postgresql.GetNewDbMock()
 	if err != nil {
 		t.Errorf("failed to initialize mock DB: %v", err)
 		return
@@ -371,7 +373,7 @@ func TestMissionRepositoryGetSingleWhenGetAllOrigin(t *testing.T) {
 func TestMissionRepositoryGetMultipleWhenGetAllOrigin(t *testing.T) {
 	a := assert.New(t)
 
-	db, mock, err := GetNewDbMock()
+	db, mock, err := postgresql.GetNewDbMock()
 	if err != nil {
 		t.Errorf("failed to initialize mock DB: %v", err)
 		return
@@ -530,7 +532,7 @@ func TestMissionRepositoryGetMultipleWhenGetAllOrigin(t *testing.T) {
 func TestMissionRepositoryGetNoneWhenGetAllOrigin(t *testing.T) {
 	a := assert.New(t)
 
-	db, mock, err := GetNewDbMock()
+	db, mock, err := postgresql.GetNewDbMock()
 	if err != nil {
 		t.Errorf("failed to initialize mock DB: %v", err)
 		return
@@ -555,7 +557,7 @@ func TestMissionRepositoryGetNoneWhenGetAllOrigin(t *testing.T) {
 func TestMissionRepositoryGetByID(t *testing.T) {
 	a := assert.New(t)
 
-	db, mock, err := GetNewDbMock()
+	db, mock, err := postgresql.GetNewDbMock()
 	if err != nil {
 		t.Errorf("failed to initialize mock DB: %v", err)
 		return
@@ -640,7 +642,7 @@ func TestMissionRepositoryGetByID(t *testing.T) {
 func TestMissionRepositoryNotFoundWhenGetByID(t *testing.T) {
 	a := assert.New(t)
 
-	db, mock, err := GetNewDbMock()
+	db, mock, err := postgresql.GetNewDbMock()
 	if err != nil {
 		t.Errorf("failed to initialize mock DB: %v", err)
 		return
@@ -666,7 +668,7 @@ func TestMissionRepositoryNotFoundWhenGetByID(t *testing.T) {
 func TestMissionRepositorySingleWaypointCreateSave(t *testing.T) {
 	a := assert.New(t)
 
-	db, mock, err := GetNewDbMock()
+	db, mock, err := postgresql.GetNewDbMock()
 	if err != nil {
 		t.Errorf("failed to initialize mock DB: %v", err)
 		return
@@ -741,7 +743,7 @@ func TestMissionRepositorySingleWaypointCreateSave(t *testing.T) {
 func TestMissionRepositoryNoWaypointCreateSave(t *testing.T) {
 	a := assert.New(t)
 
-	db, mock, err := GetNewDbMock()
+	db, mock, err := postgresql.GetNewDbMock()
 	if err != nil {
 		t.Errorf("failed to initialize mock DB: %v", err)
 		return
@@ -800,7 +802,7 @@ func TestMissionRepositoryNoWaypointCreateSave(t *testing.T) {
 func TestMissionRepositoryMultipleWaypointsCreateSave(t *testing.T) {
 	a := assert.New(t)
 
-	db, mock, err := GetNewDbMock()
+	db, mock, err := postgresql.GetNewDbMock()
 	if err != nil {
 		t.Errorf("failed to initialize mock DB: %v", err)
 		return
@@ -893,7 +895,7 @@ func TestMissionRepositoryMultipleWaypointsCreateSave(t *testing.T) {
 func TestMissionRepositorySingleWaypointUpdateSave(t *testing.T) {
 	a := assert.New(t)
 
-	db, mock, err := GetNewDbMock()
+	db, mock, err := postgresql.GetNewDbMock()
 	if err != nil {
 		t.Errorf("failed to initialize mock DB: %v", err)
 		return
@@ -985,7 +987,7 @@ func TestMissionRepositorySingleWaypointUpdateSave(t *testing.T) {
 func TestMissionRepositoryNoWaypointUpdateSave(t *testing.T) {
 	a := assert.New(t)
 
-	db, mock, err := GetNewDbMock()
+	db, mock, err := postgresql.GetNewDbMock()
 	if err != nil {
 		t.Errorf("failed to initialize mock DB: %v", err)
 		return
@@ -1061,7 +1063,7 @@ func TestMissionRepositoryNoWaypointUpdateSave(t *testing.T) {
 func TestMissionRepositoryMultipleWaypointsUpdateSave(t *testing.T) {
 	a := assert.New(t)
 
-	db, mock, err := GetNewDbMock()
+	db, mock, err := postgresql.GetNewDbMock()
 	if err != nil {
 		t.Errorf("failed to initialize mock DB: %v", err)
 		return
@@ -1171,7 +1173,7 @@ func TestMissionRepositoryMultipleWaypointsUpdateSave(t *testing.T) {
 func TestMissionRepositoryDelete(t *testing.T) {
 	a := assert.New(t)
 
-	db, mock, err := GetNewDbMock()
+	db, mock, err := postgresql.GetNewDbMock()
 	if err != nil {
 		t.Errorf("failed to initialize mock DB: %v", err)
 		return

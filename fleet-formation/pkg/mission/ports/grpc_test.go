@@ -4,8 +4,9 @@ import (
 	"fleet-formation/pkg/mission/app"
 	m "fleet-formation/pkg/mission/domain/mission"
 	s "fleet-formation/pkg/mission/service"
-	proto "fleet-formation/pkg/skysign_proto"
 	"testing"
+
+	proto "github.com/Tomofiles/skysign_cloud_v2/skysign-proto/pkg/skysign_proto"
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
