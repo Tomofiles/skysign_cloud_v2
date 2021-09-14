@@ -1,8 +1,12 @@
 package grpc
 
-import "google.golang.org/grpc"
+import (
+	"time"
+
+	"google.golang.org/grpc"
+)
 
 // NewGrpcClientConnection .
-func NewGrpcClientConnectionWithBlock(url string) (*grpc.ClientConn, error) {
-	return grpc.Dial(url, grpc.WithInsecure(), grpc.WithBlock())
+func NewGrpcClientConnectionWithBlockAndTimeout(url string) (*grpc.ClientConn, error) {
+	return grpc.Dial(url, grpc.WithInsecure(), grpc.WithBlock(), grpc.WithTimeout(3*time.Second))
 }

@@ -9,8 +9,8 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-// TestTelemetryUpdaterContextDone .
-func TestTelemetryUpdaterContextDone(t *testing.T) {
+// TestTelemetryUpdaterConnectionStateContextDone .
+func TestTelemetryUpdaterConnectionStateContextDone(t *testing.T) {
 	a := assert.New(t)
 
 	ctx := context.Background()
@@ -21,32 +21,22 @@ func TestTelemetryUpdaterContextDone(t *testing.T) {
 	tlm := model.NewTelemetry()
 
 	connectionStateStream := make(chan *model.ConnectionState)
-	positionStream := make(chan *model.Position)
-	quaternionStream := make(chan *model.Quaternion)
-	velocityStream := make(chan *model.Velocity)
-	armedStream := make(chan *model.Armed)
-	flightModeStream := make(chan *model.FlightMode)
 
-	updateExit := Updater(
+	updaterExit := ConnectionStateUpdater(
 		ctx,
 		supportMock,
 		tlm,
 		connectionStateStream,
-		positionStream,
-		quaternionStream,
-		velocityStream,
-		armedStream,
-		flightModeStream,
 	)
 
 	cancel()
 
-	<-updateExit
+	<-updaterExit
 
 	expectTelemetry := model.NewTelemetry()
 
 	a.Equal(expectTelemetry, tlm)
-	a.Equal([]string{"telemetry updater done"}, supportMock.messages)
+	a.Equal([]string{"telemetry CONNECTION_STATE done"}, supportMock.messages)
 }
 
 // TestTelemetryUpdaterConnectionState .
@@ -60,22 +50,12 @@ func TestTelemetryUpdaterConnectionState(t *testing.T) {
 	tlm := model.NewTelemetry()
 
 	connectionStateStream := make(chan *model.ConnectionState)
-	positionStream := make(chan *model.Position)
-	quaternionStream := make(chan *model.Quaternion)
-	velocityStream := make(chan *model.Velocity)
-	armedStream := make(chan *model.Armed)
-	flightModeStream := make(chan *model.FlightMode)
 
-	updateExit := Updater(
+	updaterExit := ConnectionStateUpdater(
 		ctx,
 		supportMock,
 		tlm,
 		connectionStateStream,
-		positionStream,
-		quaternionStream,
-		velocityStream,
-		armedStream,
-		flightModeStream,
 	)
 
 	response1 := &model.ConnectionState{
@@ -84,13 +64,43 @@ func TestTelemetryUpdaterConnectionState(t *testing.T) {
 	connectionStateStream <- response1
 	close(connectionStateStream)
 
-	<-updateExit
+	<-updaterExit
 
 	expectTelemetry := model.NewTelemetry()
 	expectTelemetry.SetConnectionState(&model.ConnectionState{VehicleID: DefaultEdgeVehicleID})
 
 	a.Equal(expectTelemetry, tlm)
-	a.Equal([]string{"connectionStateStream close"}, supportMock.messages)
+	a.Equal([]string{"telemetry CONNECTION_STATE close"}, supportMock.messages)
+}
+
+// TestTelemetryUpdaterPositionContextDone .
+func TestTelemetryUpdaterPositionContextDone(t *testing.T) {
+	a := assert.New(t)
+
+	ctx := context.Background()
+	ctx, cancel := context.WithCancel(ctx)
+
+	supportMock := &supportMock{}
+
+	tlm := model.NewTelemetry()
+
+	positionStream := make(chan *model.Position)
+
+	updaterExit := PositionUpdater(
+		ctx,
+		supportMock,
+		tlm,
+		positionStream,
+	)
+
+	cancel()
+
+	<-updaterExit
+
+	expectTelemetry := model.NewTelemetry()
+
+	a.Equal(expectTelemetry, tlm)
+	a.Equal([]string{"telemetry POSITION done"}, supportMock.messages)
 }
 
 // TestTelemetryUpdaterPosition .
@@ -103,23 +113,13 @@ func TestTelemetryUpdaterPosition(t *testing.T) {
 
 	tlm := model.NewTelemetry()
 
-	connectionStateStream := make(chan *model.ConnectionState)
 	positionStream := make(chan *model.Position)
-	quaternionStream := make(chan *model.Quaternion)
-	velocityStream := make(chan *model.Velocity)
-	armedStream := make(chan *model.Armed)
-	flightModeStream := make(chan *model.FlightMode)
 
-	updateExit := Updater(
+	updaterExit := PositionUpdater(
 		ctx,
 		supportMock,
 		tlm,
-		connectionStateStream,
 		positionStream,
-		quaternionStream,
-		velocityStream,
-		armedStream,
-		flightModeStream,
 	)
 
 	response1 := &model.Position{
@@ -131,7 +131,7 @@ func TestTelemetryUpdaterPosition(t *testing.T) {
 	positionStream <- response1
 	close(positionStream)
 
-	<-updateExit
+	<-updaterExit
 
 	expectTelemetry := model.NewTelemetry()
 	expectTelemetry.SetPosition(&model.Position{
@@ -142,7 +142,37 @@ func TestTelemetryUpdaterPosition(t *testing.T) {
 	})
 
 	a.Equal(expectTelemetry, tlm)
-	a.Equal([]string{"positionStream close"}, supportMock.messages)
+	a.Equal([]string{"telemetry POSITION close"}, supportMock.messages)
+}
+
+// TestTelemetryUpdaterQuaternionContextDone .
+func TestTelemetryUpdaterQuaternionContextDone(t *testing.T) {
+	a := assert.New(t)
+
+	ctx := context.Background()
+	ctx, cancel := context.WithCancel(ctx)
+
+	supportMock := &supportMock{}
+
+	tlm := model.NewTelemetry()
+
+	quaternionStream := make(chan *model.Quaternion)
+
+	updaterExit := QuaternionUpdater(
+		ctx,
+		supportMock,
+		tlm,
+		quaternionStream,
+	)
+
+	cancel()
+
+	<-updaterExit
+
+	expectTelemetry := model.NewTelemetry()
+
+	a.Equal(expectTelemetry, tlm)
+	a.Equal([]string{"telemetry QUATERNION done"}, supportMock.messages)
 }
 
 // TestTelemetryUpdaterQuaternion .
@@ -155,23 +185,13 @@ func TestTelemetryUpdaterQuaternion(t *testing.T) {
 
 	tlm := model.NewTelemetry()
 
-	connectionStateStream := make(chan *model.ConnectionState)
-	positionStream := make(chan *model.Position)
 	quaternionStream := make(chan *model.Quaternion)
-	velocityStream := make(chan *model.Velocity)
-	armedStream := make(chan *model.Armed)
-	flightModeStream := make(chan *model.FlightMode)
 
-	updateExit := Updater(
+	updaterExit := QuaternionUpdater(
 		ctx,
 		supportMock,
 		tlm,
-		connectionStateStream,
-		positionStream,
 		quaternionStream,
-		velocityStream,
-		armedStream,
-		flightModeStream,
 	)
 
 	response1 := &model.Quaternion{
@@ -183,7 +203,7 @@ func TestTelemetryUpdaterQuaternion(t *testing.T) {
 	quaternionStream <- response1
 	close(quaternionStream)
 
-	<-updateExit
+	<-updaterExit
 
 	expectTelemetry := model.NewTelemetry()
 	expectTelemetry.SetQuaternion(&model.Quaternion{
@@ -194,7 +214,37 @@ func TestTelemetryUpdaterQuaternion(t *testing.T) {
 	})
 
 	a.Equal(expectTelemetry, tlm)
-	a.Equal([]string{"quaternionStream close"}, supportMock.messages)
+	a.Equal([]string{"telemetry QUATERNION close"}, supportMock.messages)
+}
+
+// TestTelemetryUpdaterVelocityContextDone .
+func TestTelemetryUpdaterVelocityContextDone(t *testing.T) {
+	a := assert.New(t)
+
+	ctx := context.Background()
+	ctx, cancel := context.WithCancel(ctx)
+
+	supportMock := &supportMock{}
+
+	tlm := model.NewTelemetry()
+
+	velocityStream := make(chan *model.Velocity)
+
+	updaterExit := VelocityUpdater(
+		ctx,
+		supportMock,
+		tlm,
+		velocityStream,
+	)
+
+	cancel()
+
+	<-updaterExit
+
+	expectTelemetry := model.NewTelemetry()
+
+	a.Equal(expectTelemetry, tlm)
+	a.Equal([]string{"telemetry VELOCITY done"}, supportMock.messages)
 }
 
 // TestTelemetryUpdaterVelocity .
@@ -208,23 +258,13 @@ func TestTelemetryUpdaterVelocity(t *testing.T) {
 	tlm := model.NewTelemetry()
 	tlm.SetFlightMode(&model.FlightMode{FlightMode: "XXX"})
 
-	connectionStateStream := make(chan *model.ConnectionState)
-	positionStream := make(chan *model.Position)
-	quaternionStream := make(chan *model.Quaternion)
 	velocityStream := make(chan *model.Velocity)
-	armedStream := make(chan *model.Armed)
-	flightModeStream := make(chan *model.FlightMode)
 
-	updateExit := Updater(
+	updaterExit := VelocityUpdater(
 		ctx,
 		supportMock,
 		tlm,
-		connectionStateStream,
-		positionStream,
-		quaternionStream,
 		velocityStream,
-		armedStream,
-		flightModeStream,
 	)
 
 	response1 := &model.Velocity{
@@ -235,13 +275,43 @@ func TestTelemetryUpdaterVelocity(t *testing.T) {
 	velocityStream <- response1
 	close(velocityStream)
 
-	<-updateExit
+	<-updaterExit
 
 	snapshot, err := tlm.Get()
 
 	a.Nil(err)
 	a.Equal(math.Sqrt(1.0*1.0+2.0*2.0), snapshot.State.Speed) // GroundSpeed = √n^2+e^2）
-	a.Equal([]string{"velocityStream close"}, supportMock.messages)
+	a.Equal([]string{"telemetry VELOCITY close"}, supportMock.messages)
+}
+
+// TestTelemetryUpdaterArmedContextDone .
+func TestTelemetryUpdaterArmedContextDone(t *testing.T) {
+	a := assert.New(t)
+
+	ctx := context.Background()
+	ctx, cancel := context.WithCancel(ctx)
+
+	supportMock := &supportMock{}
+
+	tlm := model.NewTelemetry()
+
+	armedStream := make(chan *model.Armed)
+
+	updaterExit := ArmedUpdater(
+		ctx,
+		supportMock,
+		tlm,
+		armedStream,
+	)
+
+	cancel()
+
+	<-updaterExit
+
+	expectTelemetry := model.NewTelemetry()
+
+	a.Equal(expectTelemetry, tlm)
+	a.Equal([]string{"telemetry ARMED done"}, supportMock.messages)
 }
 
 // TestTelemetryUpdaterArmed .
@@ -254,23 +324,13 @@ func TestTelemetryUpdaterArmed(t *testing.T) {
 
 	tlm := model.NewTelemetry()
 
-	connectionStateStream := make(chan *model.ConnectionState)
-	positionStream := make(chan *model.Position)
-	quaternionStream := make(chan *model.Quaternion)
-	velocityStream := make(chan *model.Velocity)
 	armedStream := make(chan *model.Armed)
-	flightModeStream := make(chan *model.FlightMode)
 
-	updateExit := Updater(
+	updaterExit := ArmedUpdater(
 		ctx,
 		supportMock,
 		tlm,
-		connectionStateStream,
-		positionStream,
-		quaternionStream,
-		velocityStream,
 		armedStream,
-		flightModeStream,
 	)
 
 	response1 := &model.Armed{
@@ -279,7 +339,7 @@ func TestTelemetryUpdaterArmed(t *testing.T) {
 	armedStream <- response1
 	close(armedStream)
 
-	<-updateExit
+	<-updaterExit
 
 	expectTelemetry := model.NewTelemetry()
 	expectTelemetry.SetArmed(&model.Armed{
@@ -287,7 +347,37 @@ func TestTelemetryUpdaterArmed(t *testing.T) {
 	})
 
 	a.Equal(expectTelemetry, tlm)
-	a.Equal([]string{"armedStream close"}, supportMock.messages)
+	a.Equal([]string{"telemetry ARMED close"}, supportMock.messages)
+}
+
+// TestTelemetryUpdaterFlightModeContextDone .
+func TestTelemetryUpdaterFlightModeContextDone(t *testing.T) {
+	a := assert.New(t)
+
+	ctx := context.Background()
+	ctx, cancel := context.WithCancel(ctx)
+
+	supportMock := &supportMock{}
+
+	tlm := model.NewTelemetry()
+
+	flightModeStream := make(chan *model.FlightMode)
+
+	updaterExit := FlightModeUpdater(
+		ctx,
+		supportMock,
+		tlm,
+		flightModeStream,
+	)
+
+	cancel()
+
+	<-updaterExit
+
+	expectTelemetry := model.NewTelemetry()
+
+	a.Equal(expectTelemetry, tlm)
+	a.Equal([]string{"telemetry FLIGHT_MODE done"}, supportMock.messages)
 }
 
 // TestTelemetryUpdaterFlightMode .
@@ -300,22 +390,12 @@ func TestTelemetryUpdaterFlightMode(t *testing.T) {
 
 	tlm := model.NewTelemetry()
 
-	connectionStateStream := make(chan *model.ConnectionState)
-	positionStream := make(chan *model.Position)
-	quaternionStream := make(chan *model.Quaternion)
-	velocityStream := make(chan *model.Velocity)
-	armedStream := make(chan *model.Armed)
 	flightModeStream := make(chan *model.FlightMode)
 
-	updateExit := Updater(
+	updaterExit := FlightModeUpdater(
 		ctx,
 		supportMock,
 		tlm,
-		connectionStateStream,
-		positionStream,
-		quaternionStream,
-		velocityStream,
-		armedStream,
 		flightModeStream,
 	)
 
@@ -325,7 +405,7 @@ func TestTelemetryUpdaterFlightMode(t *testing.T) {
 	flightModeStream <- response1
 	close(flightModeStream)
 
-	<-updateExit
+	<-updaterExit
 
 	expectTelemetry := model.NewTelemetry()
 	expectTelemetry.SetFlightMode(&model.FlightMode{
@@ -333,7 +413,7 @@ func TestTelemetryUpdaterFlightMode(t *testing.T) {
 	})
 
 	a.Equal(expectTelemetry, tlm)
-	a.Equal([]string{"flightModeStream close"}, supportMock.messages)
+	a.Equal([]string{"telemetry FLIGHT_MODE close"}, supportMock.messages)
 }
 
 // TestTelemetryGet .

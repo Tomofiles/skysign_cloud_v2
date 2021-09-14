@@ -4,7 +4,7 @@ import (
 	"context"
 	"flag"
 	"net"
-	"time"
+	"os"
 
 	foperm "flight-operation/pkg/flightoperation/adapters/rabbitmq"
 	fopeapp "flight-operation/pkg/flightoperation/app"
@@ -30,6 +30,10 @@ var (
 )
 
 func run() error {
+	port = flag.String("port", "5001", "flight-operation port")
+	flag.Parse()
+	defer glog.Flush()
+
 	ctx := context.Background()
 	ctx, cancel := context.WithCancel(ctx)
 	defer cancel()
@@ -82,14 +86,8 @@ func run() error {
 }
 
 func main() {
-	port = flag.String("port", "5001", "flight-operation port")
-	flag.Parse()
-	defer glog.Flush()
-
-	for {
-		if err := run(); err != nil {
-			glog.Error(err)
-			time.Sleep(10 * time.Second)
-		}
+	if err := run(); err != nil {
+		glog.Error(err)
+		os.Exit(1)
 	}
 }

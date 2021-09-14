@@ -30,7 +30,7 @@ services:
     command: /mavsdk_server_manylinux1-x64 udp://skysign-px4-gazebo:14540 -p 50051
     ports:
       - "50051:50051"
-    restart: always
+    restart: on-failure
     depends_on:
       - skysign-px4-gazebo-for-debugging
 
@@ -44,6 +44,7 @@ services:
      - CLOUD_ADDRESS=${CLOUD_ADDRESS}
      - MAVSDK_ADDRESS=skysign-mavsdk-grpc-server:50051
     command: /app/edge-px4 -logtostderr
+    restart: on-failure
     depends_on:
       - skysign-mavsdk-grpc-server-for-debugging
 
