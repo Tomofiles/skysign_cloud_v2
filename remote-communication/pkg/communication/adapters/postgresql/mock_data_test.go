@@ -46,37 +46,37 @@ func (m *communicationComponentMock) GetUploadMissions() []c.UploadMissionCompon
 
 // Telemetry構成オブジェクトモック
 type telemetryComponentMock struct {
-	latitude         float64
-	longitude        float64
-	altitude         float64
-	relativeAltitude float64
-	speed            float64
-	armed            bool
-	flightMode       string
-	x                float64
-	y                float64
-	z                float64
-	w                float64
+	latitudeDegree    float64
+	longitudeDegree   float64
+	altitudeM         float64
+	relativeAltitudeM float64
+	speedMS           float64
+	armed             bool
+	flightMode        string
+	x                 float64
+	y                 float64
+	z                 float64
+	w                 float64
 }
 
-func (m *telemetryComponentMock) GetLatitude() float64 {
-	return m.latitude
+func (m *telemetryComponentMock) GetLatitudeDegree() float64 {
+	return m.latitudeDegree
 }
 
-func (m *telemetryComponentMock) GetLongitude() float64 {
-	return m.longitude
+func (m *telemetryComponentMock) GetLongitudeDegree() float64 {
+	return m.longitudeDegree
 }
 
-func (m *telemetryComponentMock) GetAltitude() float64 {
-	return m.altitude
+func (m *telemetryComponentMock) GetAltitudeM() float64 {
+	return m.altitudeM
 }
 
-func (m *telemetryComponentMock) GetRelativeAltitude() float64 {
-	return m.relativeAltitude
+func (m *telemetryComponentMock) GetRelativeAltitudeM() float64 {
+	return m.relativeAltitudeM
 }
 
-func (m *telemetryComponentMock) GetSpeed() float64 {
-	return m.speed
+func (m *telemetryComponentMock) GetSpeedMS() float64 {
+	return m.speedMS
 }
 
 func (m *telemetryComponentMock) GetArmed() bool {

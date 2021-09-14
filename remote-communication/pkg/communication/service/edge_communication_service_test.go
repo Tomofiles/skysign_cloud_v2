@@ -224,17 +224,17 @@ func TestPushTelemetryTransaction(t *testing.T) {
 	}
 
 	telemetry := &telemetry{
-		latitude:         1.0,
-		longitude:        2.0,
-		altitude:         3.0,
-		relativeAltitude: 4.0,
-		speed:            5.0,
-		armed:            c.Armed,
-		flightMode:       "NONE",
-		x:                6.0,
-		y:                7.0,
-		z:                8.0,
-		w:                9.0,
+		latitudeDegree:    1.0,
+		longitudeDegree:   2.0,
+		altitudeM:         3.0,
+		relativeAltitudeM: 4.0,
+		speedMS:           5.0,
+		armed:             c.Armed,
+		flightMode:        "NONE",
+		x:                 6.0,
+		y:                 7.0,
+		z:                 8.0,
+		w:                 9.0,
 	}
 
 	command := &pushTelemetryCommandMock{
@@ -289,17 +289,17 @@ func TestPushTelemetryOperation(t *testing.T) {
 	}
 
 	telemetry := &telemetry{
-		latitude:         1.0,
-		longitude:        2.0,
-		altitude:         3.0,
-		relativeAltitude: 4.0,
-		speed:            5.0,
-		armed:            c.Armed,
-		flightMode:       "NONE",
-		x:                6.0,
-		y:                7.0,
-		z:                8.0,
-		w:                9.0,
+		latitudeDegree:    1.0,
+		longitudeDegree:   2.0,
+		altitudeM:         3.0,
+		relativeAltitudeM: 4.0,
+		speedMS:           5.0,
+		armed:             c.Armed,
+		flightMode:        "NONE",
+		x:                 6.0,
+		y:                 7.0,
+		z:                 8.0,
+		w:                 9.0,
 	}
 
 	command := &pushTelemetryCommandMock{
@@ -319,17 +319,17 @@ func TestPushTelemetryOperation(t *testing.T) {
 	expectEvent := c.TelemetryUpdatedEvent{
 		CommunicationID: DefaultCommunicationID,
 		Telemetry: c.TelemetrySnapshot{
-			Latitude:         1.0,
-			Longitude:        2.0,
-			Altitude:         3.0,
-			RelativeAltitude: 4.0,
-			Speed:            5.0,
-			Armed:            c.Armed,
-			FlightMode:       "NONE",
-			X:                6.0,
-			Y:                7.0,
-			Z:                8.0,
-			W:                9.0,
+			LatitudeDegree:    1.0,
+			LongitudeDegree:   2.0,
+			AltitudeM:         3.0,
+			RelativeAltitudeM: 4.0,
+			SpeedMS:           5.0,
+			Armed:             c.Armed,
+			FlightMode:        "NONE",
+			X:                 6.0,
+			Y:                 7.0,
+			Z:                 8.0,
+			W:                 9.0,
 		},
 	}
 

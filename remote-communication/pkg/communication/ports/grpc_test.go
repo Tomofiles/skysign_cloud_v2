@@ -206,17 +206,17 @@ func TestPullTelemetry(t *testing.T) {
 
 	var tlm service.UserTelemetry
 	tlm = &telemetry{
-		latitude:         1.0,
-		longitude:        2.0,
-		altitude:         3.0,
-		relativeAltitude: 4.0,
-		speed:            5.0,
-		armed:            c.Armed,
-		flightMode:       "NONE",
-		x:                6.0,
-		y:                7.0,
-		z:                8.0,
-		w:                9.0,
+		latitudeDegree:    1.0,
+		longitudeDegree:   2.0,
+		altitudeM:         3.0,
+		relativeAltitudeM: 4.0,
+		speedMS:           5.0,
+		armed:             c.Armed,
+		flightMode:        "NONE",
+		x:                 6.0,
+		y:                 7.0,
+		z:                 8.0,
+		w:                 9.0,
 	}
 
 	service := userCommunicationServiceMock{}

@@ -45,17 +45,17 @@ func TestCommunicationAssembleFromComponent(t *testing.T) {
 	gen := &generatorMock{}
 
 	telemetryComp := telemetryComponentMock{
-		latitude:         1.0,
-		longitude:        2.0,
-		altitude:         3.0,
-		relativeAltitude: 4.0,
-		speed:            5.0,
-		armed:            Armed,
-		flightMode:       "NONE",
-		x:                6.0,
-		y:                7.0,
-		z:                8.0,
-		w:                9.0,
+		latitudeDegree:    1.0,
+		longitudeDegree:   2.0,
+		altitudeM:         3.0,
+		relativeAltitudeM: 4.0,
+		speedMS:           5.0,
+		armed:             Armed,
+		flightMode:        "NONE",
+		x:                 6.0,
+		y:                 7.0,
+		z:                 8.0,
+		w:                 9.0,
 	}
 	commandComps := []*commandComponentMock{
 		{
@@ -97,17 +97,17 @@ func TestCommunicationAssembleFromComponent(t *testing.T) {
 	communication := AssembleFrom(gen, &communicationComp)
 
 	expectTelemetry := &Telemetry{
-		latitude:         1.0,
-		longitude:        2.0,
-		altitude:         3.0,
-		relativeAltitude: 4.0,
-		speed:            5.0,
-		armed:            Armed,
-		flightMode:       "NONE",
-		x:                6.0,
-		y:                7.0,
-		z:                8.0,
-		w:                9.0,
+		latitudeDegree:    1.0,
+		longitudeDegree:   2.0,
+		altitudeM:         3.0,
+		relativeAltitudeM: 4.0,
+		speedMS:           5.0,
+		armed:             Armed,
+		flightMode:        "NONE",
+		x:                 6.0,
+		y:                 7.0,
+		z:                 8.0,
+		w:                 9.0,
 	}
 	expectCommands := []*Command{
 		{
@@ -166,17 +166,17 @@ func TestTakeApartCommunication(t *testing.T) {
 	)
 
 	telemetry := &Telemetry{
-		latitude:         1.0,
-		longitude:        2.0,
-		altitude:         3.0,
-		relativeAltitude: 4.0,
-		speed:            5.0,
-		armed:            Armed,
-		flightMode:       "NONE",
-		x:                6.0,
-		y:                7.0,
-		z:                8.0,
-		w:                9.0,
+		latitudeDegree:    1.0,
+		longitudeDegree:   2.0,
+		altitudeM:         3.0,
+		relativeAltitudeM: 4.0,
+		speedMS:           5.0,
+		armed:             Armed,
+		flightMode:        "NONE",
+		x:                 6.0,
+		y:                 7.0,
+		z:                 8.0,
+		w:                 9.0,
 	}
 	commands := []*Command{
 		{
@@ -225,19 +225,19 @@ func TestTakeApartCommunication(t *testing.T) {
 		func(id string) {
 			communicationComp.id = id
 		},
-		func(latitude, longitude, altitude, relativeAltitude, speed, x, y, z, w float64, armed bool, flightMode string) {
+		func(latitudeDegree, longitudeDegree, altitudeM, relativeAltitudeM, speedMS, x, y, z, w float64, armed bool, flightMode string) {
 			communicationComp.telemetry = &telemetryComponentMock{
-				latitude:         latitude,
-				longitude:        longitude,
-				altitude:         altitude,
-				relativeAltitude: relativeAltitude,
-				speed:            speed,
-				armed:            armed,
-				flightMode:       flightMode,
-				x:                x,
-				y:                y,
-				z:                z,
-				w:                w,
+				latitudeDegree:    latitudeDegree,
+				longitudeDegree:   longitudeDegree,
+				altitudeM:         altitudeM,
+				relativeAltitudeM: relativeAltitudeM,
+				speedMS:           speedMS,
+				armed:             armed,
+				flightMode:        flightMode,
+				x:                 x,
+				y:                 y,
+				z:                 z,
+				w:                 w,
 			}
 		},
 		func(id, cType string, time time.Time) {
@@ -265,17 +265,17 @@ func TestTakeApartCommunication(t *testing.T) {
 	communicationComp.uploadMissions = uploadMissionComps
 
 	expectTelemetryComp := telemetryComponentMock{
-		latitude:         1.0,
-		longitude:        2.0,
-		altitude:         3.0,
-		relativeAltitude: 4.0,
-		speed:            5.0,
-		armed:            Armed,
-		flightMode:       "NONE",
-		x:                6.0,
-		y:                7.0,
-		z:                8.0,
-		w:                9.0,
+		latitudeDegree:    1.0,
+		longitudeDegree:   2.0,
+		altitudeM:         3.0,
+		relativeAltitudeM: 4.0,
+		speedMS:           5.0,
+		armed:             Armed,
+		flightMode:        "NONE",
+		x:                 6.0,
+		y:                 7.0,
+		z:                 8.0,
+		w:                 9.0,
 	}
 	expectCommandComps := []*commandComponentMock{
 		{

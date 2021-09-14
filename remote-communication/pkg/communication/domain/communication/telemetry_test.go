@@ -12,11 +12,11 @@ func TestCreateNewTelemetry(t *testing.T) {
 
 	telemetry := NewTelemetry()
 
-	a.Equal(telemetry.latitude, 0.0)
-	a.Equal(telemetry.longitude, 0.0)
-	a.Equal(telemetry.altitude, 0.0)
-	a.Equal(telemetry.relativeAltitude, 0.0)
-	a.Equal(telemetry.speed, 0.0)
+	a.Equal(telemetry.latitudeDegree, 0.0)
+	a.Equal(telemetry.longitudeDegree, 0.0)
+	a.Equal(telemetry.altitudeM, 0.0)
+	a.Equal(telemetry.relativeAltitudeM, 0.0)
+	a.Equal(telemetry.speedMS, 0.0)
 	a.Equal(telemetry.armed, Disarmed)
 	a.Equal(telemetry.flightMode, "NONE")
 	a.Equal(telemetry.x, 0.0)
@@ -30,25 +30,25 @@ func TestCreateNewTelemetryFromSnapshot(t *testing.T) {
 	a := assert.New(t)
 
 	snapshot := TelemetrySnapshot{
-		Latitude:         1.0,
-		Longitude:        2.0,
-		Altitude:         3.0,
-		RelativeAltitude: 4.0,
-		Speed:            5.0,
-		Armed:            Armed,
-		FlightMode:       "NONE",
-		X:                6.0,
-		Y:                7.0,
-		Z:                8.0,
-		W:                9.0,
+		LatitudeDegree:    1.0,
+		LongitudeDegree:   2.0,
+		AltitudeM:         3.0,
+		RelativeAltitudeM: 4.0,
+		SpeedMS:           5.0,
+		Armed:             Armed,
+		FlightMode:        "NONE",
+		X:                 6.0,
+		Y:                 7.0,
+		Z:                 8.0,
+		W:                 9.0,
 	}
 	telemetry := NewTelemetryBySnapshot(snapshot)
 
-	a.Equal(telemetry.latitude, 1.0)
-	a.Equal(telemetry.longitude, 2.0)
-	a.Equal(telemetry.altitude, 3.0)
-	a.Equal(telemetry.relativeAltitude, 4.0)
-	a.Equal(telemetry.speed, 5.0)
+	a.Equal(telemetry.latitudeDegree, 1.0)
+	a.Equal(telemetry.longitudeDegree, 2.0)
+	a.Equal(telemetry.altitudeM, 3.0)
+	a.Equal(telemetry.relativeAltitudeM, 4.0)
+	a.Equal(telemetry.speedMS, 5.0)
 	a.Equal(telemetry.armed, Armed)
 	a.Equal(telemetry.flightMode, "NONE")
 	a.Equal(telemetry.x, 6.0)
@@ -62,26 +62,26 @@ func TestGetSnapshotFromTelemetry(t *testing.T) {
 	a := assert.New(t)
 
 	telemetry := &Telemetry{
-		latitude:         1.0,
-		longitude:        2.0,
-		altitude:         3.0,
-		relativeAltitude: 4.0,
-		speed:            5.0,
-		armed:            Armed,
-		flightMode:       "NONE",
-		x:                6.0,
-		y:                7.0,
-		z:                8.0,
-		w:                9.0,
+		latitudeDegree:    1.0,
+		longitudeDegree:   2.0,
+		altitudeM:         3.0,
+		relativeAltitudeM: 4.0,
+		speedMS:           5.0,
+		armed:             Armed,
+		flightMode:        "NONE",
+		x:                 6.0,
+		y:                 7.0,
+		z:                 8.0,
+		w:                 9.0,
 	}
 
 	snapshot := telemetry.GetSnapshot()
 
-	a.Equal(snapshot.Latitude, 1.0)
-	a.Equal(snapshot.Longitude, 2.0)
-	a.Equal(snapshot.Altitude, 3.0)
-	a.Equal(snapshot.RelativeAltitude, 4.0)
-	a.Equal(snapshot.Speed, 5.0)
+	a.Equal(snapshot.LatitudeDegree, 1.0)
+	a.Equal(snapshot.LongitudeDegree, 2.0)
+	a.Equal(snapshot.AltitudeM, 3.0)
+	a.Equal(snapshot.RelativeAltitudeM, 4.0)
+	a.Equal(snapshot.SpeedMS, 5.0)
 	a.Equal(snapshot.Armed, Armed)
 	a.Equal(snapshot.FlightMode, "NONE")
 	a.Equal(snapshot.X, 6.0)

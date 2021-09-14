@@ -62,28 +62,28 @@ func (t *Telemetry) GetCommunicationID() string {
 	return t.CommunicationID
 }
 
-// GetLatitude .
-func (t *Telemetry) GetLatitude() float64 {
+// GetLatitudeDegree .
+func (t *Telemetry) GetLatitudeDegree() float64 {
 	return t.LatitudeDegree
 }
 
-// GetLongitude .
-func (t *Telemetry) GetLongitude() float64 {
+// GetLongitudeDegree .
+func (t *Telemetry) GetLongitudeDegree() float64 {
 	return t.LongitudeDegree
 }
 
-// GetAltitude .
-func (t *Telemetry) GetAltitude() float64 {
+// GetAltitudeM .
+func (t *Telemetry) GetAltitudeM() float64 {
 	return t.AltitudeM
 }
 
-// GetRelativeAltitude .
-func (t *Telemetry) GetRelativeAltitude() float64 {
+// GetRelativeAltitudeM .
+func (t *Telemetry) GetRelativeAltitudeM() float64 {
 	return t.RelativeAltitudeM
 }
 
-// GetSpeed .
-func (t *Telemetry) GetSpeed() float64 {
+// GetSpeedMS .
+func (t *Telemetry) GetSpeedMS() float64 {
 	return t.SpeedMS
 }
 
