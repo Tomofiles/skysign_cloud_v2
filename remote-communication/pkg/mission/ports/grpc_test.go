@@ -18,10 +18,10 @@ func TestGetUploadMission(t *testing.T) {
 
 	waypoints := []service.Waypoint{
 		&waypoint{
-			Latitude:         1.0,
-			Longitude:        2.0,
-			RelativeAltitude: 3.0,
-			Speed:            4.0,
+			LatitudeDegree:  1.0,
+			LongitudeDegree: 2.0,
+			RelativeHeightM: 3.0,
+			SpeedMS:         4.0,
 		},
 	}
 	s.On("PullMission", mock.Anything, mock.Anything).Return(DefaultMissionID, waypoints, nil)

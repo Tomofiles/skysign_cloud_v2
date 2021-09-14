@@ -68,10 +68,10 @@ func (h *createMissionCommandHolder) GetWaypoints() []service.Waypoint {
 		waypoints = append(
 			waypoints,
 			&waypoint{
-				Latitude:         w.Latitude,
-				Longitude:        w.Longitude,
-				RelativeAltitude: w.RelativeHeight,
-				Speed:            w.Speed,
+				LatitudeDegree:  w.Latitude,
+				LongitudeDegree: w.Longitude,
+				RelativeHeightM: w.RelativeHeight,
+				SpeedMS:         w.Speed,
 			},
 		)
 	}
@@ -79,21 +79,21 @@ func (h *createMissionCommandHolder) GetWaypoints() []service.Waypoint {
 }
 
 type waypoint struct {
-	Latitude, Longitude, RelativeAltitude, Speed float64
+	LatitudeDegree, LongitudeDegree, RelativeHeightM, SpeedMS float64
 }
 
-func (v *waypoint) GetLatitude() float64 {
-	return v.Latitude
+func (v *waypoint) GetLatitudeDegree() float64 {
+	return v.LatitudeDegree
 }
 
-func (v *waypoint) GetLongitude() float64 {
-	return v.Longitude
+func (v *waypoint) GetLongitudeDegree() float64 {
+	return v.LongitudeDegree
 }
 
-func (v *waypoint) GetRelativeAltitude() float64 {
-	return v.RelativeAltitude
+func (v *waypoint) GetRelativeHeightM() float64 {
+	return v.RelativeHeightM
 }
 
-func (v *waypoint) GetSpeed() float64 {
-	return v.Speed
+func (v *waypoint) GetSpeedMS() float64 {
+	return v.SpeedMS
 }

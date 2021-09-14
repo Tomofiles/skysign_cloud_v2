@@ -40,25 +40,25 @@ func TestMissionAssembleFromComponent(t *testing.T) {
 
 	expectWaypoints := []*Waypoint{
 		{
-			PointOrder:       1,
-			Latitude:         11.0,
-			Longitude:        21.0,
-			RelativeAltitude: 31.0,
-			Speed:            41.0,
+			PointOrder:      1,
+			LatitudeDegree:  11.0,
+			LongitudeDegree: 21.0,
+			RelativeHeightM: 31.0,
+			SpeedMS:         41.0,
 		},
 		{
-			PointOrder:       2,
-			Latitude:         12.0,
-			Longitude:        22.0,
-			RelativeAltitude: 32.0,
-			Speed:            42.0,
+			PointOrder:      2,
+			LatitudeDegree:  12.0,
+			LongitudeDegree: 22.0,
+			RelativeHeightM: 32.0,
+			SpeedMS:         42.0,
 		},
 		{
-			PointOrder:       3,
-			Latitude:         13.0,
-			Longitude:        23.0,
-			RelativeAltitude: 33.0,
-			Speed:            43.0,
+			PointOrder:      3,
+			LatitudeDegree:  13.0,
+			LongitudeDegree: 23.0,
+			RelativeHeightM: 33.0,
+			SpeedMS:         43.0,
 		},
 	}
 
@@ -73,25 +73,25 @@ func TestTakeApartMission(t *testing.T) {
 
 	waypoints := []*Waypoint{
 		{
-			PointOrder:       1,
-			Latitude:         11.0,
-			Longitude:        21.0,
-			RelativeAltitude: 31.0,
-			Speed:            41.0,
+			PointOrder:      1,
+			LatitudeDegree:  11.0,
+			LongitudeDegree: 21.0,
+			RelativeHeightM: 31.0,
+			SpeedMS:         41.0,
 		},
 		{
-			PointOrder:       2,
-			Latitude:         12.0,
-			Longitude:        22.0,
-			RelativeAltitude: 32.0,
-			Speed:            42.0,
+			PointOrder:      2,
+			LatitudeDegree:  12.0,
+			LongitudeDegree: 22.0,
+			RelativeHeightM: 32.0,
+			SpeedMS:         42.0,
 		},
 		{
-			PointOrder:       3,
-			Latitude:         13.0,
-			Longitude:        23.0,
-			RelativeAltitude: 33.0,
-			Speed:            43.0,
+			PointOrder:      3,
+			LatitudeDegree:  13.0,
+			LongitudeDegree: 23.0,
+			RelativeHeightM: 33.0,
+			SpeedMS:         43.0,
 		},
 	}
 	mission := NewInstance(DefaultID)
@@ -105,15 +105,15 @@ func TestTakeApartMission(t *testing.T) {
 		func(id string) {
 			missionComp.id = id
 		},
-		func(pointOrder int, latitude, longitude, relativeAltitude, speed float64) {
+		func(pointOrder int, latitudeDegree, longitudeDegree, relativeHeightM, speedMS float64) {
 			waypointComps = append(
 				waypointComps,
 				&waypointComponentMock{
-					pointOrder:       pointOrder,
-					latitude:         latitude,
-					longitude:        longitude,
-					relativeAltitude: relativeAltitude,
-					speed:            speed,
+					pointOrder:      pointOrder,
+					latitudeDegree:  latitudeDegree,
+					longitudeDegree: longitudeDegree,
+					relativeHeightM: relativeHeightM,
+					speedMS:         speedMS,
 				},
 			)
 		},
