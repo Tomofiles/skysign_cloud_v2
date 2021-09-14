@@ -44,22 +44,22 @@ func (w *Waypoint) GetPointOrder() int {
 	return w.PointOrder
 }
 
-// GetLatitudeDegree .
-func (w *Waypoint) GetLatitudeDegree() float64 {
+// GetLatitude .
+func (w *Waypoint) GetLatitude() float64 {
 	return w.LatitudeDegree
 }
 
-// GetLongitudeDegree .
-func (w *Waypoint) GetLongitudeDegree() float64 {
+// GetLongitude .
+func (w *Waypoint) GetLongitude() float64 {
 	return w.LongitudeDegree
 }
 
-// GetRelativeHeightM .
-func (w *Waypoint) GetRelativeHeightM() float64 {
+// GetRelativeAltitude .
+func (w *Waypoint) GetRelativeAltitude() float64 {
 	return w.RelativeAltitudeM
 }
 
-// GetSpeedMS .
-func (w *Waypoint) GetSpeedMS() float64 {
+// GetSpeed .
+func (w *Waypoint) GetSpeed() float64 {
 	return w.SpeedMS
 }

@@ -34,11 +34,11 @@ func TestCreateMissionTransaction(t *testing.T) {
 		ID: string(DefaultMissionID),
 		Waypoints: []Waypoint{
 			&waypoint{
-				PointOrder:      1,
-				LatitudeDegree:  1.0,
-				LongitudeDegree: 2.0,
-				RelativeHeightM: 3.0,
-				SpeedMS:         4.0,
+				PointOrder:       1,
+				Latitude:         1.0,
+				Longitude:        2.0,
+				RelativeAltitude: 3.0,
+				Speed:            4.0,
 			},
 		},
 	}
@@ -69,11 +69,11 @@ func TestCreateMissionOperation(t *testing.T) {
 		ID: string(DefaultMissionID),
 		Waypoints: []Waypoint{
 			&waypoint{
-				PointOrder:      1,
-				LatitudeDegree:  1.0,
-				LongitudeDegree: 2.0,
-				RelativeHeightM: 3.0,
-				SpeedMS:         4.0,
+				PointOrder:       1,
+				Latitude:         1.0,
+				Longitude:        2.0,
+				RelativeAltitude: 3.0,
+				Speed:            4.0,
 			},
 		},
 	}

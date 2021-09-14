@@ -15,11 +15,11 @@ func AssembleFrom(comp Component) *Mission {
 		waypoints = append(
 			waypoints,
 			&Waypoint{
-				PointOrder:      w.GetPointOrder(),
-				LatitudeDegree:  w.GetLatitudeDegree(),
-				LongitudeDegree: w.GetLongitudeDegree(),
-				RelativeHeightM: w.GetRelativeHeightM(),
-				SpeedMS:         w.GetSpeedMS(),
+				PointOrder:       w.GetPointOrder(),
+				Latitude:         w.GetLatitude(),
+				Longitude:        w.GetLongitude(),
+				RelativeAltitude: w.GetRelativeAltitude(),
+				Speed:            w.GetSpeed(),
 			},
 		)
 	}
@@ -33,7 +33,7 @@ func AssembleFrom(comp Component) *Mission {
 func TakeApart(
 	mission *Mission,
 	missionComp func(id string),
-	waypointComp func(pointOrder int, latitudeDegree, longitudeDegree, relativeHeightM, speedMS float64),
+	waypointComp func(pointOrder int, latitude, longitude, relativeAltitude, speed float64),
 ) {
 	missionComp(
 		string(mission.id),
@@ -41,10 +41,10 @@ func TakeApart(
 	for _, w := range mission.waypoints {
 		waypointComp(
 			w.PointOrder,
-			w.LatitudeDegree,
-			w.LongitudeDegree,
-			w.RelativeHeightM,
-			w.SpeedMS,
+			w.Latitude,
+			w.Longitude,
+			w.RelativeAltitude,
+			w.Speed,
 		)
 	}
 }
@@ -58,8 +58,8 @@ type Component interface {
 // WaypointComponent .
 type WaypointComponent interface {
 	GetPointOrder() int
-	GetLatitudeDegree() float64
-	GetLongitudeDegree() float64
-	GetRelativeHeightM() float64
-	GetSpeedMS() float64
+	GetLatitude() float64
+	GetLongitude() float64
+	GetRelativeAltitude() float64
+	GetSpeed() float64
 }

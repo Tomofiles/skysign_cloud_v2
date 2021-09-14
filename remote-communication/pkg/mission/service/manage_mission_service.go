@@ -20,10 +20,10 @@ type CreateMissionCommand interface {
 
 // Waypoint .
 type Waypoint interface {
-	GetLatitudeDegree() float64
-	GetLongitudeDegree() float64
-	GetRelativeHeightM() float64
-	GetSpeedMS() float64
+	GetLatitude() float64
+	GetLongitude() float64
+	GetRelativeAltitude() float64
+	GetSpeed() float64
 }
 
 // NewManageMissionService .
@@ -77,10 +77,10 @@ func (s *manageMissionService) createMissionOperation(
 
 	for _, w := range command.GetWaypoints() {
 		mission.PushWaypoint(
-			w.GetLatitudeDegree(),
-			w.GetLongitudeDegree(),
-			w.GetRelativeHeightM(),
-			w.GetSpeedMS(),
+			w.GetLatitude(),
+			w.GetLongitude(),
+			w.GetRelativeAltitude(),
+			w.GetSpeed(),
 		)
 	}
 
