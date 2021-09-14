@@ -54,8 +54,8 @@ func (w *Waypoint) GetLongitudeDegree() float64 {
 	return w.LongitudeDegree
 }
 
-// GetRelativeHeightM .
-func (w *Waypoint) GetRelativeHeightM() float64 {
+// GetRelativeAltitudeM .
+func (w *Waypoint) GetRelativeAltitudeM() float64 {
 	return w.RelativeAltitudeM
 }
 

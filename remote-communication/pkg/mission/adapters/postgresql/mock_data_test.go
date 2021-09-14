@@ -26,11 +26,11 @@ func (m *missionComponentMock) GetWaypoints() []mission.WaypointComponent {
 
 // Waypoint構成オブジェクトモック
 type waypointComponentMock struct {
-	pointOrder      int
-	latitudeDegree  float64
-	longitudeDegree float64
-	relativeHeightM float64
-	speedMS         float64
+	pointOrder        int
+	latitudeDegree    float64
+	longitudeDegree   float64
+	relativeAltitudeM float64
+	speedMS           float64
 }
 
 func (m *waypointComponentMock) GetPointOrder() int {
@@ -45,8 +45,8 @@ func (m *waypointComponentMock) GetLongitudeDegree() float64 {
 	return m.longitudeDegree
 }
 
-func (m *waypointComponentMock) GetRelativeHeightM() float64 {
-	return m.relativeHeightM
+func (m *waypointComponentMock) GetRelativeAltitudeM() float64 {
+	return m.relativeAltitudeM
 }
 
 func (m *waypointComponentMock) GetSpeedMS() float64 {

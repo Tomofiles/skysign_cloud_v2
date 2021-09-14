@@ -52,10 +52,10 @@ func TestHandleCopiedMissionCreatedEvent(t *testing.T) {
 
 	expectWaypoints := []service.Waypoint{
 		&waypoint{
-			LatitudeDegree:  11.0,
-			LongitudeDegree: 21.0,
-			RelativeHeightM: 31.0,
-			SpeedMS:         41.0,
+			LatitudeDegree:    11.0,
+			LongitudeDegree:   21.0,
+			RelativeAltitudeM: 31.0,
+			SpeedMS:           41.0,
 		},
 	}
 

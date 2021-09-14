@@ -22,7 +22,7 @@ type CreateMissionCommand interface {
 type Waypoint interface {
 	GetLatitudeDegree() float64
 	GetLongitudeDegree() float64
-	GetRelativeHeightM() float64
+	GetRelativeAltitudeM() float64
 	GetSpeedMS() float64
 }
 
@@ -79,7 +79,7 @@ func (s *manageMissionService) createMissionOperation(
 		mission.PushWaypoint(
 			w.GetLatitudeDegree(),
 			w.GetLongitudeDegree(),
-			w.GetRelativeHeightM(),
+			w.GetRelativeAltitudeM(),
 			w.GetSpeedMS(),
 		)
 	}
