@@ -62,6 +62,7 @@ services:
      - DB_HOST=skysign-remote-communication-db
      - MQ_HOST=skysign-mq
     command: /app/remote-communication -logtostderr
+    restart: on-failure
     depends_on:
       - skysign-remote-communication-db-for-debugging
       - skysign-mq-for-debugging
@@ -76,6 +77,7 @@ services:
      - DB_HOST=skysign-fleet-formation-db
      - MQ_HOST=skysign-mq
     command: /app/fleet-formation -logtostderr
+    restart: on-failure
     depends_on:
       - skysign-fleet-formation-db-for-debugging
       - skysign-mq-for-debugging
@@ -90,6 +92,7 @@ services:
      - DB_HOST=skysign-flight-operation-db
      - MQ_HOST=skysign-mq
     command: /app/flight-operation -logtostderr
+    restart: on-failure
     depends_on:
       - skysign-flight-operation-db-for-debugging
       - skysign-mq-for-debugging
@@ -104,6 +107,7 @@ services:
      - DB_HOST=skysign-collection-analysis-db
      - MQ_HOST=skysign-mq
     command: /app/collection-analysis -logtostderr
+    restart: on-failure
     depends_on:
       - skysign-collection-analysis-db-for-debugging
       - skysign-mq-for-debugging
@@ -115,6 +119,7 @@ services:
       context: ../..
       dockerfile: ./helper-api/Dockerfile
     command: /app/helper-user-api
+    restart: on-failure
 
   skysign-remote-communication-gateway-for-debugging:
     container_name: skysign-remote-communication-gateway

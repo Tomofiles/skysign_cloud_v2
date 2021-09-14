@@ -4,7 +4,7 @@ import (
 	"context"
 	"flag"
 	"net"
-	"time"
+	"os"
 
 	frm "fleet-formation/pkg/fleet/adapters/rabbitmq"
 	fapp "fleet-formation/pkg/fleet/app"
@@ -31,6 +31,10 @@ var (
 )
 
 func run() error {
+	port = flag.String("port", "5001", "fleet-formation port")
+	flag.Parse()
+	defer glog.Flush()
+
 	ctx := context.Background()
 	ctx, cancel := context.WithCancel(ctx)
 	defer cancel()
@@ -84,14 +88,8 @@ func run() error {
 }
 
 func main() {
-	port = flag.String("port", "5001", "fleet-formation port")
-	flag.Parse()
-	defer glog.Flush()
-
-	for {
-		if err := run(); err != nil {
-			glog.Error(err)
-			time.Sleep(10 * time.Second)
-		}
+	if err := run(); err != nil {
+		glog.Error(err)
+		os.Exit(1)
 	}
 }

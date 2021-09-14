@@ -3,6 +3,7 @@ package main
 import (
 	"flag"
 	"net"
+	"os"
 
 	"helper-api/pkg/api"
 
@@ -16,7 +17,7 @@ var (
 	port *string
 )
 
-func main() {
+func run() error {
 	port = flag.String("port", "5001", "helper api port")
 	flag.Parse()
 	defer glog.Flush()
@@ -27,7 +28,14 @@ func main() {
 	}
 	s := grpc.NewServer()
 	pb.RegisterHelperUserServiceServer(s, &api.Server{})
-	if err := s.Serve(lis); err != nil {
-		glog.Fatal(err)
+
+	glog.Info("start helper-api server")
+	return s.Serve(lis)
+}
+
+func main() {
+	if err := run(); err != nil {
+		glog.Error(err)
+		os.Exit(1)
 	}
 }

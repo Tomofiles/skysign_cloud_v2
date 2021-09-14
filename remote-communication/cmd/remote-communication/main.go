@@ -4,7 +4,7 @@ import (
 	"context"
 	"flag"
 	"net"
-	"time"
+	"os"
 
 	rrm "remote-communication/pkg/communication/adapters/rabbitmq"
 	rapp "remote-communication/pkg/communication/app"
@@ -27,6 +27,10 @@ var (
 )
 
 func run() error {
+	port = flag.String("port", "5001", "remote-communication port")
+	flag.Parse()
+	defer glog.Flush()
+
 	ctx := context.Background()
 	ctx, cancel := context.WithCancel(ctx)
 	defer cancel()
@@ -74,14 +78,8 @@ func run() error {
 }
 
 func main() {
-	port = flag.String("port", "5001", "remote-communication port")
-	flag.Parse()
-	defer glog.Flush()
-
-	for {
-		if err := run(); err != nil {
-			glog.Error(err)
-			time.Sleep(10 * time.Second)
-		}
+	if err := run(); err != nil {
+		glog.Error(err)
+		os.Exit(1)
 	}
 }
