@@ -3,7 +3,7 @@ CREATE TABLE waypoints (
     point_order integer NOT NULL,
     latitude_degree double precision NOT NULL,
     longitude_degree double precision NOT NULL,
-    relative_height_m double precision NOT NULL,
+    relative_altitude_m double precision NOT NULL,
     speed_ms double precision NOT NULL
 );
 CREATE INDEX waypoints_select_del_idx ON waypoints (mission_id);

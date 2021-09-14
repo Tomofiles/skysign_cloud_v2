@@ -92,11 +92,11 @@ func (r *CommunicationRepository) Save(
 		func(id string) {},
 		func(latitude, longitude, altitude, relativeAltitude, speed, x, y, z, w float64, armed bool, flightMode string) {
 			telemetryRecord.CommunicationID = communicationRecord.ID
-			telemetryRecord.Latitude = latitude
-			telemetryRecord.Longitude = longitude
-			telemetryRecord.Altitude = altitude
-			telemetryRecord.RelativeAltitude = relativeAltitude
-			telemetryRecord.Speed = speed
+			telemetryRecord.LatitudeDegree = latitude
+			telemetryRecord.LongitudeDegree = longitude
+			telemetryRecord.AltitudeM = altitude
+			telemetryRecord.RelativeAltitudeM = relativeAltitude
+			telemetryRecord.SpeedMS = speed
 			telemetryRecord.Armed = armed
 			telemetryRecord.FlightMode = flightMode
 			telemetryRecord.OrientationX = x

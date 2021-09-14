@@ -35,7 +35,7 @@ func TestCommunicationRepositoryGetByID(t *testing.T) {
 			regexp.QuoteMeta(`SELECT * FROM "telemetries" WHERE communication_id = $1`)).
 		WithArgs(DefaultCommunicationID).
 		WillReturnRows(
-			sqlmock.NewRows([]string{"communication_id", "latitude", "longitude", "altitude", "relative_altitude", "speed", "armed", "flight_mode", "orientation_x", "orientation_y", "orientation_z", "orientation_w"}).
+			sqlmock.NewRows([]string{"communication_id", "latitude_degree", "longitude_degree", "altitude_m", "relative_altitude_m", "speed_ms", "armed", "flight_mode", "orientation_x", "orientation_y", "orientation_z", "orientation_w"}).
 				AddRow(DefaultCommunicationID, 1.0, 2.0, 3.0, 4.0, 5.0, true, "state", 6.0, 7.0, 8.0, 9.0),
 		)
 	mock.
@@ -154,7 +154,7 @@ func TestCommunicationRepositorySingleDataCreateSave(t *testing.T) {
 
 	mock.
 		ExpectExec(
-			regexp.QuoteMeta(`INSERT INTO "telemetries" ("communication_id","latitude","longitude","altitude","relative_altitude","speed","armed","flight_mode","orientation_x","orientation_y","orientation_z","orientation_w") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12)`)).
+			regexp.QuoteMeta(`INSERT INTO "telemetries" ("communication_id","latitude_degree","longitude_degree","altitude_m","relative_altitude_m","speed_ms","armed","flight_mode","orientation_x","orientation_y","orientation_z","orientation_w") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12)`)).
 		WithArgs(DefaultCommunicationID, 1.0, 2.0, 3.0, 4.0, 5.0, true, "state", 6.0, 7.0, 8.0, 9.0).
 		WillReturnResult(
 			sqlmock.NewResult(1, 1),
@@ -248,7 +248,7 @@ func TestCommunicationRepositoryNoneDataCreateSave(t *testing.T) {
 
 	mock.
 		ExpectExec(
-			regexp.QuoteMeta(`INSERT INTO "telemetries" ("communication_id","latitude","longitude","altitude","relative_altitude","speed","armed","flight_mode","orientation_x","orientation_y","orientation_z","orientation_w") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12)`)).
+			regexp.QuoteMeta(`INSERT INTO "telemetries" ("communication_id","latitude_degree","longitude_degree","altitude_m","relative_altitude_m","speed_ms","armed","flight_mode","orientation_x","orientation_y","orientation_z","orientation_w") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12)`)).
 		WithArgs(DefaultCommunicationID, 1.0, 2.0, 3.0, 4.0, 5.0, true, "state", 6.0, 7.0, 8.0, 9.0).
 		WillReturnResult(
 			sqlmock.NewResult(1, 1),
@@ -317,7 +317,7 @@ func TestCommunicationRepositoryMultipleDataCreateSave(t *testing.T) {
 
 	mock.
 		ExpectExec(
-			regexp.QuoteMeta(`INSERT INTO "telemetries" ("communication_id","latitude","longitude","altitude","relative_altitude","speed","armed","flight_mode","orientation_x","orientation_y","orientation_z","orientation_w") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12)`)).
+			regexp.QuoteMeta(`INSERT INTO "telemetries" ("communication_id","latitude_degree","longitude_degree","altitude_m","relative_altitude_m","speed_ms","armed","flight_mode","orientation_x","orientation_y","orientation_z","orientation_w") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12)`)).
 		WithArgs(DefaultCommunicationID, 1.0, 2.0, 3.0, 4.0, 5.0, true, "state", 6.0, 7.0, 8.0, 9.0).
 		WillReturnResult(
 			sqlmock.NewResult(1, 1),
@@ -468,7 +468,7 @@ func TestCommunicationRepositorySingleDataUpdateSave(t *testing.T) {
 
 	mock.
 		ExpectExec(
-			regexp.QuoteMeta(`UPDATE "telemetries" SET "latitude"=$1,"longitude"=$2,"altitude"=$3,"relative_altitude"=$4,"speed"=$5,"armed"=$6,"flight_mode"=$7,"orientation_x"=$8,"orientation_y"=$9,"orientation_z"=$10,"orientation_w"=$11 WHERE "communication_id" = $12`)).
+			regexp.QuoteMeta(`UPDATE "telemetries" SET "latitude_degree"=$1,"longitude_degree"=$2,"altitude_m"=$3,"relative_altitude_m"=$4,"speed_ms"=$5,"armed"=$6,"flight_mode"=$7,"orientation_x"=$8,"orientation_y"=$9,"orientation_z"=$10,"orientation_w"=$11 WHERE "communication_id" = $12`)).
 		WithArgs(1.0, 2.0, 3.0, 4.0, 5.0, true, "state", 6.0, 7.0, 8.0, 9.0, DefaultCommunicationID).
 		WillReturnResult(
 			sqlmock.NewResult(1, 1),
@@ -588,7 +588,7 @@ func TestCommunicationRepositoryNoneDataUpdateSave(t *testing.T) {
 
 	mock.
 		ExpectExec(
-			regexp.QuoteMeta(`UPDATE "telemetries" SET "latitude"=$1,"longitude"=$2,"altitude"=$3,"relative_altitude"=$4,"speed"=$5,"armed"=$6,"flight_mode"=$7,"orientation_x"=$8,"orientation_y"=$9,"orientation_z"=$10,"orientation_w"=$11 WHERE "communication_id" = $12`)).
+			regexp.QuoteMeta(`UPDATE "telemetries" SET "latitude_degree"=$1,"longitude_degree"=$2,"altitude_m"=$3,"relative_altitude_m"=$4,"speed_ms"=$5,"armed"=$6,"flight_mode"=$7,"orientation_x"=$8,"orientation_y"=$9,"orientation_z"=$10,"orientation_w"=$11 WHERE "communication_id" = $12`)).
 		WithArgs(1.0, 2.0, 3.0, 4.0, 5.0, true, "state", 6.0, 7.0, 8.0, 9.0, DefaultCommunicationID).
 		WillReturnResult(
 			sqlmock.NewResult(1, 1),
@@ -683,7 +683,7 @@ func TestCommunicationRepositoryMultipleDataUpdateSave(t *testing.T) {
 
 	mock.
 		ExpectExec(
-			regexp.QuoteMeta(`UPDATE "telemetries" SET "latitude"=$1,"longitude"=$2,"altitude"=$3,"relative_altitude"=$4,"speed"=$5,"armed"=$6,"flight_mode"=$7,"orientation_x"=$8,"orientation_y"=$9,"orientation_z"=$10,"orientation_w"=$11 WHERE "communication_id" = $12`)).
+			regexp.QuoteMeta(`UPDATE "telemetries" SET "latitude_degree"=$1,"longitude_degree"=$2,"altitude_m"=$3,"relative_altitude_m"=$4,"speed_ms"=$5,"armed"=$6,"flight_mode"=$7,"orientation_x"=$8,"orientation_y"=$9,"orientation_z"=$10,"orientation_w"=$11 WHERE "communication_id" = $12`)).
 		WithArgs(1.0, 2.0, 3.0, 4.0, 5.0, true, "state", 6.0, 7.0, 8.0, 9.0, DefaultCommunicationID).
 		WillReturnResult(
 			sqlmock.NewResult(1, 1),

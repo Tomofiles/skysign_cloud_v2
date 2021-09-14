@@ -164,19 +164,19 @@ func (r *MissionRepository) Save(
 		},
 		func(takeoffPointGroundHeightWGS84EllipsoidM float64, uploadID string) {
 			navigationRecord.MissionID = string(mission.GetID())
-			navigationRecord.TakeoffPointGroundHeightWGS84EllipsoidM = takeoffPointGroundHeightWGS84EllipsoidM
+			navigationRecord.TakeoffPointGroundAltitudeM = takeoffPointGroundHeightWGS84EllipsoidM
 			navigationRecord.UploadID = uploadID
 		},
 		func(pointOrder int, latitudeDegree, longitudeDegree, relativeHeightM, speedMS float64) {
 			waypointRecords = append(
 				waypointRecords,
 				&Waypoint{
-					MissionID:       string(mission.GetID()),
-					PointOrder:      pointOrder,
-					LatitudeDegree:  latitudeDegree,
-					LongitudeDegree: longitudeDegree,
-					RelativeHeightM: relativeHeightM,
-					SpeedMS:         speedMS,
+					MissionID:         string(mission.GetID()),
+					PointOrder:        pointOrder,
+					LatitudeDegree:    latitudeDegree,
+					LongitudeDegree:   longitudeDegree,
+					RelativeAltitudeM: relativeHeightM,
+					SpeedMS:           speedMS,
 				},
 			)
 		},

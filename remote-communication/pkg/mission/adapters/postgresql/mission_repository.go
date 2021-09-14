@@ -77,12 +77,12 @@ func (r *MissionRepository) Save(
 			waypointRecords = append(
 				waypointRecords,
 				&Waypoint{
-					MissionID:       missionRecord.ID,
-					PointOrder:      pointOrder,
-					LatitudeDegree:  latitudeDegree,
-					LongitudeDegree: longitudeDegree,
-					RelativeHeightM: relativeHeightM,
-					SpeedMS:         speedMS,
+					MissionID:         missionRecord.ID,
+					PointOrder:        pointOrder,
+					LatitudeDegree:    latitudeDegree,
+					LongitudeDegree:   longitudeDegree,
+					RelativeAltitudeM: relativeHeightM,
+					SpeedMS:           speedMS,
 				},
 			)
 		},

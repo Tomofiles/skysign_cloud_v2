@@ -38,10 +38,10 @@ func (v *Mission) GetNavigation() m.NavigationComponent {
 
 // Navigation .
 type Navigation struct {
-	MissionID                               string `gorm:"primaryKey"`
-	TakeoffPointGroundHeightWGS84EllipsoidM float64
-	Waypoints                               []*Waypoint `gorm:"-"`
-	UploadID                                string
+	MissionID                   string `gorm:"primaryKey"`
+	TakeoffPointGroundAltitudeM float64
+	Waypoints                   []*Waypoint `gorm:"-"`
+	UploadID                    string
 }
 
 // GetMissionID .
@@ -51,7 +51,7 @@ func (v *Navigation) GetMissionID() string {
 
 // GetTakeoffPointGroundHeightWGS84EllipsoidM .
 func (v *Navigation) GetTakeoffPointGroundHeightWGS84EllipsoidM() float64 {
-	return v.TakeoffPointGroundHeightWGS84EllipsoidM
+	return v.TakeoffPointGroundAltitudeM
 }
 
 // GetWaypoints .
@@ -70,12 +70,12 @@ func (v *Navigation) GetUploadID() string {
 
 // Waypoint
 type Waypoint struct {
-	MissionID       string
-	PointOrder      int
-	LatitudeDegree  float64
-	LongitudeDegree float64
-	RelativeHeightM float64
-	SpeedMS         float64
+	MissionID         string
+	PointOrder        int
+	LatitudeDegree    float64
+	LongitudeDegree   float64
+	RelativeAltitudeM float64
+	SpeedMS           float64
 }
 
 // GetMissionID .
@@ -100,7 +100,7 @@ func (v *Waypoint) GetLongitudeDegree() float64 {
 
 // GetRelativeHeightM .
 func (v *Waypoint) GetRelativeHeightM() float64 {
-	return v.RelativeHeightM
+	return v.RelativeAltitudeM
 }
 
 // GetSpeedMS .

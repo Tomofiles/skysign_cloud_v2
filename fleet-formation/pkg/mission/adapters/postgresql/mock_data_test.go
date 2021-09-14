@@ -7,7 +7,7 @@ import (
 const DefaultMissionID = m.ID("mission-id")
 const DefaultMissionVersion = m.Version("version")
 const DefaultMissionName = "mission-name"
-const DefaultMissionTakeoffPointGroundHeightWGS84EllipsoidM float64 = 10
+const DefaultMissionTakeoffPointGroundAltitudeM float64 = 10
 const DefaultMissionUploadID = m.UploadID("upload-id")
 
 // Mission構成オブジェクトモック
