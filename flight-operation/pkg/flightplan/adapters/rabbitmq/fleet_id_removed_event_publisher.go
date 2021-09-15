@@ -24,7 +24,7 @@ func PublishFleetIDRemovedEvent(
 		return err
 	}
 
-	eventPb := skysign_proto.FleetIDRemovedEvent{
+	eventPb := skysign_proto.FleetIdRemovedEvent{
 		FleetId: string(event.GetFleetID()),
 	}
 	eventBin, err := proto.Marshal(&eventPb)

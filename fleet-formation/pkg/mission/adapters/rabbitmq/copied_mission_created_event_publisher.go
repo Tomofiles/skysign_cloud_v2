@@ -32,18 +32,18 @@ func PublishCopiedMissionCreatedEvent(
 				waypoints = append(
 					waypoints,
 					&skysign_proto.Waypoint{
-						Latitude:       latitudeDegree,
-						Longitude:      longitudeDegree,
-						RelativeHeight: relativeAltitudeM,
-						Speed:          speedMS,
+						Latitude:         latitudeDegree,
+						Longitude:        longitudeDegree,
+						RelativeAltitude: relativeAltitudeM,
+						Speed:            speedMS,
 					},
 				)
 			},
 		)
 		navigation = &skysign_proto.Navigation{
-			TakeoffPointGroundHeight: event.GetMission().GetNavigation().GetTakeoffPointGroundAltitudeM(),
-			Waypoints:                waypoints,
-			UploadId:                 string(event.GetMission().GetNavigation().GetUploadID()),
+			TakeoffPointGroundAltitude: event.GetMission().GetNavigation().GetTakeoffPointGroundAltitudeM(),
+			Waypoints:                  waypoints,
+			UploadId:                   string(event.GetMission().GetNavigation().GetUploadID()),
 		}
 	}
 	eventPb := skysign_proto.CopiedMissionCreatedEvent{

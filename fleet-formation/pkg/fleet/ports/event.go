@@ -47,7 +47,7 @@ func (h *eventHandler) HandleFleetIDGaveEvent(
 	ctx context.Context,
 	event []byte,
 ) error {
-	eventPb := skysign_proto.FleetIDGaveEvent{}
+	eventPb := skysign_proto.FleetIdGaveEvent{}
 	if err := proto.Unmarshal(event, &eventPb); err != nil {
 		return err
 	}
@@ -68,7 +68,7 @@ func (h *eventHandler) HandleFleetIDRemovedEvent(
 	ctx context.Context,
 	event []byte,
 ) error {
-	eventPb := skysign_proto.FleetIDRemovedEvent{}
+	eventPb := skysign_proto.FleetIdRemovedEvent{}
 	if err := proto.Unmarshal(event, &eventPb); err != nil {
 		return err
 	}
@@ -107,7 +107,7 @@ func (h *eventHandler) HandleFleetCopiedEvent(
 }
 
 type createFleetCommandHolder struct {
-	event *skysign_proto.FleetIDGaveEvent
+	event *skysign_proto.FleetIdGaveEvent
 }
 
 func (h *createFleetCommandHolder) GetID() string {
@@ -119,7 +119,7 @@ func (h *createFleetCommandHolder) GetNumberOfVehicles() int {
 }
 
 type deleteFleetCommandHolder struct {
-	event *skysign_proto.FleetIDRemovedEvent
+	event *skysign_proto.FleetIdRemovedEvent
 }
 
 func (h *deleteFleetCommandHolder) GetID() string {

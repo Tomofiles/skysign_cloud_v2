@@ -37,10 +37,10 @@ func (s *GrpcServer) GetUploadMission(
 				response.Waypoints = append(
 					response.Waypoints,
 					&proto.Waypoint{
-						Latitude:       w.GetLatitudeDegree(),
-						Longitude:      w.GetLongitudeDegree(),
-						RelativeHeight: w.GetRelativeAltitudeM(),
-						Speed:          w.GetSpeedMS(),
+						Latitude:         w.GetLatitudeDegree(),
+						Longitude:        w.GetLongitudeDegree(),
+						RelativeAltitude: w.GetRelativeAltitudeM(),
+						Speed:            w.GetSpeedMS(),
 					},
 				)
 			}

@@ -167,13 +167,13 @@ func (f *mission) GetNavigation() service.Navigation {
 			waypoint{
 				latitudeDegree:    w.Latitude,
 				longitudeDegree:   w.Longitude,
-				relativeAltitudeM: w.RelativeHeight,
+				relativeAltitudeM: w.RelativeAltitude,
 				speedMS:           w.Speed,
 			},
 		)
 	}
 	navigation := &navigation{
-		takeoffPointGroundAltitudeM: f.request.Navigation.TakeoffPointGroundHeight,
+		takeoffPointGroundAltitudeM: f.request.Navigation.TakeoffPointGroundAltitude,
 		waypoints:                   waypoints,
 	}
 	return navigation

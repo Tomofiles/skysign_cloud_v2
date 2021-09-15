@@ -35,10 +35,10 @@ func TestHandleCopiedMissionCreatedEvent(t *testing.T) {
 				UploadId: DefaultMissionUploadID,
 				Waypoints: []*skysign_proto.Waypoint{
 					{
-						Latitude:       11.0,
-						Longitude:      21.0,
-						RelativeHeight: 31.0,
-						Speed:          41.0,
+						Latitude:         11.0,
+						Longitude:        21.0,
+						RelativeAltitude: 31.0,
+						Speed:            41.0,
 					},
 				},
 			},

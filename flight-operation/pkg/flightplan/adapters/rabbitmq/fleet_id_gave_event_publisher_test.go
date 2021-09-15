@@ -26,7 +26,7 @@ func TestPublishFleetIDGaveEvent(t *testing.T) {
 
 	ret := PublishFleetIDGaveEvent(chMock, event)
 
-	expectPb := skysign_proto.FleetIDGaveEvent{
+	expectPb := skysign_proto.FleetIdGaveEvent{
 		FleetId:          string(DefaultFlightplanFleetID),
 		NumberOfVehicles: DefaultFleetNumberOfVehicles,
 	}

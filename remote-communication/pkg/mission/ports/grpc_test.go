@@ -46,10 +46,10 @@ func TestGetUploadMission(t *testing.T) {
 		Id: DefaultMissionUploadID,
 		Waypoints: []*proto.Waypoint{
 			{
-				Latitude:       1.0,
-				Longitude:      2.0,
-				RelativeHeight: 3.0,
-				Speed:          4.0,
+				Latitude:         1.0,
+				Longitude:        2.0,
+				RelativeAltitude: 3.0,
+				Speed:            4.0,
 			},
 		},
 	}

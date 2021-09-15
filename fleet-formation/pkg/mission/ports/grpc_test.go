@@ -56,9 +56,9 @@ func TestSingleMissionsListMissions(t *testing.T) {
 				Id:   DefaultMissionID,
 				Name: DefaultMissionName,
 				Navigation: &proto.Navigation{
-					TakeoffPointGroundHeight: DefaultMissionTakeoffPointGroundAltitudeM,
-					Waypoints:                []*proto.Waypoint{},
-					UploadId:                 string(DefaultMissionUploadID),
+					TakeoffPointGroundAltitude: DefaultMissionTakeoffPointGroundAltitudeM,
+					Waypoints:                  []*proto.Waypoint{},
+					UploadId:                   string(DefaultMissionUploadID),
 				},
 			},
 		},
@@ -160,27 +160,27 @@ func TestMultipleMissionsListMissions(t *testing.T) {
 				Id:   DefaultMissionID1,
 				Name: DefaultMissionName1,
 				Navigation: &proto.Navigation{
-					TakeoffPointGroundHeight: DefaultMissionTakeoffPointGroundAltitudeM1,
-					Waypoints:                []*proto.Waypoint{},
-					UploadId:                 string(DefaultMissionUploadID1),
+					TakeoffPointGroundAltitude: DefaultMissionTakeoffPointGroundAltitudeM1,
+					Waypoints:                  []*proto.Waypoint{},
+					UploadId:                   string(DefaultMissionUploadID1),
 				},
 			},
 			{
 				Id:   DefaultMissionID2,
 				Name: DefaultMissionName2,
 				Navigation: &proto.Navigation{
-					TakeoffPointGroundHeight: DefaultMissionTakeoffPointGroundAltitudeM2,
-					Waypoints:                []*proto.Waypoint{},
-					UploadId:                 string(DefaultMissionUploadID2),
+					TakeoffPointGroundAltitude: DefaultMissionTakeoffPointGroundAltitudeM2,
+					Waypoints:                  []*proto.Waypoint{},
+					UploadId:                   string(DefaultMissionUploadID2),
 				},
 			},
 			{
 				Id:   DefaultMissionID3,
 				Name: DefaultMissionName3,
 				Navigation: &proto.Navigation{
-					TakeoffPointGroundHeight: DefaultMissionTakeoffPointGroundAltitudeM3,
-					Waypoints:                []*proto.Waypoint{},
-					UploadId:                 string(DefaultMissionUploadID3),
+					TakeoffPointGroundAltitude: DefaultMissionTakeoffPointGroundAltitudeM3,
+					Waypoints:                  []*proto.Waypoint{},
+					UploadId:                   string(DefaultMissionUploadID3),
 				},
 			},
 		},
@@ -260,9 +260,9 @@ func TestGetMission(t *testing.T) {
 		Id:   DefaultMissionID,
 		Name: DefaultMissionName,
 		Navigation: &proto.Navigation{
-			TakeoffPointGroundHeight: DefaultMissionTakeoffPointGroundAltitudeM,
-			Waypoints:                []*proto.Waypoint{},
-			UploadId:                 string(DefaultMissionUploadID),
+			TakeoffPointGroundAltitude: DefaultMissionTakeoffPointGroundAltitudeM,
+			Waypoints:                  []*proto.Waypoint{},
+			UploadId:                   string(DefaultMissionUploadID),
 		},
 	}
 
@@ -303,8 +303,8 @@ func TestCreateMission(t *testing.T) {
 	request := &proto.Mission{
 		Name: DefaultMissionName,
 		Navigation: &proto.Navigation{
-			TakeoffPointGroundHeight: DefaultMissionTakeoffPointGroundAltitudeM,
-			Waypoints:                []*proto.Waypoint{},
+			TakeoffPointGroundAltitude: DefaultMissionTakeoffPointGroundAltitudeM,
+			Waypoints:                  []*proto.Waypoint{},
 		},
 	}
 	response, err := grpc.CreateMission(
@@ -316,9 +316,9 @@ func TestCreateMission(t *testing.T) {
 		Id:   DefaultMissionID,
 		Name: DefaultMissionName,
 		Navigation: &proto.Navigation{
-			TakeoffPointGroundHeight: DefaultMissionTakeoffPointGroundAltitudeM,
-			Waypoints:                []*proto.Waypoint{},
-			UploadId:                 string(DefaultMissionUploadID),
+			TakeoffPointGroundAltitude: DefaultMissionTakeoffPointGroundAltitudeM,
+			Waypoints:                  []*proto.Waypoint{},
+			UploadId:                   string(DefaultMissionUploadID),
 		},
 	}
 
@@ -360,8 +360,8 @@ func TestUpdateMission(t *testing.T) {
 		Id:   DefaultMissionID,
 		Name: DefaultMissionID,
 		Navigation: &proto.Navigation{
-			TakeoffPointGroundHeight: DefaultMissionTakeoffPointGroundAltitudeM,
-			Waypoints:                []*proto.Waypoint{},
+			TakeoffPointGroundAltitude: DefaultMissionTakeoffPointGroundAltitudeM,
+			Waypoints:                  []*proto.Waypoint{},
 		},
 	}
 	response, err := grpc.UpdateMission(
@@ -373,9 +373,9 @@ func TestUpdateMission(t *testing.T) {
 		Id:   DefaultMissionID,
 		Name: DefaultMissionID,
 		Navigation: &proto.Navigation{
-			TakeoffPointGroundHeight: DefaultMissionTakeoffPointGroundAltitudeM,
-			Waypoints:                []*proto.Waypoint{},
-			UploadId:                 string(DefaultMissionUploadID),
+			TakeoffPointGroundAltitude: DefaultMissionTakeoffPointGroundAltitudeM,
+			Waypoints:                  []*proto.Waypoint{},
+			UploadId:                   string(DefaultMissionUploadID),
 		},
 	}
 

@@ -26,7 +26,7 @@ func TestHandleFleetIDGaveEvent(t *testing.T) {
 
 	handler := NewEventHandler(app)
 
-	requestPb := &skysign_proto.FleetIDGaveEvent{
+	requestPb := &skysign_proto.FleetIdGaveEvent{
 		FleetId:          DefaultFleetID,
 		NumberOfVehicles: DefaultFleetNumberOfVehicles,
 	}
@@ -56,7 +56,7 @@ func TestHandleDeletedEvent(t *testing.T) {
 
 	handler := NewEventHandler(app)
 
-	requestPb := &skysign_proto.FleetIDRemovedEvent{
+	requestPb := &skysign_proto.FleetIdRemovedEvent{
 		FleetId: DefaultFleetID,
 	}
 	requestBin, _ := proto.Marshal(requestPb)

@@ -70,7 +70,7 @@ func (h *createMissionCommandHolder) GetWaypoints() []service.Waypoint {
 			&waypoint{
 				LatitudeDegree:    w.Latitude,
 				LongitudeDegree:   w.Longitude,
-				RelativeAltitudeM: w.RelativeHeight,
+				RelativeAltitudeM: w.RelativeAltitude,
 				SpeedMS:           w.Speed,
 			},
 		)
