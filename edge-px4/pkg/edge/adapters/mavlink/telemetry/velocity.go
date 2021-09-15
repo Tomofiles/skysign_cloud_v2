@@ -76,9 +76,9 @@ func AdapterVelocitySubscriber(
 					return
 				}
 				velocity := &model.Velocity{
-					North: float64(response.GetGroundSpeedNed().GetVelocityNorthMS()),
-					East:  float64(response.GetGroundSpeedNed().GetVelocityEastMS()),
-					Down:  float64(response.GetGroundSpeedNed().GetVelocityDownMS()),
+					NorthMS: float64(response.GetGroundSpeedNed().GetVelocityNorthMS()),
+					EastMS:  float64(response.GetGroundSpeedNed().GetVelocityEastMS()),
+					DownMS:  float64(response.GetGroundSpeedNed().GetVelocityDownMS()),
 				}
 				velocityStream <- velocity
 			}

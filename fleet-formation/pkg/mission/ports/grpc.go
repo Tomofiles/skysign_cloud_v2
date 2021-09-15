@@ -165,28 +165,28 @@ func (f *mission) GetNavigation() service.Navigation {
 		waypoints = append(
 			waypoints,
 			waypoint{
-				latitude:       w.Latitude,
-				longitude:      w.Longitude,
-				relativeHeight: w.RelativeHeight,
-				speed:          w.Speed,
+				latitudeDegree:    w.Latitude,
+				longitudeDegree:   w.Longitude,
+				relativeAltitudeM: w.RelativeHeight,
+				speedMS:           w.Speed,
 			},
 		)
 	}
 	navigation := &navigation{
-		takeoffPointGroundHeight: f.request.Navigation.TakeoffPointGroundHeight,
-		waypoints:                waypoints,
+		takeoffPointGroundAltitudeM: f.request.Navigation.TakeoffPointGroundHeight,
+		waypoints:                   waypoints,
 	}
 	return navigation
 }
 
 type navigation struct {
-	takeoffPointGroundHeight float64
-	waypoints                []waypoint
-	uploadID                 string
+	takeoffPointGroundAltitudeM float64
+	waypoints                   []waypoint
+	uploadID                    string
 }
 
-func (f *navigation) GetTakeoffPointGroundHeight() float64 {
-	return f.takeoffPointGroundHeight
+func (f *navigation) GetTakeoffPointGroundAltitudeM() float64 {
+	return f.takeoffPointGroundAltitudeM
 }
 
 func (f *navigation) GetWaypoints() []service.Waypoint {
@@ -195,10 +195,10 @@ func (f *navigation) GetWaypoints() []service.Waypoint {
 		waypoints = append(
 			waypoints,
 			&waypoint{
-				latitude:       w.latitude,
-				longitude:      w.longitude,
-				relativeHeight: w.relativeHeight,
-				speed:          w.speed,
+				latitudeDegree:    w.latitudeDegree,
+				longitudeDegree:   w.longitudeDegree,
+				relativeAltitudeM: w.relativeAltitudeM,
+				speedMS:           w.speedMS,
 			},
 		)
 	}
@@ -210,26 +210,26 @@ func (f *navigation) GetUploadID() string {
 }
 
 type waypoint struct {
-	latitude       float64
-	longitude      float64
-	relativeHeight float64
-	speed          float64
+	latitudeDegree    float64
+	longitudeDegree   float64
+	relativeAltitudeM float64
+	speedMS           float64
 }
 
-func (f *waypoint) GetLatitude() float64 {
-	return f.latitude
+func (f *waypoint) GetLatitudeDegree() float64 {
+	return f.latitudeDegree
 }
 
-func (f *waypoint) GetLongitude() float64 {
-	return f.longitude
+func (f *waypoint) GetLongitudeDegree() float64 {
+	return f.longitudeDegree
 }
 
-func (f *waypoint) GetRelativeHeight() float64 {
-	return f.relativeHeight
+func (f *waypoint) GetRelativeAltitudeM() float64 {
+	return f.relativeAltitudeM
 }
 
-func (f *waypoint) GetSpeed() float64 {
-	return f.speed
+func (f *waypoint) GetSpeedMS() float64 {
+	return f.speedMS
 }
 
 type missionIDCommand struct {

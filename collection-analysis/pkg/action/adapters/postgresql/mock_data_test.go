@@ -33,37 +33,37 @@ func (c *actionComponentMock) GetTrajectory() []action.TrajectoryPointComponent 
 }
 
 type trajectoryPointComponentMock struct {
-	PointNumber      int
-	Latitude         float64
-	Longitude        float64
-	Altitude         float64
-	RelativeAltitude float64
-	Speed            float64
-	Armed            bool
-	FlightMode       string
-	OrientationX     float64
-	OrientationY     float64
-	OrientationZ     float64
-	OrientationW     float64
+	PointNumber       int
+	LatitudeDegree    float64
+	LongitudeDegree   float64
+	AltitudeM         float64
+	RelativeAltitudeM float64
+	SpeedMS           float64
+	Armed             bool
+	FlightMode        string
+	OrientationX      float64
+	OrientationY      float64
+	OrientationZ      float64
+	OrientationW      float64
 }
 
 func (c *trajectoryPointComponentMock) GetPointNumber() int {
 	return c.PointNumber
 }
-func (c *trajectoryPointComponentMock) GetLatitude() float64 {
-	return c.Latitude
+func (c *trajectoryPointComponentMock) GetLatitudeDegree() float64 {
+	return c.LatitudeDegree
 }
-func (c *trajectoryPointComponentMock) GetLongitude() float64 {
-	return c.Longitude
+func (c *trajectoryPointComponentMock) GetLongitudeDegree() float64 {
+	return c.LongitudeDegree
 }
-func (c *trajectoryPointComponentMock) GetAltitude() float64 {
-	return c.Altitude
+func (c *trajectoryPointComponentMock) GetAltitudeM() float64 {
+	return c.AltitudeM
 }
-func (c *trajectoryPointComponentMock) GetRelativeAltitude() float64 {
-	return c.RelativeAltitude
+func (c *trajectoryPointComponentMock) GetRelativeAltitudeM() float64 {
+	return c.RelativeAltitudeM
 }
-func (c *trajectoryPointComponentMock) GetSpeed() float64 {
-	return c.Speed
+func (c *trajectoryPointComponentMock) GetSpeedMS() float64 {
+	return c.SpeedMS
 }
 func (c *trajectoryPointComponentMock) GetArmed() bool {
 	return c.Armed

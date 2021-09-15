@@ -26,14 +26,14 @@ func Copy(gen Generator, id ID, original *Mission) *Mission {
 
 	if original.navigation != nil {
 		navigation := NewNavigation(
-			original.navigation.GetTakeoffPointGroundHeightWGS84EllipsoidM(),
+			original.navigation.GetTakeoffPointGroundAltitudeM(),
 		)
 		original.navigation.ProvideWaypointsInterest(
-			func(pointOrder int, latitudeDegree, longitudeDegree, relativeHeightM, speedMS float64) {
+			func(pointOrder int, latitudeDegree, longitudeDegree, relativeAltitudeM, speedMS float64) {
 				navigation.PushNextWaypoint(
 					latitudeDegree,
 					longitudeDegree,
-					relativeHeightM,
+					relativeAltitudeM,
 					speedMS,
 				)
 			},
@@ -56,12 +56,12 @@ func AssembleFrom(gen Generator, comp Component) *Mission {
 		gen:          gen,
 	}
 
-	navigation := NewNavigation(comp.GetNavigation().GetTakeoffPointGroundHeightWGS84EllipsoidM())
+	navigation := NewNavigation(comp.GetNavigation().GetTakeoffPointGroundAltitudeM())
 	for _, waypointComp := range comp.GetNavigation().GetWaypoints() {
 		navigation.PushNextWaypoint(
 			waypointComp.GetLatitudeDegree(),
 			waypointComp.GetLongitudeDegree(),
-			waypointComp.GetRelativeHeightM(),
+			waypointComp.GetRelativeAltitudeM(),
 			waypointComp.GetSpeedMS(),
 		)
 	}
@@ -75,8 +75,8 @@ func AssembleFrom(gen Generator, comp Component) *Mission {
 func TakeApart(
 	mission *Mission,
 	component func(id, name, version string, isCarbonCopy bool),
-	navigationComponent func(takeoffPointGroundHeightWGS84EllipsoidM float64, uploadID string),
-	waypointComponent func(pointOrder int, latitudeDegree, longitudeDegree, relativeHeightM, speedMS float64),
+	navigationComponent func(takeoffPointGroundAltitudeM float64, uploadID string),
+	waypointComponent func(pointOrder int, latitudeDegree, longitudeDegree, relativeAltitudeM, speedMS float64),
 ) {
 	component(
 		string(mission.id),
@@ -85,7 +85,7 @@ func TakeApart(
 		mission.isCarbonCopy,
 	)
 	navigationComponent(
-		mission.navigation.GetTakeoffPointGroundHeightWGS84EllipsoidM(),
+		mission.navigation.GetTakeoffPointGroundAltitudeM(),
 		string(mission.navigation.uploadID),
 	)
 	mission.navigation.ProvideWaypointsInterest(
@@ -104,7 +104,7 @@ type Component interface {
 
 // NavigationComponent .
 type NavigationComponent interface {
-	GetTakeoffPointGroundHeightWGS84EllipsoidM() float64
+	GetTakeoffPointGroundAltitudeM() float64
 	GetWaypoints() []WaypointComponent
 	GetUploadID() string
 }
@@ -114,6 +114,6 @@ type WaypointComponent interface {
 	GetPointOrder() int
 	GetLatitudeDegree() float64
 	GetLongitudeDegree() float64
-	GetRelativeHeightM() float64
+	GetRelativeAltitudeM() float64
 	GetSpeedMS() float64
 }

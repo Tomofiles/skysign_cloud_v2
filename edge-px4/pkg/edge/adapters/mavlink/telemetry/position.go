@@ -76,10 +76,10 @@ func AdapterPositionSubscriber(
 					return
 				}
 				position := &model.Position{
-					Latitude:         response.GetPosition().LatitudeDeg,
-					Longitude:        response.GetPosition().LongitudeDeg,
-					Altitude:         float64(response.GetPosition().AbsoluteAltitudeM),
-					RelativeAltitude: float64(response.GetPosition().RelativeAltitudeM),
+					LatitudeDegree:    response.GetPosition().LatitudeDeg,
+					LongitudeDegree:   response.GetPosition().LongitudeDeg,
+					AltitudeM:         float64(response.GetPosition().AbsoluteAltitudeM),
+					RelativeAltitudeM: float64(response.GetPosition().RelativeAltitudeM),
 				}
 				positionStream <- position
 			}

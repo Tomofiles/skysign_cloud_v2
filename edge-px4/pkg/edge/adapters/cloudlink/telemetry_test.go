@@ -39,9 +39,9 @@ func TestNoCommandIDsResponsePushTelemetry(t *testing.T) {
 
 	telemetry := model.NewTelemetry()
 	telemetry.SetConnectionState(&model.ConnectionState{VehicleID: DefaultEdgeVehicleID})
-	telemetry.SetPosition(&model.Position{Latitude: 1.0, Longitude: 2.0, Altitude: 3.0, RelativeAltitude: 4.0})
+	telemetry.SetPosition(&model.Position{LatitudeDegree: 1.0, LongitudeDegree: 2.0, AltitudeM: 3.0, RelativeAltitudeM: 4.0})
 	telemetry.SetQuaternion(&model.Quaternion{X: 6.0, Y: 7.0, Z: 8.0, W: 9.0})
-	telemetry.SetVelocity(&model.Velocity{North: 1.0, East: 2.0, Down: 3.0})
+	telemetry.SetVelocity(&model.Velocity{NorthMS: 1.0, EastMS: 2.0, DownMS: 3.0})
 	telemetry.SetArmed(&model.Armed{Armed: true})
 	telemetry.SetFlightMode(&model.FlightMode{FlightMode: "XXX"})
 
@@ -109,9 +109,9 @@ func TestMultipleCommandIDsResponsePushTelemetry(t *testing.T) {
 
 	telemetry := model.NewTelemetry()
 	telemetry.SetConnectionState(&model.ConnectionState{VehicleID: DefaultEdgeVehicleID})
-	telemetry.SetPosition(&model.Position{Latitude: 1.0, Longitude: 2.0, Altitude: 3.0, RelativeAltitude: 4.0})
+	telemetry.SetPosition(&model.Position{LatitudeDegree: 1.0, LongitudeDegree: 2.0, AltitudeM: 3.0, RelativeAltitudeM: 4.0})
 	telemetry.SetQuaternion(&model.Quaternion{X: 6.0, Y: 7.0, Z: 8.0, W: 9.0})
-	telemetry.SetVelocity(&model.Velocity{North: 1.0, East: 2.0, Down: 3.0})
+	telemetry.SetVelocity(&model.Velocity{NorthMS: 1.0, EastMS: 2.0, DownMS: 3.0})
 	telemetry.SetArmed(&model.Armed{Armed: true})
 	telemetry.SetFlightMode(&model.FlightMode{FlightMode: "XXX"})
 
@@ -186,9 +186,9 @@ func TestHttpClientErrorWhenPushTelemetry(t *testing.T) {
 
 	telemetry := model.NewTelemetry()
 	telemetry.SetConnectionState(&model.ConnectionState{VehicleID: DefaultEdgeVehicleID})
-	telemetry.SetPosition(&model.Position{Latitude: 1.0, Longitude: 2.0, Altitude: 3.0, RelativeAltitude: 4.0})
+	telemetry.SetPosition(&model.Position{LatitudeDegree: 1.0, LongitudeDegree: 2.0, AltitudeM: 3.0, RelativeAltitudeM: 4.0})
 	telemetry.SetQuaternion(&model.Quaternion{X: 6.0, Y: 7.0, Z: 8.0, W: 9.0})
-	telemetry.SetVelocity(&model.Velocity{North: 1.0, East: 2.0, Down: 3.0})
+	telemetry.SetVelocity(&model.Velocity{NorthMS: 1.0, EastMS: 2.0, DownMS: 3.0})
 	telemetry.SetArmed(&model.Armed{Armed: true})
 	telemetry.SetFlightMode(&model.FlightMode{FlightMode: "XXX"})
 
@@ -237,9 +237,9 @@ func TestResponseJsonParseErrorWhenPushTelemetry(t *testing.T) {
 
 	telemetry := model.NewTelemetry()
 	telemetry.SetConnectionState(&model.ConnectionState{VehicleID: DefaultEdgeVehicleID})
-	telemetry.SetPosition(&model.Position{Latitude: 1.0, Longitude: 2.0, Altitude: 3.0, RelativeAltitude: 4.0})
+	telemetry.SetPosition(&model.Position{LatitudeDegree: 1.0, LongitudeDegree: 2.0, AltitudeM: 3.0, RelativeAltitudeM: 4.0})
 	telemetry.SetQuaternion(&model.Quaternion{X: 6.0, Y: 7.0, Z: 8.0, W: 9.0})
-	telemetry.SetVelocity(&model.Velocity{North: 1.0, East: 2.0, Down: 3.0})
+	telemetry.SetVelocity(&model.Velocity{NorthMS: 1.0, EastMS: 2.0, DownMS: 3.0})
 	telemetry.SetArmed(&model.Armed{Armed: true})
 	telemetry.SetFlightMode(&model.FlightMode{FlightMode: "XXX"})
 

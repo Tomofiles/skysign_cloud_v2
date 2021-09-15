@@ -26,12 +26,12 @@ func (m *Mission) GetWaypoints() []mission.WaypointComponent {
 
 // Waypoint .
 type Waypoint struct {
-	MissionID       string `gorm:"primaryKey"`
-	PointOrder      int
-	LatitudeDegree  float64
-	LongitudeDegree float64
-	RelativeHeightM float64
-	SpeedMS         float64
+	MissionID         string `gorm:"primaryKey"`
+	PointOrder        int
+	LatitudeDegree    float64
+	LongitudeDegree   float64
+	RelativeAltitudeM float64
+	SpeedMS           float64
 }
 
 // GetMissionID .
@@ -54,9 +54,9 @@ func (w *Waypoint) GetLongitudeDegree() float64 {
 	return w.LongitudeDegree
 }
 
-// GetRelativeHeightM .
-func (w *Waypoint) GetRelativeHeightM() float64 {
-	return w.RelativeHeightM
+// GetRelativeAltitudeM .
+func (w *Waypoint) GetRelativeAltitudeM() float64 {
+	return w.RelativeAltitudeM
 }
 
 // GetSpeedMS .

@@ -32,7 +32,7 @@ func TestCreateNewMissionService(t *testing.T) {
 	repo.On("Save", mock.Anything).Return(nil)
 	pub := &publisherMock{}
 
-	navigation := NewNavigation(DefaultTakeoffPointGroundHeightWGS84EllipsoidM)
+	navigation := NewNavigation(DefaultTakeoffPointGroundAltitudeM)
 
 	id, uploadID, ret := CreateNewMission(ctx, gen, repo, pub, DefaultName, navigation)
 
@@ -78,7 +78,7 @@ func TestSaveErrorWhenCreateNewMissionService(t *testing.T) {
 	repo.On("Save", mock.Anything).Return(ErrSave)
 	pub := &publisherMock{}
 
-	navigation := NewNavigation(DefaultTakeoffPointGroundHeightWGS84EllipsoidM)
+	navigation := NewNavigation(DefaultTakeoffPointGroundAltitudeM)
 
 	id, uploadID, ret := CreateNewMission(ctx, gen, repo, pub, DefaultName, navigation)
 

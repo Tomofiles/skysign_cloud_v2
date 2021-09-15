@@ -36,11 +36,11 @@ func TestActionRepositoryGetByID(t *testing.T) {
 			sqlmock.NewRows([]string{
 				"action_id",
 				"point_number",
-				"latitude",
-				"longitude",
-				"altitude",
-				"relative_altitude",
-				"speed",
+				"latitude_degree",
+				"longitude_degree",
+				"altitude_m",
+				"relative_altitude_m",
+				"speed_ms",
 				"armed",
 				"flight_mode",
 				"orientation_x",
@@ -148,11 +148,11 @@ func TestActionRepositoryGetSingleWhenGetAllActiveByFleetID(t *testing.T) {
 			sqlmock.NewRows([]string{
 				"action_id",
 				"point_number",
-				"latitude",
-				"longitude",
-				"altitude",
-				"relative_altitude",
-				"speed",
+				"latitude_degree",
+				"longitude_degree",
+				"altitude_m",
+				"relative_altitude_m",
+				"speed_ms",
 				"armed",
 				"flight_mode",
 				"orientation_x",
@@ -244,11 +244,11 @@ func TestActionRepositoryGetMultipleWhenGetAllActiveByFleetID(t *testing.T) {
 			sqlmock.NewRows([]string{
 				"action_id",
 				"point_number",
-				"latitude",
-				"longitude",
-				"altitude",
-				"relative_altitude",
-				"speed",
+				"latitude_degree",
+				"longitude_degree",
+				"altitude_m",
+				"relative_altitude_m",
+				"speed_ms",
 				"armed",
 				"flight_mode",
 				"orientation_x",
@@ -278,11 +278,11 @@ func TestActionRepositoryGetMultipleWhenGetAllActiveByFleetID(t *testing.T) {
 			sqlmock.NewRows([]string{
 				"action_id",
 				"point_number",
-				"latitude",
-				"longitude",
-				"altitude",
-				"relative_altitude",
-				"speed",
+				"latitude_degree",
+				"longitude_degree",
+				"altitude_m",
+				"relative_altitude_m",
+				"speed_ms",
 				"armed",
 				"flight_mode",
 				"orientation_x",
@@ -312,11 +312,11 @@ func TestActionRepositoryGetMultipleWhenGetAllActiveByFleetID(t *testing.T) {
 			sqlmock.NewRows([]string{
 				"action_id",
 				"point_number",
-				"latitude",
-				"longitude",
-				"altitude",
-				"relative_altitude",
-				"speed",
+				"latitude_degree",
+				"longitude_degree",
+				"altitude_m",
+				"relative_altitude_m",
+				"speed_ms",
 				"armed",
 				"flight_mode",
 				"orientation_x",
@@ -474,11 +474,11 @@ func TestActionRepositoryGetActiveByCommunicationID(t *testing.T) {
 			sqlmock.NewRows([]string{
 				"action_id",
 				"point_number",
-				"latitude",
-				"longitude",
-				"altitude",
-				"relative_altitude",
-				"speed",
+				"latitude_degree",
+				"longitude_degree",
+				"altitude_m",
+				"relative_altitude_m",
+				"speed_ms",
 				"armed",
 				"flight_mode",
 				"orientation_x",
@@ -597,7 +597,7 @@ func TestActionRepositorySingleTrajectoryPointDataCreateSave(t *testing.T) {
 
 	mock.
 		ExpectExec(
-			regexp.QuoteMeta(`INSERT INTO "trajectory_points" ("action_id","point_number","latitude","longitude","altitude","relative_altitude","speed","armed","flight_mode","orientation_x","orientation_y","orientation_z","orientation_w") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13)`)).
+			regexp.QuoteMeta(`INSERT INTO "trajectory_points" ("action_id","point_number","latitude_degree","longitude_degree","altitude_m","relative_altitude_m","speed_ms","armed","flight_mode","orientation_x","orientation_y","orientation_z","orientation_w") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13)`)).
 		WithArgs(
 			DefaultActionID,
 			1,
@@ -739,7 +739,7 @@ func TestActionRepositoryMultipleTrajectoryPointDataCreateSave(t *testing.T) {
 
 	mock.
 		ExpectExec(
-			regexp.QuoteMeta(`INSERT INTO "trajectory_points" ("action_id","point_number","latitude","longitude","altitude","relative_altitude","speed","armed","flight_mode","orientation_x","orientation_y","orientation_z","orientation_w") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13),($14,$15,$16,$17,$18,$19,$20,$21,$22,$23,$24,$25,$26)`)).
+			regexp.QuoteMeta(`INSERT INTO "trajectory_points" ("action_id","point_number","latitude_degree","longitude_degree","altitude_m","relative_altitude_m","speed_ms","armed","flight_mode","orientation_x","orientation_y","orientation_z","orientation_w") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13),($14,$15,$16,$17,$18,$19,$20,$21,$22,$23,$24,$25,$26)`)).
 		WithArgs(
 			DefaultActionID,
 			1,
@@ -856,7 +856,7 @@ func TestActionRepositorySingleTrajectoryPointDataUpdateSave_NonePreTrajectoryPo
 
 	mock.
 		ExpectExec(
-			regexp.QuoteMeta(`INSERT INTO "trajectory_points" ("action_id","point_number","latitude","longitude","altitude","relative_altitude","speed","armed","flight_mode","orientation_x","orientation_y","orientation_z","orientation_w") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13)`)).
+			regexp.QuoteMeta(`INSERT INTO "trajectory_points" ("action_id","point_number","latitude_degree","longitude_degree","altitude_m","relative_altitude_m","speed_ms","armed","flight_mode","orientation_x","orientation_y","orientation_z","orientation_w") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13)`)).
 		WithArgs(
 			DefaultActionID,
 			1,
@@ -1015,7 +1015,7 @@ func TestActionRepositoryMultipeTrajectoryPointDataUpdateSave_NonePreTrajectoryP
 
 	mock.
 		ExpectExec(
-			regexp.QuoteMeta(`INSERT INTO "trajectory_points" ("action_id","point_number","latitude","longitude","altitude","relative_altitude","speed","armed","flight_mode","orientation_x","orientation_y","orientation_z","orientation_w") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13),($14,$15,$16,$17,$18,$19,$20,$21,$22,$23,$24,$25,$26)`)).
+			regexp.QuoteMeta(`INSERT INTO "trajectory_points" ("action_id","point_number","latitude_degree","longitude_degree","altitude_m","relative_altitude_m","speed_ms","armed","flight_mode","orientation_x","orientation_y","orientation_z","orientation_w") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13),($14,$15,$16,$17,$18,$19,$20,$21,$22,$23,$24,$25,$26)`)).
 		WithArgs(
 			DefaultActionID,
 			1,
@@ -1132,7 +1132,7 @@ func TestActionRepositoryMultipeTrajectoryPointDataUpdateSave_ExistPreTrajectory
 
 	mock.
 		ExpectExec(
-			regexp.QuoteMeta(`INSERT INTO "trajectory_points" ("action_id","point_number","latitude","longitude","altitude","relative_altitude","speed","armed","flight_mode","orientation_x","orientation_y","orientation_z","orientation_w") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13)`)).
+			regexp.QuoteMeta(`INSERT INTO "trajectory_points" ("action_id","point_number","latitude_degree","longitude_degree","altitude_m","relative_altitude_m","speed_ms","armed","flight_mode","orientation_x","orientation_y","orientation_z","orientation_w") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13)`)).
 		WithArgs(
 			DefaultActionID,
 			2,

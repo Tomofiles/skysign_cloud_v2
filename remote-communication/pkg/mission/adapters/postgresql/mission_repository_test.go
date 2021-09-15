@@ -33,7 +33,7 @@ func TestMissionRepositoryGetByID(t *testing.T) {
 			regexp.QuoteMeta(`SELECT * FROM "waypoints" WHERE mission_id = $1`)).
 		WithArgs(DefaultMissionID).
 		WillReturnRows(
-			sqlmock.NewRows([]string{"mission_id", "point_order", "latitude_degree", "longitude_degree", "relative_height_m", "speed_ms"}).
+			sqlmock.NewRows([]string{"mission_id", "point_order", "latitude_degree", "longitude_degree", "relative_altitude_m", "speed_ms"}).
 				AddRow(DefaultMissionID, 1, 11.0, 21.0, 31.0, 41.0).
 				AddRow(DefaultMissionID, 2, 12.0, 22.0, 32.0, 42.0).
 				AddRow(DefaultMissionID, 3, 13.0, 23.0, 33.0, 43.0),
@@ -116,7 +116,7 @@ func TestMissionRepositorySingleDataCreateSave(t *testing.T) {
 
 	mock.
 		ExpectExec(
-			regexp.QuoteMeta(`INSERT INTO "waypoints" ("mission_id","point_order","latitude_degree","longitude_degree","relative_height_m","speed_ms") VALUES ($1,$2,$3,$4,$5,$6)`)).
+			regexp.QuoteMeta(`INSERT INTO "waypoints" ("mission_id","point_order","latitude_degree","longitude_degree","relative_altitude_m","speed_ms") VALUES ($1,$2,$3,$4,$5,$6)`)).
 		WithArgs(DefaultMissionID, 1, 11.0, 21.0, 31.0, 41.0).
 		WillReturnResult(
 			sqlmock.NewResult(1, 1),
@@ -206,7 +206,7 @@ func TestMissionRepositoryMultipleDataCreateSave(t *testing.T) {
 
 	mock.
 		ExpectExec(
-			regexp.QuoteMeta(`INSERT INTO "waypoints" ("mission_id","point_order","latitude_degree","longitude_degree","relative_height_m","speed_ms") VALUES ($1,$2,$3,$4,$5,$6),($7,$8,$9,$10,$11,$12),($13,$14,$15,$16,$17,$18)`)).
+			regexp.QuoteMeta(`INSERT INTO "waypoints" ("mission_id","point_order","latitude_degree","longitude_degree","relative_altitude_m","speed_ms") VALUES ($1,$2,$3,$4,$5,$6),($7,$8,$9,$10,$11,$12),($13,$14,$15,$16,$17,$18)`)).
 		WithArgs(
 			DefaultMissionID, 1, 11.0, 21.0, 31.0, 41.0,
 			DefaultMissionID, 2, 12.0, 22.0, 32.0, 42.0,
@@ -285,7 +285,7 @@ func TestMissionRepositorySingleDataUpdateSave(t *testing.T) {
 
 	mock.
 		ExpectExec(
-			regexp.QuoteMeta(`INSERT INTO "waypoints" ("mission_id","point_order","latitude_degree","longitude_degree","relative_height_m","speed_ms") VALUES ($1,$2,$3,$4,$5,$6)`)).
+			regexp.QuoteMeta(`INSERT INTO "waypoints" ("mission_id","point_order","latitude_degree","longitude_degree","relative_altitude_m","speed_ms") VALUES ($1,$2,$3,$4,$5,$6)`)).
 		WithArgs(DefaultMissionID, 1, 11.0, 21.0, 31.0, 41.0).
 		WillReturnResult(
 			sqlmock.NewResult(1, 1),
@@ -411,7 +411,7 @@ func TestMissionRepositoryMultipleDataUpdateSave(t *testing.T) {
 
 	mock.
 		ExpectExec(
-			regexp.QuoteMeta(`INSERT INTO "waypoints" ("mission_id","point_order","latitude_degree","longitude_degree","relative_height_m","speed_ms") VALUES ($1,$2,$3,$4,$5,$6),($7,$8,$9,$10,$11,$12),($13,$14,$15,$16,$17,$18)`)).
+			regexp.QuoteMeta(`INSERT INTO "waypoints" ("mission_id","point_order","latitude_degree","longitude_degree","relative_altitude_m","speed_ms") VALUES ($1,$2,$3,$4,$5,$6),($7,$8,$9,$10,$11,$12),($13,$14,$15,$16,$17,$18)`)).
 		WithArgs(
 			DefaultMissionID, 1, 11.0, 21.0, 31.0, 41.0,
 			DefaultMissionID, 2, 12.0, 22.0, 32.0, 42.0,

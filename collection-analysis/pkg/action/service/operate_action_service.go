@@ -20,11 +20,11 @@ type CompleteActionCommand interface {
 // PushTelemetryCommand .
 type PushTelemetryCommand interface {
 	GetCommunicationID() string
-	GetLatitude() float64
-	GetLongitude() float64
-	GetAltitude() float64
-	GetRelativeAltitude() float64
-	GetSpeed() float64
+	GetLatitudeDegree() float64
+	GetLongitudeDegree() float64
+	GetAltitudeM() float64
+	GetRelativeAltitudeM() float64
+	GetSpeedMS() float64
 	GetArmed() bool
 	GetFlightMode() string
 	GetOrientationX() float64
@@ -106,17 +106,17 @@ func (s *operateActionService) pushTelemetryOperation(
 	}
 
 	snapshot := action.TelemetrySnapshot{
-		Latitude:         command.GetLatitude(),
-		Longitude:        command.GetLongitude(),
-		Altitude:         command.GetAltitude(),
-		RelativeAltitude: command.GetRelativeAltitude(),
-		Speed:            command.GetSpeed(),
-		Armed:            command.GetArmed(),
-		FlightMode:       command.GetFlightMode(),
-		OrientationX:     command.GetOrientationX(),
-		OrientationY:     command.GetOrientationY(),
-		OrientationZ:     command.GetOrientationZ(),
-		OrientationW:     command.GetOrientationW(),
+		LatitudeDegree:    command.GetLatitudeDegree(),
+		LongitudeDegree:   command.GetLongitudeDegree(),
+		AltitudeM:         command.GetAltitudeM(),
+		RelativeAltitudeM: command.GetRelativeAltitudeM(),
+		SpeedMS:           command.GetSpeedMS(),
+		Armed:             command.GetArmed(),
+		FlightMode:        command.GetFlightMode(),
+		OrientationX:      command.GetOrientationX(),
+		OrientationY:      command.GetOrientationY(),
+		OrientationZ:      command.GetOrientationZ(),
+		OrientationW:      command.GetOrientationW(),
 	}
 
 	if err := aAction.PushTelemetry(snapshot); err != nil {

@@ -5,11 +5,11 @@ type ID string
 
 // Waypoint .
 type Waypoint struct {
-	PointOrder      int
-	LatitudeDegree  float64
-	LongitudeDegree float64
-	RelativeHeightM float64
-	SpeedMS         float64
+	PointOrder        int
+	LatitudeDegree    float64
+	LongitudeDegree   float64
+	RelativeAltitudeM float64
+	SpeedMS           float64
 }
 
 // Mission .
@@ -27,18 +27,18 @@ func (m *Mission) GetID() ID {
 func (m *Mission) PushWaypoint(
 	latitudeDegree float64,
 	longitudeDegree float64,
-	relativeHeightM float64,
+	relativeAltitudeM float64,
 	speedMS float64,
 ) int {
 	order := len(m.waypoints) + 1
 	m.waypoints = append(
 		m.waypoints,
 		&Waypoint{
-			PointOrder:      order,
-			LatitudeDegree:  latitudeDegree,
-			LongitudeDegree: longitudeDegree,
-			RelativeHeightM: relativeHeightM,
-			SpeedMS:         speedMS,
+			PointOrder:        order,
+			LatitudeDegree:    latitudeDegree,
+			LongitudeDegree:   longitudeDegree,
+			RelativeAltitudeM: relativeAltitudeM,
+			SpeedMS:           speedMS,
 		},
 	)
 	return order

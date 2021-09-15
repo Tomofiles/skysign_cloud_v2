@@ -94,14 +94,14 @@ func TestAdapterVelocitySubscriber(t *testing.T) {
 
 	expectVelocitys := []*model.Velocity{
 		{
-			North: 11.0,
-			East:  21.0,
-			Down:  31.0,
+			NorthMS: 11.0,
+			EastMS:  21.0,
+			DownMS:  31.0,
 		},
 		{
-			North: 12.0,
-			East:  22.0,
-			Down:  32.0,
+			NorthMS: 12.0,
+			EastMS:  22.0,
+			DownMS:  32.0,
 		},
 	}
 	a.Equal(expectVelocitys, resVelocitys)

@@ -30,7 +30,7 @@ func TestUpdateMissionService(t *testing.T) {
 		uploadID: NewUploadID,
 		versions: []Version{DefaultVersion2, DefaultVersion3},
 	}
-	testNav := NewNavigation(DefaultTakeoffPointGroundHeightWGS84EllipsoidM)
+	testNav := NewNavigation(DefaultTakeoffPointGroundAltitudeM)
 	testNav.uploadID = DefaultUploadID
 	testMission := Mission{
 		id:           DefaultID,
@@ -46,7 +46,7 @@ func TestUpdateMissionService(t *testing.T) {
 	repo.On("Save", mock.Anything).Return(nil)
 	pub := &publisherMock{}
 
-	navigation := NewNavigation(DefaultTakeoffPointGroundHeightWGS84EllipsoidM)
+	navigation := NewNavigation(DefaultTakeoffPointGroundAltitudeM)
 
 	id, ret := UpdateMission(ctx, gen, repo, pub, DefaultID, NewName, navigation)
 
@@ -89,7 +89,7 @@ func TestGetErrorWhenUpdateMissionService(t *testing.T) {
 
 	pub := &publisherMock{}
 
-	navigation := NewNavigation(DefaultTakeoffPointGroundHeightWGS84EllipsoidM)
+	navigation := NewNavigation(DefaultTakeoffPointGroundAltitudeM)
 
 	id, ret := UpdateMission(ctx, gen, repo, pub, DefaultID, NewName, navigation)
 
@@ -133,7 +133,7 @@ func TestSaveErrorWhenUpdateMissionService(t *testing.T) {
 	repo.On("Save", mock.Anything).Return(ErrSave)
 	pub := &publisherMock{}
 
-	navigation := NewNavigation(DefaultTakeoffPointGroundHeightWGS84EllipsoidM)
+	navigation := NewNavigation(DefaultTakeoffPointGroundAltitudeM)
 
 	id, ret := UpdateMission(ctx, gen, repo, pub, DefaultID, NewName, navigation)
 
@@ -173,7 +173,7 @@ func TestCannnotUpdateErrorWhenUpdateMissionService(t *testing.T) {
 
 	pub := &publisherMock{}
 
-	navigation := NewNavigation(DefaultTakeoffPointGroundHeightWGS84EllipsoidM)
+	navigation := NewNavigation(DefaultTakeoffPointGroundAltitudeM)
 
 	id, ret := UpdateMission(ctx, gen, repo, pub, DefaultID, NewName, navigation)
 

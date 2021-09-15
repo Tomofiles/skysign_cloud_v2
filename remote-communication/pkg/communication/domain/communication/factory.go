@@ -19,17 +19,17 @@ func NewInstance(gen Generator, id ID) *Communication {
 // AssembleFrom .
 func AssembleFrom(gen Generator, comp Component) *Communication {
 	telemetry := &Telemetry{
-		latitude:         comp.GetTelemetry().GetLatitude(),
-		longitude:        comp.GetTelemetry().GetLongitude(),
-		altitude:         comp.GetTelemetry().GetAltitude(),
-		relativeAltitude: comp.GetTelemetry().GetRelativeAltitude(),
-		speed:            comp.GetTelemetry().GetSpeed(),
-		armed:            comp.GetTelemetry().GetArmed(),
-		flightMode:       comp.GetTelemetry().GetFlightMode(),
-		x:                comp.GetTelemetry().GetX(),
-		y:                comp.GetTelemetry().GetY(),
-		z:                comp.GetTelemetry().GetZ(),
-		w:                comp.GetTelemetry().GetW(),
+		latitudeDegree:    comp.GetTelemetry().GetLatitudeDegree(),
+		longitudeDegree:   comp.GetTelemetry().GetLongitudeDegree(),
+		altitudeM:         comp.GetTelemetry().GetAltitudeM(),
+		relativeAltitudeM: comp.GetTelemetry().GetRelativeAltitudeM(),
+		speedMS:           comp.GetTelemetry().GetSpeedMS(),
+		armed:             comp.GetTelemetry().GetArmed(),
+		flightMode:        comp.GetTelemetry().GetFlightMode(),
+		x:                 comp.GetTelemetry().GetX(),
+		y:                 comp.GetTelemetry().GetY(),
+		z:                 comp.GetTelemetry().GetZ(),
+		w:                 comp.GetTelemetry().GetW(),
 	}
 	var commands []*Command
 	for _, c := range comp.GetCommands() {
@@ -65,7 +65,7 @@ func AssembleFrom(gen Generator, comp Component) *Communication {
 func TakeApart(
 	communication *Communication,
 	communicationComp func(id string),
-	telemetryComp func(latitude, longitude, altitude, relativeAltitude, speed, x, y, z, w float64, armed bool, flightMode string),
+	telemetryComp func(latitudeDegree, longitudeDegree, altitudeM, relativeAltitudeM, speedMS, x, y, z, w float64, armed bool, flightMode string),
 	commandComp func(id, cType string, time time.Time),
 	uploadMissionComp func(commandID, missionID string),
 ) {
@@ -73,11 +73,11 @@ func TakeApart(
 		string(communication.id),
 	)
 	telemetryComp(
-		communication.telemetry.latitude,
-		communication.telemetry.longitude,
-		communication.telemetry.altitude,
-		communication.telemetry.relativeAltitude,
-		communication.telemetry.speed,
+		communication.telemetry.latitudeDegree,
+		communication.telemetry.longitudeDegree,
+		communication.telemetry.altitudeM,
+		communication.telemetry.relativeAltitudeM,
+		communication.telemetry.speedMS,
 		communication.telemetry.x,
 		communication.telemetry.y,
 		communication.telemetry.z,
@@ -110,11 +110,11 @@ type Component interface {
 
 // TelemetryComponent .
 type TelemetryComponent interface {
-	GetLatitude() float64
-	GetLongitude() float64
-	GetAltitude() float64
-	GetRelativeAltitude() float64
-	GetSpeed() float64
+	GetLatitudeDegree() float64
+	GetLongitudeDegree() float64
+	GetAltitudeM() float64
+	GetRelativeAltitudeM() float64
+	GetSpeedMS() float64
 	GetArmed() bool
 	GetFlightMode() string
 	GetX() float64

@@ -25,9 +25,9 @@ func TestSingleMissionsListMissions(t *testing.T) {
 					ID:   string(DefaultMissionID),
 					Name: DefaultMissionName,
 					Navigation: navigationComponentMock{
-						TakeoffPointGroundHeightWGS84EllipsoidM: DefaultMissionTakeoffPointGroundHeightWGS84EllipsoidM,
-						Waypoints:                               []waypointComponentMock{},
-						UploadID:                                string(DefaultMissionUploadID),
+						TakeoffPointGroundAltitudeM: DefaultMissionTakeoffPointGroundAltitudeM,
+						Waypoints:                   []waypointComponentMock{},
+						UploadID:                    string(DefaultMissionUploadID),
 					},
 					Version: string(DefaultMissionVersion),
 				},
@@ -56,7 +56,7 @@ func TestSingleMissionsListMissions(t *testing.T) {
 				Id:   DefaultMissionID,
 				Name: DefaultMissionName,
 				Navigation: &proto.Navigation{
-					TakeoffPointGroundHeight: DefaultMissionTakeoffPointGroundHeightWGS84EllipsoidM,
+					TakeoffPointGroundHeight: DefaultMissionTakeoffPointGroundAltitudeM,
 					Waypoints:                []*proto.Waypoint{},
 					UploadId:                 string(DefaultMissionUploadID),
 				},
@@ -72,21 +72,21 @@ func TestMultipleMissionsListMissions(t *testing.T) {
 	a := assert.New(t)
 
 	var (
-		DefaultMissionID1                                      = DefaultMissionID + "-1"
-		DefaultMissionName1                                    = DefaultMissionName + "-1"
-		DefaultMissionTakeoffPointGroundHeightWGS84EllipsoidM1 = DefaultMissionTakeoffPointGroundHeightWGS84EllipsoidM + 1
-		DefaultMissionUploadID1                                = DefaultMissionUploadID + "-1"
-		DefaultMissionVersion1                                 = DefaultMissionVersion + "-1"
-		DefaultMissionID2                                      = DefaultMissionID + "-2"
-		DefaultMissionName2                                    = DefaultMissionName + "-2"
-		DefaultMissionTakeoffPointGroundHeightWGS84EllipsoidM2 = DefaultMissionTakeoffPointGroundHeightWGS84EllipsoidM + 2
-		DefaultMissionUploadID2                                = DefaultMissionUploadID + "-2"
-		DefaultMissionVersion2                                 = DefaultMissionVersion + "-2"
-		DefaultMissionID3                                      = DefaultMissionID + "-3"
-		DefaultMissionName3                                    = DefaultMissionName + "-3"
-		DefaultMissionTakeoffPointGroundHeightWGS84EllipsoidM3 = DefaultMissionTakeoffPointGroundHeightWGS84EllipsoidM + 3
-		DefaultMissionUploadID3                                = DefaultMissionUploadID + "-3"
-		DefaultMissionVersion3                                 = DefaultMissionVersion + "-3"
+		DefaultMissionID1                          = DefaultMissionID + "-1"
+		DefaultMissionName1                        = DefaultMissionName + "-1"
+		DefaultMissionTakeoffPointGroundAltitudeM1 = DefaultMissionTakeoffPointGroundAltitudeM + 1
+		DefaultMissionUploadID1                    = DefaultMissionUploadID + "-1"
+		DefaultMissionVersion1                     = DefaultMissionVersion + "-1"
+		DefaultMissionID2                          = DefaultMissionID + "-2"
+		DefaultMissionName2                        = DefaultMissionName + "-2"
+		DefaultMissionTakeoffPointGroundAltitudeM2 = DefaultMissionTakeoffPointGroundAltitudeM + 2
+		DefaultMissionUploadID2                    = DefaultMissionUploadID + "-2"
+		DefaultMissionVersion2                     = DefaultMissionVersion + "-2"
+		DefaultMissionID3                          = DefaultMissionID + "-3"
+		DefaultMissionName3                        = DefaultMissionName + "-3"
+		DefaultMissionTakeoffPointGroundAltitudeM3 = DefaultMissionTakeoffPointGroundAltitudeM + 3
+		DefaultMissionUploadID3                    = DefaultMissionUploadID + "-3"
+		DefaultMissionVersion3                     = DefaultMissionVersion + "-3"
 	)
 
 	service := manageMissionServiceMock{}
@@ -99,9 +99,9 @@ func TestMultipleMissionsListMissions(t *testing.T) {
 					ID:   string(DefaultMissionID1),
 					Name: DefaultMissionName1,
 					Navigation: navigationComponentMock{
-						TakeoffPointGroundHeightWGS84EllipsoidM: DefaultMissionTakeoffPointGroundHeightWGS84EllipsoidM1,
-						Waypoints:                               []waypointComponentMock{},
-						UploadID:                                string(DefaultMissionUploadID1),
+						TakeoffPointGroundAltitudeM: DefaultMissionTakeoffPointGroundAltitudeM1,
+						Waypoints:                   []waypointComponentMock{},
+						UploadID:                    string(DefaultMissionUploadID1),
 					},
 					Version: string(DefaultMissionVersion1),
 				},
@@ -114,9 +114,9 @@ func TestMultipleMissionsListMissions(t *testing.T) {
 					ID:   string(DefaultMissionID2),
 					Name: DefaultMissionName2,
 					Navigation: navigationComponentMock{
-						TakeoffPointGroundHeightWGS84EllipsoidM: DefaultMissionTakeoffPointGroundHeightWGS84EllipsoidM2,
-						Waypoints:                               []waypointComponentMock{},
-						UploadID:                                string(DefaultMissionUploadID2),
+						TakeoffPointGroundAltitudeM: DefaultMissionTakeoffPointGroundAltitudeM2,
+						Waypoints:                   []waypointComponentMock{},
+						UploadID:                    string(DefaultMissionUploadID2),
 					},
 					Version: string(DefaultMissionVersion2),
 				},
@@ -129,9 +129,9 @@ func TestMultipleMissionsListMissions(t *testing.T) {
 					ID:   string(DefaultMissionID3),
 					Name: DefaultMissionName3,
 					Navigation: navigationComponentMock{
-						TakeoffPointGroundHeightWGS84EllipsoidM: DefaultMissionTakeoffPointGroundHeightWGS84EllipsoidM3,
-						Waypoints:                               []waypointComponentMock{},
-						UploadID:                                string(DefaultMissionUploadID3),
+						TakeoffPointGroundAltitudeM: DefaultMissionTakeoffPointGroundAltitudeM3,
+						Waypoints:                   []waypointComponentMock{},
+						UploadID:                    string(DefaultMissionUploadID3),
 					},
 					Version: string(DefaultMissionVersion3),
 				},
@@ -160,7 +160,7 @@ func TestMultipleMissionsListMissions(t *testing.T) {
 				Id:   DefaultMissionID1,
 				Name: DefaultMissionName1,
 				Navigation: &proto.Navigation{
-					TakeoffPointGroundHeight: DefaultMissionTakeoffPointGroundHeightWGS84EllipsoidM1,
+					TakeoffPointGroundHeight: DefaultMissionTakeoffPointGroundAltitudeM1,
 					Waypoints:                []*proto.Waypoint{},
 					UploadId:                 string(DefaultMissionUploadID1),
 				},
@@ -169,7 +169,7 @@ func TestMultipleMissionsListMissions(t *testing.T) {
 				Id:   DefaultMissionID2,
 				Name: DefaultMissionName2,
 				Navigation: &proto.Navigation{
-					TakeoffPointGroundHeight: DefaultMissionTakeoffPointGroundHeightWGS84EllipsoidM2,
+					TakeoffPointGroundHeight: DefaultMissionTakeoffPointGroundAltitudeM2,
 					Waypoints:                []*proto.Waypoint{},
 					UploadId:                 string(DefaultMissionUploadID2),
 				},
@@ -178,7 +178,7 @@ func TestMultipleMissionsListMissions(t *testing.T) {
 				Id:   DefaultMissionID3,
 				Name: DefaultMissionName3,
 				Navigation: &proto.Navigation{
-					TakeoffPointGroundHeight: DefaultMissionTakeoffPointGroundHeightWGS84EllipsoidM3,
+					TakeoffPointGroundHeight: DefaultMissionTakeoffPointGroundAltitudeM3,
 					Waypoints:                []*proto.Waypoint{},
 					UploadId:                 string(DefaultMissionUploadID3),
 				},
@@ -230,9 +230,9 @@ func TestGetMission(t *testing.T) {
 				ID:   string(DefaultMissionID),
 				Name: DefaultMissionName,
 				Navigation: navigationComponentMock{
-					TakeoffPointGroundHeightWGS84EllipsoidM: DefaultMissionTakeoffPointGroundHeightWGS84EllipsoidM,
-					Waypoints:                               []waypointComponentMock{},
-					UploadID:                                string(DefaultMissionUploadID),
+					TakeoffPointGroundAltitudeM: DefaultMissionTakeoffPointGroundAltitudeM,
+					Waypoints:                   []waypointComponentMock{},
+					UploadID:                    string(DefaultMissionUploadID),
 				},
 				Version: string(DefaultMissionVersion),
 			},
@@ -260,7 +260,7 @@ func TestGetMission(t *testing.T) {
 		Id:   DefaultMissionID,
 		Name: DefaultMissionName,
 		Navigation: &proto.Navigation{
-			TakeoffPointGroundHeight: DefaultMissionTakeoffPointGroundHeightWGS84EllipsoidM,
+			TakeoffPointGroundHeight: DefaultMissionTakeoffPointGroundAltitudeM,
 			Waypoints:                []*proto.Waypoint{},
 			UploadId:                 string(DefaultMissionUploadID),
 		},
@@ -282,9 +282,9 @@ func TestCreateMission(t *testing.T) {
 				ID:   string(DefaultMissionID),
 				Name: DefaultMissionName,
 				Navigation: navigationComponentMock{
-					TakeoffPointGroundHeightWGS84EllipsoidM: DefaultMissionTakeoffPointGroundHeightWGS84EllipsoidM,
-					Waypoints:                               []waypointComponentMock{},
-					UploadID:                                string(DefaultMissionUploadID),
+					TakeoffPointGroundAltitudeM: DefaultMissionTakeoffPointGroundAltitudeM,
+					Waypoints:                   []waypointComponentMock{},
+					UploadID:                    string(DefaultMissionUploadID),
 				},
 				Version: string(DefaultMissionVersion),
 			},
@@ -303,7 +303,7 @@ func TestCreateMission(t *testing.T) {
 	request := &proto.Mission{
 		Name: DefaultMissionName,
 		Navigation: &proto.Navigation{
-			TakeoffPointGroundHeight: DefaultMissionTakeoffPointGroundHeightWGS84EllipsoidM,
+			TakeoffPointGroundHeight: DefaultMissionTakeoffPointGroundAltitudeM,
 			Waypoints:                []*proto.Waypoint{},
 		},
 	}
@@ -316,7 +316,7 @@ func TestCreateMission(t *testing.T) {
 		Id:   DefaultMissionID,
 		Name: DefaultMissionName,
 		Navigation: &proto.Navigation{
-			TakeoffPointGroundHeight: DefaultMissionTakeoffPointGroundHeightWGS84EllipsoidM,
+			TakeoffPointGroundHeight: DefaultMissionTakeoffPointGroundAltitudeM,
 			Waypoints:                []*proto.Waypoint{},
 			UploadId:                 string(DefaultMissionUploadID),
 		},
@@ -338,9 +338,9 @@ func TestUpdateMission(t *testing.T) {
 				ID:   string(DefaultMissionID),
 				Name: DefaultMissionName,
 				Navigation: navigationComponentMock{
-					TakeoffPointGroundHeightWGS84EllipsoidM: DefaultMissionTakeoffPointGroundHeightWGS84EllipsoidM,
-					Waypoints:                               []waypointComponentMock{},
-					UploadID:                                string(DefaultMissionUploadID),
+					TakeoffPointGroundAltitudeM: DefaultMissionTakeoffPointGroundAltitudeM,
+					Waypoints:                   []waypointComponentMock{},
+					UploadID:                    string(DefaultMissionUploadID),
 				},
 				Version: string(DefaultMissionVersion),
 			},
@@ -360,7 +360,7 @@ func TestUpdateMission(t *testing.T) {
 		Id:   DefaultMissionID,
 		Name: DefaultMissionID,
 		Navigation: &proto.Navigation{
-			TakeoffPointGroundHeight: DefaultMissionTakeoffPointGroundHeightWGS84EllipsoidM,
+			TakeoffPointGroundHeight: DefaultMissionTakeoffPointGroundAltitudeM,
 			Waypoints:                []*proto.Waypoint{},
 		},
 	}
@@ -373,7 +373,7 @@ func TestUpdateMission(t *testing.T) {
 		Id:   DefaultMissionID,
 		Name: DefaultMissionID,
 		Navigation: &proto.Navigation{
-			TakeoffPointGroundHeight: DefaultMissionTakeoffPointGroundHeightWGS84EllipsoidM,
+			TakeoffPointGroundHeight: DefaultMissionTakeoffPointGroundAltitudeM,
 			Waypoints:                []*proto.Waypoint{},
 			UploadId:                 string(DefaultMissionUploadID),
 		},

@@ -34,11 +34,11 @@ type PushTelemetryCommand interface {
 
 // EdgeTelemetry .
 type EdgeTelemetry interface {
-	GetLatitude() float64
-	GetLongitude() float64
-	GetAltitude() float64
-	GetRelativeAltitude() float64
-	GetSpeed() float64
+	GetLatitudeDegree() float64
+	GetLongitudeDegree() float64
+	GetAltitudeM() float64
+	GetRelativeAltitudeM() float64
+	GetSpeedMS() float64
 	GetArmed() bool
 	GetFlightMode() string
 	GetX() float64
@@ -204,17 +204,17 @@ func (s *edgeCommunicationService) pushTelemetryOperation(
 	pulledCommandIDs PulledCommandIDs,
 ) error {
 	snapshot := c.TelemetrySnapshot{
-		Latitude:         command.GetTelemetry().GetLatitude(),
-		Longitude:        command.GetTelemetry().GetLongitude(),
-		Altitude:         command.GetTelemetry().GetAltitude(),
-		RelativeAltitude: command.GetTelemetry().GetRelativeAltitude(),
-		Speed:            command.GetTelemetry().GetSpeed(),
-		Armed:            command.GetTelemetry().GetArmed(),
-		FlightMode:       command.GetTelemetry().GetFlightMode(),
-		X:                command.GetTelemetry().GetX(),
-		Y:                command.GetTelemetry().GetY(),
-		Z:                command.GetTelemetry().GetZ(),
-		W:                command.GetTelemetry().GetW(),
+		LatitudeDegree:    command.GetTelemetry().GetLatitudeDegree(),
+		LongitudeDegree:   command.GetTelemetry().GetLongitudeDegree(),
+		AltitudeM:         command.GetTelemetry().GetAltitudeM(),
+		RelativeAltitudeM: command.GetTelemetry().GetRelativeAltitudeM(),
+		SpeedMS:           command.GetTelemetry().GetSpeedMS(),
+		Armed:             command.GetTelemetry().GetArmed(),
+		FlightMode:        command.GetTelemetry().GetFlightMode(),
+		X:                 command.GetTelemetry().GetX(),
+		Y:                 command.GetTelemetry().GetY(),
+		Z:                 command.GetTelemetry().GetZ(),
+		W:                 command.GetTelemetry().GetW(),
 	}
 
 	commandIDs, err := c.PushTelemetryService(

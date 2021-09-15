@@ -12,18 +12,18 @@ func (t *Trajectory) Extension(snapshot TelemetrySnapshot) Trajectory {
 	newTrajectoryPoints := append(
 		t.trajectoryPoints,
 		trajectoryPoint{
-			PointNumber:      newNumberOfPoints,
-			Latitude:         snapshot.Latitude,
-			Longitude:        snapshot.Longitude,
-			Altitude:         snapshot.Altitude,
-			RelativeAltitude: snapshot.RelativeAltitude,
-			Speed:            snapshot.Speed,
-			Armed:            snapshot.Armed,
-			FlightMode:       snapshot.FlightMode,
-			OrientationX:     snapshot.OrientationX,
-			OrientationY:     snapshot.OrientationY,
-			OrientationZ:     snapshot.OrientationZ,
-			OrientationW:     snapshot.OrientationW,
+			PointNumber:       newNumberOfPoints,
+			LatitudeDegree:    snapshot.LatitudeDegree,
+			LongitudeDegree:   snapshot.LongitudeDegree,
+			AltitudeM:         snapshot.AltitudeM,
+			RelativeAltitudeM: snapshot.RelativeAltitudeM,
+			SpeedMS:           snapshot.SpeedMS,
+			Armed:             snapshot.Armed,
+			FlightMode:        snapshot.FlightMode,
+			OrientationX:      snapshot.OrientationX,
+			OrientationY:      snapshot.OrientationY,
+			OrientationZ:      snapshot.OrientationZ,
+			OrientationW:      snapshot.OrientationW,
 		},
 	)
 	return Trajectory{
@@ -39,17 +39,17 @@ func (t *Trajectory) TakeASnapshots() []TelemetrySnapshot {
 		telemetrySnapshots = append(
 			telemetrySnapshots,
 			TelemetrySnapshot{
-				Latitude:         tp.Latitude,
-				Longitude:        tp.Longitude,
-				Altitude:         tp.Altitude,
-				RelativeAltitude: tp.RelativeAltitude,
-				Speed:            tp.Speed,
-				Armed:            tp.Armed,
-				FlightMode:       tp.FlightMode,
-				OrientationX:     tp.OrientationX,
-				OrientationY:     tp.OrientationY,
-				OrientationZ:     tp.OrientationZ,
-				OrientationW:     tp.OrientationW,
+				LatitudeDegree:    tp.LatitudeDegree,
+				LongitudeDegree:   tp.LongitudeDegree,
+				AltitudeM:         tp.AltitudeM,
+				RelativeAltitudeM: tp.RelativeAltitudeM,
+				SpeedMS:           tp.SpeedMS,
+				Armed:             tp.Armed,
+				FlightMode:        tp.FlightMode,
+				OrientationX:      tp.OrientationX,
+				OrientationY:      tp.OrientationY,
+				OrientationZ:      tp.OrientationZ,
+				OrientationW:      tp.OrientationW,
 			},
 		)
 	}
@@ -57,16 +57,16 @@ func (t *Trajectory) TakeASnapshots() []TelemetrySnapshot {
 }
 
 type trajectoryPoint struct {
-	PointNumber      int
-	Latitude         float64
-	Longitude        float64
-	Altitude         float64
-	RelativeAltitude float64
-	Speed            float64
-	Armed            bool
-	FlightMode       string
-	OrientationX     float64
-	OrientationY     float64
-	OrientationZ     float64
-	OrientationW     float64
+	PointNumber       int
+	LatitudeDegree    float64
+	LongitudeDegree   float64
+	AltitudeM         float64
+	RelativeAltitudeM float64
+	SpeedMS           float64
+	Armed             bool
+	FlightMode        string
+	OrientationX      float64
+	OrientationY      float64
+	OrientationZ      float64
+	OrientationW      float64
 }

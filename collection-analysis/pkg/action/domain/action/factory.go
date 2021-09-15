@@ -22,18 +22,18 @@ func AssembleFrom(comp Component) *Action {
 		trajectoryPoints = append(
 			trajectoryPoints,
 			trajectoryPoint{
-				PointNumber:      tp.GetPointNumber(),
-				Latitude:         tp.GetLatitude(),
-				Longitude:        tp.GetLongitude(),
-				Altitude:         tp.GetAltitude(),
-				RelativeAltitude: tp.GetRelativeAltitude(),
-				Speed:            tp.GetSpeed(),
-				Armed:            tp.GetArmed(),
-				FlightMode:       tp.GetFlightMode(),
-				OrientationX:     tp.GetOrientationX(),
-				OrientationY:     tp.GetOrientationY(),
-				OrientationZ:     tp.GetOrientationZ(),
-				OrientationW:     tp.GetOrientationW(),
+				PointNumber:       tp.GetPointNumber(),
+				LatitudeDegree:    tp.GetLatitudeDegree(),
+				LongitudeDegree:   tp.GetLongitudeDegree(),
+				AltitudeM:         tp.GetAltitudeM(),
+				RelativeAltitudeM: tp.GetRelativeAltitudeM(),
+				SpeedMS:           tp.GetSpeedMS(),
+				Armed:             tp.GetArmed(),
+				FlightMode:        tp.GetFlightMode(),
+				OrientationX:      tp.GetOrientationX(),
+				OrientationY:      tp.GetOrientationY(),
+				OrientationZ:      tp.GetOrientationZ(),
+				OrientationW:      tp.GetOrientationW(),
 			},
 		)
 	}
@@ -86,11 +86,11 @@ type ActionComponent interface {
 // TrajectoryPointComponent .
 type TrajectoryPointComponent interface {
 	GetPointNumber() int
-	GetLatitude() float64
-	GetLongitude() float64
-	GetAltitude() float64
-	GetRelativeAltitude() float64
-	GetSpeed() float64
+	GetLatitudeDegree() float64
+	GetLongitudeDegree() float64
+	GetAltitudeM() float64
+	GetRelativeAltitudeM() float64
+	GetSpeedMS() float64
 	GetArmed() bool
 	GetFlightMode() string
 	GetOrientationX() float64
@@ -131,20 +131,20 @@ type trajectoryPointComponent struct {
 func (c *trajectoryPointComponent) GetPointNumber() int {
 	return c.trajectoryPoint.PointNumber
 }
-func (c *trajectoryPointComponent) GetLatitude() float64 {
-	return c.trajectoryPoint.Latitude
+func (c *trajectoryPointComponent) GetLatitudeDegree() float64 {
+	return c.trajectoryPoint.LatitudeDegree
 }
-func (c *trajectoryPointComponent) GetLongitude() float64 {
-	return c.trajectoryPoint.Longitude
+func (c *trajectoryPointComponent) GetLongitudeDegree() float64 {
+	return c.trajectoryPoint.LongitudeDegree
 }
-func (c *trajectoryPointComponent) GetAltitude() float64 {
-	return c.trajectoryPoint.Altitude
+func (c *trajectoryPointComponent) GetAltitudeM() float64 {
+	return c.trajectoryPoint.AltitudeM
 }
-func (c *trajectoryPointComponent) GetRelativeAltitude() float64 {
-	return c.trajectoryPoint.RelativeAltitude
+func (c *trajectoryPointComponent) GetRelativeAltitudeM() float64 {
+	return c.trajectoryPoint.RelativeAltitudeM
 }
-func (c *trajectoryPointComponent) GetSpeed() float64 {
-	return c.trajectoryPoint.Speed
+func (c *trajectoryPointComponent) GetSpeedMS() float64 {
+	return c.trajectoryPoint.SpeedMS
 }
 func (c *trajectoryPointComponent) GetArmed() bool {
 	return c.trajectoryPoint.Armed

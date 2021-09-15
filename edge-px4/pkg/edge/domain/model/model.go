@@ -7,10 +7,10 @@ type ConnectionState struct {
 
 // Position .
 type Position struct {
-	Latitude         float64
-	Longitude        float64
-	Altitude         float64
-	RelativeAltitude float64
+	LatitudeDegree    float64
+	LongitudeDegree   float64
+	AltitudeM         float64
+	RelativeAltitudeM float64
 }
 
 // Quaternion .
@@ -23,9 +23,9 @@ type Quaternion struct {
 
 // Velocity .
 type Velocity struct {
-	North float64
-	East  float64
-	Down  float64
+	NorthMS float64
+	EastMS  float64
+	DownMS  float64
 }
 
 // Armed .
@@ -46,17 +46,17 @@ type PushTelemetry struct {
 
 // State .
 type State struct {
-	Latitude         float64
-	Longitude        float64
-	Altitude         float64
-	RelativeAltitude float64
-	Speed            float64
-	Armed            bool
-	FlightMode       string
-	OrientationX     float64
-	OrientationY     float64
-	OrientationZ     float64
-	OrientationW     float64
+	LatitudeDegree    float64
+	LongitudeDegree   float64
+	AltitudeM         float64
+	RelativeAltitudeM float64
+	SpeedMS           float64
+	Armed             bool
+	FlightMode        string
+	OrientationX      float64
+	OrientationY      float64
+	OrientationZ      float64
+	OrientationW      float64
 }
 
 // CommandIDs .
@@ -83,8 +83,8 @@ type Mission struct {
 
 // Waypoints .
 type Waypoints struct {
-	Latitude       float64
-	Longitude      float64
-	RelativeHeight float64
-	Speed          float64
+	LatitudeDegree    float64
+	LongitudeDegree   float64
+	RelativeAltitudeM float64
+	SpeedMS           float64
 }

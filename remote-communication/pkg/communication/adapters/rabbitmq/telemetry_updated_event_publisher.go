@@ -27,11 +27,11 @@ func PublishTelemetryUpdatedEvent(
 	eventPb := skysign_proto.TelemetryUpdatedEvent{
 		CommunicationId: event.GetID(),
 		Telemetry: &skysign_proto.Telemetry{
-			Latitude:         event.GetTelemetry().Latitude,
-			Longitude:        event.GetTelemetry().Longitude,
-			Altitude:         event.GetTelemetry().Altitude,
-			RelativeAltitude: event.GetTelemetry().RelativeAltitude,
-			Speed:            event.GetTelemetry().Speed,
+			Latitude:         event.GetTelemetry().LatitudeDegree,
+			Longitude:        event.GetTelemetry().LongitudeDegree,
+			Altitude:         event.GetTelemetry().AltitudeM,
+			RelativeAltitude: event.GetTelemetry().RelativeAltitudeM,
+			Speed:            event.GetTelemetry().SpeedMS,
 			Armed:            event.GetTelemetry().Armed,
 			FlightMode:       event.GetTelemetry().FlightMode,
 			OrientationX:     event.GetTelemetry().X,

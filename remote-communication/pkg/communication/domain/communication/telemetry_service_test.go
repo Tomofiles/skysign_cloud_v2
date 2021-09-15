@@ -46,17 +46,17 @@ func TestPushTelemetryService(t *testing.T) {
 	pub := &publisherMock{}
 
 	snapshot := TelemetrySnapshot{
-		Latitude:         1.0,
-		Longitude:        2.0,
-		Altitude:         3.0,
-		RelativeAltitude: 4.0,
-		Speed:            5.0,
-		Armed:            Armed,
-		FlightMode:       "NONE",
-		X:                6.0,
-		Y:                7.0,
-		Z:                8.0,
-		W:                9.0,
+		LatitudeDegree:    1.0,
+		LongitudeDegree:   2.0,
+		AltitudeM:         3.0,
+		RelativeAltitudeM: 4.0,
+		SpeedMS:           5.0,
+		Armed:             Armed,
+		FlightMode:        "NONE",
+		X:                 6.0,
+		Y:                 7.0,
+		Z:                 8.0,
+		W:                 9.0,
 	}
 	ids, ret := PushTelemetryService(ctx, gen, repo, pub, DefaultID, snapshot)
 
@@ -75,17 +75,17 @@ func TestPushTelemetryService(t *testing.T) {
 		},
 	)
 	expectCommunication.telemetry = &Telemetry{
-		latitude:         1.0,
-		longitude:        2.0,
-		altitude:         3.0,
-		relativeAltitude: 4.0,
-		speed:            5.0,
-		armed:            Armed,
-		flightMode:       "NONE",
-		x:                6.0,
-		y:                7.0,
-		z:                8.0,
-		w:                9.0,
+		latitudeDegree:    1.0,
+		longitudeDegree:   2.0,
+		altitudeM:         3.0,
+		relativeAltitudeM: 4.0,
+		speedMS:           5.0,
+		armed:             Armed,
+		flightMode:        "NONE",
+		x:                 6.0,
+		y:                 7.0,
+		z:                 8.0,
+		w:                 9.0,
 	}
 	expectCommunication.SetPublisher(pub)
 
@@ -119,17 +119,17 @@ func TestGetErrorWhenPushTelemetryService(t *testing.T) {
 	pub := &publisherMock{}
 
 	snapshot := TelemetrySnapshot{
-		Latitude:         1.0,
-		Longitude:        2.0,
-		Altitude:         3.0,
-		RelativeAltitude: 4.0,
-		Speed:            5.0,
-		Armed:            Armed,
-		FlightMode:       "NONE",
-		X:                6.0,
-		Y:                7.0,
-		Z:                8.0,
-		W:                9.0,
+		LatitudeDegree:    1.0,
+		LongitudeDegree:   2.0,
+		AltitudeM:         3.0,
+		RelativeAltitudeM: 4.0,
+		SpeedMS:           5.0,
+		Armed:             Armed,
+		FlightMode:        "NONE",
+		X:                 6.0,
+		Y:                 7.0,
+		Z:                 8.0,
+		W:                 9.0,
 	}
 	ids, ret := PushTelemetryService(ctx, gen, repo, pub, DefaultID, snapshot)
 
@@ -161,17 +161,17 @@ func TestSaveErrorWhenPushTelemetryService(t *testing.T) {
 	pub := &publisherMock{}
 
 	snapshot := TelemetrySnapshot{
-		Latitude:         1.0,
-		Longitude:        2.0,
-		Altitude:         3.0,
-		RelativeAltitude: 4.0,
-		Speed:            5.0,
-		Armed:            Armed,
-		FlightMode:       "NONE",
-		X:                6.0,
-		Y:                7.0,
-		Z:                8.0,
-		W:                9.0,
+		LatitudeDegree:    1.0,
+		LongitudeDegree:   2.0,
+		AltitudeM:         3.0,
+		RelativeAltitudeM: 4.0,
+		SpeedMS:           5.0,
+		Armed:             Armed,
+		FlightMode:        "NONE",
+		X:                 6.0,
+		Y:                 7.0,
+		Z:                 8.0,
+		W:                 9.0,
 	}
 	ids, ret := PushTelemetryService(ctx, gen, repo, pub, DefaultID, snapshot)
 
@@ -192,17 +192,17 @@ func TestPullTelemetryService(t *testing.T) {
 	gen := &generatorMock{}
 	testCommunication := NewInstance(gen, DefaultID)
 	testCommunication.telemetry = &Telemetry{
-		latitude:         1.0,
-		longitude:        2.0,
-		altitude:         3.0,
-		relativeAltitude: 4.0,
-		speed:            5.0,
-		armed:            Armed,
-		flightMode:       "NONE",
-		x:                6.0,
-		y:                7.0,
-		z:                8.0,
-		w:                9.0,
+		latitudeDegree:    1.0,
+		longitudeDegree:   2.0,
+		altitudeM:         3.0,
+		relativeAltitudeM: 4.0,
+		speedMS:           5.0,
+		armed:             Armed,
+		flightMode:        "NONE",
+		x:                 6.0,
+		y:                 7.0,
+		z:                 8.0,
+		w:                 9.0,
 	}
 
 	repo := &repositoryMock{}
@@ -213,17 +213,17 @@ func TestPullTelemetryService(t *testing.T) {
 	snapshot, ret := PullTelemetryService(ctx, gen, repo, pub, DefaultID)
 
 	expectSnapshot := TelemetrySnapshot{
-		Latitude:         1.0,
-		Longitude:        2.0,
-		Altitude:         3.0,
-		RelativeAltitude: 4.0,
-		Speed:            5.0,
-		Armed:            Armed,
-		FlightMode:       "NONE",
-		X:                6.0,
-		Y:                7.0,
-		Z:                8.0,
-		W:                9.0,
+		LatitudeDegree:    1.0,
+		LongitudeDegree:   2.0,
+		AltitudeM:         3.0,
+		RelativeAltitudeM: 4.0,
+		SpeedMS:           5.0,
+		Armed:             Armed,
+		FlightMode:        "NONE",
+		X:                 6.0,
+		Y:                 7.0,
+		Z:                 8.0,
+		W:                 9.0,
 	}
 
 	a.Equal(snapshot, expectSnapshot)

@@ -80,11 +80,11 @@ func (s *edgeMissionService) pullMissionOperation(
 		waypoints = append(
 			waypoints,
 			&waypoint{
-				PointOrder:      w.PointOrder,
-				LatitudeDegree:  w.LatitudeDegree,
-				LongitudeDegree: w.LongitudeDegree,
-				RelativeHeightM: w.RelativeHeightM,
-				SpeedMS:         w.SpeedMS,
+				PointOrder:        w.PointOrder,
+				LatitudeDegree:    w.LatitudeDegree,
+				LongitudeDegree:   w.LongitudeDegree,
+				RelativeAltitudeM: w.RelativeAltitudeM,
+				SpeedMS:           w.SpeedMS,
 			},
 		)
 	}
@@ -97,8 +97,8 @@ func (s *edgeMissionService) pullMissionOperation(
 }
 
 type waypoint struct {
-	PointOrder                                                int
-	LatitudeDegree, LongitudeDegree, RelativeHeightM, SpeedMS float64
+	PointOrder                                                  int
+	LatitudeDegree, LongitudeDegree, RelativeAltitudeM, SpeedMS float64
 }
 
 func (v *waypoint) GetPointOrder() int {
@@ -113,8 +113,8 @@ func (v *waypoint) GetLongitudeDegree() float64 {
 	return v.LongitudeDegree
 }
 
-func (v *waypoint) GetRelativeHeightM() float64 {
-	return v.RelativeHeightM
+func (v *waypoint) GetRelativeAltitudeM() float64 {
+	return v.RelativeAltitudeM
 }
 
 func (v *waypoint) GetSpeedMS() float64 {

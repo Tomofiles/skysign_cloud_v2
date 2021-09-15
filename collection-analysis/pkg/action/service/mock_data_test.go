@@ -13,17 +13,17 @@ const DefaultActionCommunicationID = act.CommunicationID("communication-id")
 const DefaultActionFleetID = act.FleetID("fleet-id")
 
 var DefaultTelemetrySnapshot = act.TelemetrySnapshot{
-	Latitude:         1.0,
-	Longitude:        2.0,
-	Altitude:         3.0,
-	RelativeAltitude: 4.0,
-	Speed:            5.0,
-	Armed:            true,
-	FlightMode:       "state",
-	OrientationX:     6.0,
-	OrientationY:     7.0,
-	OrientationZ:     8.0,
-	OrientationW:     9.0,
+	LatitudeDegree:    1.0,
+	LongitudeDegree:   2.0,
+	AltitudeM:         3.0,
+	RelativeAltitudeM: 4.0,
+	SpeedMS:           5.0,
+	Armed:             true,
+	FlightMode:        "state",
+	OrientationX:      6.0,
+	OrientationY:      7.0,
+	OrientationZ:      8.0,
+	OrientationW:      9.0,
 }
 
 type actionRepositoryMock struct {
@@ -122,37 +122,37 @@ func (c *actionComponentMock) GetTrajectory() []act.TrajectoryPointComponent {
 }
 
 type trajectoryPointComponentMock struct {
-	PointNumber      int
-	Latitude         float64
-	Longitude        float64
-	Altitude         float64
-	RelativeAltitude float64
-	Speed            float64
-	Armed            bool
-	FlightMode       string
-	OrientationX     float64
-	OrientationY     float64
-	OrientationZ     float64
-	OrientationW     float64
+	PointNumber       int
+	LatitudeDegree    float64
+	LongitudeDegree   float64
+	AltitudeM         float64
+	RelativeAltitudeM float64
+	SpeedMS           float64
+	Armed             bool
+	FlightMode        string
+	OrientationX      float64
+	OrientationY      float64
+	OrientationZ      float64
+	OrientationW      float64
 }
 
 func (c *trajectoryPointComponentMock) GetPointNumber() int {
 	return c.PointNumber
 }
-func (c *trajectoryPointComponentMock) GetLatitude() float64 {
-	return c.Latitude
+func (c *trajectoryPointComponentMock) GetLatitudeDegree() float64 {
+	return c.LatitudeDegree
 }
-func (c *trajectoryPointComponentMock) GetLongitude() float64 {
-	return c.Longitude
+func (c *trajectoryPointComponentMock) GetLongitudeDegree() float64 {
+	return c.LongitudeDegree
 }
-func (c *trajectoryPointComponentMock) GetAltitude() float64 {
-	return c.Altitude
+func (c *trajectoryPointComponentMock) GetAltitudeM() float64 {
+	return c.AltitudeM
 }
-func (c *trajectoryPointComponentMock) GetRelativeAltitude() float64 {
-	return c.RelativeAltitude
+func (c *trajectoryPointComponentMock) GetRelativeAltitudeM() float64 {
+	return c.RelativeAltitudeM
 }
-func (c *trajectoryPointComponentMock) GetSpeed() float64 {
-	return c.Speed
+func (c *trajectoryPointComponentMock) GetSpeedMS() float64 {
+	return c.SpeedMS
 }
 func (c *trajectoryPointComponentMock) GetArmed() bool {
 	return c.Armed
@@ -205,54 +205,54 @@ func (r *fleetIDCommandMock) GetFleetID() string {
 	return r.FleetID
 }
 
-type telemetryRequestMock struct {
-	CommunicationID  string
-	Latitude         float64
-	Longitude        float64
-	Altitude         float64
-	RelativeAltitude float64
-	Speed            float64
-	Armed            bool
-	FlightMode       string
-	OrientationX     float64
-	OrientationY     float64
-	OrientationZ     float64
-	OrientationW     float64
+type telemetryCommandMock struct {
+	CommunicationID   string
+	LatitudeDegree    float64
+	LongitudeDegree   float64
+	AltitudeM         float64
+	RelativeAltitudeM float64
+	SpeedMS           float64
+	Armed             bool
+	FlightMode        string
+	OrientationX      float64
+	OrientationY      float64
+	OrientationZ      float64
+	OrientationW      float64
 }
 
-func (r *telemetryRequestMock) GetCommunicationID() string {
+func (r *telemetryCommandMock) GetCommunicationID() string {
 	return r.CommunicationID
 }
-func (r *telemetryRequestMock) GetLatitude() float64 {
-	return r.Latitude
+func (r *telemetryCommandMock) GetLatitudeDegree() float64 {
+	return r.LatitudeDegree
 }
-func (r *telemetryRequestMock) GetLongitude() float64 {
-	return r.Longitude
+func (r *telemetryCommandMock) GetLongitudeDegree() float64 {
+	return r.LongitudeDegree
 }
-func (r *telemetryRequestMock) GetAltitude() float64 {
-	return r.Altitude
+func (r *telemetryCommandMock) GetAltitudeM() float64 {
+	return r.AltitudeM
 }
-func (r *telemetryRequestMock) GetRelativeAltitude() float64 {
-	return r.RelativeAltitude
+func (r *telemetryCommandMock) GetRelativeAltitudeM() float64 {
+	return r.RelativeAltitudeM
 }
-func (r *telemetryRequestMock) GetSpeed() float64 {
-	return r.Speed
+func (r *telemetryCommandMock) GetSpeedMS() float64 {
+	return r.SpeedMS
 }
-func (r *telemetryRequestMock) GetArmed() bool {
+func (r *telemetryCommandMock) GetArmed() bool {
 	return r.Armed
 }
-func (r *telemetryRequestMock) GetFlightMode() string {
+func (r *telemetryCommandMock) GetFlightMode() string {
 	return r.FlightMode
 }
-func (r *telemetryRequestMock) GetOrientationX() float64 {
+func (r *telemetryCommandMock) GetOrientationX() float64 {
 	return r.OrientationX
 }
-func (r *telemetryRequestMock) GetOrientationY() float64 {
+func (r *telemetryCommandMock) GetOrientationY() float64 {
 	return r.OrientationY
 }
-func (r *telemetryRequestMock) GetOrientationZ() float64 {
+func (r *telemetryCommandMock) GetOrientationZ() float64 {
 	return r.OrientationZ
 }
-func (r *telemetryRequestMock) GetOrientationW() float64 {
+func (r *telemetryCommandMock) GetOrientationW() float64 {
 	return r.OrientationW
 }

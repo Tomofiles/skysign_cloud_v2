@@ -122,17 +122,17 @@ func (s *GrpcServer) PushTelemetry(
 	command := &pushTelemetryCommand{
 		id: request.Id,
 		telemetry: &telemetry{
-			latitude:         request.Telemetry.Latitude,
-			longitude:        request.Telemetry.Longitude,
-			altitude:         request.Telemetry.Altitude,
-			relativeAltitude: request.Telemetry.RelativeAltitude,
-			speed:            request.Telemetry.Speed,
-			armed:            request.Telemetry.Armed,
-			flightMode:       request.Telemetry.FlightMode,
-			x:                request.Telemetry.OrientationX,
-			y:                request.Telemetry.OrientationY,
-			z:                request.Telemetry.OrientationZ,
-			w:                request.Telemetry.OrientationW,
+			latitudeDegree:    request.Telemetry.Latitude,
+			longitudeDegree:   request.Telemetry.Longitude,
+			altitudeM:         request.Telemetry.Altitude,
+			relativeAltitudeM: request.Telemetry.RelativeAltitude,
+			speedMS:           request.Telemetry.Speed,
+			armed:             request.Telemetry.Armed,
+			flightMode:        request.Telemetry.FlightMode,
+			x:                 request.Telemetry.OrientationX,
+			y:                 request.Telemetry.OrientationY,
+			z:                 request.Telemetry.OrientationZ,
+			w:                 request.Telemetry.OrientationW,
 		},
 	}
 	if ret := s.app.Services.EdgeCommunication.PushTelemetry(
@@ -160,11 +160,11 @@ func (s *GrpcServer) PullTelemetry(
 	if ret := s.app.Services.UserCommunication.PullTelemetry(
 		command,
 		func(telemetry service.UserTelemetry) {
-			response.Telemetry.Latitude = telemetry.GetLatitude()
-			response.Telemetry.Longitude = telemetry.GetLongitude()
-			response.Telemetry.Altitude = telemetry.GetAltitude()
-			response.Telemetry.RelativeAltitude = telemetry.GetRelativeAltitude()
-			response.Telemetry.Speed = telemetry.GetSpeed()
+			response.Telemetry.Latitude = telemetry.GetLatitudeDegree()
+			response.Telemetry.Longitude = telemetry.GetLongitudeDegree()
+			response.Telemetry.Altitude = telemetry.GetAltitudeM()
+			response.Telemetry.RelativeAltitude = telemetry.GetRelativeAltitudeM()
+			response.Telemetry.Speed = telemetry.GetSpeedMS()
 			response.Telemetry.Armed = telemetry.GetArmed()
 			response.Telemetry.FlightMode = telemetry.GetFlightMode()
 			response.Telemetry.OrientationX = telemetry.GetX()
@@ -237,37 +237,37 @@ func (f *pushTelemetryCommand) GetTelemetry() service.EdgeTelemetry {
 }
 
 type telemetry struct {
-	latitude         float64
-	longitude        float64
-	altitude         float64
-	relativeAltitude float64
-	speed            float64
-	armed            bool
-	flightMode       string
-	x                float64
-	y                float64
-	z                float64
-	w                float64
+	latitudeDegree    float64
+	longitudeDegree   float64
+	altitudeM         float64
+	relativeAltitudeM float64
+	speedMS           float64
+	armed             bool
+	flightMode        string
+	x                 float64
+	y                 float64
+	z                 float64
+	w                 float64
 }
 
-func (t *telemetry) GetLatitude() float64 {
-	return t.latitude
+func (t *telemetry) GetLatitudeDegree() float64 {
+	return t.latitudeDegree
 }
 
-func (t *telemetry) GetLongitude() float64 {
-	return t.longitude
+func (t *telemetry) GetLongitudeDegree() float64 {
+	return t.longitudeDegree
 }
 
-func (t *telemetry) GetAltitude() float64 {
-	return t.altitude
+func (t *telemetry) GetAltitudeM() float64 {
+	return t.altitudeM
 }
 
-func (t *telemetry) GetRelativeAltitude() float64 {
-	return t.relativeAltitude
+func (t *telemetry) GetRelativeAltitudeM() float64 {
+	return t.relativeAltitudeM
 }
 
-func (t *telemetry) GetSpeed() float64 {
-	return t.speed
+func (t *telemetry) GetSpeedMS() float64 {
+	return t.speedMS
 }
 
 func (t *telemetry) GetArmed() bool {

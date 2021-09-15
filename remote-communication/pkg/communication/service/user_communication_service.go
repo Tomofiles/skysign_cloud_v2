@@ -33,11 +33,11 @@ type PullTelemetryCommand interface {
 
 // UserTelemetry .
 type UserTelemetry interface {
-	GetLatitude() float64
-	GetLongitude() float64
-	GetAltitude() float64
-	GetRelativeAltitude() float64
-	GetSpeed() float64
+	GetLatitudeDegree() float64
+	GetLongitudeDegree() float64
+	GetAltitudeM() float64
+	GetRelativeAltitudeM() float64
+	GetSpeedMS() float64
 	GetArmed() bool
 	GetFlightMode() string
 	GetX() float64
@@ -211,17 +211,17 @@ func (s *userCommunicationService) pullTelemetryOperation(
 	}
 
 	telemetry := &telemetry{
-		latitude:         snapshot.Latitude,
-		longitude:        snapshot.Longitude,
-		altitude:         snapshot.Altitude,
-		relativeAltitude: snapshot.RelativeAltitude,
-		speed:            snapshot.Speed,
-		armed:            snapshot.Armed,
-		flightMode:       snapshot.FlightMode,
-		x:                snapshot.X,
-		y:                snapshot.Y,
-		z:                snapshot.Z,
-		w:                snapshot.W,
+		latitudeDegree:    snapshot.LatitudeDegree,
+		longitudeDegree:   snapshot.LongitudeDegree,
+		altitudeM:         snapshot.AltitudeM,
+		relativeAltitudeM: snapshot.RelativeAltitudeM,
+		speedMS:           snapshot.SpeedMS,
+		armed:             snapshot.Armed,
+		flightMode:        snapshot.FlightMode,
+		x:                 snapshot.X,
+		y:                 snapshot.Y,
+		z:                 snapshot.Z,
+		w:                 snapshot.W,
 	}
 
 	pulledTelemetry(telemetry)
@@ -229,37 +229,37 @@ func (s *userCommunicationService) pullTelemetryOperation(
 }
 
 type telemetry struct {
-	latitude         float64
-	longitude        float64
-	altitude         float64
-	relativeAltitude float64
-	speed            float64
-	armed            bool
-	flightMode       string
-	x                float64
-	y                float64
-	z                float64
-	w                float64
+	latitudeDegree    float64
+	longitudeDegree   float64
+	altitudeM         float64
+	relativeAltitudeM float64
+	speedMS           float64
+	armed             bool
+	flightMode        string
+	x                 float64
+	y                 float64
+	z                 float64
+	w                 float64
 }
 
-func (t *telemetry) GetLatitude() float64 {
-	return t.latitude
+func (t *telemetry) GetLatitudeDegree() float64 {
+	return t.latitudeDegree
 }
 
-func (t *telemetry) GetLongitude() float64 {
-	return t.longitude
+func (t *telemetry) GetLongitudeDegree() float64 {
+	return t.longitudeDegree
 }
 
-func (t *telemetry) GetAltitude() float64 {
-	return t.altitude
+func (t *telemetry) GetAltitudeM() float64 {
+	return t.altitudeM
 }
 
-func (t *telemetry) GetRelativeAltitude() float64 {
-	return t.relativeAltitude
+func (t *telemetry) GetRelativeAltitudeM() float64 {
+	return t.relativeAltitudeM
 }
 
-func (t *telemetry) GetSpeed() float64 {
-	return t.speed
+func (t *telemetry) GetSpeedMS() float64 {
+	return t.speedMS
 }
 
 func (t *telemetry) GetArmed() bool {

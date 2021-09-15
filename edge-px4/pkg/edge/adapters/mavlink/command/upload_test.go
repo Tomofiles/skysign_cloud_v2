@@ -50,10 +50,10 @@ func TestAdapterUploadSingleItems(t *testing.T) {
 	model := &model.Mission{
 		Waypoints: []*model.Waypoints{
 			{
-				Latitude:       1.0,
-				Longitude:      2.0,
-				RelativeHeight: 3.0,
-				Speed:          4.0,
+				LatitudeDegree:    1.0,
+				LongitudeDegree:   2.0,
+				RelativeAltitudeM: 3.0,
+				SpeedMS:           4.0,
 			},
 		},
 	}
@@ -88,22 +88,22 @@ func TestAdapterUploadMultipleItems(t *testing.T) {
 	model := &model.Mission{
 		Waypoints: []*model.Waypoints{
 			{
-				Latitude:       11.0,
-				Longitude:      21.0,
-				RelativeHeight: 31.0,
-				Speed:          41.0,
+				LatitudeDegree:    11.0,
+				LongitudeDegree:   21.0,
+				RelativeAltitudeM: 31.0,
+				SpeedMS:           41.0,
 			},
 			{
-				Latitude:       12.0,
-				Longitude:      22.0,
-				RelativeHeight: 32.0,
-				Speed:          42.0,
+				LatitudeDegree:    12.0,
+				LongitudeDegree:   22.0,
+				RelativeAltitudeM: 32.0,
+				SpeedMS:           42.0,
 			},
 			{
-				Latitude:       13.0,
-				Longitude:      23.0,
-				RelativeHeight: 33.0,
-				Speed:          43.0,
+				LatitudeDegree:    13.0,
+				LongitudeDegree:   23.0,
+				RelativeAltitudeM: 33.0,
+				SpeedMS:           43.0,
 			},
 		},
 	}

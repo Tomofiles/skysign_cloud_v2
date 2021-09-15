@@ -23,7 +23,7 @@ func TestCarbonCopyMissionService(t *testing.T) {
 		NewUploadID = DefaultUploadID + "-new"
 	)
 
-	navigation := NewNavigation(DefaultTakeoffPointGroundHeightWGS84EllipsoidM)
+	navigation := NewNavigation(DefaultTakeoffPointGroundAltitudeM)
 	navigation.uploadID = DefaultUploadID
 	navigation.PushNextWaypoint(11.0, 21.0, 31.0, 41.0)
 	navigation.PushNextWaypoint(12.0, 22.0, 32.0, 42.0)
@@ -50,7 +50,7 @@ func TestCarbonCopyMissionService(t *testing.T) {
 
 	id, ret := CarbonCopyMission(ctx, gen, repo, pub, DefaultID, NewID)
 
-	expectNav := NewNavigation(DefaultTakeoffPointGroundHeightWGS84EllipsoidM)
+	expectNav := NewNavigation(DefaultTakeoffPointGroundAltitudeM)
 	expectNav.uploadID = NewUploadID
 	expectNav.PushNextWaypoint(11.0, 21.0, 31.0, 41.0)
 	expectNav.PushNextWaypoint(12.0, 22.0, 32.0, 42.0)
@@ -91,7 +91,7 @@ func TestCopySuccessWhenAlreadyExistsMissionWhenCarbonCopyMissionService(t *test
 		NewID = DefaultID + "-new"
 	)
 
-	navigation := NewNavigation(DefaultTakeoffPointGroundHeightWGS84EllipsoidM)
+	navigation := NewNavigation(DefaultTakeoffPointGroundAltitudeM)
 	navigation.uploadID = DefaultUploadID
 
 	testMission := Mission{
@@ -183,7 +183,7 @@ func TestSaveErrorWhenCarbonCopyMissionService(t *testing.T) {
 		NewID = DefaultID + "-new"
 	)
 
-	navigation := NewNavigation(DefaultTakeoffPointGroundHeightWGS84EllipsoidM)
+	navigation := NewNavigation(DefaultTakeoffPointGroundAltitudeM)
 
 	testMission := Mission{
 		id:           DefaultID,

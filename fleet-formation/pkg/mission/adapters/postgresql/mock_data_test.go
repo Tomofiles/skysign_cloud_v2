@@ -7,7 +7,7 @@ import (
 const DefaultMissionID = m.ID("mission-id")
 const DefaultMissionVersion = m.Version("version")
 const DefaultMissionName = "mission-name"
-const DefaultMissionTakeoffPointGroundHeightWGS84EllipsoidM float64 = 10
+const DefaultMissionTakeoffPointGroundAltitudeM float64 = 10
 const DefaultMissionUploadID = m.UploadID("upload-id")
 
 // Mission構成オブジェクトモック
@@ -41,13 +41,13 @@ func (v *missionComponentMock) GetVersion() string {
 
 // Navigation構成オブジェクトモック
 type navigationComponentMock struct {
-	TakeoffPointGroundHeightWGS84EllipsoidM float64
-	Waypoints                               []waypointComponentMock
-	UploadID                                string
+	TakeoffPointGroundAltitudeM float64
+	Waypoints                   []waypointComponentMock
+	UploadID                    string
 }
 
-func (v *navigationComponentMock) GetTakeoffPointGroundHeightWGS84EllipsoidM() float64 {
-	return v.TakeoffPointGroundHeightWGS84EllipsoidM
+func (v *navigationComponentMock) GetTakeoffPointGroundAltitudeM() float64 {
+	return v.TakeoffPointGroundAltitudeM
 }
 
 func (v *navigationComponentMock) GetWaypoints() []m.WaypointComponent {
@@ -56,11 +56,11 @@ func (v *navigationComponentMock) GetWaypoints() []m.WaypointComponent {
 		waypoints = append(
 			waypoints,
 			&waypointComponentMock{
-				PointOrder:      w.PointOrder,
-				LatitudeDegree:  w.LatitudeDegree,
-				LongitudeDegree: w.LongitudeDegree,
-				RelativeHeightM: w.RelativeHeightM,
-				SpeedMS:         w.SpeedMS,
+				PointOrder:        w.PointOrder,
+				LatitudeDegree:    w.LatitudeDegree,
+				LongitudeDegree:   w.LongitudeDegree,
+				RelativeAltitudeM: w.RelativeAltitudeM,
+				SpeedMS:           w.SpeedMS,
 			},
 		)
 	}
@@ -74,8 +74,8 @@ func (v *navigationComponentMock) GetUploadID() string {
 
 // Waypoint構成オブジェクトモック
 type waypointComponentMock struct {
-	PointOrder                                                int
-	LatitudeDegree, LongitudeDegree, RelativeHeightM, SpeedMS float64
+	PointOrder                                                  int
+	LatitudeDegree, LongitudeDegree, RelativeAltitudeM, SpeedMS float64
 }
 
 func (v *waypointComponentMock) GetPointOrder() int {
@@ -90,8 +90,8 @@ func (v *waypointComponentMock) GetLongitudeDegree() float64 {
 	return v.LongitudeDegree
 }
 
-func (v *waypointComponentMock) GetRelativeHeightM() float64 {
-	return v.RelativeHeightM
+func (v *waypointComponentMock) GetRelativeAltitudeM() float64 {
+	return v.RelativeAltitudeM
 }
 
 func (v *waypointComponentMock) GetSpeedMS() float64 {

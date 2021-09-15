@@ -43,18 +43,18 @@ func (c *Communication) GetUploadMissions() []communication.UploadMissionCompone
 
 // Telemetry .
 type Telemetry struct {
-	CommunicationID  string `gorm:"primaryKey"`
-	Latitude         float64
-	Longitude        float64
-	Altitude         float64
-	RelativeAltitude float64
-	Speed            float64
-	Armed            bool
-	FlightMode       string
-	OrientationX     float64
-	OrientationY     float64
-	OrientationZ     float64
-	OrientationW     float64
+	CommunicationID   string `gorm:"primaryKey"`
+	LatitudeDegree    float64
+	LongitudeDegree   float64
+	AltitudeM         float64
+	RelativeAltitudeM float64
+	SpeedMS           float64
+	Armed             bool
+	FlightMode        string
+	OrientationX      float64
+	OrientationY      float64
+	OrientationZ      float64
+	OrientationW      float64
 }
 
 // GetCommunicationID .
@@ -62,29 +62,29 @@ func (t *Telemetry) GetCommunicationID() string {
 	return t.CommunicationID
 }
 
-// GetLatitude .
-func (t *Telemetry) GetLatitude() float64 {
-	return t.Latitude
+// GetLatitudeDegree .
+func (t *Telemetry) GetLatitudeDegree() float64 {
+	return t.LatitudeDegree
 }
 
-// GetLongitude .
-func (t *Telemetry) GetLongitude() float64 {
-	return t.Longitude
+// GetLongitudeDegree .
+func (t *Telemetry) GetLongitudeDegree() float64 {
+	return t.LongitudeDegree
 }
 
-// GetAltitude .
-func (t *Telemetry) GetAltitude() float64 {
-	return t.Altitude
+// GetAltitudeM .
+func (t *Telemetry) GetAltitudeM() float64 {
+	return t.AltitudeM
 }
 
-// GetRelativeAltitude .
-func (t *Telemetry) GetRelativeAltitude() float64 {
-	return t.RelativeAltitude
+// GetRelativeAltitudeM .
+func (t *Telemetry) GetRelativeAltitudeM() float64 {
+	return t.RelativeAltitudeM
 }
 
-// GetSpeed .
-func (t *Telemetry) GetSpeed() float64 {
-	return t.Speed
+// GetSpeedMS .
+func (t *Telemetry) GetSpeedMS() float64 {
+	return t.SpeedMS
 }
 
 // GetArmed .

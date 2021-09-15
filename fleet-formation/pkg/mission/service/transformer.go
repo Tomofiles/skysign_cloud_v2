@@ -8,13 +8,13 @@ import (
 func NavigationTransformerFromCommand(
 	command Mission,
 ) *m.Navigation {
-	navigation := m.NewNavigation(command.GetNavigation().GetTakeoffPointGroundHeight())
+	navigation := m.NewNavigation(command.GetNavigation().GetTakeoffPointGroundAltitudeM())
 	for _, w := range command.GetNavigation().GetWaypoints() {
 		navigation.PushNextWaypoint(
-			w.GetLatitude(),
-			w.GetLongitude(),
-			w.GetRelativeHeight(),
-			w.GetSpeed(),
+			w.GetLatitudeDegree(),
+			w.GetLongitudeDegree(),
+			w.GetRelativeAltitudeM(),
+			w.GetSpeedMS(),
 		)
 	}
 	return navigation

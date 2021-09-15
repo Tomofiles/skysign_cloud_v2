@@ -22,19 +22,19 @@ type Telemetry interface {
 }
 
 type telemetry struct {
-	rwm              sync.RWMutex
-	id               string
-	latitude         float64
-	longitude        float64
-	altitude         float64
-	relativeAltitude float64
-	speed            float64
-	armed            bool
-	flightMode       string
-	orientationX     float64
-	orientationY     float64
-	orientationZ     float64
-	orientationW     float64
+	rwm               sync.RWMutex
+	id                string
+	latitudeDegree    float64
+	longitudeDegree   float64
+	altitudeM         float64
+	relativeAltitudeM float64
+	speedMS           float64
+	armed             bool
+	flightMode        string
+	orientationX      float64
+	orientationY      float64
+	orientationZ      float64
+	orientationW      float64
 }
 
 // NewTelemetry .
@@ -53,10 +53,10 @@ func (t *telemetry) SetPosition(position *Position) {
 	t.rwm.Lock()
 	defer t.rwm.Unlock()
 
-	t.latitude = position.Latitude
-	t.longitude = position.Longitude
-	t.altitude = position.Altitude
-	t.relativeAltitude = position.RelativeAltitude
+	t.latitudeDegree = position.LatitudeDegree
+	t.longitudeDegree = position.LongitudeDegree
+	t.altitudeM = position.AltitudeM
+	t.relativeAltitudeM = position.RelativeAltitudeM
 }
 
 func (t *telemetry) SetQuaternion(quaternion *Quaternion) {
@@ -74,7 +74,7 @@ func (t *telemetry) SetVelocity(velocity *Velocity) {
 	defer t.rwm.Unlock()
 
 	// NEDフレームから速度の合成（GroundSpeed = √n^2+e^2）
-	t.speed = math.Sqrt(velocity.North*velocity.North + velocity.East*velocity.East)
+	t.speedMS = math.Sqrt(velocity.NorthMS*velocity.NorthMS + velocity.EastMS*velocity.EastMS)
 }
 
 func (t *telemetry) SetArmed(armed *Armed) {
@@ -103,17 +103,17 @@ func (t *telemetry) Get() (*PushTelemetry, error) {
 	telemetry := &PushTelemetry{
 		ID: t.id,
 		State: &State{
-			Latitude:         t.latitude,
-			Longitude:        t.longitude,
-			Altitude:         t.altitude,
-			RelativeAltitude: t.relativeAltitude,
-			Speed:            t.speed,
-			Armed:            t.armed,
-			FlightMode:       t.flightMode,
-			OrientationX:     t.orientationX,
-			OrientationY:     t.orientationY,
-			OrientationZ:     t.orientationZ,
-			OrientationW:     t.orientationW,
+			LatitudeDegree:    t.latitudeDegree,
+			LongitudeDegree:   t.longitudeDegree,
+			AltitudeM:         t.altitudeM,
+			RelativeAltitudeM: t.relativeAltitudeM,
+			SpeedMS:           t.speedMS,
+			Armed:             t.armed,
+			FlightMode:        t.flightMode,
+			OrientationX:      t.orientationX,
+			OrientationY:      t.orientationY,
+			OrientationZ:      t.orientationZ,
+			OrientationW:      t.orientationW,
 		},
 	}
 

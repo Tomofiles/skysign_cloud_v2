@@ -195,17 +195,17 @@ func TestPullTelemetryTransaction(t *testing.T) {
 	a := assert.New(t)
 
 	snapshot := c.TelemetrySnapshot{
-		Latitude:         1.0,
-		Longitude:        2.0,
-		Altitude:         3.0,
-		RelativeAltitude: 4.0,
-		Speed:            5.0,
-		Armed:            c.Armed,
-		FlightMode:       "NONE",
-		X:                6.0,
-		Y:                7.0,
-		Z:                8.0,
-		W:                9.0,
+		LatitudeDegree:    1.0,
+		LongitudeDegree:   2.0,
+		AltitudeM:         3.0,
+		RelativeAltitudeM: 4.0,
+		SpeedMS:           5.0,
+		Armed:             c.Armed,
+		FlightMode:        "NONE",
+		X:                 6.0,
+		Y:                 7.0,
+		Z:                 8.0,
+		W:                 9.0,
 	}
 
 	gen := &generatorMock{}
@@ -258,17 +258,17 @@ func TestPullTelemetryOperation(t *testing.T) {
 	a := assert.New(t)
 
 	snapshot := c.TelemetrySnapshot{
-		Latitude:         1.0,
-		Longitude:        2.0,
-		Altitude:         3.0,
-		RelativeAltitude: 4.0,
-		Speed:            5.0,
-		Armed:            c.Armed,
-		FlightMode:       "NONE",
-		X:                6.0,
-		Y:                7.0,
-		Z:                8.0,
-		W:                9.0,
+		LatitudeDegree:    1.0,
+		LongitudeDegree:   2.0,
+		AltitudeM:         3.0,
+		RelativeAltitudeM: 4.0,
+		SpeedMS:           5.0,
+		Armed:             c.Armed,
+		FlightMode:        "NONE",
+		X:                 6.0,
+		Y:                 7.0,
+		Z:                 8.0,
+		W:                 9.0,
 	}
 
 	gen := &generatorMock{}
@@ -301,11 +301,11 @@ func TestPullTelemetryOperation(t *testing.T) {
 	)
 
 	a.Nil(ret)
-	a.Equal(resTelemetry.GetLatitude(), 1.0)
-	a.Equal(resTelemetry.GetLongitude(), 2.0)
-	a.Equal(resTelemetry.GetAltitude(), 3.0)
-	a.Equal(resTelemetry.GetRelativeAltitude(), 4.0)
-	a.Equal(resTelemetry.GetSpeed(), 5.0)
+	a.Equal(resTelemetry.GetLatitudeDegree(), 1.0)
+	a.Equal(resTelemetry.GetLongitudeDegree(), 2.0)
+	a.Equal(resTelemetry.GetAltitudeM(), 3.0)
+	a.Equal(resTelemetry.GetRelativeAltitudeM(), 4.0)
+	a.Equal(resTelemetry.GetSpeedMS(), 5.0)
 	a.Equal(resTelemetry.GetArmed(), c.Armed)
 	a.Equal(resTelemetry.GetFlightMode(), "NONE")
 	a.Equal(resTelemetry.GetX(), 6.0)

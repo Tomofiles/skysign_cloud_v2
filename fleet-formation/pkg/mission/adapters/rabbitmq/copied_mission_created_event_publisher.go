@@ -28,20 +28,20 @@ func PublishCopiedMissionCreatedEvent(
 	if event.GetMission().GetNavigation() != nil {
 		var waypoints []*skysign_proto.Waypoint
 		event.GetMission().GetNavigation().ProvideWaypointsInterest(
-			func(pointOrder int, latitudeDegree, longitudeDegree, relativeHeightM, speedMS float64) {
+			func(pointOrder int, latitudeDegree, longitudeDegree, relativeAltitudeM, speedMS float64) {
 				waypoints = append(
 					waypoints,
 					&skysign_proto.Waypoint{
 						Latitude:       latitudeDegree,
 						Longitude:      longitudeDegree,
-						RelativeHeight: relativeHeightM,
+						RelativeHeight: relativeAltitudeM,
 						Speed:          speedMS,
 					},
 				)
 			},
 		)
 		navigation = &skysign_proto.Navigation{
-			TakeoffPointGroundHeight: event.GetMission().GetNavigation().GetTakeoffPointGroundHeightWGS84EllipsoidM(),
+			TakeoffPointGroundHeight: event.GetMission().GetNavigation().GetTakeoffPointGroundAltitudeM(),
 			Waypoints:                waypoints,
 			UploadId:                 string(event.GetMission().GetNavigation().GetUploadID()),
 		}

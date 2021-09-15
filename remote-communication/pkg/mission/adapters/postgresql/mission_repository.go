@@ -73,16 +73,16 @@ func (r *MissionRepository) Save(
 	m.TakeApart(
 		mission,
 		func(id string) {},
-		func(pointOrder int, latitudeDegree, longitudeDegree, relativeHeightM, speedMS float64) {
+		func(pointOrder int, latitudeDegree, longitudeDegree, relativeAltitudeM, speedMS float64) {
 			waypointRecords = append(
 				waypointRecords,
 				&Waypoint{
-					MissionID:       missionRecord.ID,
-					PointOrder:      pointOrder,
-					LatitudeDegree:  latitudeDegree,
-					LongitudeDegree: longitudeDegree,
-					RelativeHeightM: relativeHeightM,
-					SpeedMS:         speedMS,
+					MissionID:         missionRecord.ID,
+					PointOrder:        pointOrder,
+					LatitudeDegree:    latitudeDegree,
+					LongitudeDegree:   longitudeDegree,
+					RelativeAltitudeM: relativeAltitudeM,
+					SpeedMS:           speedMS,
 				},
 			)
 		},
