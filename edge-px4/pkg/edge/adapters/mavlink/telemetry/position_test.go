@@ -96,16 +96,16 @@ func TestAdapterPositionSubscriber(t *testing.T) {
 
 	expectPositions := []*model.Position{
 		{
-			Latitude:         11.0,
-			Longitude:        21.0,
-			Altitude:         31.0,
-			RelativeAltitude: 41.0,
+			LatitudeDegree:    11.0,
+			LongitudeDegree:   21.0,
+			AltitudeM:         31.0,
+			RelativeAltitudeM: 41.0,
 		},
 		{
-			Latitude:         12.0,
-			Longitude:        22.0,
-			Altitude:         32.0,
-			RelativeAltitude: 42.0,
+			LatitudeDegree:    12.0,
+			LongitudeDegree:   22.0,
+			AltitudeM:         32.0,
+			RelativeAltitudeM: 42.0,
 		},
 	}
 	a.Equal(expectPositions, resPositions)

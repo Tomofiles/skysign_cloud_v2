@@ -123,10 +123,10 @@ func TestTelemetryUpdaterPosition(t *testing.T) {
 	)
 
 	response1 := &model.Position{
-		Latitude:         1.0,
-		Longitude:        2.0,
-		Altitude:         3.0,
-		RelativeAltitude: 4.0,
+		LatitudeDegree:    1.0,
+		LongitudeDegree:   2.0,
+		AltitudeM:         3.0,
+		RelativeAltitudeM: 4.0,
 	}
 	positionStream <- response1
 	close(positionStream)
@@ -135,10 +135,10 @@ func TestTelemetryUpdaterPosition(t *testing.T) {
 
 	expectTelemetry := model.NewTelemetry()
 	expectTelemetry.SetPosition(&model.Position{
-		Latitude:         1.0,
-		Longitude:        2.0,
-		Altitude:         3.0,
-		RelativeAltitude: 4.0,
+		LatitudeDegree:    1.0,
+		LongitudeDegree:   2.0,
+		AltitudeM:         3.0,
+		RelativeAltitudeM: 4.0,
 	})
 
 	a.Equal(expectTelemetry, tlm)
@@ -268,9 +268,9 @@ func TestTelemetryUpdaterVelocity(t *testing.T) {
 	)
 
 	response1 := &model.Velocity{
-		North: 1.0,
-		East:  2.0,
-		Down:  3.0,
+		NorthMS: 1.0,
+		EastMS:  2.0,
+		DownMS:  3.0,
 	}
 	velocityStream <- response1
 	close(velocityStream)
@@ -280,7 +280,7 @@ func TestTelemetryUpdaterVelocity(t *testing.T) {
 	snapshot, err := tlm.Get()
 
 	a.Nil(err)
-	a.Equal(math.Sqrt(1.0*1.0+2.0*2.0), snapshot.State.Speed) // GroundSpeed = √n^2+e^2）
+	a.Equal(math.Sqrt(1.0*1.0+2.0*2.0), snapshot.State.SpeedMS) // GroundSpeed = √n^2+e^2）
 	a.Equal([]string{"telemetry VELOCITY close"}, supportMock.messages)
 }
 
@@ -423,10 +423,10 @@ func TestTelemetryGet(t *testing.T) {
 	tlm := model.NewTelemetry()
 	tlm.SetConnectionState(&model.ConnectionState{VehicleID: DefaultEdgeVehicleID})
 	tlm.SetPosition(&model.Position{
-		Latitude:         1.0,
-		Longitude:        2.0,
-		Altitude:         3.0,
-		RelativeAltitude: 4.0,
+		LatitudeDegree:    1.0,
+		LongitudeDegree:   2.0,
+		AltitudeM:         3.0,
+		RelativeAltitudeM: 4.0,
 	})
 	tlm.SetQuaternion(&model.Quaternion{
 		X: 6.0,
@@ -435,9 +435,9 @@ func TestTelemetryGet(t *testing.T) {
 		W: 9.0,
 	})
 	tlm.SetVelocity(&model.Velocity{
-		North: 1.0,
-		East:  2.0,
-		Down:  3.0,
+		NorthMS: 1.0,
+		EastMS:  2.0,
+		DownMS:  3.0,
 	})
 	tlm.SetArmed(&model.Armed{
 		Armed: true,
@@ -451,17 +451,17 @@ func TestTelemetryGet(t *testing.T) {
 	expectTelemetry := &model.PushTelemetry{
 		ID: DefaultEdgeVehicleID,
 		State: &model.State{
-			Latitude:         1.0,
-			Longitude:        2.0,
-			Altitude:         3.0,
-			RelativeAltitude: 4.0,
-			Speed:            math.Sqrt(1.0*1.0 + 2.0*2.0),
-			Armed:            true,
-			FlightMode:       "XXX",
-			OrientationX:     6.0,
-			OrientationY:     7.0,
-			OrientationZ:     8.0,
-			OrientationW:     9.0,
+			LatitudeDegree:    1.0,
+			LongitudeDegree:   2.0,
+			AltitudeM:         3.0,
+			RelativeAltitudeM: 4.0,
+			SpeedMS:           math.Sqrt(1.0*1.0 + 2.0*2.0),
+			Armed:             true,
+			FlightMode:        "XXX",
+			OrientationX:      6.0,
+			OrientationY:      7.0,
+			OrientationZ:      8.0,
+			OrientationW:      9.0,
 		},
 	}
 

@@ -45,10 +45,10 @@ func GetUploadMission(
 	}
 	for _, waypoint := range response.Waypoints {
 		mission.Waypoints = append(mission.Waypoints, &model.Waypoints{
-			Latitude:       waypoint.Latitude,
-			Longitude:      waypoint.Longitude,
-			RelativeHeight: waypoint.RelativeHeight,
-			Speed:          waypoint.Speed,
+			LatitudeDegree:    waypoint.Latitude,
+			LongitudeDegree:   waypoint.Longitude,
+			RelativeAltitudeM: waypoint.RelativeHeight,
+			SpeedMS:           waypoint.Speed,
 		})
 	}
 

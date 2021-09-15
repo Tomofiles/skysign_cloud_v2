@@ -34,10 +34,10 @@ func AdapterUploadInternal(ctx context.Context, mission mavsdk_rpc_mission.Missi
 	for _, waypoint := range missionModel.Waypoints {
 		missionItems = append(missionItems,
 			&mavsdk_rpc_mission.MissionItem{
-				LatitudeDeg:       waypoint.Latitude,
-				LongitudeDeg:      waypoint.Longitude,
-				RelativeAltitudeM: float32(waypoint.RelativeHeight),
-				SpeedMS:           float32(waypoint.Speed),
+				LatitudeDeg:       waypoint.LatitudeDegree,
+				LongitudeDeg:      waypoint.LongitudeDegree,
+				RelativeAltitudeM: float32(waypoint.RelativeAltitudeM),
+				SpeedMS:           float32(waypoint.SpeedMS),
 			},
 		)
 	}

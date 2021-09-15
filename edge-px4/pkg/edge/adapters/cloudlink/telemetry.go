@@ -26,11 +26,11 @@ func PushTelemetry(
 	request := json.Marshal(&skysign_proto.PushTelemetryRequest{
 		Id: snapshot.ID,
 		Telemetry: &skysign_proto.Telemetry{
-			Latitude:         snapshot.State.Latitude,
-			Longitude:        snapshot.State.Longitude,
-			Altitude:         snapshot.State.Altitude,
-			RelativeAltitude: snapshot.State.RelativeAltitude,
-			Speed:            snapshot.State.Speed,
+			Latitude:         snapshot.State.LatitudeDegree,
+			Longitude:        snapshot.State.LongitudeDegree,
+			Altitude:         snapshot.State.AltitudeM,
+			RelativeAltitude: snapshot.State.RelativeAltitudeM,
+			Speed:            snapshot.State.SpeedMS,
 			Armed:            snapshot.State.Armed,
 			FlightMode:       snapshot.State.FlightMode,
 			OrientationX:     snapshot.State.OrientationX,
