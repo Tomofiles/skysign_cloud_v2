@@ -38,7 +38,7 @@ func TestCopyMission(t *testing.T) {
 	gen := &generatorMock{
 		uploadID: NewUploadID,
 	}
-	navigation := NewNavigation(DefaultTakeoffPointGroundHeightWGS84EllipsoidM)
+	navigation := NewNavigation(DefaultTakeoffPointGroundAltitudeM)
 	navigation.uploadID = DefaultUploadID
 	navigation.PushNextWaypoint(11.0, 21.0, 31.0, 41.0)
 	navigation.PushNextWaypoint(12.0, 22.0, 32.0, 42.0)
@@ -54,7 +54,7 @@ func TestCopyMission(t *testing.T) {
 	}
 	mission := Copy(gen, CopiedID, original)
 
-	expectNav := NewNavigation(DefaultTakeoffPointGroundHeightWGS84EllipsoidM)
+	expectNav := NewNavigation(DefaultTakeoffPointGroundAltitudeM)
 	expectNav.uploadID = NewUploadID
 	expectNav.PushNextWaypoint(11.0, 21.0, 31.0, 41.0)
 	expectNav.PushNextWaypoint(12.0, 22.0, 32.0, 42.0)
@@ -79,28 +79,28 @@ func TestMissionAssembleFromComponent(t *testing.T) {
 		id:   string(DefaultID),
 		name: DefaultName,
 		navigation: navigationComponentMock{
-			takeoffPointGroundHeightWGS84EllipsoidM: DefaultTakeoffPointGroundHeightWGS84EllipsoidM,
+			takeoffPointGroundAltitudeM: DefaultTakeoffPointGroundAltitudeM,
 			waypoints: []waypointComponentMock{
 				{
-					pointOrder:      1,
-					latitudeDegree:  11.0,
-					longitudeDegree: 21.0,
-					relativeHeightM: 31.0,
-					speedMS:         41.0,
+					pointOrder:        1,
+					latitudeDegree:    11.0,
+					longitudeDegree:   21.0,
+					relativeAltitudeM: 31.0,
+					speedMS:           41.0,
 				},
 				{
-					pointOrder:      2,
-					latitudeDegree:  12.0,
-					longitudeDegree: 22.0,
-					relativeHeightM: 32.0,
-					speedMS:         42.0,
+					pointOrder:        2,
+					latitudeDegree:    12.0,
+					longitudeDegree:   22.0,
+					relativeAltitudeM: 32.0,
+					speedMS:           42.0,
 				},
 				{
-					pointOrder:      3,
-					latitudeDegree:  13.0,
-					longitudeDegree: 23.0,
-					relativeHeightM: 33.0,
-					speedMS:         43.0,
+					pointOrder:        3,
+					latitudeDegree:    13.0,
+					longitudeDegree:   23.0,
+					relativeAltitudeM: 33.0,
+					speedMS:           43.0,
 				},
 			},
 			uploadID: string(DefaultUploadID),
@@ -114,7 +114,7 @@ func TestMissionAssembleFromComponent(t *testing.T) {
 	}
 	mission := AssembleFrom(gen, comp)
 
-	expectNav := NewNavigation(DefaultTakeoffPointGroundHeightWGS84EllipsoidM)
+	expectNav := NewNavigation(DefaultTakeoffPointGroundAltitudeM)
 	expectNav.uploadID = DefaultUploadID
 	expectNav.PushNextWaypoint(11.0, 21.0, 31.0, 41.0)
 	expectNav.PushNextWaypoint(12.0, 22.0, 32.0, 42.0)
@@ -135,7 +135,7 @@ func TestMissionAssembleFromComponent(t *testing.T) {
 func TestTakeApartMission(t *testing.T) {
 	a := assert.New(t)
 
-	navigation := NewNavigation(DefaultTakeoffPointGroundHeightWGS84EllipsoidM)
+	navigation := NewNavigation(DefaultTakeoffPointGroundAltitudeM)
 	navigation.uploadID = DefaultUploadID
 	navigation.PushNextWaypoint(11.0, 21.0, 31.0, 41.0)
 	navigation.PushNextWaypoint(12.0, 22.0, 32.0, 42.0)
@@ -160,19 +160,19 @@ func TestTakeApartMission(t *testing.T) {
 			comp.isCarbonCopy = isCarbonCopy
 			comp.version = version
 		},
-		func(takeoffPointGroundHeightWGS84EllipsoidM float64, uploadID string) {
-			comp.navigation.takeoffPointGroundHeightWGS84EllipsoidM = takeoffPointGroundHeightWGS84EllipsoidM
+		func(takeoffPointGroundAltitudeM float64, uploadID string) {
+			comp.navigation.takeoffPointGroundAltitudeM = takeoffPointGroundAltitudeM
 			comp.navigation.uploadID = uploadID
 		},
-		func(pointOrder int, latitudeDegree, longitudeDegree, relativeHeightM, speedMS float64) {
+		func(pointOrder int, latitudeDegree, longitudeDegree, relativeAltitudeM, speedMS float64) {
 			comp.navigation.waypoints = append(
 				comp.navigation.waypoints,
 				waypointComponentMock{
-					pointOrder:      pointOrder,
-					latitudeDegree:  latitudeDegree,
-					longitudeDegree: longitudeDegree,
-					relativeHeightM: relativeHeightM,
-					speedMS:         speedMS,
+					pointOrder:        pointOrder,
+					latitudeDegree:    latitudeDegree,
+					longitudeDegree:   longitudeDegree,
+					relativeAltitudeM: relativeAltitudeM,
+					speedMS:           speedMS,
 				},
 			)
 		},
@@ -182,28 +182,28 @@ func TestTakeApartMission(t *testing.T) {
 		id:   string(DefaultID),
 		name: DefaultName,
 		navigation: navigationComponentMock{
-			takeoffPointGroundHeightWGS84EllipsoidM: DefaultTakeoffPointGroundHeightWGS84EllipsoidM,
+			takeoffPointGroundAltitudeM: DefaultTakeoffPointGroundAltitudeM,
 			waypoints: []waypointComponentMock{
 				{
-					pointOrder:      1,
-					latitudeDegree:  11.0,
-					longitudeDegree: 21.0,
-					relativeHeightM: 31.0,
-					speedMS:         41.0,
+					pointOrder:        1,
+					latitudeDegree:    11.0,
+					longitudeDegree:   21.0,
+					relativeAltitudeM: 31.0,
+					speedMS:           41.0,
 				},
 				{
-					pointOrder:      2,
-					latitudeDegree:  12.0,
-					longitudeDegree: 22.0,
-					relativeHeightM: 32.0,
-					speedMS:         42.0,
+					pointOrder:        2,
+					latitudeDegree:    12.0,
+					longitudeDegree:   22.0,
+					relativeAltitudeM: 32.0,
+					speedMS:           42.0,
 				},
 				{
-					pointOrder:      3,
-					latitudeDegree:  13.0,
-					longitudeDegree: 23.0,
-					relativeHeightM: 33.0,
-					speedMS:         43.0,
+					pointOrder:        3,
+					latitudeDegree:    13.0,
+					longitudeDegree:   23.0,
+					relativeAltitudeM: 33.0,
+					speedMS:           43.0,
 				},
 			},
 			uploadID: string(DefaultUploadID),

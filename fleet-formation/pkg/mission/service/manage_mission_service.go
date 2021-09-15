@@ -58,17 +58,17 @@ type Mission interface {
 
 // Navigation .
 type Navigation interface {
-	GetTakeoffPointGroundHeight() float64
+	GetTakeoffPointGroundAltitudeM() float64
 	GetWaypoints() []Waypoint
 	GetUploadID() string
 }
 
 // Waypoint .
 type Waypoint interface {
-	GetLatitude() float64
-	GetLongitude() float64
-	GetRelativeHeight() float64
-	GetSpeed() float64
+	GetLatitudeDegree() float64
+	GetLongitudeDegree() float64
+	GetRelativeAltitudeM() float64
+	GetSpeedMS() float64
 }
 
 // CreatedID .
@@ -376,34 +376,34 @@ func (f *mission) GetName() string {
 func (f *mission) GetNavigation() Navigation {
 	waypoints := []waypoint{}
 	f.mission.GetNavigation().ProvideWaypointsInterest(
-		func(pointOrder int, latitudeDegree, longitudeDegree, relativeHeightM, speedMS float64) {
+		func(pointOrder int, latitudeDegree, longitudeDegree, relativeAltitudeM, speedMS float64) {
 			waypoints = append(
 				waypoints,
 				waypoint{
-					latitude:       latitudeDegree,
-					longitude:      longitudeDegree,
-					relativeHeight: relativeHeightM,
-					speed:          speedMS,
+					latitudeDegree:    latitudeDegree,
+					longitudeDegree:   longitudeDegree,
+					relativeAltitudeM: relativeAltitudeM,
+					speedMS:           speedMS,
 				},
 			)
 		},
 	)
 	navigation := &navigation{
-		takeoffPointGroundHeight: f.mission.GetNavigation().GetTakeoffPointGroundHeightWGS84EllipsoidM(),
-		waypoints:                waypoints,
-		uploadID:                 string(f.mission.GetNavigation().GetUploadID()),
+		takeoffPointGroundAltitudeM: f.mission.GetNavigation().GetTakeoffPointGroundAltitudeM(),
+		waypoints:                   waypoints,
+		uploadID:                    string(f.mission.GetNavigation().GetUploadID()),
 	}
 	return navigation
 }
 
 type navigation struct {
-	takeoffPointGroundHeight float64
-	waypoints                []waypoint
-	uploadID                 string
+	takeoffPointGroundAltitudeM float64
+	waypoints                   []waypoint
+	uploadID                    string
 }
 
-func (f *navigation) GetTakeoffPointGroundHeight() float64 {
-	return f.takeoffPointGroundHeight
+func (f *navigation) GetTakeoffPointGroundAltitudeM() float64 {
+	return f.takeoffPointGroundAltitudeM
 }
 
 func (f *navigation) GetWaypoints() []Waypoint {
@@ -412,10 +412,10 @@ func (f *navigation) GetWaypoints() []Waypoint {
 		waypoints = append(
 			waypoints,
 			&waypoint{
-				latitude:       w.latitude,
-				longitude:      w.longitude,
-				relativeHeight: w.relativeHeight,
-				speed:          w.speed,
+				latitudeDegree:    w.latitudeDegree,
+				longitudeDegree:   w.longitudeDegree,
+				relativeAltitudeM: w.relativeAltitudeM,
+				speedMS:           w.speedMS,
 			},
 		)
 	}
@@ -427,24 +427,24 @@ func (f *navigation) GetUploadID() string {
 }
 
 type waypoint struct {
-	latitude       float64
-	longitude      float64
-	relativeHeight float64
-	speed          float64
+	latitudeDegree    float64
+	longitudeDegree   float64
+	relativeAltitudeM float64
+	speedMS           float64
 }
 
-func (f *waypoint) GetLatitude() float64 {
-	return f.latitude
+func (f *waypoint) GetLatitudeDegree() float64 {
+	return f.latitudeDegree
 }
 
-func (f *waypoint) GetLongitude() float64 {
-	return f.longitude
+func (f *waypoint) GetLongitudeDegree() float64 {
+	return f.longitudeDegree
 }
 
-func (f *waypoint) GetRelativeHeight() float64 {
-	return f.relativeHeight
+func (f *waypoint) GetRelativeAltitudeM() float64 {
+	return f.relativeAltitudeM
 }
 
-func (f *waypoint) GetSpeed() float64 {
-	return f.speed
+func (f *waypoint) GetSpeedMS() float64 {
+	return f.speedMS
 }

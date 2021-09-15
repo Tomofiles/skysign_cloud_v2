@@ -15,14 +15,14 @@ func TestNoNavigationTransformerFromCommand(t *testing.T) {
 			ID:   string(DefaultMissionID),
 			Name: DefaultMissionName,
 			Navigation: navigationMock{
-				TakeoffPointGroundHeight: DefaultMissionTakeoffPointGroundHeightWGS84EllipsoidM,
-				Waypoints:                []waypointMock{},
+				TakeoffPointGroundAltitudeM: DefaultMissionTakeoffPointGroundAltitudeM,
+				Waypoints:                   []waypointMock{},
 			},
 		},
 	}
 	navigation := NavigationTransformerFromCommand(command.GetMission())
 
-	expectNav := m.NewNavigation(DefaultMissionTakeoffPointGroundHeightWGS84EllipsoidM)
+	expectNav := m.NewNavigation(DefaultMissionTakeoffPointGroundAltitudeM)
 
 	a.Equal(navigation, expectNav)
 }
@@ -35,13 +35,13 @@ func TestSingleNavigationTransformerFromCommand(t *testing.T) {
 			ID:   string(DefaultMissionID),
 			Name: DefaultMissionName,
 			Navigation: navigationMock{
-				TakeoffPointGroundHeight: DefaultMissionTakeoffPointGroundHeightWGS84EllipsoidM,
+				TakeoffPointGroundAltitudeM: DefaultMissionTakeoffPointGroundAltitudeM,
 				Waypoints: []waypointMock{
 					{
-						Latitude:       11.0,
-						Longitude:      21.0,
-						RelativeHeight: 31.0,
-						Speed:          41.0,
+						LatitudeDegree:    11.0,
+						LongitudeDegree:   21.0,
+						RelativeAltitudeM: 31.0,
+						SpeedMS:           41.0,
 					},
 				},
 			},
@@ -49,7 +49,7 @@ func TestSingleNavigationTransformerFromCommand(t *testing.T) {
 	}
 	navigation := NavigationTransformerFromCommand(command.GetMission())
 
-	expectNav := m.NewNavigation(DefaultMissionTakeoffPointGroundHeightWGS84EllipsoidM)
+	expectNav := m.NewNavigation(DefaultMissionTakeoffPointGroundAltitudeM)
 	expectNav.PushNextWaypoint(11.0, 21.0, 31.0, 41.0)
 
 	a.Equal(navigation, expectNav)
@@ -63,25 +63,25 @@ func TestMultipleNavigationTransformerFromCommand(t *testing.T) {
 			ID:   string(DefaultMissionID),
 			Name: DefaultMissionName,
 			Navigation: navigationMock{
-				TakeoffPointGroundHeight: DefaultMissionTakeoffPointGroundHeightWGS84EllipsoidM,
+				TakeoffPointGroundAltitudeM: DefaultMissionTakeoffPointGroundAltitudeM,
 				Waypoints: []waypointMock{
 					{
-						Latitude:       11.0,
-						Longitude:      21.0,
-						RelativeHeight: 31.0,
-						Speed:          41.0,
+						LatitudeDegree:    11.0,
+						LongitudeDegree:   21.0,
+						RelativeAltitudeM: 31.0,
+						SpeedMS:           41.0,
 					},
 					{
-						Latitude:       12.0,
-						Longitude:      22.0,
-						RelativeHeight: 32.0,
-						Speed:          42.0,
+						LatitudeDegree:    12.0,
+						LongitudeDegree:   22.0,
+						RelativeAltitudeM: 32.0,
+						SpeedMS:           42.0,
 					},
 					{
-						Latitude:       13.0,
-						Longitude:      23.0,
-						RelativeHeight: 33.0,
-						Speed:          43.0,
+						LatitudeDegree:    13.0,
+						LongitudeDegree:   23.0,
+						RelativeAltitudeM: 33.0,
+						SpeedMS:           43.0,
 					},
 				},
 			},
@@ -89,7 +89,7 @@ func TestMultipleNavigationTransformerFromCommand(t *testing.T) {
 	}
 	navigation := NavigationTransformerFromCommand(command.GetMission())
 
-	expectNav := m.NewNavigation(DefaultMissionTakeoffPointGroundHeightWGS84EllipsoidM)
+	expectNav := m.NewNavigation(DefaultMissionTakeoffPointGroundAltitudeM)
 	expectNav.PushNextWaypoint(11.0, 21.0, 31.0, 41.0)
 	expectNav.PushNextWaypoint(12.0, 22.0, 32.0, 42.0)
 	expectNav.PushNextWaypoint(13.0, 23.0, 33.0, 43.0)

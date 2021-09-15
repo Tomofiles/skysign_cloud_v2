@@ -10,17 +10,17 @@ import (
 func TestCreateNewNavigation(t *testing.T) {
 	a := assert.New(t)
 
-	navigation := NewNavigation(DefaultTakeoffPointGroundHeightWGS84EllipsoidM)
+	navigation := NewNavigation(DefaultTakeoffPointGroundAltitudeM)
 
 	var resCall bool
 	navigation.ProvideWaypointsInterest(
-		func(pointOrder int, latitudeDegree, longitudeDegree, relativeHeightM, speedMS float64) {
+		func(pointOrder int, latitudeDegree, longitudeDegree, relativeAltitudeM, speedMS float64) {
 			resCall = true
 		},
 	)
 
 	a.Equal(navigation.currentOrder, 0)
-	a.Equal(navigation.takeoffPointGroundHeightWGS84EllipsoidM, NewHeightFromM(DefaultTakeoffPointGroundHeightWGS84EllipsoidM))
+	a.Equal(navigation.takeoffPointGroundAltitudeM, NewAltitudeFromM(DefaultTakeoffPointGroundAltitudeM))
 	a.Len(navigation.waypoints, 0)
 	a.Empty(navigation.uploadID)
 	a.False(resCall)
@@ -31,39 +31,39 @@ func TestCreateNewNavigation(t *testing.T) {
 func TestCreateAndPushSingleWaypointNavigation(t *testing.T) {
 	a := assert.New(t)
 
-	navigation := NewNavigation(DefaultTakeoffPointGroundHeightWGS84EllipsoidM)
+	navigation := NewNavigation(DefaultTakeoffPointGroundAltitudeM)
 	navigation.PushNextWaypoint(11.0, 21.0, 31.0, 41.0)
 
 	var wpComp waypointComponentMock
 	navigation.ProvideWaypointsInterest(
-		func(pointOrder int, latitudeDegree, longitudeDegree, relativeHeightM, speedMS float64) {
+		func(pointOrder int, latitudeDegree, longitudeDegree, relativeAltitudeM, speedMS float64) {
 			wpComp.pointOrder = pointOrder
 			wpComp.latitudeDegree = latitudeDegree
 			wpComp.longitudeDegree = longitudeDegree
-			wpComp.relativeHeightM = relativeHeightM
+			wpComp.relativeAltitudeM = relativeAltitudeM
 			wpComp.speedMS = speedMS
 		},
 	)
 
 	expectNav := []Waypoint{
 		{
-			pointOrder:     1,
-			coordinates:    NewGeodesicCoordinatesFromDegree(11.0, 21.0),
-			relativeHeight: NewHeightFromM(31.0),
-			speed:          NewSpeedFromMS(41.0),
+			pointOrder:       1,
+			coordinates:      NewGeodesicCoordinatesFromDegree(11.0, 21.0),
+			relativeAltitude: NewAltitudeFromM(31.0),
+			speed:            NewSpeedFromMS(41.0),
 		},
 	}
 
 	expectWp := waypointComponentMock{
-		pointOrder:      1,
-		latitudeDegree:  11.0,
-		longitudeDegree: 21.0,
-		relativeHeightM: 31.0,
-		speedMS:         41.0,
+		pointOrder:        1,
+		latitudeDegree:    11.0,
+		longitudeDegree:   21.0,
+		relativeAltitudeM: 31.0,
+		speedMS:           41.0,
 	}
 
 	a.Equal(navigation.currentOrder, 1)
-	a.Equal(navigation.takeoffPointGroundHeightWGS84EllipsoidM, NewHeightFromM(DefaultTakeoffPointGroundHeightWGS84EllipsoidM))
+	a.Equal(navigation.takeoffPointGroundAltitudeM, NewAltitudeFromM(DefaultTakeoffPointGroundAltitudeM))
 	a.Len(navigation.waypoints, 1)
 	a.Equal(navigation.waypoints, expectNav)
 	a.Equal(wpComp, expectWp)
@@ -74,22 +74,22 @@ func TestCreateAndPushSingleWaypointNavigation(t *testing.T) {
 func TestCreateAndPushMultipleWaypointsNavigation(t *testing.T) {
 	a := assert.New(t)
 
-	navigation := NewNavigation(DefaultTakeoffPointGroundHeightWGS84EllipsoidM)
+	navigation := NewNavigation(DefaultTakeoffPointGroundAltitudeM)
 	navigation.PushNextWaypoint(11.0, 21.0, 31.0, 41.0)
 	navigation.PushNextWaypoint(12.0, 22.0, 32.0, 42.0)
 	navigation.PushNextWaypoint(13.0, 23.0, 33.0, 43.0)
 
 	var wpComps []waypointComponentMock
 	navigation.ProvideWaypointsInterest(
-		func(pointOrder int, latitudeDegree, longitudeDegree, relativeHeightM, speedMS float64) {
+		func(pointOrder int, latitudeDegree, longitudeDegree, relativeAltitudeM, speedMS float64) {
 			wpComps = append(
 				wpComps,
 				waypointComponentMock{
-					pointOrder:      pointOrder,
-					latitudeDegree:  latitudeDegree,
-					longitudeDegree: longitudeDegree,
-					relativeHeightM: relativeHeightM,
-					speedMS:         speedMS,
+					pointOrder:        pointOrder,
+					latitudeDegree:    latitudeDegree,
+					longitudeDegree:   longitudeDegree,
+					relativeAltitudeM: relativeAltitudeM,
+					speedMS:           speedMS,
 				},
 			)
 		},
@@ -97,51 +97,51 @@ func TestCreateAndPushMultipleWaypointsNavigation(t *testing.T) {
 
 	expectNav := []Waypoint{
 		{
-			pointOrder:     1,
-			coordinates:    NewGeodesicCoordinatesFromDegree(11.0, 21.0),
-			relativeHeight: NewHeightFromM(31.0),
-			speed:          NewSpeedFromMS(41.0),
+			pointOrder:       1,
+			coordinates:      NewGeodesicCoordinatesFromDegree(11.0, 21.0),
+			relativeAltitude: NewAltitudeFromM(31.0),
+			speed:            NewSpeedFromMS(41.0),
 		},
 		{
-			pointOrder:     2,
-			coordinates:    NewGeodesicCoordinatesFromDegree(12.0, 22.0),
-			relativeHeight: NewHeightFromM(32.0),
-			speed:          NewSpeedFromMS(42.0),
+			pointOrder:       2,
+			coordinates:      NewGeodesicCoordinatesFromDegree(12.0, 22.0),
+			relativeAltitude: NewAltitudeFromM(32.0),
+			speed:            NewSpeedFromMS(42.0),
 		},
 		{
-			pointOrder:     3,
-			coordinates:    NewGeodesicCoordinatesFromDegree(13.0, 23.0),
-			relativeHeight: NewHeightFromM(33.0),
-			speed:          NewSpeedFromMS(43.0),
+			pointOrder:       3,
+			coordinates:      NewGeodesicCoordinatesFromDegree(13.0, 23.0),
+			relativeAltitude: NewAltitudeFromM(33.0),
+			speed:            NewSpeedFromMS(43.0),
 		},
 	}
 
 	expectWps := []waypointComponentMock{
 		{
-			pointOrder:      1,
-			latitudeDegree:  11.0,
-			longitudeDegree: 21.0,
-			relativeHeightM: 31.0,
-			speedMS:         41.0,
+			pointOrder:        1,
+			latitudeDegree:    11.0,
+			longitudeDegree:   21.0,
+			relativeAltitudeM: 31.0,
+			speedMS:           41.0,
 		},
 		{
-			pointOrder:      2,
-			latitudeDegree:  12.0,
-			longitudeDegree: 22.0,
-			relativeHeightM: 32.0,
-			speedMS:         42.0,
+			pointOrder:        2,
+			latitudeDegree:    12.0,
+			longitudeDegree:   22.0,
+			relativeAltitudeM: 32.0,
+			speedMS:           42.0,
 		},
 		{
-			pointOrder:      3,
-			latitudeDegree:  13.0,
-			longitudeDegree: 23.0,
-			relativeHeightM: 33.0,
-			speedMS:         43.0,
+			pointOrder:        3,
+			latitudeDegree:    13.0,
+			longitudeDegree:   23.0,
+			relativeAltitudeM: 33.0,
+			speedMS:           43.0,
 		},
 	}
 
 	a.Equal(navigation.currentOrder, 3)
-	a.Equal(navigation.takeoffPointGroundHeightWGS84EllipsoidM, NewHeightFromM(DefaultTakeoffPointGroundHeightWGS84EllipsoidM))
+	a.Equal(navigation.takeoffPointGroundAltitudeM, NewAltitudeFromM(DefaultTakeoffPointGroundAltitudeM))
 	a.Len(navigation.waypoints, 3)
 	a.Equal(navigation.waypoints, expectNav)
 	a.Equal(wpComps, expectWps)

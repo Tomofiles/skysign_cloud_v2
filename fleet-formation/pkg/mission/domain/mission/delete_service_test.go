@@ -20,7 +20,7 @@ func TestDeleteMissionService(t *testing.T) {
 	gen := &generatorMock{
 		versions: []Version{DefaultVersion},
 	}
-	testNav := NewNavigation(DefaultTakeoffPointGroundHeightWGS84EllipsoidM)
+	testNav := NewNavigation(DefaultTakeoffPointGroundAltitudeM)
 	testNav.uploadID = DefaultUploadID
 	testMission := Mission{
 		id:           DefaultID,
@@ -82,7 +82,7 @@ func TestDeleteErrorWhenDeleteMissionService(t *testing.T) {
 	testMission := Mission{
 		id:           DefaultID,
 		name:         DefaultName,
-		navigation:   NewNavigation(DefaultTakeoffPointGroundHeightWGS84EllipsoidM),
+		navigation:   NewNavigation(DefaultTakeoffPointGroundAltitudeM),
 		isCarbonCopy: Original,
 		version:      DefaultVersion,
 		newVersion:   DefaultVersion,
@@ -113,7 +113,7 @@ func TestCannnotDeleteErrorWhenDeleteMissionService(t *testing.T) {
 	testMission := Mission{
 		id:           DefaultID,
 		name:         DefaultName,
-		navigation:   NewNavigation(DefaultTakeoffPointGroundHeightWGS84EllipsoidM),
+		navigation:   NewNavigation(DefaultTakeoffPointGroundAltitudeM),
 		isCarbonCopy: CarbonCopy,
 		version:      DefaultVersion,
 		newVersion:   DefaultVersion,

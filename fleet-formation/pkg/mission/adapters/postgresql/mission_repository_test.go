@@ -54,31 +54,31 @@ func TestMissionRepositoryGetSingleWhenGetAll(t *testing.T) {
 
 	waypointComps := []waypointComponentMock{
 		{
-			PointOrder:      1,
-			LatitudeDegree:  11.0,
-			LongitudeDegree: 21.0,
-			RelativeHeightM: 31.0,
-			SpeedMS:         41.0,
+			PointOrder:        1,
+			LatitudeDegree:    11.0,
+			LongitudeDegree:   21.0,
+			RelativeAltitudeM: 31.0,
+			SpeedMS:           41.0,
 		},
 		{
-			PointOrder:      2,
-			LatitudeDegree:  12.0,
-			LongitudeDegree: 22.0,
-			RelativeHeightM: 32.0,
-			SpeedMS:         42.0,
+			PointOrder:        2,
+			LatitudeDegree:    12.0,
+			LongitudeDegree:   22.0,
+			RelativeAltitudeM: 32.0,
+			SpeedMS:           42.0,
 		},
 		{
-			PointOrder:      3,
-			LatitudeDegree:  13.0,
-			LongitudeDegree: 23.0,
-			RelativeHeightM: 33.0,
-			SpeedMS:         43.0,
+			PointOrder:        3,
+			LatitudeDegree:    13.0,
+			LongitudeDegree:   23.0,
+			RelativeAltitudeM: 33.0,
+			SpeedMS:           43.0,
 		},
 	}
 	navigationComp := navigationComponentMock{
-		TakeoffPointGroundHeightWGS84EllipsoidM: DefaultMissionTakeoffPointGroundAltitudeM,
-		Waypoints:                               waypointComps,
-		UploadID:                                string(DefaultMissionUploadID),
+		TakeoffPointGroundAltitudeM: DefaultMissionTakeoffPointGroundAltitudeM,
+		Waypoints:                   waypointComps,
+		UploadID:                    string(DefaultMissionUploadID),
 	}
 	missionComp := missionComponentMock{
 		ID:           string(DefaultMissionID),
@@ -191,31 +191,31 @@ func TestMissionRepositoryGetMultipleWhenGetAll(t *testing.T) {
 
 	waypointComps := []waypointComponentMock{
 		{
-			PointOrder:      1,
-			LatitudeDegree:  11.0,
-			LongitudeDegree: 21.0,
-			RelativeHeightM: 31.0,
-			SpeedMS:         41.0,
+			PointOrder:        1,
+			LatitudeDegree:    11.0,
+			LongitudeDegree:   21.0,
+			RelativeAltitudeM: 31.0,
+			SpeedMS:           41.0,
 		},
 		{
-			PointOrder:      2,
-			LatitudeDegree:  12.0,
-			LongitudeDegree: 22.0,
-			RelativeHeightM: 32.0,
-			SpeedMS:         42.0,
+			PointOrder:        2,
+			LatitudeDegree:    12.0,
+			LongitudeDegree:   22.0,
+			RelativeAltitudeM: 32.0,
+			SpeedMS:           42.0,
 		},
 		{
-			PointOrder:      3,
-			LatitudeDegree:  13.0,
-			LongitudeDegree: 23.0,
-			RelativeHeightM: 33.0,
-			SpeedMS:         43.0,
+			PointOrder:        3,
+			LatitudeDegree:    13.0,
+			LongitudeDegree:   23.0,
+			RelativeAltitudeM: 33.0,
+			SpeedMS:           43.0,
 		},
 	}
 	navigationComp := navigationComponentMock{
-		TakeoffPointGroundHeightWGS84EllipsoidM: DefaultMissionTakeoffPointGroundAltitudeM,
-		Waypoints:                               waypointComps,
-		UploadID:                                string(DefaultMissionUploadID),
+		TakeoffPointGroundAltitudeM: DefaultMissionTakeoffPointGroundAltitudeM,
+		Waypoints:                   waypointComps,
+		UploadID:                    string(DefaultMissionUploadID),
 	}
 	missionComp1 := missionComponentMock{
 		ID:           string(DefaultMissionID1),
@@ -325,31 +325,31 @@ func TestMissionRepositoryGetSingleWhenGetAllOrigin(t *testing.T) {
 
 	waypointComps := []waypointComponentMock{
 		{
-			PointOrder:      1,
-			LatitudeDegree:  11.0,
-			LongitudeDegree: 21.0,
-			RelativeHeightM: 31.0,
-			SpeedMS:         41.0,
+			PointOrder:        1,
+			LatitudeDegree:    11.0,
+			LongitudeDegree:   21.0,
+			RelativeAltitudeM: 31.0,
+			SpeedMS:           41.0,
 		},
 		{
-			PointOrder:      2,
-			LatitudeDegree:  12.0,
-			LongitudeDegree: 22.0,
-			RelativeHeightM: 32.0,
-			SpeedMS:         42.0,
+			PointOrder:        2,
+			LatitudeDegree:    12.0,
+			LongitudeDegree:   22.0,
+			RelativeAltitudeM: 32.0,
+			SpeedMS:           42.0,
 		},
 		{
-			PointOrder:      3,
-			LatitudeDegree:  13.0,
-			LongitudeDegree: 23.0,
-			RelativeHeightM: 33.0,
-			SpeedMS:         43.0,
+			PointOrder:        3,
+			LatitudeDegree:    13.0,
+			LongitudeDegree:   23.0,
+			RelativeAltitudeM: 33.0,
+			SpeedMS:           43.0,
 		},
 	}
 	navigationComp := navigationComponentMock{
-		TakeoffPointGroundHeightWGS84EllipsoidM: DefaultMissionTakeoffPointGroundAltitudeM,
-		Waypoints:                               waypointComps,
-		UploadID:                                string(DefaultMissionUploadID),
+		TakeoffPointGroundAltitudeM: DefaultMissionTakeoffPointGroundAltitudeM,
+		Waypoints:                   waypointComps,
+		UploadID:                    string(DefaultMissionUploadID),
 	}
 	missionComp := missionComponentMock{
 		ID:           string(DefaultMissionID),
@@ -462,31 +462,31 @@ func TestMissionRepositoryGetMultipleWhenGetAllOrigin(t *testing.T) {
 
 	waypointComps := []waypointComponentMock{
 		{
-			PointOrder:      1,
-			LatitudeDegree:  11.0,
-			LongitudeDegree: 21.0,
-			RelativeHeightM: 31.0,
-			SpeedMS:         41.0,
+			PointOrder:        1,
+			LatitudeDegree:    11.0,
+			LongitudeDegree:   21.0,
+			RelativeAltitudeM: 31.0,
+			SpeedMS:           41.0,
 		},
 		{
-			PointOrder:      2,
-			LatitudeDegree:  12.0,
-			LongitudeDegree: 22.0,
-			RelativeHeightM: 32.0,
-			SpeedMS:         42.0,
+			PointOrder:        2,
+			LatitudeDegree:    12.0,
+			LongitudeDegree:   22.0,
+			RelativeAltitudeM: 32.0,
+			SpeedMS:           42.0,
 		},
 		{
-			PointOrder:      3,
-			LatitudeDegree:  13.0,
-			LongitudeDegree: 23.0,
-			RelativeHeightM: 33.0,
-			SpeedMS:         43.0,
+			PointOrder:        3,
+			LatitudeDegree:    13.0,
+			LongitudeDegree:   23.0,
+			RelativeAltitudeM: 33.0,
+			SpeedMS:           43.0,
 		},
 	}
 	navigationComp := navigationComponentMock{
-		TakeoffPointGroundHeightWGS84EllipsoidM: DefaultMissionTakeoffPointGroundAltitudeM,
-		Waypoints:                               waypointComps,
-		UploadID:                                string(DefaultMissionUploadID),
+		TakeoffPointGroundAltitudeM: DefaultMissionTakeoffPointGroundAltitudeM,
+		Waypoints:                   waypointComps,
+		UploadID:                    string(DefaultMissionUploadID),
 	}
 	missionComp1 := missionComponentMock{
 		ID:           string(DefaultMissionID1),
@@ -597,31 +597,31 @@ func TestMissionRepositoryGetByID(t *testing.T) {
 
 	waypointComps := []waypointComponentMock{
 		{
-			PointOrder:      1,
-			LatitudeDegree:  11.0,
-			LongitudeDegree: 21.0,
-			RelativeHeightM: 31.0,
-			SpeedMS:         41.0,
+			PointOrder:        1,
+			LatitudeDegree:    11.0,
+			LongitudeDegree:   21.0,
+			RelativeAltitudeM: 31.0,
+			SpeedMS:           41.0,
 		},
 		{
-			PointOrder:      2,
-			LatitudeDegree:  12.0,
-			LongitudeDegree: 22.0,
-			RelativeHeightM: 32.0,
-			SpeedMS:         42.0,
+			PointOrder:        2,
+			LatitudeDegree:    12.0,
+			LongitudeDegree:   22.0,
+			RelativeAltitudeM: 32.0,
+			SpeedMS:           42.0,
 		},
 		{
-			PointOrder:      3,
-			LatitudeDegree:  13.0,
-			LongitudeDegree: 23.0,
-			RelativeHeightM: 33.0,
-			SpeedMS:         43.0,
+			PointOrder:        3,
+			LatitudeDegree:    13.0,
+			LongitudeDegree:   23.0,
+			RelativeAltitudeM: 33.0,
+			SpeedMS:           43.0,
 		},
 	}
 	navigationComp := navigationComponentMock{
-		TakeoffPointGroundHeightWGS84EllipsoidM: DefaultMissionTakeoffPointGroundAltitudeM,
-		Waypoints:                               waypointComps,
-		UploadID:                                string(DefaultMissionUploadID),
+		TakeoffPointGroundAltitudeM: DefaultMissionTakeoffPointGroundAltitudeM,
+		Waypoints:                   waypointComps,
+		UploadID:                    string(DefaultMissionUploadID),
 	}
 	missionComp := missionComponentMock{
 		ID:           string(DefaultMissionID),
@@ -711,17 +711,17 @@ func TestMissionRepositorySingleWaypointCreateSave(t *testing.T) {
 
 	waypointComps := []waypointComponentMock{
 		{
-			PointOrder:      1,
-			LatitudeDegree:  11.0,
-			LongitudeDegree: 21.0,
-			RelativeHeightM: 31.0,
-			SpeedMS:         41.0,
+			PointOrder:        1,
+			LatitudeDegree:    11.0,
+			LongitudeDegree:   21.0,
+			RelativeAltitudeM: 31.0,
+			SpeedMS:           41.0,
 		},
 	}
 	navigationComp := navigationComponentMock{
-		TakeoffPointGroundHeightWGS84EllipsoidM: DefaultMissionTakeoffPointGroundAltitudeM,
-		Waypoints:                               waypointComps,
-		UploadID:                                string(DefaultMissionUploadID),
+		TakeoffPointGroundAltitudeM: DefaultMissionTakeoffPointGroundAltitudeM,
+		Waypoints:                   waypointComps,
+		UploadID:                    string(DefaultMissionUploadID),
 	}
 	missionComp := missionComponentMock{
 		ID:           string(DefaultMissionID),
@@ -778,9 +778,9 @@ func TestMissionRepositoryNoWaypointCreateSave(t *testing.T) {
 
 	waypointComps := []waypointComponentMock{}
 	navigationComp := navigationComponentMock{
-		TakeoffPointGroundHeightWGS84EllipsoidM: DefaultMissionTakeoffPointGroundAltitudeM,
-		Waypoints:                               waypointComps,
-		UploadID:                                string(DefaultMissionUploadID),
+		TakeoffPointGroundAltitudeM: DefaultMissionTakeoffPointGroundAltitudeM,
+		Waypoints:                   waypointComps,
+		UploadID:                    string(DefaultMissionUploadID),
 	}
 	missionComp := missionComponentMock{
 		ID:           string(DefaultMissionID),
@@ -849,31 +849,31 @@ func TestMissionRepositoryMultipleWaypointsCreateSave(t *testing.T) {
 
 	waypointComps := []waypointComponentMock{
 		{
-			PointOrder:      1,
-			LatitudeDegree:  11.0,
-			LongitudeDegree: 21.0,
-			RelativeHeightM: 31.0,
-			SpeedMS:         41.0,
+			PointOrder:        1,
+			LatitudeDegree:    11.0,
+			LongitudeDegree:   21.0,
+			RelativeAltitudeM: 31.0,
+			SpeedMS:           41.0,
 		},
 		{
-			PointOrder:      2,
-			LatitudeDegree:  12.0,
-			LongitudeDegree: 22.0,
-			RelativeHeightM: 32.0,
-			SpeedMS:         42.0,
+			PointOrder:        2,
+			LatitudeDegree:    12.0,
+			LongitudeDegree:   22.0,
+			RelativeAltitudeM: 32.0,
+			SpeedMS:           42.0,
 		},
 		{
-			PointOrder:      3,
-			LatitudeDegree:  13.0,
-			LongitudeDegree: 23.0,
-			RelativeHeightM: 33.0,
-			SpeedMS:         43.0,
+			PointOrder:        3,
+			LatitudeDegree:    13.0,
+			LongitudeDegree:   23.0,
+			RelativeAltitudeM: 33.0,
+			SpeedMS:           43.0,
 		},
 	}
 	navigationComp := navigationComponentMock{
-		TakeoffPointGroundHeightWGS84EllipsoidM: DefaultMissionTakeoffPointGroundAltitudeM,
-		Waypoints:                               waypointComps,
-		UploadID:                                string(DefaultMissionUploadID),
+		TakeoffPointGroundAltitudeM: DefaultMissionTakeoffPointGroundAltitudeM,
+		Waypoints:                   waypointComps,
+		UploadID:                    string(DefaultMissionUploadID),
 	}
 	missionComp := missionComponentMock{
 		ID:           string(DefaultMissionID),
@@ -955,17 +955,17 @@ func TestMissionRepositorySingleWaypointUpdateSave(t *testing.T) {
 
 	waypointComps := []waypointComponentMock{
 		{
-			PointOrder:      1,
-			LatitudeDegree:  11.0,
-			LongitudeDegree: 21.0,
-			RelativeHeightM: 31.0,
-			SpeedMS:         41.0,
+			PointOrder:        1,
+			LatitudeDegree:    11.0,
+			LongitudeDegree:   21.0,
+			RelativeAltitudeM: 31.0,
+			SpeedMS:           41.0,
 		},
 	}
 	navigationComp := navigationComponentMock{
-		TakeoffPointGroundHeightWGS84EllipsoidM: DefaultMissionTakeoffPointGroundAltitudeM,
-		Waypoints:                               waypointComps,
-		UploadID:                                string(DefaultMissionUploadID),
+		TakeoffPointGroundAltitudeM: DefaultMissionTakeoffPointGroundAltitudeM,
+		Waypoints:                   waypointComps,
+		UploadID:                    string(DefaultMissionUploadID),
 	}
 	missionComp := missionComponentMock{
 		ID:           string(DefaultMissionID),
@@ -1039,9 +1039,9 @@ func TestMissionRepositoryNoWaypointUpdateSave(t *testing.T) {
 
 	waypointComps := []waypointComponentMock{}
 	navigationComp := navigationComponentMock{
-		TakeoffPointGroundHeightWGS84EllipsoidM: DefaultMissionTakeoffPointGroundAltitudeM,
-		Waypoints:                               waypointComps,
-		UploadID:                                string(DefaultMissionUploadID),
+		TakeoffPointGroundAltitudeM: DefaultMissionTakeoffPointGroundAltitudeM,
+		Waypoints:                   waypointComps,
+		UploadID:                    string(DefaultMissionUploadID),
 	}
 	missionComp := missionComponentMock{
 		ID:           string(DefaultMissionID),
@@ -1127,31 +1127,31 @@ func TestMissionRepositoryMultipleWaypointsUpdateSave(t *testing.T) {
 
 	waypointComps := []waypointComponentMock{
 		{
-			PointOrder:      1,
-			LatitudeDegree:  11.0,
-			LongitudeDegree: 21.0,
-			RelativeHeightM: 31.0,
-			SpeedMS:         41.0,
+			PointOrder:        1,
+			LatitudeDegree:    11.0,
+			LongitudeDegree:   21.0,
+			RelativeAltitudeM: 31.0,
+			SpeedMS:           41.0,
 		},
 		{
-			PointOrder:      2,
-			LatitudeDegree:  12.0,
-			LongitudeDegree: 22.0,
-			RelativeHeightM: 32.0,
-			SpeedMS:         42.0,
+			PointOrder:        2,
+			LatitudeDegree:    12.0,
+			LongitudeDegree:   22.0,
+			RelativeAltitudeM: 32.0,
+			SpeedMS:           42.0,
 		},
 		{
-			PointOrder:      3,
-			LatitudeDegree:  13.0,
-			LongitudeDegree: 23.0,
-			RelativeHeightM: 33.0,
-			SpeedMS:         43.0,
+			PointOrder:        3,
+			LatitudeDegree:    13.0,
+			LongitudeDegree:   23.0,
+			RelativeAltitudeM: 33.0,
+			SpeedMS:           43.0,
 		},
 	}
 	navigationComp := navigationComponentMock{
-		TakeoffPointGroundHeightWGS84EllipsoidM: DefaultMissionTakeoffPointGroundAltitudeM,
-		Waypoints:                               waypointComps,
-		UploadID:                                string(DefaultMissionUploadID),
+		TakeoffPointGroundAltitudeM: DefaultMissionTakeoffPointGroundAltitudeM,
+		Waypoints:                   waypointComps,
+		UploadID:                    string(DefaultMissionUploadID),
 	}
 	missionComp := missionComponentMock{
 		ID:           string(DefaultMissionID),

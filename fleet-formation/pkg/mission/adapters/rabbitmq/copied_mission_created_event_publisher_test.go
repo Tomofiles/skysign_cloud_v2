@@ -21,7 +21,7 @@ func TestPublishCopiedMissionCreatedEvent(t *testing.T) {
 			ID:   string(DefaultMissionID),
 			Name: DefaultMissionName,
 			Navigation: navigationComponentMock{
-				TakeoffPointGroundHeightWGS84EllipsoidM: DefaultMissionTakeoffPointGroundHeightWGS84EllipsoidM,
+				TakeoffPointGroundAltitudeM: DefaultMissionTakeoffPointGroundAltitudeM,
 				Waypoints: []waypointComponentMock{
 					{
 						1,
@@ -67,7 +67,7 @@ func TestPublishCopiedMissionCreatedEvent(t *testing.T) {
 			Id:   string(DefaultMissionID),
 			Name: DefaultMissionName,
 			Navigation: &skysign_proto.Navigation{
-				TakeoffPointGroundHeight: DefaultMissionTakeoffPointGroundHeightWGS84EllipsoidM,
+				TakeoffPointGroundHeight: DefaultMissionTakeoffPointGroundAltitudeM,
 				Waypoints: []*skysign_proto.Waypoint{
 					{
 						Latitude:       11.0,

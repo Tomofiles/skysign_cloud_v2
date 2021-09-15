@@ -49,8 +49,8 @@ func (v *Navigation) GetMissionID() string {
 	return v.MissionID
 }
 
-// GetTakeoffPointGroundHeightWGS84EllipsoidM .
-func (v *Navigation) GetTakeoffPointGroundHeightWGS84EllipsoidM() float64 {
+// GetTakeoffPointGroundAltitudeM .
+func (v *Navigation) GetTakeoffPointGroundAltitudeM() float64 {
 	return v.TakeoffPointGroundAltitudeM
 }
 
@@ -98,8 +98,8 @@ func (v *Waypoint) GetLongitudeDegree() float64 {
 	return v.LongitudeDegree
 }
 
-// GetRelativeHeightM .
-func (v *Waypoint) GetRelativeHeightM() float64 {
+// GetRelativeAltitudeM .
+func (v *Waypoint) GetRelativeAltitudeM() float64 {
 	return v.RelativeAltitudeM
 }
 

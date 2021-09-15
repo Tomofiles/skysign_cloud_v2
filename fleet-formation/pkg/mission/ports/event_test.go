@@ -29,9 +29,9 @@ func TestHandleMissionCopiedEvent(t *testing.T) {
 				ID:   string(DefaultMissionID),
 				Name: DefaultMissionName,
 				Navigation: navigationComponentMock{
-					TakeoffPointGroundHeightWGS84EllipsoidM: DefaultMissionTakeoffPointGroundHeightWGS84EllipsoidM,
-					Waypoints:                               []waypointComponentMock{},
-					UploadID:                                string(DefaultMissionUploadID),
+					TakeoffPointGroundAltitudeM: DefaultMissionTakeoffPointGroundAltitudeM,
+					Waypoints:                   []waypointComponentMock{},
+					UploadID:                    string(DefaultMissionUploadID),
 				},
 				Version: string(DefaultMissionVersion),
 			},

@@ -162,12 +162,12 @@ func (r *MissionRepository) Save(
 			missionRecord.IsCarbonCopy = isCarbonCopy
 			missionRecord.Version = version
 		},
-		func(takeoffPointGroundHeightWGS84EllipsoidM float64, uploadID string) {
+		func(takeoffPointGroundAltitudeM float64, uploadID string) {
 			navigationRecord.MissionID = string(mission.GetID())
-			navigationRecord.TakeoffPointGroundAltitudeM = takeoffPointGroundHeightWGS84EllipsoidM
+			navigationRecord.TakeoffPointGroundAltitudeM = takeoffPointGroundAltitudeM
 			navigationRecord.UploadID = uploadID
 		},
-		func(pointOrder int, latitudeDegree, longitudeDegree, relativeHeightM, speedMS float64) {
+		func(pointOrder int, latitudeDegree, longitudeDegree, relativeAltitudeM, speedMS float64) {
 			waypointRecords = append(
 				waypointRecords,
 				&Waypoint{
@@ -175,7 +175,7 @@ func (r *MissionRepository) Save(
 					PointOrder:        pointOrder,
 					LatitudeDegree:    latitudeDegree,
 					LongitudeDegree:   longitudeDegree,
-					RelativeAltitudeM: relativeHeightM,
+					RelativeAltitudeM: relativeAltitudeM,
 					SpeedMS:           speedMS,
 				},
 			)

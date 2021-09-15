@@ -19,8 +19,8 @@ func TestNoWaypointMissionProtoTransformerFromModel(t *testing.T) {
 				ID:   string(DefaultMissionID),
 				Name: DefaultMissionName,
 				Navigation: navigationComponentMock{
-					TakeoffPointGroundHeightWGS84EllipsoidM: DefaultMissionTakeoffPointGroundHeightWGS84EllipsoidM,
-					Waypoints:                               []waypointComponentMock{},
+					TakeoffPointGroundAltitudeM: DefaultMissionTakeoffPointGroundAltitudeM,
+					Waypoints:                   []waypointComponentMock{},
 				},
 				Version: string(DefaultMissionVersion),
 			},
@@ -32,7 +32,7 @@ func TestNoWaypointMissionProtoTransformerFromModel(t *testing.T) {
 		Id:   DefaultMissionID,
 		Name: DefaultMissionName,
 		Navigation: &skysign_proto.Navigation{
-			TakeoffPointGroundHeight: DefaultMissionTakeoffPointGroundHeightWGS84EllipsoidM,
+			TakeoffPointGroundHeight: DefaultMissionTakeoffPointGroundAltitudeM,
 			Waypoints:                []*skysign_proto.Waypoint{},
 		},
 	}
@@ -50,14 +50,14 @@ func TestSingleWaypointMissionProtoTransformerFromModel(t *testing.T) {
 				ID:   string(DefaultMissionID),
 				Name: DefaultMissionName,
 				Navigation: navigationComponentMock{
-					TakeoffPointGroundHeightWGS84EllipsoidM: DefaultMissionTakeoffPointGroundHeightWGS84EllipsoidM,
+					TakeoffPointGroundAltitudeM: DefaultMissionTakeoffPointGroundAltitudeM,
 					Waypoints: []waypointComponentMock{
 						{
-							PointOrder:      1,
-							LatitudeDegree:  11.0,
-							LongitudeDegree: 21.0,
-							RelativeHeightM: 31.0,
-							SpeedMS:         41.0,
+							PointOrder:        1,
+							LatitudeDegree:    11.0,
+							LongitudeDegree:   21.0,
+							RelativeAltitudeM: 31.0,
+							SpeedMS:           41.0,
 						},
 					},
 				},
@@ -71,7 +71,7 @@ func TestSingleWaypointMissionProtoTransformerFromModel(t *testing.T) {
 		Id:   DefaultMissionID,
 		Name: DefaultMissionName,
 		Navigation: &skysign_proto.Navigation{
-			TakeoffPointGroundHeight: DefaultMissionTakeoffPointGroundHeightWGS84EllipsoidM,
+			TakeoffPointGroundHeight: DefaultMissionTakeoffPointGroundAltitudeM,
 			Waypoints: []*skysign_proto.Waypoint{
 				{
 					Latitude:       11.0,
@@ -96,28 +96,28 @@ func TestMultipleWaypointsMissionProtoTransformerFromModel(t *testing.T) {
 				ID:   string(DefaultMissionID),
 				Name: DefaultMissionName,
 				Navigation: navigationComponentMock{
-					TakeoffPointGroundHeightWGS84EllipsoidM: DefaultMissionTakeoffPointGroundHeightWGS84EllipsoidM,
+					TakeoffPointGroundAltitudeM: DefaultMissionTakeoffPointGroundAltitudeM,
 					Waypoints: []waypointComponentMock{
 						{
-							PointOrder:      1,
-							LatitudeDegree:  11.0,
-							LongitudeDegree: 21.0,
-							RelativeHeightM: 31.0,
-							SpeedMS:         41.0,
+							PointOrder:        1,
+							LatitudeDegree:    11.0,
+							LongitudeDegree:   21.0,
+							RelativeAltitudeM: 31.0,
+							SpeedMS:           41.0,
 						},
 						{
-							PointOrder:      2,
-							LatitudeDegree:  12.0,
-							LongitudeDegree: 22.0,
-							RelativeHeightM: 32.0,
-							SpeedMS:         42.0,
+							PointOrder:        2,
+							LatitudeDegree:    12.0,
+							LongitudeDegree:   22.0,
+							RelativeAltitudeM: 32.0,
+							SpeedMS:           42.0,
 						},
 						{
-							PointOrder:      3,
-							LatitudeDegree:  13.0,
-							LongitudeDegree: 23.0,
-							RelativeHeightM: 33.0,
-							SpeedMS:         43.0,
+							PointOrder:        3,
+							LatitudeDegree:    13.0,
+							LongitudeDegree:   23.0,
+							RelativeAltitudeM: 33.0,
+							SpeedMS:           43.0,
 						},
 					},
 				},
@@ -131,7 +131,7 @@ func TestMultipleWaypointsMissionProtoTransformerFromModel(t *testing.T) {
 		Id:   DefaultMissionID,
 		Name: DefaultMissionName,
 		Navigation: &skysign_proto.Navigation{
-			TakeoffPointGroundHeight: DefaultMissionTakeoffPointGroundHeightWGS84EllipsoidM,
+			TakeoffPointGroundHeight: DefaultMissionTakeoffPointGroundAltitudeM,
 			Waypoints: []*skysign_proto.Waypoint{
 				{
 					Latitude:       11.0,
