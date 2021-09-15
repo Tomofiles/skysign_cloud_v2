@@ -143,19 +143,19 @@ func TestPushTelemetryTransaction(t *testing.T) {
 		txm:  txm,
 	}
 
-	req := &telemetryRequestMock{
-		CommunicationID:  string(DefaultActionCommunicationID),
-		Latitude:         1.0,
-		Longitude:        2.0,
-		Altitude:         3.0,
-		RelativeAltitude: 4.0,
-		Speed:            5.0,
-		Armed:            true,
-		FlightMode:       "state",
-		OrientationX:     6.0,
-		OrientationY:     7.0,
-		OrientationZ:     8.0,
-		OrientationW:     9.0,
+	req := &telemetryCommandMock{
+		CommunicationID:   string(DefaultActionCommunicationID),
+		LatitudeDegree:    1.0,
+		LongitudeDegree:   2.0,
+		AltitudeM:         3.0,
+		RelativeAltitudeM: 4.0,
+		SpeedMS:           5.0,
+		Armed:             true,
+		FlightMode:        "state",
+		OrientationX:      6.0,
+		OrientationY:      7.0,
+		OrientationZ:      8.0,
+		OrientationW:      9.0,
 	}
 	ret := service.PushTelemetry(req)
 
@@ -188,19 +188,19 @@ func TestPushTelemetryOperation(t *testing.T) {
 		txm:  nil,
 	}
 
-	req := &telemetryRequestMock{
-		CommunicationID:  string(DefaultActionCommunicationID),
-		Latitude:         1.0,
-		Longitude:        2.0,
-		Altitude:         3.0,
-		RelativeAltitude: 4.0,
-		Speed:            5.0,
-		Armed:            true,
-		FlightMode:       "state",
-		OrientationX:     6.0,
-		OrientationY:     7.0,
-		OrientationZ:     8.0,
-		OrientationW:     9.0,
+	req := &telemetryCommandMock{
+		CommunicationID:   string(DefaultActionCommunicationID),
+		LatitudeDegree:    1.0,
+		LongitudeDegree:   2.0,
+		AltitudeM:         3.0,
+		RelativeAltitudeM: 4.0,
+		SpeedMS:           5.0,
+		Armed:             true,
+		FlightMode:        "state",
+		OrientationX:      6.0,
+		OrientationY:      7.0,
+		OrientationZ:      8.0,
+		OrientationW:      9.0,
 	}
 	ret := service.pushTelemetryOperation(
 		nil,

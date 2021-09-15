@@ -35,11 +35,11 @@ func (s *GrpcServer) GetTrajectory(
 			response.Telemetries = append(
 				response.Telemetries,
 				&proto.Telemetry{
-					Latitude:         snapshot.Latitude,
-					Longitude:        snapshot.Longitude,
-					Altitude:         snapshot.Altitude,
-					RelativeAltitude: snapshot.RelativeAltitude,
-					Speed:            snapshot.Speed,
+					Latitude:         snapshot.LatitudeDegree,
+					Longitude:        snapshot.LongitudeDegree,
+					Altitude:         snapshot.AltitudeM,
+					RelativeAltitude: snapshot.RelativeAltitudeM,
+					Speed:            snapshot.SpeedMS,
 					Armed:            snapshot.Armed,
 					FlightMode:       snapshot.FlightMode,
 					OrientationX:     snapshot.OrientationX,

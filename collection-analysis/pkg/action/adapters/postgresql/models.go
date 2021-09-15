@@ -63,19 +63,19 @@ func (tp *TrajectoryPoint) GetActionID() string {
 func (tp *TrajectoryPoint) GetPointNumber() int {
 	return tp.PointNumber
 }
-func (tp *TrajectoryPoint) GetLatitude() float64 {
+func (tp *TrajectoryPoint) GetLatitudeDegree() float64 {
 	return tp.LatitudeDegree
 }
-func (tp *TrajectoryPoint) GetLongitude() float64 {
+func (tp *TrajectoryPoint) GetLongitudeDegree() float64 {
 	return tp.LongitudeDegree
 }
-func (tp *TrajectoryPoint) GetAltitude() float64 {
+func (tp *TrajectoryPoint) GetAltitudeM() float64 {
 	return tp.AltitudeM
 }
-func (tp *TrajectoryPoint) GetRelativeAltitude() float64 {
+func (tp *TrajectoryPoint) GetRelativeAltitudeM() float64 {
 	return tp.RelativeAltitudeM
 }
-func (tp *TrajectoryPoint) GetSpeed() float64 {
+func (tp *TrajectoryPoint) GetSpeedMS() float64 {
 	return tp.SpeedMS
 }
 func (tp *TrajectoryPoint) GetArmed() bool {

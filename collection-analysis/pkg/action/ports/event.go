@@ -130,19 +130,19 @@ type pushTelemetryCommandHolder struct {
 func (h *pushTelemetryCommandHolder) GetCommunicationID() string {
 	return h.event.CommunicationId
 }
-func (h *pushTelemetryCommandHolder) GetLatitude() float64 {
+func (h *pushTelemetryCommandHolder) GetLatitudeDegree() float64 {
 	return h.event.Telemetry.Latitude
 }
-func (h *pushTelemetryCommandHolder) GetLongitude() float64 {
+func (h *pushTelemetryCommandHolder) GetLongitudeDegree() float64 {
 	return h.event.Telemetry.Longitude
 }
-func (h *pushTelemetryCommandHolder) GetAltitude() float64 {
+func (h *pushTelemetryCommandHolder) GetAltitudeM() float64 {
 	return h.event.Telemetry.Altitude
 }
-func (h *pushTelemetryCommandHolder) GetRelativeAltitude() float64 {
+func (h *pushTelemetryCommandHolder) GetRelativeAltitudeM() float64 {
 	return h.event.Telemetry.RelativeAltitude
 }
-func (h *pushTelemetryCommandHolder) GetSpeed() float64 {
+func (h *pushTelemetryCommandHolder) GetSpeedMS() float64 {
 	return h.event.Telemetry.Speed
 }
 func (h *pushTelemetryCommandHolder) GetArmed() bool {

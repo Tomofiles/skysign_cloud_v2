@@ -2,17 +2,17 @@ package action
 
 // TelemetrySnapshot .
 type TelemetrySnapshot struct {
-	Latitude         float64
-	Longitude        float64
-	Altitude         float64
-	RelativeAltitude float64
-	Speed            float64
-	Armed            bool
-	FlightMode       string
-	OrientationX     float64
-	OrientationY     float64
-	OrientationZ     float64
-	OrientationW     float64
+	LatitudeDegree    float64
+	LongitudeDegree   float64
+	AltitudeM         float64
+	RelativeAltitudeM float64
+	SpeedMS           float64
+	Armed             bool
+	FlightMode        string
+	OrientationX      float64
+	OrientationY      float64
+	OrientationZ      float64
+	OrientationW      float64
 }
 
 // IsArmed .
