@@ -2,7 +2,7 @@ const DEFAULT_HEIGHT = 10.0;
 const DEFAULT_SPEED = 3.0;
 
 export const initialEditNavigation = {
-  takeoff_point_ground_height: undefined,
+  takeoff_point_ground_altitude: undefined,
   waypoints: [],
 }
 
@@ -21,7 +21,7 @@ export const editMissionReducer = (state, action) => {
     }
     case 'CHANGE_RELATIVE_HEIGHT': {
       const newWaypoints = [ ...state.navigation.waypoints ];
-      newWaypoints[action.index].relative_height = action.height;
+      newWaypoints[action.index].relative_altitude = action.height;
       const newNavigation = {
         ...state.navigation,
         waypoints: newWaypoints,
@@ -34,7 +34,7 @@ export const editMissionReducer = (state, action) => {
     case 'CHANGE_TAKEOFF_POINT_GROUND_HEIGHT': {
       const newNavigation = {
         ...state.navigation,
-        takeoff_point_ground_height: action.height,
+        takeoff_point_ground_altitude: action.height,
       }
       return {
         ...state,
@@ -58,7 +58,7 @@ export const editMissionReducer = (state, action) => {
       newWaypoints.push({
         latitude: action.latitude,
         longitude: action.longitude,
-        relative_height: DEFAULT_HEIGHT,
+        relative_altitude: DEFAULT_HEIGHT,
         speed: DEFAULT_SPEED,
       });
       const newNavigation = {
@@ -101,7 +101,7 @@ export const editMissionReducer = (state, action) => {
         name: action.mission.name,
         navigation: {
           ...initialEditNavigation,
-          takeoff_point_ground_height: action.mission.navigation.takeoff_point_ground_height,
+          takeoff_point_ground_altitude: action.mission.navigation.takeoff_point_ground_altitude,
           waypoints: action.mission.navigation.waypoints,
         }
       };

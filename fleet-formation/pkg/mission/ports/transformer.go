@@ -18,17 +18,17 @@ func MissionProtoTransformerFromModel(
 		waypoints = append(
 			waypoints,
 			&proto.Waypoint{
-				Latitude:       w.GetLatitudeDegree(),
-				Longitude:      w.GetLongitudeDegree(),
-				RelativeHeight: w.GetRelativeAltitudeM(),
-				Speed:          w.GetSpeedMS(),
+				Latitude:         w.GetLatitudeDegree(),
+				Longitude:        w.GetLongitudeDegree(),
+				RelativeAltitude: w.GetRelativeAltitudeM(),
+				Speed:            w.GetSpeedMS(),
 			},
 		)
 	}
 	mission.Navigation = &proto.Navigation{
-		TakeoffPointGroundHeight: model.GetMission().GetNavigation().GetTakeoffPointGroundAltitudeM(),
-		Waypoints:                waypoints,
-		UploadId:                 model.GetMission().GetNavigation().GetUploadID(),
+		TakeoffPointGroundAltitude: model.GetMission().GetNavigation().GetTakeoffPointGroundAltitudeM(),
+		Waypoints:                  waypoints,
+		UploadId:                   model.GetMission().GetNavigation().GetUploadID(),
 	}
 	return mission
 }

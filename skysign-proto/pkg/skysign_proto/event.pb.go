@@ -114,7 +114,7 @@ func (x *CommunicationIdRemovedEvent) GetCommunicationId() string {
 	return ""
 }
 
-type FleetIDGaveEvent struct {
+type FleetIdGaveEvent struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
@@ -123,8 +123,8 @@ type FleetIDGaveEvent struct {
 	NumberOfVehicles int32  `protobuf:"varint,2,opt,name=number_of_vehicles,json=numberOfVehicles,proto3" json:"number_of_vehicles,omitempty"`
 }
 
-func (x *FleetIDGaveEvent) Reset() {
-	*x = FleetIDGaveEvent{}
+func (x *FleetIdGaveEvent) Reset() {
+	*x = FleetIdGaveEvent{}
 	if protoimpl.UnsafeEnabled {
 		mi := &file_proto_event_proto_msgTypes[2]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -132,13 +132,13 @@ func (x *FleetIDGaveEvent) Reset() {
 	}
 }
 
-func (x *FleetIDGaveEvent) String() string {
+func (x *FleetIdGaveEvent) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*FleetIDGaveEvent) ProtoMessage() {}
+func (*FleetIdGaveEvent) ProtoMessage() {}
 
-func (x *FleetIDGaveEvent) ProtoReflect() protoreflect.Message {
+func (x *FleetIdGaveEvent) ProtoReflect() protoreflect.Message {
 	mi := &file_proto_event_proto_msgTypes[2]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -150,26 +150,26 @@ func (x *FleetIDGaveEvent) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use FleetIDGaveEvent.ProtoReflect.Descriptor instead.
-func (*FleetIDGaveEvent) Descriptor() ([]byte, []int) {
+// Deprecated: Use FleetIdGaveEvent.ProtoReflect.Descriptor instead.
+func (*FleetIdGaveEvent) Descriptor() ([]byte, []int) {
 	return file_proto_event_proto_rawDescGZIP(), []int{2}
 }
 
-func (x *FleetIDGaveEvent) GetFleetId() string {
+func (x *FleetIdGaveEvent) GetFleetId() string {
 	if x != nil {
 		return x.FleetId
 	}
 	return ""
 }
 
-func (x *FleetIDGaveEvent) GetNumberOfVehicles() int32 {
+func (x *FleetIdGaveEvent) GetNumberOfVehicles() int32 {
 	if x != nil {
 		return x.NumberOfVehicles
 	}
 	return 0
 }
 
-type FleetIDRemovedEvent struct {
+type FleetIdRemovedEvent struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
@@ -177,8 +177,8 @@ type FleetIDRemovedEvent struct {
 	FleetId string `protobuf:"bytes,1,opt,name=fleet_id,json=fleetId,proto3" json:"fleet_id,omitempty"`
 }
 
-func (x *FleetIDRemovedEvent) Reset() {
-	*x = FleetIDRemovedEvent{}
+func (x *FleetIdRemovedEvent) Reset() {
+	*x = FleetIdRemovedEvent{}
 	if protoimpl.UnsafeEnabled {
 		mi := &file_proto_event_proto_msgTypes[3]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -186,13 +186,13 @@ func (x *FleetIDRemovedEvent) Reset() {
 	}
 }
 
-func (x *FleetIDRemovedEvent) String() string {
+func (x *FleetIdRemovedEvent) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*FleetIDRemovedEvent) ProtoMessage() {}
+func (*FleetIdRemovedEvent) ProtoMessage() {}
 
-func (x *FleetIDRemovedEvent) ProtoReflect() protoreflect.Message {
+func (x *FleetIdRemovedEvent) ProtoReflect() protoreflect.Message {
 	mi := &file_proto_event_proto_msgTypes[3]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -204,12 +204,12 @@ func (x *FleetIDRemovedEvent) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use FleetIDRemovedEvent.ProtoReflect.Descriptor instead.
-func (*FleetIDRemovedEvent) Descriptor() ([]byte, []int) {
+// Deprecated: Use FleetIdRemovedEvent.ProtoReflect.Descriptor instead.
+func (*FleetIdRemovedEvent) Descriptor() ([]byte, []int) {
 	return file_proto_event_proto_rawDescGZIP(), []int{3}
 }
 
-func (x *FleetIDRemovedEvent) GetFleetId() string {
+func (x *FleetIdRemovedEvent) GetFleetId() string {
 	if x != nil {
 		return x.FleetId
 	}
@@ -696,12 +696,12 @@ var file_proto_event_proto_rawDesc = []byte{
 	0x63, 0x6f, 0x6d, 0x6d, 0x75, 0x6e, 0x69, 0x63, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x5f, 0x69, 0x64,
 	0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0f, 0x63, 0x6f, 0x6d, 0x6d, 0x75, 0x6e, 0x69, 0x63,
 	0x61, 0x74, 0x69, 0x6f, 0x6e, 0x49, 0x64, 0x22, 0x5b, 0x0a, 0x10, 0x46, 0x6c, 0x65, 0x65, 0x74,
-	0x49, 0x44, 0x47, 0x61, 0x76, 0x65, 0x45, 0x76, 0x65, 0x6e, 0x74, 0x12, 0x19, 0x0a, 0x08, 0x66,
+	0x49, 0x64, 0x47, 0x61, 0x76, 0x65, 0x45, 0x76, 0x65, 0x6e, 0x74, 0x12, 0x19, 0x0a, 0x08, 0x66,
 	0x6c, 0x65, 0x65, 0x74, 0x5f, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x07, 0x66,
 	0x6c, 0x65, 0x65, 0x74, 0x49, 0x64, 0x12, 0x2c, 0x0a, 0x12, 0x6e, 0x75, 0x6d, 0x62, 0x65, 0x72,
 	0x5f, 0x6f, 0x66, 0x5f, 0x76, 0x65, 0x68, 0x69, 0x63, 0x6c, 0x65, 0x73, 0x18, 0x02, 0x20, 0x01,
 	0x28, 0x05, 0x52, 0x10, 0x6e, 0x75, 0x6d, 0x62, 0x65, 0x72, 0x4f, 0x66, 0x56, 0x65, 0x68, 0x69,
-	0x63, 0x6c, 0x65, 0x73, 0x22, 0x30, 0x0a, 0x13, 0x46, 0x6c, 0x65, 0x65, 0x74, 0x49, 0x44, 0x52,
+	0x63, 0x6c, 0x65, 0x73, 0x22, 0x30, 0x0a, 0x13, 0x46, 0x6c, 0x65, 0x65, 0x74, 0x49, 0x64, 0x52,
 	0x65, 0x6d, 0x6f, 0x76, 0x65, 0x64, 0x45, 0x76, 0x65, 0x6e, 0x74, 0x12, 0x19, 0x0a, 0x08, 0x66,
 	0x6c, 0x65, 0x65, 0x74, 0x5f, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x07, 0x66,
 	0x6c, 0x65, 0x65, 0x74, 0x49, 0x64, 0x22, 0x79, 0x0a, 0x17, 0x46, 0x6c, 0x69, 0x67, 0x68, 0x74,
@@ -789,8 +789,8 @@ var file_proto_event_proto_msgTypes = make([]protoimpl.MessageInfo, 12)
 var file_proto_event_proto_goTypes = []interface{}{
 	(*CommunicationIdGaveEvent)(nil),      // 0: skysign_proto.CommunicationIdGaveEvent
 	(*CommunicationIdRemovedEvent)(nil),   // 1: skysign_proto.CommunicationIdRemovedEvent
-	(*FleetIDGaveEvent)(nil),              // 2: skysign_proto.FleetIDGaveEvent
-	(*FleetIDRemovedEvent)(nil),           // 3: skysign_proto.FleetIDRemovedEvent
+	(*FleetIdGaveEvent)(nil),              // 2: skysign_proto.FleetIdGaveEvent
+	(*FleetIdRemovedEvent)(nil),           // 3: skysign_proto.FleetIdRemovedEvent
 	(*FlightplanExecutedEvent)(nil),       // 4: skysign_proto.FlightplanExecutedEvent
 	(*FleetCopiedEvent)(nil),              // 5: skysign_proto.FleetCopiedEvent
 	(*VehicleCopiedEvent)(nil),            // 6: skysign_proto.VehicleCopiedEvent
@@ -848,7 +848,7 @@ func file_proto_event_proto_init() {
 			}
 		}
 		file_proto_event_proto_msgTypes[2].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*FleetIDGaveEvent); i {
+			switch v := v.(*FleetIdGaveEvent); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -860,7 +860,7 @@ func file_proto_event_proto_init() {
 			}
 		}
 		file_proto_event_proto_msgTypes[3].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*FleetIDRemovedEvent); i {
+			switch v := v.(*FleetIdRemovedEvent); i {
 			case 0:
 				return &v.state
 			case 1:

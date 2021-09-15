@@ -32,8 +32,8 @@ func TestNoWaypointMissionProtoTransformerFromModel(t *testing.T) {
 		Id:   DefaultMissionID,
 		Name: DefaultMissionName,
 		Navigation: &skysign_proto.Navigation{
-			TakeoffPointGroundHeight: DefaultMissionTakeoffPointGroundAltitudeM,
-			Waypoints:                []*skysign_proto.Waypoint{},
+			TakeoffPointGroundAltitude: DefaultMissionTakeoffPointGroundAltitudeM,
+			Waypoints:                  []*skysign_proto.Waypoint{},
 		},
 	}
 
@@ -71,13 +71,13 @@ func TestSingleWaypointMissionProtoTransformerFromModel(t *testing.T) {
 		Id:   DefaultMissionID,
 		Name: DefaultMissionName,
 		Navigation: &skysign_proto.Navigation{
-			TakeoffPointGroundHeight: DefaultMissionTakeoffPointGroundAltitudeM,
+			TakeoffPointGroundAltitude: DefaultMissionTakeoffPointGroundAltitudeM,
 			Waypoints: []*skysign_proto.Waypoint{
 				{
-					Latitude:       11.0,
-					Longitude:      21.0,
-					RelativeHeight: 31.0,
-					Speed:          41.0,
+					Latitude:         11.0,
+					Longitude:        21.0,
+					RelativeAltitude: 31.0,
+					Speed:            41.0,
 				},
 			},
 		},
@@ -131,25 +131,25 @@ func TestMultipleWaypointsMissionProtoTransformerFromModel(t *testing.T) {
 		Id:   DefaultMissionID,
 		Name: DefaultMissionName,
 		Navigation: &skysign_proto.Navigation{
-			TakeoffPointGroundHeight: DefaultMissionTakeoffPointGroundAltitudeM,
+			TakeoffPointGroundAltitude: DefaultMissionTakeoffPointGroundAltitudeM,
 			Waypoints: []*skysign_proto.Waypoint{
 				{
-					Latitude:       11.0,
-					Longitude:      21.0,
-					RelativeHeight: 31.0,
-					Speed:          41.0,
+					Latitude:         11.0,
+					Longitude:        21.0,
+					RelativeAltitude: 31.0,
+					Speed:            41.0,
 				},
 				{
-					Latitude:       12.0,
-					Longitude:      22.0,
-					RelativeHeight: 32.0,
-					Speed:          42.0,
+					Latitude:         12.0,
+					Longitude:        22.0,
+					RelativeAltitude: 32.0,
+					Speed:            42.0,
 				},
 				{
-					Latitude:       13.0,
-					Longitude:      23.0,
-					RelativeHeight: 33.0,
-					Speed:          43.0,
+					Latitude:         13.0,
+					Longitude:        23.0,
+					RelativeAltitude: 33.0,
+					Speed:            43.0,
 				},
 			},
 		},

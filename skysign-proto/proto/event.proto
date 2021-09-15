@@ -16,12 +16,12 @@ message CommunicationIdRemovedEvent {
     string communication_id = 1;
 }
 
-message FleetIDGaveEvent {
+message FleetIdGaveEvent {
     string fleet_id = 1;
     int32 number_of_vehicles = 2;
 }
 
-message FleetIDRemovedEvent {
+message FleetIdRemovedEvent {
     string fleet_id = 1;
 }
 

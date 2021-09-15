@@ -25,7 +25,7 @@ func TestPublishFleetIDRemovedEvent(t *testing.T) {
 
 	ret := PublishFleetIDRemovedEvent(chMock, event)
 
-	expectPb := skysign_proto.FleetIDRemovedEvent{
+	expectPb := skysign_proto.FleetIdRemovedEvent{
 		FleetId: string(DefaultFlightplanFleetID),
 	}
 	expectBin, _ := proto.Marshal(&expectPb)

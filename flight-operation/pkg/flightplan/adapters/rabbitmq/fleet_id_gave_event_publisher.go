@@ -24,7 +24,7 @@ func PublishFleetIDGaveEvent(
 		return err
 	}
 
-	eventPb := skysign_proto.FleetIDGaveEvent{
+	eventPb := skysign_proto.FleetIdGaveEvent{
 		FleetId:          string(event.GetFleetID()),
 		NumberOfVehicles: int32(event.NumberOfVehicles),
 	}
