@@ -8,29 +8,29 @@ export const getWaypointsForDisplayToMap = (mission) => {
           groundPosition: Cartesian3.fromDegrees(
               waypoint.longitude,
               waypoint.latitude,
-              mission.navigation.takeoff_point_ground_height),
+              mission.navigation.takeoff_point_ground_altitude),
           airPosition: Cartesian3.fromDegrees(
               waypoint.longitude,
               waypoint.latitude,
-              mission.navigation.takeoff_point_ground_height + waypoint.relative_height)
+              mission.navigation.takeoff_point_ground_altitude + waypoint.relative_altitude)
         }
       });
 }
 
 export const getPathsForDisplayToMap = (mission) => {
 
-  const pairOfWaypoint = (paths, takeoff_point_ground_height) => {
+  const pairOfWaypoint = (paths, takeoff_point_ground_altitude) => {
     return (prev, current, index) => {
       paths.push({
         id: "PT_" + index,
         prevPosition: Cartesian3.fromDegrees(
             prev.longitude,
             prev.latitude,
-            takeoff_point_ground_height + prev.relative_height),
+            takeoff_point_ground_altitude + prev.relative_altitude),
         currentPosition: Cartesian3.fromDegrees(
             current.longitude,
             current.latitude,
-            takeoff_point_ground_height + current.relative_height),
+            takeoff_point_ground_altitude + current.relative_altitude),
       });
     };
   };
@@ -42,6 +42,6 @@ export const getPathsForDisplayToMap = (mission) => {
   }
 
   const paths = [];
-  pairwise(mission.navigation.waypoints, pairOfWaypoint(paths, mission.navigation.takeoff_point_ground_height));
+  pairwise(mission.navigation.waypoints, pairOfWaypoint(paths, mission.navigation.takeoff_point_ground_altitude));
   return paths;
 }

@@ -40,7 +40,7 @@ const MissionsDetail = (props) => {
             type: 'CURRENT',
             longitude: data.navigation.waypoints[0].longitude,
             latitude: data.navigation.waypoints[0].latitude,
-            height: data.navigation.takeoff_point_ground_height + 200,
+            height: data.navigation.takeoff_point_ground_altitude + 200,
           })
         }
       })
@@ -153,7 +153,7 @@ const MissionsDetail = (props) => {
                       <Typography style={{fontSize: "12px"}}>Takeoff Ground Height</Typography>
                     </Grid>
                     <Grid item xs={12}>
-                      <Typography>{editMission.navigation.takeoff_point_ground_height} m</Typography>
+                      <Typography>{editMission.navigation.takeoff_point_ground_altitude} m</Typography>
                     </Grid>
                   </Grid>
                 </Box>
