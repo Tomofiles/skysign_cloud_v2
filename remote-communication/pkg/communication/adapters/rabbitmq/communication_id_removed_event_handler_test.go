@@ -11,34 +11,6 @@ import (
 	"github.com/stretchr/testify/mock"
 )
 
-func TestHandleCommunicationIDGaveEvent(t *testing.T) {
-	a := assert.New(t)
-
-	service := manageCommunicationServiceMock{}
-
-	service.On("CreateCommunication", mock.Anything).Return(nil)
-
-	app := app.Application{
-		Services: app.Services{
-			ManageCommunication: &service,
-		},
-	}
-
-	handler := NewEventHandler(app)
-
-	requestPb := &skysign_proto.CommunicationIdGaveEvent{
-		CommunicationId: string(DefaultCommunicationID),
-	}
-	requestBin, _ := proto.Marshal(requestPb)
-	err := handler.HandleCommunicationIDGaveEvent(
-		nil,
-		requestBin,
-	)
-
-	a.Nil(err)
-	a.Equal(service.ID, string(DefaultCommunicationID))
-}
-
 func TestHandleCommunicationIDRemovedEvent(t *testing.T) {
 	a := assert.New(t)
 
@@ -52,7 +24,7 @@ func TestHandleCommunicationIDRemovedEvent(t *testing.T) {
 		},
 	}
 
-	handler := NewEventHandler(app)
+	handler := NewCommunicationIDRemovedEventHandler(app)
 
 	requestPb := &skysign_proto.CommunicationIdRemovedEvent{
 		CommunicationId: string(DefaultCommunicationID),
