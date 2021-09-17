@@ -1,4 +1,4 @@
-package ports
+package rabbitmq
 
 import (
 	"remote-communication/pkg/mission/app"

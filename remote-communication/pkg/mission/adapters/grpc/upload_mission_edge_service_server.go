@@ -1,4 +1,4 @@
-package ports
+package grpc
 
 import (
 	"context"
@@ -57,4 +57,24 @@ type missionIDCommand struct {
 
 func (f *missionIDCommand) GetID() string {
 	return f.id
+}
+
+type waypoint struct {
+	LatitudeDegree, LongitudeDegree, RelativeAltitudeM, SpeedMS float64
+}
+
+func (v *waypoint) GetLatitudeDegree() float64 {
+	return v.LatitudeDegree
+}
+
+func (v *waypoint) GetLongitudeDegree() float64 {
+	return v.LongitudeDegree
+}
+
+func (v *waypoint) GetRelativeAltitudeM() float64 {
+	return v.RelativeAltitudeM
+}
+
+func (v *waypoint) GetSpeedMS() float64 {
+	return v.SpeedMS
 }

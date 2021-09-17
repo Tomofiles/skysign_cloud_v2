@@ -1,4 +1,4 @@
-package ports
+package rabbitmq
 
 import (
 	"remote-communication/pkg/mission/service"
@@ -22,25 +22,4 @@ func (s *manageMissionServiceMock) CreateMission(
 	s.ID = command.GetID()
 	s.Waypoints = command.GetWaypoints()
 	return ret.Error(0)
-}
-
-type edgeMissionServiceMock struct {
-	mock.Mock
-}
-
-func (s *edgeMissionServiceMock) PullMission(
-	command service.PullMissionCommand,
-	pulledMission service.PulledMission,
-) error {
-	ret := s.Called()
-	var id string
-	if ret.Get(0) != nil {
-		id = ret.Get(0).(string)
-	}
-	var f []service.Waypoint
-	if ret.Get(1) != nil {
-		f = ret.Get(1).([]service.Waypoint)
-	}
-	pulledMission(id, f)
-	return ret.Error(2)
 }
