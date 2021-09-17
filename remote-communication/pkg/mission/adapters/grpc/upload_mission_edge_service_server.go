@@ -9,19 +9,19 @@ import (
 	proto "github.com/Tomofiles/skysign_cloud_v2/skysign-proto/pkg/skysign_proto"
 )
 
-// GrpcServer .
-type GrpcServer struct {
+// uploadMissionEdgeServiceServer .
+type uploadMissionEdgeServiceServer struct {
 	proto.UnimplementedUploadMissionEdgeServiceServer
 	app app.Application
 }
 
-// NewGrpcServer .
-func NewGrpcServer(application app.Application) GrpcServer {
-	return GrpcServer{app: application}
+// NewUploadMissionEdgeServiceServer .
+func NewUploadMissionEdgeServiceServer(application app.Application) *uploadMissionEdgeServiceServer {
+	return &uploadMissionEdgeServiceServer{app: application}
 }
 
 // GetUploadMission .
-func (s *GrpcServer) GetUploadMission(
+func (s *uploadMissionEdgeServiceServer) GetUploadMission(
 	ctx context.Context,
 	request *proto.GetUploadMissionRequest,
 ) (*proto.UploadMission, error) {

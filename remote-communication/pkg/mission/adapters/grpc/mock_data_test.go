@@ -4,6 +4,7 @@ import (
 	"remote-communication/pkg/mission/service"
 
 	"github.com/stretchr/testify/mock"
+	"google.golang.org/grpc"
 )
 
 const DefaultMissionID = "mission-id"
@@ -28,4 +29,14 @@ func (s *edgeMissionServiceMock) PullMission(
 	}
 	pulledMission(id, f)
 	return ret.Error(2)
+}
+
+type serviceRegistrarMock struct {
+	descs []*grpc.ServiceDesc
+	impls []interface{}
+}
+
+func (s *serviceRegistrarMock) RegisterService(desc *grpc.ServiceDesc, impl interface{}) {
+	s.descs = append(s.descs, desc)
+	s.impls = append(s.impls, impl)
 }

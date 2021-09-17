@@ -18,23 +18,23 @@ const (
 	CopiedMissionCreatedEventQueueName = "uploadmission.copied_mission_created_event"
 )
 
-// EventHandler .
-type EventHandler interface {
+// CopiedMissionCreatedEventHandler .
+type CopiedMissionCreatedEventHandler interface {
 	HandleCopiedMissionCreatedEvent(ctx context.Context, event []byte) error
 }
 
-// eventHandler .
-type eventHandler struct {
+// copiedMissionCreatedEventHandler .
+type copiedMissionCreatedEventHandler struct {
 	app app.Application
 }
 
-// NewEventHandler .
-func NewEventHandler(application app.Application) *eventHandler {
-	return &eventHandler{app: application}
+// NewCopiedMissionCreatedEventHandler .
+func NewCopiedMissionCreatedEventHandler(application app.Application) *copiedMissionCreatedEventHandler {
+	return &copiedMissionCreatedEventHandler{app: application}
 }
 
 // HandleCommunicationIDGaveEvent .
-func (h *eventHandler) HandleCopiedMissionCreatedEvent(
+func (h *copiedMissionCreatedEventHandler) HandleCopiedMissionCreatedEvent(
 	ctx context.Context,
 	event []byte,
 ) error {

@@ -25,7 +25,7 @@ func TestHandleCopiedMissionCreatedEvent(t *testing.T) {
 		},
 	}
 
-	handler := NewEventHandler(app)
+	handler := NewCopiedMissionCreatedEventHandler(app)
 
 	requestPb := &skysign_proto.CopiedMissionCreatedEvent{
 		MissionId: DefaultMissionID,

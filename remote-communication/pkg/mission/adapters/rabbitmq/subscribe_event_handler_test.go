@@ -1,63 +1,53 @@
 package rabbitmq
 
 import (
-	"context"
+	"remote-communication/pkg/mission/app"
 	"testing"
 
+	"github.com/Tomofiles/skysign_cloud_v2/skysign-proto/pkg/skysign_proto"
+	"github.com/golang/protobuf/proto"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/mock"
 )
 
 // TestSubscribeEventHandleCopiedMissionCreatedEvent .
 func TestSubscribeEventHandleCopiedMissionCreatedEvent(t *testing.T) {
 	a := assert.New(t)
 
+	service := manageMissionServiceMock{}
+	service.On("CreateMission", mock.Anything).Return(nil)
+
+	app := app.Application{
+		Services: app.Services{
+			ManageMission: &service,
+		},
+	}
+
 	psm := &publishHandlerMock{}
-	evt := &eventHandlerMock{}
-	SubscribeEventHandler(nil, psm, evt)
+	SubscribeEventHandler(nil, psm, app)
+
+	requestPb := &skysign_proto.CopiedMissionCreatedEvent{
+		MissionId: DefaultMissionID,
+		Mission: &skysign_proto.Mission{
+			Id: DefaultMissionID,
+			Navigation: &skysign_proto.Navigation{
+				UploadId:  DefaultMissionUploadID,
+				Waypoints: []*skysign_proto.Waypoint{},
+			},
+		},
+	}
+	requestBin, _ := proto.Marshal(requestPb)
 
 	var (
 		ExchangeName = "mission.copied_mission_created_event"
 		QueueName    = "uploadmission.copied_mission_created_event"
-		EventByte    = []byte{0x20, 0x21}
 	)
 
 	for _, c := range psm.consumers {
 		if c.exchangeName == ExchangeName && c.queueName == QueueName {
-			c.handler(EventByte)
+			c.handler(requestBin)
 		}
 	}
 
-	a.Equal(evt.events1, EventByte)
-}
-
-type publishHandlerMock struct {
-	consumers []consumer
-}
-
-func (h *publishHandlerMock) SetConsumer(ctx context.Context, exchangeName, queueName string, handler func([]byte)) error {
-	h.consumers = append(
-		h.consumers,
-		consumer{
-			exchangeName: exchangeName,
-			queueName:    queueName,
-			handler:      handler,
-		})
-	return nil
-}
-
-type consumer struct {
-	exchangeName, queueName string
-	handler                 func([]byte)
-}
-
-type eventHandlerMock struct {
-	events1 []byte
-}
-
-func (h *eventHandlerMock) HandleCopiedMissionCreatedEvent(
-	ctx context.Context,
-	event []byte,
-) error {
-	h.events1 = append(h.events1, event...)
-	return nil
+	a.Equal(service.ID, DefaultMissionUploadID)
 }

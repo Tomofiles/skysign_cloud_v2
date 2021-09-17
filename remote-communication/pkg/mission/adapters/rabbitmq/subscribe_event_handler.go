@@ -2,6 +2,7 @@ package rabbitmq
 
 import (
 	"context"
+	"remote-communication/pkg/mission/app"
 
 	"github.com/Tomofiles/skysign_cloud_v2/skysign-common/pkg/common/ports"
 
@@ -12,14 +13,15 @@ import (
 func SubscribeEventHandler(
 	ctx context.Context,
 	psm ports.PubSubManagerSetter,
-	evt EventHandler,
+	app app.Application,
 ) {
+	mevt := NewCopiedMissionCreatedEventHandler(app)
 	psm.SetConsumer(
 		ctx,
 		CopiedMissionCreatedEventExchangeName,
 		CopiedMissionCreatedEventQueueName,
 		func(event []byte) {
-			if err := evt.HandleCopiedMissionCreatedEvent(ctx, event); err != nil {
+			if err := mevt.HandleCopiedMissionCreatedEvent(ctx, event); err != nil {
 				glog.Error(err)
 			}
 		},

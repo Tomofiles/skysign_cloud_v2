@@ -32,7 +32,7 @@ func TestGetUploadMission(t *testing.T) {
 		},
 	}
 
-	grpc := NewGrpcServer(app)
+	grpc := NewUploadMissionEdgeServiceServer(app)
 
 	request := &proto.GetUploadMissionRequest{
 		Id: DefaultMissionUploadID,
