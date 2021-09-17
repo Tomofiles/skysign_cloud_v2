@@ -13,7 +13,7 @@ func TestSubscribePublishHandler(t *testing.T) {
 
 	event1 := communication.TelemetryUpdatedEvent{}
 
-	psm := &publishHandlerMock{}
+	psm := &pubSubManagerMock{}
 	SubscribePublishHandler(psm)
 
 	chMock := &channelMockPublish{}

@@ -1,4 +1,4 @@
-package ports
+package rabbitmq
 
 import (
 	"remote-communication/pkg/communication/app"
@@ -27,7 +27,7 @@ func TestHandleCommunicationIDGaveEvent(t *testing.T) {
 	handler := NewEventHandler(app)
 
 	requestPb := &skysign_proto.CommunicationIdGaveEvent{
-		CommunicationId: DefaultCommunicationID,
+		CommunicationId: string(DefaultCommunicationID),
 	}
 	requestBin, _ := proto.Marshal(requestPb)
 	err := handler.HandleCommunicationIDGaveEvent(
@@ -36,7 +36,7 @@ func TestHandleCommunicationIDGaveEvent(t *testing.T) {
 	)
 
 	a.Nil(err)
-	a.Equal(service.ID, DefaultCommunicationID)
+	a.Equal(service.ID, string(DefaultCommunicationID))
 }
 
 func TestHandleCommunicationIDRemovedEvent(t *testing.T) {
@@ -55,7 +55,7 @@ func TestHandleCommunicationIDRemovedEvent(t *testing.T) {
 	handler := NewEventHandler(app)
 
 	requestPb := &skysign_proto.CommunicationIdRemovedEvent{
-		CommunicationId: DefaultCommunicationID,
+		CommunicationId: string(DefaultCommunicationID),
 	}
 	requestBin, _ := proto.Marshal(requestPb)
 	err := handler.HandleCommunicationIDRemovedEvent(
@@ -64,5 +64,5 @@ func TestHandleCommunicationIDRemovedEvent(t *testing.T) {
 	)
 
 	a.Nil(err)
-	a.Equal(service.ID, DefaultCommunicationID)
+	a.Equal(service.ID, string(DefaultCommunicationID))
 }

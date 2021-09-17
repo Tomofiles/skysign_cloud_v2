@@ -1,4 +1,4 @@
-package ports
+package grpc
 
 import (
 	"remote-communication/pkg/communication/service"
@@ -9,27 +9,6 @@ import (
 const DefaultCommunicationID = "communication-id"
 const DefaultCommunicationCommandID = "command-id"
 const DefaultCommunicationMissionID = "mission-id"
-
-type manageCommunicationServiceMock struct {
-	mock.Mock
-	ID string
-}
-
-func (s *manageCommunicationServiceMock) CreateCommunication(
-	command service.CreateCommunicationCommand,
-) error {
-	ret := s.Called()
-	s.ID = command.GetID()
-	return ret.Error(0)
-}
-
-func (s *manageCommunicationServiceMock) DeleteCommunication(
-	command service.DeleteCommunicationCommand,
-) error {
-	ret := s.Called()
-	s.ID = command.GetID()
-	return ret.Error(0)
-}
 
 type userCommunicationServiceMock struct {
 	mock.Mock

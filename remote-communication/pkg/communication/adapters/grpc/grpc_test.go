@@ -1,4 +1,4 @@
-package ports
+package grpc
 
 import (
 	"remote-communication/pkg/communication/app"
