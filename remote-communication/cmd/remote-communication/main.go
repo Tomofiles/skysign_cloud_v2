@@ -6,17 +6,16 @@ import (
 	"net"
 	"os"
 
+	rgrpc "remote-communication/pkg/communication/adapters/grpc"
 	rrm "remote-communication/pkg/communication/adapters/rabbitmq"
 	rapp "remote-communication/pkg/communication/app"
-	rports "remote-communication/pkg/communication/ports"
+	mgrpc "remote-communication/pkg/mission/adapters/grpc"
+	mrm "remote-communication/pkg/mission/adapters/rabbitmq"
 	mapp "remote-communication/pkg/mission/app"
-	mports "remote-communication/pkg/mission/ports"
 
 	cpg "github.com/Tomofiles/skysign_cloud_v2/skysign-common/pkg/common/adapters/postgresql"
 	crm "github.com/Tomofiles/skysign_cloud_v2/skysign-common/pkg/common/adapters/rabbitmq"
 	cports "github.com/Tomofiles/skysign_cloud_v2/skysign-common/pkg/common/ports"
-
-	"github.com/Tomofiles/skysign_cloud_v2/skysign-proto/pkg/skysign_proto"
 
 	"github.com/golang/glog"
 	"google.golang.org/grpc"
@@ -58,20 +57,13 @@ func run() error {
 	communicationApp := rapp.NewApplication(ctx, txm, psm)
 	missionApp := mapp.NewApplication(ctx, txm, psm)
 
-	revt := rports.NewEventHandler(communicationApp)
-	mevt := mports.NewEventHandler(missionApp)
+	rrm.SubscribeEventHandler(ctx, psm, communicationApp)
+	mrm.SubscribeEventHandler(ctx, psm, missionApp)
 
-	rports.SubscribeEventHandler(ctx, psm, revt)
-	mports.SubscribeEventHandler(ctx, psm, mevt)
+	rrm.SubscribeEventPublisher(psm)
 
-	rrm.SubscribePublishHandler(psm)
-
-	rsvc := rports.NewGrpcServer(communicationApp)
-	msvc := mports.NewGrpcServer(missionApp)
-
-	skysign_proto.RegisterCommunicationUserServiceServer(s, &rsvc)
-	skysign_proto.RegisterCommunicationEdgeServiceServer(s, &rsvc)
-	skysign_proto.RegisterUploadMissionEdgeServiceServer(s, &msvc)
+	rgrpc.SubscribeGrpcServer(s, communicationApp)
+	mgrpc.SubscribeGrpcServer(s, missionApp)
 
 	glog.Info("start remote-communication server")
 	return s.Serve(listen)
