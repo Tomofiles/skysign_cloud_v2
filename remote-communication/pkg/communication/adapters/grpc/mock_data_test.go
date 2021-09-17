@@ -4,6 +4,7 @@ import (
 	"remote-communication/pkg/communication/service"
 
 	"github.com/stretchr/testify/mock"
+	"google.golang.org/grpc"
 )
 
 const DefaultCommunicationID = "communication-id"
@@ -108,4 +109,14 @@ func (s *edgeCommunicationServiceMock) PushTelemetry(
 	}
 	pulledCommandIDs(f)
 	return ret.Error(1)
+}
+
+type serviceRegistrarMock struct {
+	descs []*grpc.ServiceDesc
+	impls []interface{}
+}
+
+func (s *serviceRegistrarMock) RegisterService(desc *grpc.ServiceDesc, impl interface{}) {
+	s.descs = append(s.descs, desc)
+	s.impls = append(s.impls, impl)
 }
