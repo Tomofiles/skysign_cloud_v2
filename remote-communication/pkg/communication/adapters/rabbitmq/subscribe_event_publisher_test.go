@@ -8,13 +8,13 @@ import (
 	"github.com/stretchr/testify/mock"
 )
 
-func TestSubscribePublishHandler(t *testing.T) {
+func TestSubscribeEventPublisher(t *testing.T) {
 	a := assert.New(t)
 
 	event1 := communication.TelemetryUpdatedEvent{}
 
 	psm := &pubSubManagerMock{}
-	SubscribePublishHandler(psm)
+	SubscribeEventPublisher(psm)
 
 	chMock := &channelMockPublish{}
 	chMock.On("FanoutExchangeDeclare", mock.Anything).Return(nil)
