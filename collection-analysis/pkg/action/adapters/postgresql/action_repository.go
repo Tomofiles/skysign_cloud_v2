@@ -8,17 +8,16 @@ import (
 	"gorm.io/gorm"
 )
 
-// ActionRepository .
-type ActionRepository struct {
+type actionRepository struct {
 }
 
 // NewActionRepository .
-func NewActionRepository() *ActionRepository {
-	return &ActionRepository{}
+func NewActionRepository() action.Repository {
+	return &actionRepository{}
 }
 
 // GetByID .
-func (r *ActionRepository) GetByID(
+func (r *actionRepository) GetByID(
 	tx txmanager.Tx,
 	id action.ID,
 ) (*action.Action, error) {
@@ -48,7 +47,7 @@ func (r *ActionRepository) GetByID(
 }
 
 // GetAllActiveByFleetID .
-func (r *ActionRepository) GetAllActiveByFleetID(
+func (r *actionRepository) GetAllActiveByFleetID(
 	tx txmanager.Tx,
 	fleetID action.FleetID,
 ) ([]*action.Action, error) {
@@ -82,7 +81,7 @@ func (r *ActionRepository) GetAllActiveByFleetID(
 }
 
 // GetActiveByCommunicationID .
-func (r *ActionRepository) GetActiveByCommunicationID(
+func (r *actionRepository) GetActiveByCommunicationID(
 	tx txmanager.Tx,
 	communicationID action.CommunicationID,
 ) (*action.Action, error) {
@@ -112,7 +111,7 @@ func (r *ActionRepository) GetActiveByCommunicationID(
 }
 
 // Save .
-func (r *ActionRepository) Save(
+func (r *actionRepository) Save(
 	tx txmanager.Tx,
 	aAction *action.Action,
 ) error {

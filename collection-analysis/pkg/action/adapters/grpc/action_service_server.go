@@ -1,4 +1,4 @@
-package ports
+package grpc
 
 import (
 	"context"
@@ -9,19 +9,18 @@ import (
 	proto "github.com/Tomofiles/skysign_cloud_v2/skysign-proto/pkg/skysign_proto"
 )
 
-// GrpcServer .
-type GrpcServer struct {
+type actionServiceServer struct {
 	proto.UnimplementedActionServiceServer
 	app app.Application
 }
 
-// NewGrpcServer .
-func NewGrpcServer(application app.Application) GrpcServer {
-	return GrpcServer{app: application}
+// NewActionServiceServer .
+func NewActionServiceServer(application app.Application) proto.ActionServiceServer {
+	return &actionServiceServer{app: application}
 }
 
 // GetFlightplan .
-func (s *GrpcServer) GetTrajectory(
+func (s *actionServiceServer) GetTrajectory(
 	ctx context.Context,
 	request *proto.GetTrajectoryRequest,
 ) (*proto.GetTrajectoryResponse, error) {

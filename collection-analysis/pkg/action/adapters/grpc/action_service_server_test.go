@@ -1,4 +1,4 @@
-package ports
+package grpc
 
 import (
 	"collection-analysis/pkg/action/app"
@@ -39,7 +39,7 @@ func TestSinglePointGetTrajectory(t *testing.T) {
 		},
 	}
 
-	grpc := NewGrpcServer(app)
+	grpc := NewActionServiceServer(app)
 
 	request := &skysign_proto.GetTrajectoryRequest{
 		VehicleId: string(DefaultActionID),
@@ -125,7 +125,7 @@ func TestMultiplePointsGetTrajectory(t *testing.T) {
 		},
 	}
 
-	grpc := NewGrpcServer(app)
+	grpc := NewActionServiceServer(app)
 
 	request := &skysign_proto.GetTrajectoryRequest{
 		VehicleId: string(DefaultActionID),
@@ -197,7 +197,7 @@ func TestNonePointsGetTrajectory(t *testing.T) {
 		},
 	}
 
-	grpc := NewGrpcServer(app)
+	grpc := NewActionServiceServer(app)
 
 	request := &skysign_proto.GetTrajectoryRequest{
 		VehicleId: string(DefaultActionID),

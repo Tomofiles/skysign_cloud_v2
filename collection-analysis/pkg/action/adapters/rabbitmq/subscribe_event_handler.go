@@ -1,6 +1,7 @@
-package ports
+package rabbitmq
 
 import (
+	"collection-analysis/pkg/action/app"
 	"context"
 
 	"github.com/Tomofiles/skysign_cloud_v2/skysign-common/pkg/common/ports"
@@ -12,14 +13,17 @@ import (
 func SubscribeEventHandler(
 	ctx context.Context,
 	psm ports.PubSubManagerSetter,
-	evt EventHandler,
+	app app.Application,
 ) {
+	vevt := NewCopiedVehicleCreatedEventHandler(app)
+	fevt := NewFlightoperationCompletedEventHandler(app)
+	tevt := NewTelemetryUpdatedEventHandler(app)
 	psm.SetConsumer(
 		ctx,
 		CopiedVehicleCreatedEventExchangeName,
 		CopiedVehicleCreatedEventQueueName,
 		func(event []byte) {
-			if err := evt.HandleCopiedVehicleCreatedEvent(ctx, event); err != nil {
+			if err := vevt.HandleCopiedVehicleCreatedEvent(ctx, event); err != nil {
 				glog.Error(err)
 			}
 		},
@@ -29,7 +33,7 @@ func SubscribeEventHandler(
 		FlightoperationCompletedEventExchangeName,
 		FlightoperationCompletedEventQueueName,
 		func(event []byte) {
-			if err := evt.HandleFlightoperationCompletedEvent(ctx, event); err != nil {
+			if err := fevt.HandleFlightoperationCompletedEvent(ctx, event); err != nil {
 				glog.Error(err)
 			}
 		},
@@ -39,7 +43,7 @@ func SubscribeEventHandler(
 		TelemetryUpdatedEventExchangeName,
 		TelemetryUpdatedEventQueueName,
 		func(event []byte) {
-			if err := evt.HandleTelemetryUpdatedEvent(ctx, event); err != nil {
+			if err := tevt.HandleTelemetryUpdatedEvent(ctx, event); err != nil {
 				glog.Error(err)
 			}
 		},

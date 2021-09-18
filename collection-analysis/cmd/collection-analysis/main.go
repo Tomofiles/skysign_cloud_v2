@@ -6,10 +6,9 @@ import (
 	"net"
 	"os"
 
+	agrpc "collection-analysis/pkg/action/adapters/grpc"
+	arm "collection-analysis/pkg/action/adapters/rabbitmq"
 	aapp "collection-analysis/pkg/action/app"
-	aports "collection-analysis/pkg/action/ports"
-
-	proto "github.com/Tomofiles/skysign_cloud_v2/skysign-proto/pkg/skysign_proto"
 
 	cpg "github.com/Tomofiles/skysign_cloud_v2/skysign-common/pkg/common/adapters/postgresql"
 	crm "github.com/Tomofiles/skysign_cloud_v2/skysign-common/pkg/common/adapters/rabbitmq"
@@ -54,13 +53,9 @@ func run() error {
 
 	aApp := aapp.NewApplication(ctx, txm)
 
-	aevt := aports.NewEventHandler(aApp)
+	arm.SubscribeEventHandler(ctx, psm, aApp)
 
-	aports.SubscribeEventHandler(ctx, psm, aevt)
-
-	asvc := aports.NewGrpcServer(aApp)
-
-	proto.RegisterActionServiceServer(s, &asvc)
+	agrpc.SubscribeGrpcServer(s, aApp)
 
 	glog.Info("start collection-analysis server")
 	return s.Serve(listen)

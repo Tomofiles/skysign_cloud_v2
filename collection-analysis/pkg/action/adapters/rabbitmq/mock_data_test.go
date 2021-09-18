@@ -1,8 +1,11 @@
-package ports
+package rabbitmq
 
 import (
 	act "collection-analysis/pkg/action/domain/action"
 	"collection-analysis/pkg/action/service"
+	"context"
+
+	crm "github.com/Tomofiles/skysign_cloud_v2/skysign-common/pkg/common/adapters/rabbitmq"
 
 	"github.com/stretchr/testify/mock"
 )
@@ -57,4 +60,30 @@ func (s *operateActionServiceMock) PushTelemetry(
 	ret := s.Called()
 	s.telemetryCommand = command
 	return ret.Error(0)
+}
+
+type pubSubManagerMock struct {
+	consumers       []consumer
+	publishHandlers []func(ch crm.Channel, e interface{})
+}
+
+func (h *pubSubManagerMock) SetConsumer(ctx context.Context, exchangeName, queueName string, handler func([]byte)) error {
+	h.consumers = append(
+		h.consumers,
+		consumer{
+			exchangeName: exchangeName,
+			queueName:    queueName,
+			handler:      handler,
+		})
+	return nil
+}
+
+func (h *pubSubManagerMock) SetPublishHandler(handler func(ch crm.Channel, e interface{})) error {
+	h.publishHandlers = append(h.publishHandlers, handler)
+	return nil
+}
+
+type consumer struct {
+	exchangeName, queueName string
+	handler                 func([]byte)
 }
