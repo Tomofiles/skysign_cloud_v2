@@ -23,7 +23,7 @@ func TestSubscribeEventHandlerCommunicationIdGaveEvent(t *testing.T) {
 		},
 	}
 
-	psm := &publishHandlerMock{}
+	psm := &pubSubManagerMock{}
 	SubscribeEventHandler(nil, psm, app)
 
 	requestPb := &skysign_proto.CommunicationIdGaveEvent{
@@ -58,7 +58,7 @@ func TestSubscribeEventHandlerCommunicationIdRemovedEvent(t *testing.T) {
 		},
 	}
 
-	psm := &publishHandlerMock{}
+	psm := &pubSubManagerMock{}
 	SubscribeEventHandler(nil, psm, app)
 
 	requestPb := &skysign_proto.CommunicationIdRemovedEvent{

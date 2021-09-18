@@ -23,7 +23,7 @@ func TestSubscribeEventHandleCopiedMissionCreatedEvent(t *testing.T) {
 		},
 	}
 
-	psm := &publishHandlerMock{}
+	psm := &pubSubManagerMock{}
 	SubscribeEventHandler(nil, psm, app)
 
 	requestPb := &skysign_proto.CopiedMissionCreatedEvent{

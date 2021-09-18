@@ -65,19 +65,11 @@ func (ch *channelMockPublish) Close() error {
 }
 
 type pubSubManagerMock struct {
+	consumers       []consumer
 	publishHandlers []func(ch crm.Channel, e interface{})
 }
 
-func (h *pubSubManagerMock) SetPublishHandler(handler func(ch crm.Channel, e interface{})) error {
-	h.publishHandlers = append(h.publishHandlers, handler)
-	return nil
-}
-
-type publishHandlerMock struct {
-	consumers []consumer
-}
-
-func (h *publishHandlerMock) SetConsumer(ctx context.Context, exchangeName, queueName string, handler func([]byte)) error {
+func (h *pubSubManagerMock) SetConsumer(ctx context.Context, exchangeName, queueName string, handler func([]byte)) error {
 	h.consumers = append(
 		h.consumers,
 		consumer{
@@ -85,6 +77,11 @@ func (h *publishHandlerMock) SetConsumer(ctx context.Context, exchangeName, queu
 			queueName:    queueName,
 			handler:      handler,
 		})
+	return nil
+}
+
+func (h *pubSubManagerMock) SetPublishHandler(handler func(ch crm.Channel, e interface{})) error {
+	h.publishHandlers = append(h.publishHandlers, handler)
 	return nil
 }
 
