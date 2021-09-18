@@ -1,4 +1,4 @@
-package ports
+package grpc
 
 import (
 	"context"
@@ -9,19 +9,19 @@ import (
 	proto "github.com/Tomofiles/skysign_cloud_v2/skysign-proto/pkg/skysign_proto"
 )
 
-// GrpcServer .
-type GrpcServer struct {
+// manageVehicleServiceServer .
+type manageVehicleServiceServer struct {
 	proto.UnimplementedManageVehicleServiceServer
 	app app.Application
 }
 
-// NewGrpcServer .
-func NewGrpcServer(application app.Application) GrpcServer {
-	return GrpcServer{app: application}
+// NewManageVehicleServiceServer .
+func NewManageVehicleServiceServer(application app.Application) *manageVehicleServiceServer {
+	return &manageVehicleServiceServer{app: application}
 }
 
 // ListVehicles .
-func (s *GrpcServer) ListVehicles(
+func (s *manageVehicleServiceServer) ListVehicles(
 	ctx context.Context,
 	request *proto.Empty,
 ) (*proto.ListVehiclesResponses, error) {
@@ -44,7 +44,7 @@ func (s *GrpcServer) ListVehicles(
 }
 
 // GetVehicle .
-func (s *GrpcServer) GetVehicle(
+func (s *manageVehicleServiceServer) GetVehicle(
 	ctx context.Context,
 	request *proto.GetVehicleRequest,
 ) (*proto.Vehicle, error) {
@@ -66,7 +66,7 @@ func (s *GrpcServer) GetVehicle(
 }
 
 // CreateVehicle .
-func (s *GrpcServer) CreateVehicle(
+func (s *manageVehicleServiceServer) CreateVehicle(
 	ctx context.Context,
 	request *proto.Vehicle,
 ) (*proto.Vehicle, error) {
@@ -88,7 +88,7 @@ func (s *GrpcServer) CreateVehicle(
 }
 
 // UpdateVehicle .
-func (s *GrpcServer) UpdateVehicle(
+func (s *manageVehicleServiceServer) UpdateVehicle(
 	ctx context.Context,
 	request *proto.Vehicle,
 ) (*proto.Vehicle, error) {
@@ -107,7 +107,7 @@ func (s *GrpcServer) UpdateVehicle(
 }
 
 // DeleteVehicle .
-func (s *GrpcServer) DeleteVehicle(
+func (s *manageVehicleServiceServer) DeleteVehicle(
 	ctx context.Context,
 	request *proto.DeleteVehicleRequest,
 ) (*proto.Empty, error) {

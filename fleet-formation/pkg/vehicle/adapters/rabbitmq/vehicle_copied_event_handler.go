@@ -1,4 +1,4 @@
-package ports
+package rabbitmq
 
 import (
 	"context"
@@ -17,23 +17,23 @@ const (
 	VehicleCopiedEventQueueName = "vehicle.vehicle_copied_event"
 )
 
-// EventHandler .
-type EventHandler interface {
+// VehicleCopiedEventHandler .
+type VehicleCopiedEventHandler interface {
 	HandleVehicleCopiedEvent(ctx context.Context, event []byte) error
 }
 
-// eventHandler .
-type eventHandler struct {
+// vehicleCopiedEventHandler .
+type vehicleCopiedEventHandler struct {
 	app app.Application
 }
 
-// NewEventHandler .
-func NewEventHandler(application app.Application) *eventHandler {
-	return &eventHandler{app: application}
+// NewVehicleCopiedEventHandler .
+func NewVehicleCopiedEventHandler(application app.Application) *vehicleCopiedEventHandler {
+	return &vehicleCopiedEventHandler{app: application}
 }
 
 // HandleVehicleCopiedEvent .
-func (h *eventHandler) HandleVehicleCopiedEvent(
+func (h *vehicleCopiedEventHandler) HandleVehicleCopiedEvent(
 	ctx context.Context,
 	event []byte,
 ) error {

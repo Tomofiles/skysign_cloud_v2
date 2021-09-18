@@ -1,4 +1,4 @@
-package ports
+package grpc
 
 import (
 	"fleet-formation/pkg/vehicle/app"
@@ -30,7 +30,7 @@ func TestSingleVehiclesListVehicles(t *testing.T) {
 		},
 	}
 
-	grpc := NewGrpcServer(app)
+	grpc := NewManageVehicleServiceServer(app)
 
 	request := &proto.Empty{}
 	response, err := grpc.ListVehicles(
@@ -94,7 +94,7 @@ func TestMultipleVehiclesListVehicles(t *testing.T) {
 		},
 	}
 
-	grpc := NewGrpcServer(app)
+	grpc := NewManageVehicleServiceServer(app)
 
 	request := &proto.Empty{}
 	response, err := grpc.ListVehicles(
@@ -140,7 +140,7 @@ func TestNoneVehiclesListVehicles(t *testing.T) {
 		},
 	}
 
-	grpc := NewGrpcServer(app)
+	grpc := NewManageVehicleServiceServer(app)
 
 	request := &proto.Empty{}
 	response, err := grpc.ListVehicles(
@@ -172,7 +172,7 @@ func TestGetVehicle(t *testing.T) {
 		},
 	}
 
-	grpc := NewGrpcServer(app)
+	grpc := NewManageVehicleServiceServer(app)
 
 	request := &proto.GetVehicleRequest{
 		Id: DefaultVehicleID,
@@ -210,7 +210,7 @@ func TestCreateVehicle(t *testing.T) {
 		},
 	}
 
-	grpc := NewGrpcServer(app)
+	grpc := NewManageVehicleServiceServer(app)
 
 	request := &proto.Vehicle{
 		Name:            DefaultVehicleName,
@@ -244,7 +244,7 @@ func TestUpdateVehicle(t *testing.T) {
 		},
 	}
 
-	grpc := NewGrpcServer(app)
+	grpc := NewManageVehicleServiceServer(app)
 
 	request := &proto.Vehicle{
 		Id:              DefaultVehicleID,
@@ -279,7 +279,7 @@ func TestDeleteVehicle(t *testing.T) {
 		},
 	}
 
-	grpc := NewGrpcServer(app)
+	grpc := NewManageVehicleServiceServer(app)
 
 	request := &proto.DeleteVehicleRequest{
 		Id: DefaultVehicleID,

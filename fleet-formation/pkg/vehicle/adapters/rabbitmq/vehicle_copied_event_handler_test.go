@@ -1,4 +1,4 @@
-package ports
+package rabbitmq
 
 import (
 	"fleet-formation/pkg/vehicle/app"
@@ -29,12 +29,12 @@ func TestHandleVehicleCopiedEvent(t *testing.T) {
 		},
 	}
 
-	handler := NewEventHandler(app)
+	handler := NewVehicleCopiedEventHandler(app)
 
 	requestPb := &skysign_proto.VehicleCopiedEvent{
-		OriginalVehicleId: DefaultOriginalID,
-		NewVehicleId:      DefaultNewID,
-		FleetId:           DefaultFleetID,
+		OriginalVehicleId: string(DefaultOriginalID),
+		NewVehicleId:      string(DefaultNewID),
+		FleetId:           string(DefaultFleetID),
 	}
 	requestBin, _ := proto.Marshal(requestPb)
 	err := handler.HandleVehicleCopiedEvent(
@@ -43,7 +43,7 @@ func TestHandleVehicleCopiedEvent(t *testing.T) {
 	)
 
 	a.Nil(err)
-	a.Equal(service.OriginalID, DefaultOriginalID)
-	a.Equal(service.NewID, DefaultNewID)
-	a.Equal(service.FleetID, DefaultFleetID)
+	a.Equal(service.OriginalID, string(DefaultOriginalID))
+	a.Equal(service.NewID, string(DefaultNewID))
+	a.Equal(service.FleetID, string(DefaultFleetID))
 }

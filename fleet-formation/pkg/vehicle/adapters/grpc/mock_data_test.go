@@ -1,9 +1,10 @@
-package ports
+package grpc
 
 import (
 	"fleet-formation/pkg/vehicle/service"
 
 	"github.com/stretchr/testify/mock"
+	"google.golang.org/grpc"
 )
 
 const DefaultVehicleID = "vehicle-id"
@@ -114,4 +115,14 @@ func (f *vehicleMock) GetName() string {
 
 func (f *vehicleMock) GetCommunicationID() string {
 	return f.CommunicationID
+}
+
+type serviceRegistrarMock struct {
+	descs []*grpc.ServiceDesc
+	impls []interface{}
+}
+
+func (s *serviceRegistrarMock) RegisterService(desc *grpc.ServiceDesc, impl interface{}) {
+	s.descs = append(s.descs, desc)
+	s.impls = append(s.impls, impl)
 }
