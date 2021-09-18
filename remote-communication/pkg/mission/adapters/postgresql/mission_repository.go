@@ -8,17 +8,16 @@ import (
 	"gorm.io/gorm"
 )
 
-// MissionRepository .
-type MissionRepository struct {
+type missionRepository struct {
 }
 
 // NewMissionRepository .
-func NewMissionRepository() *MissionRepository {
-	return &MissionRepository{}
+func NewMissionRepository() m.Repository {
+	return &missionRepository{}
 }
 
 // GetByID .
-func (r *MissionRepository) GetByID(
+func (r *missionRepository) GetByID(
 	tx txmanager.Tx,
 	id m.ID,
 ) (*m.Mission, error) {
@@ -48,7 +47,7 @@ func (r *MissionRepository) GetByID(
 }
 
 // Save .
-func (r *MissionRepository) Save(
+func (r *missionRepository) Save(
 	tx txmanager.Tx,
 	mission *m.Mission,
 ) error {
@@ -114,7 +113,7 @@ func (r *MissionRepository) Save(
 }
 
 // Delete .
-func (r *MissionRepository) Delete(
+func (r *missionRepository) Delete(
 	tx txmanager.Tx,
 	id m.ID,
 ) error {

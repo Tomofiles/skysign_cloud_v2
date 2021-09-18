@@ -10,20 +10,19 @@ import (
 	"gorm.io/gorm/clause"
 )
 
-// CommunicationRepository .
-type CommunicationRepository struct {
+type communicationRepository struct {
 	gen c.Generator
 }
 
 // NewCommunicationRepository .
-func NewCommunicationRepository(gen c.Generator) *CommunicationRepository {
-	return &CommunicationRepository{
+func NewCommunicationRepository(gen c.Generator) c.Repository {
+	return &communicationRepository{
 		gen: gen,
 	}
 }
 
 // GetByID .
-func (r *CommunicationRepository) GetByID(
+func (r *communicationRepository) GetByID(
 	tx txmanager.Tx,
 	id c.ID,
 ) (*c.Communication, error) {
@@ -63,7 +62,7 @@ func (r *CommunicationRepository) GetByID(
 }
 
 // Save .
-func (r *CommunicationRepository) Save(
+func (r *communicationRepository) Save(
 	tx txmanager.Tx,
 	communication *c.Communication,
 ) error {
@@ -172,7 +171,7 @@ func (r *CommunicationRepository) Save(
 }
 
 // Delete .
-func (r *CommunicationRepository) Delete(
+func (r *communicationRepository) Delete(
 	tx txmanager.Tx,
 	id c.ID,
 ) error {

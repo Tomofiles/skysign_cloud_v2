@@ -16,7 +16,7 @@ type communicationUserServiceServer struct {
 }
 
 // NewCommunicationUserServiceServer .
-func NewCommunicationUserServiceServer(application app.Application) *communicationUserServiceServer {
+func NewCommunicationUserServiceServer(application app.Application) proto.CommunicationUserServiceServer {
 	return &communicationUserServiceServer{app: application}
 }
 

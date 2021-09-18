@@ -28,7 +28,7 @@ type communicationIDRemovedEventHandler struct {
 }
 
 // NewCommunicationIDRemovedEventHandler .
-func NewCommunicationIDRemovedEventHandler(application app.Application) *communicationIDRemovedEventHandler {
+func NewCommunicationIDRemovedEventHandler(application app.Application) CommunicationIDRemovedEventHandler {
 	return &communicationIDRemovedEventHandler{app: application}
 }
 

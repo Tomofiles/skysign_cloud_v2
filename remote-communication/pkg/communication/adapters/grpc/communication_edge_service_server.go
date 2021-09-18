@@ -16,7 +16,7 @@ type communicationEdgeServiceServer struct {
 }
 
 // NewCommunicationEdgeServiceServer .
-func NewCommunicationEdgeServiceServer(application app.Application) *communicationEdgeServiceServer {
+func NewCommunicationEdgeServiceServer(application app.Application) proto.CommunicationEdgeServiceServer {
 	return &communicationEdgeServiceServer{app: application}
 }
 

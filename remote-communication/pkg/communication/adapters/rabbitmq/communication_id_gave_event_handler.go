@@ -28,7 +28,7 @@ type communicationIDGaveEventHandler struct {
 }
 
 // NewCommunicationIDGaveEventHandler .
-func NewCommunicationIDGaveEventHandler(application app.Application) *communicationIDGaveEventHandler {
+func NewCommunicationIDGaveEventHandler(application app.Application) CommunicationIDGaveEventHandler {
 	return &communicationIDGaveEventHandler{app: application}
 }
 

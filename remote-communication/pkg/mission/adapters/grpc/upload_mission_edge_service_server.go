@@ -16,7 +16,7 @@ type uploadMissionEdgeServiceServer struct {
 }
 
 // NewUploadMissionEdgeServiceServer .
-func NewUploadMissionEdgeServiceServer(application app.Application) *uploadMissionEdgeServiceServer {
+func NewUploadMissionEdgeServiceServer(application app.Application) proto.UploadMissionEdgeServiceServer {
 	return &uploadMissionEdgeServiceServer{app: application}
 }
 
