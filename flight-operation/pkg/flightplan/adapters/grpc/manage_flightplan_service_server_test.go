@@ -1,4 +1,4 @@
-package ports
+package grpc
 
 import (
 	"flight-operation/pkg/flightplan/app"
@@ -38,7 +38,7 @@ func TestSingleFlightplansListFlightplans(t *testing.T) {
 		},
 	}
 
-	grpc := NewGrpcServer(app)
+	grpc := NewManageFlightplanServiceServer(app)
 
 	request := &skysign_proto.Empty{}
 	response, err := grpc.ListFlightplans(
@@ -124,7 +124,7 @@ func TestMultipleFlightplansListFlightplans(t *testing.T) {
 		},
 	}
 
-	grpc := NewGrpcServer(app)
+	grpc := NewManageFlightplanServiceServer(app)
 
 	request := &skysign_proto.Empty{}
 	response, err := grpc.ListFlightplans(
@@ -173,7 +173,7 @@ func TestNoneFlightplansListFlightplans(t *testing.T) {
 		},
 	}
 
-	grpc := NewGrpcServer(app)
+	grpc := NewManageFlightplanServiceServer(app)
 
 	request := &skysign_proto.Empty{}
 	response, err := grpc.ListFlightplans(
@@ -211,7 +211,7 @@ func TestGetFlightplan(t *testing.T) {
 		},
 	}
 
-	grpc := NewGrpcServer(app)
+	grpc := NewManageFlightplanServiceServer(app)
 
 	request := &skysign_proto.GetFlightplanRequest{
 		Id: DefaultFlightplanID,
@@ -256,7 +256,7 @@ func TestCreateFlightplan(t *testing.T) {
 		},
 	}
 
-	grpc := NewGrpcServer(app)
+	grpc := NewManageFlightplanServiceServer(app)
 
 	request := &skysign_proto.Flightplan{
 		Name:        DefaultFlightplanName,
@@ -302,7 +302,7 @@ func TestUpdateFlightplan(t *testing.T) {
 		},
 	}
 
-	grpc := NewGrpcServer(app)
+	grpc := NewManageFlightplanServiceServer(app)
 
 	request := &skysign_proto.Flightplan{
 		Id:          DefaultFlightplanID,
@@ -338,7 +338,7 @@ func TestDeleteFlightplan(t *testing.T) {
 		},
 	}
 
-	grpc := NewGrpcServer(app)
+	grpc := NewManageFlightplanServiceServer(app)
 
 	request := &skysign_proto.DeleteFlightplanRequest{
 		Id: DefaultFlightplanID,
@@ -349,70 +349,6 @@ func TestDeleteFlightplan(t *testing.T) {
 	)
 
 	expectResponse := &skysign_proto.Empty{}
-
-	a.Nil(err)
-	a.Equal(response, expectResponse)
-}
-
-func TestChangeNumberOfVehicles(t *testing.T) {
-	a := assert.New(t)
-
-	service := changeFlightplanServiceMock{}
-
-	service.On("ChangeNumberOfVehicles", mock.Anything, mock.Anything).Return(nil)
-
-	app := app.Application{
-		Services: app.Services{
-			ChangeFlightplan: &service,
-		},
-	}
-
-	grpc := NewGrpcServer(app)
-
-	request := &skysign_proto.ChangeNumberOfVehiclesRequest{
-		Id:               DefaultFlightplanID,
-		NumberOfVehicles: DefaultFleetNumberOfVehicles,
-	}
-	response, err := grpc.ChangeNumberOfVehicles(
-		nil,
-		request,
-	)
-
-	expectResponse := &skysign_proto.ChangeNumberOfVehiclesResponse{
-		Id:               DefaultFlightplanID,
-		NumberOfVehicles: DefaultFleetNumberOfVehicles,
-	}
-
-	a.Nil(err)
-	a.Equal(response, expectResponse)
-}
-
-func TestExecuteFlightplan(t *testing.T) {
-	a := assert.New(t)
-
-	service := executeFlightplanServiceMock{}
-
-	service.On("ExecuteFlightplan", mock.Anything, mock.Anything).Return(nil)
-
-	app := app.Application{
-		Services: app.Services{
-			ExecuteFlightplan: &service,
-		},
-	}
-
-	grpc := NewGrpcServer(app)
-
-	request := &skysign_proto.ExecuteFlightplanRequest{
-		Id: DefaultFlightplanID,
-	}
-	response, err := grpc.ExecuteFlightplan(
-		nil,
-		request,
-	)
-
-	expectResponse := &skysign_proto.ExecuteFlightplanResponse{
-		Id: DefaultFlightplanID,
-	}
 
 	a.Nil(err)
 	a.Equal(response, expectResponse)

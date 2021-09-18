@@ -1,4 +1,4 @@
-package ports
+package grpc
 
 import (
 	"context"
@@ -9,21 +9,18 @@ import (
 	proto "github.com/Tomofiles/skysign_cloud_v2/skysign-proto/pkg/skysign_proto"
 )
 
-// GrpcServer .
-type GrpcServer struct {
+type manageFlightplanServiceServer struct {
 	proto.UnimplementedManageFlightplanServiceServer
-	proto.UnimplementedChangeFlightplanServiceServer
-	proto.UnimplementedExecuteFlightplanServiceServer
 	app app.Application
 }
 
-// NewGrpcServer .
-func NewGrpcServer(application app.Application) GrpcServer {
-	return GrpcServer{app: application}
+// NewManageFlightplanServiceServer .
+func NewManageFlightplanServiceServer(application app.Application) proto.ManageFlightplanServiceServer {
+	return &manageFlightplanServiceServer{app: application}
 }
 
 // ListFlightplans .
-func (s *GrpcServer) ListFlightplans(
+func (s *manageFlightplanServiceServer) ListFlightplans(
 	ctx context.Context,
 	request *proto.Empty,
 ) (*proto.ListFlightplansResponses, error) {
@@ -47,7 +44,7 @@ func (s *GrpcServer) ListFlightplans(
 }
 
 // GetFlightplan .
-func (s *GrpcServer) GetFlightplan(
+func (s *manageFlightplanServiceServer) GetFlightplan(
 	ctx context.Context,
 	request *proto.GetFlightplanRequest,
 ) (*proto.Flightplan, error) {
@@ -70,7 +67,7 @@ func (s *GrpcServer) GetFlightplan(
 }
 
 // CreateFlightplan .
-func (s *GrpcServer) CreateFlightplan(
+func (s *manageFlightplanServiceServer) CreateFlightplan(
 	ctx context.Context,
 	request *proto.Flightplan,
 ) (*proto.Flightplan, error) {
@@ -95,7 +92,7 @@ func (s *GrpcServer) CreateFlightplan(
 }
 
 // UpdateFlightplan .
-func (s *GrpcServer) UpdateFlightplan(
+func (s *manageFlightplanServiceServer) UpdateFlightplan(
 	ctx context.Context,
 	request *proto.Flightplan,
 ) (*proto.Flightplan, error) {
@@ -118,7 +115,7 @@ func (s *GrpcServer) UpdateFlightplan(
 }
 
 // DeleteFlightplan .
-func (s *GrpcServer) DeleteFlightplan(
+func (s *manageFlightplanServiceServer) DeleteFlightplan(
 	ctx context.Context,
 	request *proto.DeleteFlightplanRequest,
 ) (*proto.Empty, error) {
@@ -127,41 +124,6 @@ func (s *GrpcServer) DeleteFlightplan(
 		id: request.Id,
 	}
 	if ret := s.app.Services.ManageFlightplan.DeleteFlightplan(command); ret != nil {
-		return nil, ret
-	}
-	return response, nil
-}
-
-// ChangeNumberOfVehicles .
-func (s *GrpcServer) ChangeNumberOfVehicles(
-	ctx context.Context,
-	request *proto.ChangeNumberOfVehiclesRequest,
-) (*proto.ChangeNumberOfVehiclesResponse, error) {
-	response := &proto.ChangeNumberOfVehiclesResponse{}
-	command := &changeNumberOfVehiclesCommand{
-		id:               request.Id,
-		numberOfVehicles: int(request.NumberOfVehicles),
-	}
-	if ret := s.app.Services.ChangeFlightplan.ChangeNumberOfVehicles(command); ret != nil {
-		return nil, ret
-	}
-	response.Id = request.Id
-	response.NumberOfVehicles = request.NumberOfVehicles
-	return response, nil
-}
-
-// ExecuteFlightplan .
-func (s *GrpcServer) ExecuteFlightplan(
-	ctx context.Context,
-	request *proto.ExecuteFlightplanRequest,
-) (*proto.ExecuteFlightplanResponse, error) {
-	response := &proto.ExecuteFlightplanResponse{
-		Id: request.Id,
-	}
-	command := &flightplanIDCommand{
-		id: request.Id,
-	}
-	if ret := s.app.Services.ExecuteFlightplan.ExecuteFlightplan(command); ret != nil {
 		return nil, ret
 	}
 	return response, nil
@@ -217,17 +179,4 @@ type flightplanIDCommand struct {
 
 func (f *flightplanIDCommand) GetID() string {
 	return f.id
-}
-
-type changeNumberOfVehiclesCommand struct {
-	id               string
-	numberOfVehicles int
-}
-
-func (c *changeNumberOfVehiclesCommand) GetID() string {
-	return c.id
-}
-
-func (c *changeNumberOfVehiclesCommand) GetNumberOfVehicles() int {
-	return c.numberOfVehicles
 }

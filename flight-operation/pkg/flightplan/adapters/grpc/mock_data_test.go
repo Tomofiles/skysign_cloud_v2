@@ -1,4 +1,4 @@
-package ports
+package grpc
 
 import (
 	f "flight-operation/pkg/flightplan/domain/flightplan"

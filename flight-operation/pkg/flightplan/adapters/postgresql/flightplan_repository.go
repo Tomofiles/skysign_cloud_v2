@@ -8,20 +8,19 @@ import (
 	"gorm.io/gorm"
 )
 
-// FlightplanRepository .
-type FlightplanRepository struct {
+type flightplanRepository struct {
 	gen fpl.Generator
 }
 
 // NewFlightplanRepository .
-func NewFlightplanRepository(gen fpl.Generator) *FlightplanRepository {
-	return &FlightplanRepository{
+func NewFlightplanRepository(gen fpl.Generator) fpl.Repository {
+	return &flightplanRepository{
 		gen: gen,
 	}
 }
 
 // GetAll .
-func (r *FlightplanRepository) GetAll(
+func (r *flightplanRepository) GetAll(
 	tx txmanager.Tx,
 ) ([]*fpl.Flightplan, error) {
 	txGorm, ok := tx.(*gorm.DB)
@@ -45,7 +44,7 @@ func (r *FlightplanRepository) GetAll(
 }
 
 // GetByID .
-func (r *FlightplanRepository) GetByID(
+func (r *flightplanRepository) GetByID(
 	tx txmanager.Tx,
 	id fpl.ID,
 ) (*fpl.Flightplan, error) {
@@ -70,7 +69,7 @@ func (r *FlightplanRepository) GetByID(
 }
 
 // Save .
-func (r *FlightplanRepository) Save(
+func (r *flightplanRepository) Save(
 	tx txmanager.Tx,
 	flightplan *fpl.Flightplan,
 ) error {
@@ -114,7 +113,7 @@ func (r *FlightplanRepository) Save(
 }
 
 // Delete .
-func (r *FlightplanRepository) Delete(
+func (r *flightplanRepository) Delete(
 	tx txmanager.Tx,
 	id fpl.ID,
 ) error {
