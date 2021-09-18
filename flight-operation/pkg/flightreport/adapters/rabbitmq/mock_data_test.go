@@ -1,16 +1,19 @@
-package ports
+package rabbitmq
 
 import (
+	"context"
 	frep "flight-operation/pkg/flightreport/domain/flightreport"
 	"flight-operation/pkg/flightreport/service"
+
+	crm "github.com/Tomofiles/skysign_cloud_v2/skysign-common/pkg/common/adapters/rabbitmq"
 
 	"github.com/stretchr/testify/mock"
 )
 
-const DefaultID = frep.ID("flightreport-id")
-const DefaultName = "flightreport-name"
-const DefaultDescription = "flightreport-description"
-const DefaultFleetID = frep.FleetID("fleet-id")
+const DefaultFlightreportID = frep.ID("flightreport-id")
+const DefaultFlightreportName = "flightreport-name"
+const DefaultFlightreportDescription = "flightreport-description"
+const DefaultFlightreportFleetID = frep.FleetID("fleet-id")
 
 type manageFlightreportServiceMock struct {
 	mock.Mock
@@ -102,4 +105,30 @@ func (f *flightreportMock) GetDescription() string {
 
 func (f *flightreportMock) GetFleetID() string {
 	return string(f.flightreport.GetFleetID())
+}
+
+type pubSubManagerMock struct {
+	consumers       []consumer
+	publishHandlers []func(ch crm.Channel, e interface{})
+}
+
+func (h *pubSubManagerMock) SetConsumer(ctx context.Context, exchangeName, queueName string, handler func([]byte)) error {
+	h.consumers = append(
+		h.consumers,
+		consumer{
+			exchangeName: exchangeName,
+			queueName:    queueName,
+			handler:      handler,
+		})
+	return nil
+}
+
+func (h *pubSubManagerMock) SetPublishHandler(handler func(ch crm.Channel, e interface{})) error {
+	h.publishHandlers = append(h.publishHandlers, handler)
+	return nil
+}
+
+type consumer struct {
+	exchangeName, queueName string
+	handler                 func([]byte)
 }

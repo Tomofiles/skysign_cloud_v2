@@ -1,4 +1,4 @@
-package ports
+package rabbitmq
 
 import (
 	"context"
@@ -18,23 +18,23 @@ const (
 	FlightoperationCompletedEventQueueName = "flightreport.flightoperation_completed_event"
 )
 
-// EventHandler .
-type EventHandler interface {
+// FlightoperationCompletedEventHandler .
+type FlightoperationCompletedEventHandler interface {
 	HandleFlightoperationCompletedEvent(ctx context.Context, event []byte) error
 }
 
-// eventHandler .
-type eventHandler struct {
+// flightoperationCompletedEventHandler .
+type flightoperationCompletedEventHandler struct {
 	app app.Application
 }
 
-// NewEventHandler .
-func NewEventHandler(application app.Application) *eventHandler {
-	return &eventHandler{app: application}
+// NewFlightoperationCompletedEventHandler .
+func NewFlightoperationCompletedEventHandler(application app.Application) FlightoperationCompletedEventHandler {
+	return &flightoperationCompletedEventHandler{app: application}
 }
 
 // HandleFlightoperationCompletedEvent .
-func (h *eventHandler) HandleFlightoperationCompletedEvent(
+func (h *flightoperationCompletedEventHandler) HandleFlightoperationCompletedEvent(
 	ctx context.Context,
 	event []byte,
 ) error {

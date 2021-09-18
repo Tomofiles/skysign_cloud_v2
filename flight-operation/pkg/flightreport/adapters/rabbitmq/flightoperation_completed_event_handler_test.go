@@ -1,4 +1,4 @@
-package ports
+package rabbitmq
 
 import (
 	"flight-operation/pkg/flightreport/app"
@@ -24,15 +24,15 @@ func TestHandleFlightoperationCompletedEvent(t *testing.T) {
 		},
 	}
 
-	handler := NewEventHandler(app)
+	handler := NewFlightoperationCompletedEventHandler(app)
 
 	requestPb := &skysign_proto.FlightoperationCompletedEvent{
-		FlightoperationId: string(DefaultID),
+		FlightoperationId: string(DefaultFlightreportID),
 		Flightoperation: &skysign_proto.Flightoperation{
-			Id:          string(DefaultID),
-			Name:        DefaultName,
-			Description: DefaultDescription,
-			FleetId:     string(DefaultFleetID),
+			Id:          string(DefaultFlightreportID),
+			Name:        DefaultFlightreportName,
+			Description: DefaultFlightreportDescription,
+			FleetId:     string(DefaultFlightreportFleetID),
 		},
 	}
 	requestBin, _ := proto.Marshal(requestPb)
@@ -42,7 +42,7 @@ func TestHandleFlightoperationCompletedEvent(t *testing.T) {
 	)
 
 	a.Nil(err)
-	a.Equal(service.name, DefaultName)
-	a.Equal(service.description, DefaultDescription)
-	a.Equal(service.fleetID, string(DefaultFleetID))
+	a.Equal(service.name, DefaultFlightreportName)
+	a.Equal(service.description, DefaultFlightreportDescription)
+	a.Equal(service.fleetID, string(DefaultFlightreportFleetID))
 }

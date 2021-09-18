@@ -1,4 +1,4 @@
-package ports
+package grpc
 
 import (
 	"flight-operation/pkg/flightreport/app"
@@ -22,10 +22,10 @@ func TestSingleFlightreportsListFlightreports(t *testing.T) {
 			flightreport: frep.AssembleFrom(
 				nil,
 				&flightreportComponentMock{
-					ID:          string(DefaultID),
-					Name:        DefaultName,
-					Description: DefaultDescription,
-					FleetID:     string(DefaultFleetID),
+					ID:          string(DefaultFlightreportID),
+					Name:        DefaultFlightreportName,
+					Description: DefaultFlightreportDescription,
+					FleetID:     string(DefaultFlightreportFleetID),
 				},
 			),
 		},
@@ -38,7 +38,7 @@ func TestSingleFlightreportsListFlightreports(t *testing.T) {
 		},
 	}
 
-	grpc := NewGrpcServer(app)
+	grpc := NewReportFlightServiceServer(app)
 
 	request := &skysign_proto.Empty{}
 	response, err := grpc.ListFlightreports(
@@ -49,10 +49,10 @@ func TestSingleFlightreportsListFlightreports(t *testing.T) {
 	expectResponse := &skysign_proto.ListFlightreportsResponses{
 		Flightreports: []*skysign_proto.Flightreport{
 			{
-				Id:          string(DefaultID),
-				Name:        DefaultName,
-				Description: DefaultDescription,
-				FleetId:     string(DefaultFleetID),
+				Id:          string(DefaultFlightreportID),
+				Name:        DefaultFlightreportName,
+				Description: DefaultFlightreportDescription,
+				FleetId:     string(DefaultFlightreportFleetID),
 			},
 		},
 	}
@@ -65,18 +65,18 @@ func TestMultipleFlightreportsListFlightreports(t *testing.T) {
 	a := assert.New(t)
 
 	var (
-		DefaultID1          = string(DefaultID) + "-1"
-		DefaultName1        = DefaultName + "-1"
-		DefaultDescription1 = DefaultDescription + "-1"
-		DefaultFleetID1     = string(DefaultFleetID) + "-1"
-		DefaultID2          = string(DefaultID) + "-2"
-		DefaultName2        = DefaultName + "-2"
-		DefaultDescription2 = DefaultDescription + "-2"
-		DefaultFleetID2     = string(DefaultFleetID) + "-2"
-		DefaultID3          = string(DefaultID) + "-3"
-		DefaultName3        = DefaultName + "-3"
-		DefaultDescription3 = DefaultDescription + "-3"
-		DefaultFleetID3     = string(DefaultFleetID) + "-3"
+		DefaultFlightreportID1          = string(DefaultFlightreportID) + "-1"
+		DefaultFlightreportName1        = DefaultFlightreportName + "-1"
+		DefaultFlightreportDescription1 = DefaultFlightreportDescription + "-1"
+		DefaultFlightreportFleetID1     = string(DefaultFlightreportFleetID) + "-1"
+		DefaultFlightreportID2          = string(DefaultFlightreportID) + "-2"
+		DefaultFlightreportName2        = DefaultFlightreportName + "-2"
+		DefaultFlightreportDescription2 = DefaultFlightreportDescription + "-2"
+		DefaultFlightreportFleetID2     = string(DefaultFlightreportFleetID) + "-2"
+		DefaultFlightreportID3          = string(DefaultFlightreportID) + "-3"
+		DefaultFlightreportName3        = DefaultFlightreportName + "-3"
+		DefaultFlightreportDescription3 = DefaultFlightreportDescription + "-3"
+		DefaultFlightreportFleetID3     = string(DefaultFlightreportFleetID) + "-3"
 	)
 
 	service := manageFlightreportServiceMock{}
@@ -86,10 +86,10 @@ func TestMultipleFlightreportsListFlightreports(t *testing.T) {
 			flightreport: frep.AssembleFrom(
 				nil,
 				&flightreportComponentMock{
-					ID:          string(DefaultID1),
-					Name:        DefaultName1,
-					Description: DefaultDescription1,
-					FleetID:     string(DefaultFleetID1),
+					ID:          string(DefaultFlightreportID1),
+					Name:        DefaultFlightreportName1,
+					Description: DefaultFlightreportDescription1,
+					FleetID:     string(DefaultFlightreportFleetID1),
 				},
 			),
 		},
@@ -97,10 +97,10 @@ func TestMultipleFlightreportsListFlightreports(t *testing.T) {
 			flightreport: frep.AssembleFrom(
 				nil,
 				&flightreportComponentMock{
-					ID:          string(DefaultID2),
-					Name:        DefaultName2,
-					Description: DefaultDescription2,
-					FleetID:     string(DefaultFleetID2),
+					ID:          string(DefaultFlightreportID2),
+					Name:        DefaultFlightreportName2,
+					Description: DefaultFlightreportDescription2,
+					FleetID:     string(DefaultFlightreportFleetID2),
 				},
 			),
 		},
@@ -108,10 +108,10 @@ func TestMultipleFlightreportsListFlightreports(t *testing.T) {
 			flightreport: frep.AssembleFrom(
 				nil,
 				&flightreportComponentMock{
-					ID:          string(DefaultID3),
-					Name:        DefaultName3,
-					Description: DefaultDescription3,
-					FleetID:     string(DefaultFleetID3),
+					ID:          string(DefaultFlightreportID3),
+					Name:        DefaultFlightreportName3,
+					Description: DefaultFlightreportDescription3,
+					FleetID:     string(DefaultFlightreportFleetID3),
 				},
 			),
 		},
@@ -124,7 +124,7 @@ func TestMultipleFlightreportsListFlightreports(t *testing.T) {
 		},
 	}
 
-	grpc := NewGrpcServer(app)
+	grpc := NewReportFlightServiceServer(app)
 
 	request := &skysign_proto.Empty{}
 	response, err := grpc.ListFlightreports(
@@ -135,22 +135,22 @@ func TestMultipleFlightreportsListFlightreports(t *testing.T) {
 	expectResponse := &skysign_proto.ListFlightreportsResponses{
 		Flightreports: []*skysign_proto.Flightreport{
 			{
-				Id:          string(DefaultID1),
-				Name:        DefaultName1,
-				Description: DefaultDescription1,
-				FleetId:     string(DefaultFleetID1),
+				Id:          string(DefaultFlightreportID1),
+				Name:        DefaultFlightreportName1,
+				Description: DefaultFlightreportDescription1,
+				FleetId:     string(DefaultFlightreportFleetID1),
 			},
 			{
-				Id:          string(DefaultID2),
-				Name:        DefaultName2,
-				Description: DefaultDescription2,
-				FleetId:     string(DefaultFleetID2),
+				Id:          string(DefaultFlightreportID2),
+				Name:        DefaultFlightreportName2,
+				Description: DefaultFlightreportDescription2,
+				FleetId:     string(DefaultFlightreportFleetID2),
 			},
 			{
-				Id:          string(DefaultID3),
-				Name:        DefaultName3,
-				Description: DefaultDescription3,
-				FleetId:     string(DefaultFleetID3),
+				Id:          string(DefaultFlightreportID3),
+				Name:        DefaultFlightreportName3,
+				Description: DefaultFlightreportDescription3,
+				FleetId:     string(DefaultFlightreportFleetID3),
 			},
 		},
 	}
@@ -173,7 +173,7 @@ func TestNoneFlightreportsListFlightreports(t *testing.T) {
 		},
 	}
 
-	grpc := NewGrpcServer(app)
+	grpc := NewReportFlightServiceServer(app)
 
 	request := &skysign_proto.Empty{}
 	response, err := grpc.ListFlightreports(
@@ -196,10 +196,10 @@ func TestGetFlightreport(t *testing.T) {
 		flightreport: frep.AssembleFrom(
 			nil,
 			&flightreportComponentMock{
-				ID:          string(DefaultID),
-				Name:        DefaultName,
-				Description: DefaultDescription,
-				FleetID:     string(DefaultFleetID),
+				ID:          string(DefaultFlightreportID),
+				Name:        DefaultFlightreportName,
+				Description: DefaultFlightreportDescription,
+				FleetID:     string(DefaultFlightreportFleetID),
 			},
 		),
 	}
@@ -211,10 +211,10 @@ func TestGetFlightreport(t *testing.T) {
 		},
 	}
 
-	grpc := NewGrpcServer(app)
+	grpc := NewReportFlightServiceServer(app)
 
 	request := &skysign_proto.GetFlightreportRequest{
-		Id: string(DefaultID),
+		Id: string(DefaultFlightreportID),
 	}
 	response, err := grpc.GetFlightreport(
 		nil,
@@ -222,10 +222,10 @@ func TestGetFlightreport(t *testing.T) {
 	)
 
 	expectResponse := &skysign_proto.Flightreport{
-		Id:          string(DefaultID),
-		Name:        DefaultName,
-		Description: DefaultDescription,
-		FleetId:     string(DefaultFleetID),
+		Id:          string(DefaultFlightreportID),
+		Name:        DefaultFlightreportName,
+		Description: DefaultFlightreportDescription,
+		FleetId:     string(DefaultFlightreportFleetID),
 	}
 
 	a.Nil(err)
