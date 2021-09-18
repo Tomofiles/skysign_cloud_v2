@@ -28,7 +28,7 @@ type fleetIDGaveEventHandler struct {
 }
 
 // NewFleetIDGaveEventHandler .
-func NewFleetIDGaveEventHandler(application app.Application) *fleetIDGaveEventHandler {
+func NewFleetIDGaveEventHandler(application app.Application) FleetIDGaveEventHandler {
 	return &fleetIDGaveEventHandler{app: application}
 }
 

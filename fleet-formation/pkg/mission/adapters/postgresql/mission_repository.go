@@ -8,20 +8,19 @@ import (
 	"gorm.io/gorm"
 )
 
-// MissionRepository .
-type MissionRepository struct {
+type missionRepository struct {
 	gen m.Generator
 }
 
 // NewMissionRepository .
-func NewMissionRepository(gen m.Generator) *MissionRepository {
-	return &MissionRepository{
+func NewMissionRepository(gen m.Generator) m.Repository {
+	return &missionRepository{
 		gen: gen,
 	}
 }
 
 // GetAll .
-func (r *MissionRepository) GetAll(
+func (r *missionRepository) GetAll(
 	tx txmanager.Tx,
 ) ([]*m.Mission, error) {
 	txGorm, ok := tx.(*gorm.DB)
@@ -58,7 +57,7 @@ func (r *MissionRepository) GetAll(
 }
 
 // GetAllOrigin .
-func (r *MissionRepository) GetAllOrigin(
+func (r *missionRepository) GetAllOrigin(
 	tx txmanager.Tx,
 ) ([]*m.Mission, error) {
 	txGorm, ok := tx.(*gorm.DB)
@@ -95,7 +94,7 @@ func (r *MissionRepository) GetAllOrigin(
 }
 
 // GetByID .
-func (r *MissionRepository) GetByID(
+func (r *missionRepository) GetByID(
 	tx txmanager.Tx,
 	id m.ID,
 ) (*m.Mission, error) {
@@ -132,7 +131,7 @@ func (r *MissionRepository) GetByID(
 }
 
 // Save .
-func (r *MissionRepository) Save(
+func (r *missionRepository) Save(
 	tx txmanager.Tx,
 	mission *m.Mission,
 ) error {
@@ -217,7 +216,7 @@ func (r *MissionRepository) Save(
 }
 
 // Delete .
-func (r *MissionRepository) Delete(
+func (r *missionRepository) Delete(
 	tx txmanager.Tx,
 	id m.ID,
 ) error {

@@ -16,7 +16,7 @@ type assignAssetsToFleetServiceServer struct {
 }
 
 // NewAssignAssetsToFleetServiceServer .
-func NewAssignAssetsToFleetServiceServer(application app.Application) *assignAssetsToFleetServiceServer {
+func NewAssignAssetsToFleetServiceServer(application app.Application) proto.AssignAssetsToFleetServiceServer {
 	return &assignAssetsToFleetServiceServer{app: application}
 }
 

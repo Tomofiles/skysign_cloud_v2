@@ -28,7 +28,7 @@ type vehicleCopiedEventHandler struct {
 }
 
 // NewVehicleCopiedEventHandler .
-func NewVehicleCopiedEventHandler(application app.Application) *vehicleCopiedEventHandler {
+func NewVehicleCopiedEventHandler(application app.Application) VehicleCopiedEventHandler {
 	return &vehicleCopiedEventHandler{app: application}
 }
 

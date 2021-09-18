@@ -16,7 +16,7 @@ type manageVehicleServiceServer struct {
 }
 
 // NewManageVehicleServiceServer .
-func NewManageVehicleServiceServer(application app.Application) *manageVehicleServiceServer {
+func NewManageVehicleServiceServer(application app.Application) proto.ManageVehicleServiceServer {
 	return &manageVehicleServiceServer{app: application}
 }
 

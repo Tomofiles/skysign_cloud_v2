@@ -16,7 +16,7 @@ type manageMissionServiceServer struct {
 }
 
 // NewManageMissionServiceServer .
-func NewManageMissionServiceServer(application app.Application) *manageMissionServiceServer {
+func NewManageMissionServiceServer(application app.Application) proto.ManageMissionServiceServer {
 	return &manageMissionServiceServer{app: application}
 }
 

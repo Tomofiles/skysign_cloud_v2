@@ -8,20 +8,19 @@ import (
 	"gorm.io/gorm"
 )
 
-// VehicleRepository .
-type VehicleRepository struct {
+type vehicleRepository struct {
 	gen v.Generator
 }
 
 // NewVehicleRepository .
-func NewVehicleRepository(gen v.Generator) *VehicleRepository {
-	return &VehicleRepository{
+func NewVehicleRepository(gen v.Generator) v.Repository {
+	return &vehicleRepository{
 		gen: gen,
 	}
 }
 
 // GetAll .
-func (r *VehicleRepository) GetAll(
+func (r *vehicleRepository) GetAll(
 	tx txmanager.Tx,
 ) ([]*v.Vehicle, error) {
 	txGorm, ok := tx.(*gorm.DB)
@@ -45,7 +44,7 @@ func (r *VehicleRepository) GetAll(
 }
 
 // GetAllOrigin .
-func (r *VehicleRepository) GetAllOrigin(
+func (r *vehicleRepository) GetAllOrigin(
 	tx txmanager.Tx,
 ) ([]*v.Vehicle, error) {
 	txGorm, ok := tx.(*gorm.DB)
@@ -69,7 +68,7 @@ func (r *VehicleRepository) GetAllOrigin(
 }
 
 // GetByID .
-func (r *VehicleRepository) GetByID(
+func (r *vehicleRepository) GetByID(
 	tx txmanager.Tx,
 	id v.ID,
 ) (*v.Vehicle, error) {
@@ -94,7 +93,7 @@ func (r *VehicleRepository) GetByID(
 }
 
 // Save .
-func (r *VehicleRepository) Save(
+func (r *vehicleRepository) Save(
 	tx txmanager.Tx,
 	vehicle *v.Vehicle,
 ) error {
@@ -138,7 +137,7 @@ func (r *VehicleRepository) Save(
 }
 
 // Delete .
-func (r *VehicleRepository) Delete(
+func (r *vehicleRepository) Delete(
 	tx txmanager.Tx,
 	id v.ID,
 ) error {

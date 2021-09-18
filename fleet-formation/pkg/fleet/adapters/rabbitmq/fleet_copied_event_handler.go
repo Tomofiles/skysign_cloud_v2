@@ -28,7 +28,7 @@ type fleetCopiedEventHandler struct {
 }
 
 // NewFleetCopiedEventHandler .
-func NewFleetCopiedEventHandler(application app.Application) *fleetCopiedEventHandler {
+func NewFleetCopiedEventHandler(application app.Application) FleetCopiedEventHandler {
 	return &fleetCopiedEventHandler{app: application}
 }
 

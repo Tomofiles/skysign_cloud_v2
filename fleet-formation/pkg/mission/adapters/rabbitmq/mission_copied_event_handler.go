@@ -28,7 +28,7 @@ type missionCopiedEventHandler struct {
 }
 
 // NewMissionCopiedEventHandler .
-func NewMissionCopiedEventHandler(application app.Application) *missionCopiedEventHandler {
+func NewMissionCopiedEventHandler(application app.Application) MissionCopiedEventHandler {
 	return &missionCopiedEventHandler{app: application}
 }
 

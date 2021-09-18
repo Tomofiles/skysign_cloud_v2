@@ -28,7 +28,7 @@ type fleetIDRemovedEventHandler struct {
 }
 
 // NewFleetIDRemovedEventHandler .
-func NewFleetIDRemovedEventHandler(application app.Application) *fleetIDRemovedEventHandler {
+func NewFleetIDRemovedEventHandler(application app.Application) FleetIDRemovedEventHandler {
 	return &fleetIDRemovedEventHandler{app: application}
 }
 
