@@ -1,4 +1,4 @@
-package ports
+package grpc
 
 import (
 	"fleet-formation/pkg/fleet/app"
@@ -33,7 +33,7 @@ func TestSingleAssignmentsGetAssignments(t *testing.T) {
 		},
 	}
 
-	grpc := NewGrpcServer(app)
+	grpc := NewAssignAssetsToFleetServiceServer(app)
 
 	request := &skysign_proto.GetAssignmentsRequest{
 		Id: DefaultFleetID,
@@ -111,7 +111,7 @@ func TestMultipleAssignmentsGetAssignments(t *testing.T) {
 		},
 	}
 
-	grpc := NewGrpcServer(app)
+	grpc := NewAssignAssetsToFleetServiceServer(app)
 
 	request := &skysign_proto.GetAssignmentsRequest{
 		Id: DefaultFleetID,
@@ -164,7 +164,7 @@ func TestNoneAssignmentsGetAssignments(t *testing.T) {
 		},
 	}
 
-	grpc := NewGrpcServer(app)
+	grpc := NewAssignAssetsToFleetServiceServer(app)
 
 	request := &skysign_proto.GetAssignmentsRequest{
 		Id: DefaultFleetID,
@@ -195,7 +195,7 @@ func TestSingleAssignmentsUpdateAssignments(t *testing.T) {
 		},
 	}
 
-	grpc := NewGrpcServer(app)
+	grpc := NewAssignAssetsToFleetServiceServer(app)
 
 	request := &skysign_proto.UpdateAssignmentsRequest{
 		Id: DefaultFleetID,
@@ -259,7 +259,7 @@ func TestMultipleAssignmentsUpdateAssignments(t *testing.T) {
 		},
 	}
 
-	grpc := NewGrpcServer(app)
+	grpc := NewAssignAssetsToFleetServiceServer(app)
 
 	request := &skysign_proto.UpdateAssignmentsRequest{
 		Id: DefaultFleetID,
@@ -330,7 +330,7 @@ func TestNoneAssignmentsUpdateAssignments(t *testing.T) {
 		},
 	}
 
-	grpc := NewGrpcServer(app)
+	grpc := NewAssignAssetsToFleetServiceServer(app)
 
 	request := &skysign_proto.UpdateAssignmentsRequest{
 		Id:          DefaultFleetID,

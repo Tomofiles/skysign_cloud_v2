@@ -1,4 +1,4 @@
-package ports
+package grpc
 
 import (
 	"context"
@@ -9,19 +9,19 @@ import (
 	proto "github.com/Tomofiles/skysign_cloud_v2/skysign-proto/pkg/skysign_proto"
 )
 
-// GrpcServer .
-type GrpcServer struct {
+// assignAssetsToFleetServiceServer .
+type assignAssetsToFleetServiceServer struct {
 	proto.UnimplementedAssignAssetsToFleetServiceServer
 	app app.Application
 }
 
-// NewGrpcServer .
-func NewGrpcServer(application app.Application) GrpcServer {
-	return GrpcServer{app: application}
+// NewAssignAssetsToFleetServiceServer .
+func NewAssignAssetsToFleetServiceServer(application app.Application) *assignAssetsToFleetServiceServer {
+	return &assignAssetsToFleetServiceServer{app: application}
 }
 
 // GetAssignments .
-func (s *GrpcServer) GetAssignments(
+func (s *assignAssetsToFleetServiceServer) GetAssignments(
 	ctx context.Context,
 	request *proto.GetAssignmentsRequest,
 ) (*proto.GetAssignmentsResponse, error) {
@@ -51,7 +51,7 @@ func (s *GrpcServer) GetAssignments(
 }
 
 // UpdateAssignments .
-func (s *GrpcServer) UpdateAssignments(
+func (s *assignAssetsToFleetServiceServer) UpdateAssignments(
 	ctx context.Context,
 	request *proto.UpdateAssignmentsRequest,
 ) (*proto.UpdateAssignmentsResponse, error) {

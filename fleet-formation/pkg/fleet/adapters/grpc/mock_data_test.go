@@ -1,9 +1,10 @@
-package ports
+package grpc
 
 import (
 	"fleet-formation/pkg/fleet/service"
 
 	"github.com/stretchr/testify/mock"
+	"google.golang.org/grpc"
 )
 
 const DefaultFleetNumberOfVehicles = 3
@@ -12,40 +13,6 @@ const DefaultFleetAssignmentID = "assignment-id"
 const DefaultFleetEventID = "event-id"
 const DefaultFleetVehicleID = "vehicle-id"
 const DefaultFleetMissionID = "mission-id"
-
-type manageFleetServiceMock struct {
-	mock.Mock
-	ID               string
-	NumberOfVehicles int
-	OriginalID       string
-	NewID            string
-}
-
-func (s *manageFleetServiceMock) CreateFleet(
-	command service.CreateFleetCommand,
-) error {
-	ret := s.Called()
-	s.ID = command.GetID()
-	s.NumberOfVehicles = command.GetNumberOfVehicles()
-	return ret.Error(0)
-}
-
-func (s *manageFleetServiceMock) DeleteFleet(
-	command service.DeleteFleetCommand,
-) error {
-	ret := s.Called()
-	s.ID = command.GetID()
-	return ret.Error(0)
-}
-
-func (s *manageFleetServiceMock) CarbonCopyFleet(
-	command service.CarbonCopyFleetCommand,
-) error {
-	ret := s.Called()
-	s.OriginalID = command.GetOriginalID()
-	s.NewID = command.GetNewID()
-	return ret.Error(0)
-}
 
 type assignFleetServiceMock struct {
 	mock.Mock
@@ -127,4 +94,14 @@ func (a *assignmentMock) GetVehicleID() string {
 
 func (a *assignmentMock) GetMissionID() string {
 	return a.MissionID
+}
+
+type serviceRegistrarMock struct {
+	descs []*grpc.ServiceDesc
+	impls []interface{}
+}
+
+func (s *serviceRegistrarMock) RegisterService(desc *grpc.ServiceDesc, impl interface{}) {
+	s.descs = append(s.descs, desc)
+	s.impls = append(s.impls, impl)
 }
