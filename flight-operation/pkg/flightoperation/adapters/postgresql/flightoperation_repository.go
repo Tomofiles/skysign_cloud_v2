@@ -8,20 +8,19 @@ import (
 	"gorm.io/gorm"
 )
 
-// FlightoperationRepository .
-type FlightoperationRepository struct {
+type flightoperationRepository struct {
 	gen fope.Generator
 }
 
 // NewFlightoperationRepository .
-func NewFlightoperationRepository(gen fope.Generator) *FlightoperationRepository {
-	return &FlightoperationRepository{
+func NewFlightoperationRepository(gen fope.Generator) fope.Repository {
+	return &flightoperationRepository{
 		gen: gen,
 	}
 }
 
 // GetAll .
-func (r *FlightoperationRepository) GetAll(
+func (r *flightoperationRepository) GetAll(
 	tx txmanager.Tx,
 ) ([]*fope.Flightoperation, error) {
 	txGorm, ok := tx.(*gorm.DB)
@@ -45,7 +44,7 @@ func (r *FlightoperationRepository) GetAll(
 }
 
 // GetAllOperating .
-func (r *FlightoperationRepository) GetAllOperating(
+func (r *flightoperationRepository) GetAllOperating(
 	tx txmanager.Tx,
 ) ([]*fope.Flightoperation, error) {
 	txGorm, ok := tx.(*gorm.DB)
@@ -69,7 +68,7 @@ func (r *FlightoperationRepository) GetAllOperating(
 }
 
 // GetByID .
-func (r *FlightoperationRepository) GetByID(
+func (r *flightoperationRepository) GetByID(
 	tx txmanager.Tx,
 	id fope.ID,
 ) (*fope.Flightoperation, error) {
@@ -94,7 +93,7 @@ func (r *FlightoperationRepository) GetByID(
 }
 
 // Save .
-func (r *FlightoperationRepository) Save(
+func (r *flightoperationRepository) Save(
 	tx txmanager.Tx,
 	flightoperation *fope.Flightoperation,
 ) error {
