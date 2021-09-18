@@ -1,10 +1,11 @@
-package ports
+package grpc
 
 import (
 	fope "flight-operation/pkg/flightoperation/domain/flightoperation"
 	"flight-operation/pkg/flightoperation/service"
 
 	"github.com/stretchr/testify/mock"
+	"google.golang.org/grpc"
 )
 
 const DefaultID = fope.ID("flightoperation-id")
@@ -101,4 +102,14 @@ func (f *flightoperationMock) GetDescription() string {
 
 func (f *flightoperationMock) GetFleetID() string {
 	return f.fleetID
+}
+
+type serviceRegistrarMock struct {
+	descs []*grpc.ServiceDesc
+	impls []interface{}
+}
+
+func (s *serviceRegistrarMock) RegisterService(desc *grpc.ServiceDesc, impl interface{}) {
+	s.descs = append(s.descs, desc)
+	s.impls = append(s.impls, impl)
 }

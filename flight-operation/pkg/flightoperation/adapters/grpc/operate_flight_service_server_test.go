@@ -1,4 +1,4 @@
-package ports
+package grpc
 
 import (
 	"flight-operation/pkg/flightoperation/app"
@@ -31,7 +31,7 @@ func TestSingleFlightoperationsListFlightoperations(t *testing.T) {
 		},
 	}
 
-	grpc := NewGrpcServer(app)
+	grpc := NewOperateFlightServiceServer(app)
 
 	request := &skysign_proto.Empty{}
 	response, err := grpc.ListFlightoperations(
@@ -102,7 +102,7 @@ func TestMultipleFlightoperationsListFlightoperations(t *testing.T) {
 		},
 	}
 
-	grpc := NewGrpcServer(app)
+	grpc := NewOperateFlightServiceServer(app)
 
 	request := &skysign_proto.Empty{}
 	response, err := grpc.ListFlightoperations(
@@ -151,7 +151,7 @@ func TestNoneFlightoperationsListFlightoperations(t *testing.T) {
 		},
 	}
 
-	grpc := NewGrpcServer(app)
+	grpc := NewOperateFlightServiceServer(app)
 
 	request := &skysign_proto.Empty{}
 	response, err := grpc.ListFlightoperations(
@@ -184,7 +184,7 @@ func TestGetFlightoperation(t *testing.T) {
 		},
 	}
 
-	grpc := NewGrpcServer(app)
+	grpc := NewOperateFlightServiceServer(app)
 
 	request := &skysign_proto.GetFlightoperationRequest{
 		Id: string(DefaultID),
@@ -218,7 +218,7 @@ func TestCompleteFlightoperation(t *testing.T) {
 		},
 	}
 
-	grpc := NewGrpcServer(app)
+	grpc := NewOperateFlightServiceServer(app)
 
 	request := &skysign_proto.CompleteFlightoperationRequest{
 		Id: string(DefaultID),

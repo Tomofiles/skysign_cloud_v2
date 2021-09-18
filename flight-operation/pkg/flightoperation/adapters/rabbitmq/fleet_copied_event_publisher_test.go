@@ -2,7 +2,7 @@ package rabbitmq
 
 import (
 	"errors"
-	"flight-operation/pkg/flightoperation/domain/flightoperation"
+	fo "flight-operation/pkg/flightoperation/domain/flightoperation"
 	"testing"
 
 	"github.com/Tomofiles/skysign_cloud_v2/skysign-proto/pkg/skysign_proto"
@@ -20,7 +20,7 @@ func TestPublishFleetCopiedEvent(t *testing.T) {
 		NewID      = DefaultFlightoperationFleetID + "-new"
 	)
 
-	event := flightoperation.FleetCopiedEvent{
+	event := fo.FleetCopiedEvent{
 		OriginalID: OriginalID,
 		NewID:      NewID,
 	}
@@ -50,7 +50,7 @@ func TestFanoutExchangeDeclareErrorWhenPublishFleetCopiedEvent(t *testing.T) {
 		NewID      = DefaultFlightoperationFleetID + "-new"
 	)
 
-	event := flightoperation.FleetCopiedEvent{
+	event := fo.FleetCopiedEvent{
 		OriginalID: OriginalID,
 		NewID:      NewID,
 	}
@@ -75,7 +75,7 @@ func TestPublishErrorWhenPublishFleetCopiedEvent(t *testing.T) {
 		NewID      = DefaultFlightoperationFleetID + "-new"
 	)
 
-	event := flightoperation.FleetCopiedEvent{
+	event := fo.FleetCopiedEvent{
 		OriginalID: OriginalID,
 		NewID:      NewID,
 	}

@@ -1,7 +1,8 @@
-package ports
+package rabbitmq
 
 import (
 	"context"
+	"flight-operation/pkg/flightoperation/app"
 
 	"github.com/Tomofiles/skysign_cloud_v2/skysign-common/pkg/common/ports"
 
@@ -12,8 +13,9 @@ import (
 func SubscribeEventHandler(
 	ctx context.Context,
 	psm ports.PubSubManagerSetter,
-	evt EventHandler,
+	app app.Application,
 ) {
+	evt := NewFlightplanExecutedEventHandler(app)
 	psm.SetConsumer(
 		ctx,
 		FlightplanExecutedEventExchangeName,

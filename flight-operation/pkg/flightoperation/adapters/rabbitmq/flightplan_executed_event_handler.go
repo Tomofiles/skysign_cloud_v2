@@ -1,4 +1,4 @@
-package ports
+package rabbitmq
 
 import (
 	"context"
@@ -18,23 +18,22 @@ const (
 	FlightplanExecutedEventQueueName = "flightoperation.flightplan_executed_event"
 )
 
-// EventHandler .
-type EventHandler interface {
+// FlightplanExecutedEventHandler .
+type FlightplanExecutedEventHandler interface {
 	HandleFlightplanExecutedEvent(ctx context.Context, event []byte) error
 }
 
-// eventHandler .
-type eventHandler struct {
+type flightplanExecutedEventHandler struct {
 	app app.Application
 }
 
-// NewEventHandler .
-func NewEventHandler(application app.Application) *eventHandler {
-	return &eventHandler{app: application}
+// NewFlightplanExecutedEventHandler .
+func NewFlightplanExecutedEventHandler(application app.Application) FlightplanExecutedEventHandler {
+	return &flightplanExecutedEventHandler{app: application}
 }
 
 // HandleFlightplanExecutedEvent .
-func (h *eventHandler) HandleFlightplanExecutedEvent(
+func (h *flightplanExecutedEventHandler) HandleFlightplanExecutedEvent(
 	ctx context.Context,
 	event []byte,
 ) error {

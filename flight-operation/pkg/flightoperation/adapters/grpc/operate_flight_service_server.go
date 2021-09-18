@@ -1,4 +1,4 @@
-package ports
+package grpc
 
 import (
 	"context"
@@ -9,19 +9,18 @@ import (
 	proto "github.com/Tomofiles/skysign_cloud_v2/skysign-proto/pkg/skysign_proto"
 )
 
-// GrpcServer .
-type GrpcServer struct {
+type operateFlightServiceServer struct {
 	proto.UnimplementedOperateFlightServiceServer
 	app app.Application
 }
 
-// NewGrpcServer .
-func NewGrpcServer(application app.Application) GrpcServer {
-	return GrpcServer{app: application}
+// NewOperateFlightServiceServer .
+func NewOperateFlightServiceServer(application app.Application) proto.OperateFlightServiceServer {
+	return &operateFlightServiceServer{app: application}
 }
 
 // ListFlightoperations .
-func (s *GrpcServer) ListFlightoperations(
+func (s *operateFlightServiceServer) ListFlightoperations(
 	ctx context.Context,
 	request *proto.Empty,
 ) (*proto.ListFlightoperationsResponses, error) {
@@ -45,7 +44,7 @@ func (s *GrpcServer) ListFlightoperations(
 }
 
 // GetFlightoperation .
-func (s *GrpcServer) GetFlightoperation(
+func (s *operateFlightServiceServer) GetFlightoperation(
 	ctx context.Context,
 	request *proto.GetFlightoperationRequest,
 ) (*proto.Flightoperation, error) {
@@ -68,7 +67,7 @@ func (s *GrpcServer) GetFlightoperation(
 }
 
 // CompleteFlightoperation .
-func (s *GrpcServer) CompleteFlightoperation(
+func (s *operateFlightServiceServer) CompleteFlightoperation(
 	ctx context.Context,
 	request *proto.CompleteFlightoperationRequest,
 ) (*proto.Empty, error) {
