@@ -52,15 +52,3 @@ type consumer struct {
 	exchangeName, queueName string
 	handler                 func([]byte)
 }
-
-type eventHandlerMock struct {
-	events1 []byte
-}
-
-func (h *eventHandlerMock) HandleCopiedMissionCreatedEvent(
-	ctx context.Context,
-	event []byte,
-) error {
-	h.events1 = append(h.events1, event...)
-	return nil
-}

@@ -89,23 +89,3 @@ type consumer struct {
 	exchangeName, queueName string
 	handler                 func([]byte)
 }
-
-type eventHandlerMock struct {
-	events1, events2 []byte
-}
-
-func (h *eventHandlerMock) HandleCommunicationIDGaveEvent(
-	ctx context.Context,
-	event []byte,
-) error {
-	h.events1 = append(h.events1, event...)
-	return nil
-}
-
-func (h *eventHandlerMock) HandleCommunicationIDRemovedEvent(
-	ctx context.Context,
-	event []byte,
-) error {
-	h.events2 = append(h.events2, event...)
-	return nil
-}
