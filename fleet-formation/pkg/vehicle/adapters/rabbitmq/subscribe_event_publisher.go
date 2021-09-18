@@ -8,8 +8,8 @@ import (
 	"github.com/golang/glog"
 )
 
-// SubscribePublishHandler .
-func SubscribePublishHandler(psm crm.PubSubManagerSetter) {
+// SubscribeEventPublisher .
+func SubscribeEventPublisher(psm crm.PubSubManagerSetter) {
 	psm.SetPublishHandler(
 		func(ch crm.Channel, e interface{}) {
 			if event, ok := e.(vehicle.CommunicationIDGaveEvent); ok {

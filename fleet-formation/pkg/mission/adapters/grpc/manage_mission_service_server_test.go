@@ -1,4 +1,4 @@
-package ports
+package grpc
 
 import (
 	"fleet-formation/pkg/mission/app"
@@ -42,7 +42,7 @@ func TestSingleMissionsListMissions(t *testing.T) {
 		},
 	}
 
-	grpc := NewGrpcServer(app)
+	grpc := NewManageMissionServiceServer(app)
 
 	request := &proto.Empty{}
 	response, err := grpc.ListMissions(
@@ -146,7 +146,7 @@ func TestMultipleMissionsListMissions(t *testing.T) {
 		},
 	}
 
-	grpc := NewGrpcServer(app)
+	grpc := NewManageMissionServiceServer(app)
 
 	request := &proto.Empty{}
 	response, err := grpc.ListMissions(
@@ -204,7 +204,7 @@ func TestNoneMissionsListMissions(t *testing.T) {
 		},
 	}
 
-	grpc := NewGrpcServer(app)
+	grpc := NewManageMissionServiceServer(app)
 
 	request := &proto.Empty{}
 	response, err := grpc.ListMissions(
@@ -246,7 +246,7 @@ func TestGetMission(t *testing.T) {
 		},
 	}
 
-	grpc := NewGrpcServer(app)
+	grpc := NewManageMissionServiceServer(app)
 
 	request := &proto.GetMissionRequest{
 		Id: DefaultMissionID,
@@ -298,7 +298,7 @@ func TestCreateMission(t *testing.T) {
 		},
 	}
 
-	grpc := NewGrpcServer(app)
+	grpc := NewManageMissionServiceServer(app)
 
 	request := &proto.Mission{
 		Name: DefaultMissionName,
@@ -354,7 +354,7 @@ func TestUpdateMission(t *testing.T) {
 		},
 	}
 
-	grpc := NewGrpcServer(app)
+	grpc := NewManageMissionServiceServer(app)
 
 	request := &proto.Mission{
 		Id:   DefaultMissionID,
@@ -396,7 +396,7 @@ func TestDeleteMission(t *testing.T) {
 		},
 	}
 
-	grpc := NewGrpcServer(app)
+	grpc := NewManageMissionServiceServer(app)
 
 	request := &proto.DeleteMissionRequest{
 		Id: DefaultMissionID,

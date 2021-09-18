@@ -1,4 +1,4 @@
-package ports
+package grpc
 
 import (
 	"context"
@@ -9,19 +9,19 @@ import (
 	proto "github.com/Tomofiles/skysign_cloud_v2/skysign-proto/pkg/skysign_proto"
 )
 
-// GrpcServer .
-type GrpcServer struct {
+// manageMissionServiceServer .
+type manageMissionServiceServer struct {
 	proto.UnimplementedManageMissionServiceServer
 	app app.Application
 }
 
-// NewGrpcServer .
-func NewGrpcServer(application app.Application) GrpcServer {
-	return GrpcServer{app: application}
+// NewManageMissionServiceServer .
+func NewManageMissionServiceServer(application app.Application) *manageMissionServiceServer {
+	return &manageMissionServiceServer{app: application}
 }
 
 // ListMissions .
-func (s *GrpcServer) ListMissions(
+func (s *manageMissionServiceServer) ListMissions(
 	ctx context.Context,
 	request *proto.Empty,
 ) (*proto.ListMissionsResponses, error) {
@@ -41,7 +41,7 @@ func (s *GrpcServer) ListMissions(
 }
 
 // GetMission .
-func (s *GrpcServer) GetMission(
+func (s *manageMissionServiceServer) GetMission(
 	ctx context.Context,
 	request *proto.GetMissionRequest,
 ) (*proto.Mission, error) {
@@ -61,7 +61,7 @@ func (s *GrpcServer) GetMission(
 }
 
 // CreateMission .
-func (s *GrpcServer) CreateMission(
+func (s *manageMissionServiceServer) CreateMission(
 	ctx context.Context,
 	request *proto.Mission,
 ) (*proto.Mission, error) {
@@ -86,7 +86,7 @@ func (s *GrpcServer) CreateMission(
 }
 
 // UpdateMission .
-func (s *GrpcServer) UpdateMission(
+func (s *manageMissionServiceServer) UpdateMission(
 	ctx context.Context,
 	request *proto.Mission,
 ) (*proto.Mission, error) {
@@ -109,7 +109,7 @@ func (s *GrpcServer) UpdateMission(
 }
 
 // DeleteMission .
-func (s *GrpcServer) DeleteMission(
+func (s *manageMissionServiceServer) DeleteMission(
 	ctx context.Context,
 	request *proto.DeleteMissionRequest,
 ) (*proto.Empty, error) {

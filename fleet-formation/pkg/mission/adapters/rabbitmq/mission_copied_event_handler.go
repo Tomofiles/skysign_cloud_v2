@@ -1,4 +1,4 @@
-package ports
+package rabbitmq
 
 import (
 	"context"
@@ -17,23 +17,23 @@ const (
 	MissionCopiedEventQueueName = "mission.mission_copied_event"
 )
 
-// EventHandler .
-type EventHandler interface {
+// MissionCopiedEventHandler .
+type MissionCopiedEventHandler interface {
 	HandleMissionCopiedEvent(ctx context.Context, event []byte) error
 }
 
-// eventHandler .
-type eventHandler struct {
+// missionCopiedEventHandler .
+type missionCopiedEventHandler struct {
 	app app.Application
 }
 
-// NewEventHandler .
-func NewEventHandler(application app.Application) *eventHandler {
-	return &eventHandler{app: application}
+// NewMissionCopiedEventHandler .
+func NewMissionCopiedEventHandler(application app.Application) *missionCopiedEventHandler {
+	return &missionCopiedEventHandler{app: application}
 }
 
 // HandleMissionCopiedEvent .
-func (h *eventHandler) HandleMissionCopiedEvent(
+func (h *missionCopiedEventHandler) HandleMissionCopiedEvent(
 	ctx context.Context,
 	event []byte,
 ) error {

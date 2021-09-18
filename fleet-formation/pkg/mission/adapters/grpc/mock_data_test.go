@@ -1,10 +1,11 @@
-package ports
+package grpc
 
 import (
 	m "fleet-formation/pkg/mission/domain/mission"
 	"fleet-formation/pkg/mission/service"
 
 	"github.com/stretchr/testify/mock"
+	"google.golang.org/grpc"
 )
 
 const DefaultMissionID = "mission-id"
@@ -15,8 +16,6 @@ const DefaultMissionUploadID = m.UploadID("upload-id")
 
 type manageMissionServiceMock struct {
 	mock.Mock
-	OriginalID string
-	NewID      string
 }
 
 func (s *manageMissionServiceMock) GetMission(
@@ -81,13 +80,7 @@ func (s *manageMissionServiceMock) CarbonCopyMission(
 	uploadID service.UploadID,
 ) error {
 	ret := s.Called()
-	if model := ret.Get(0); model != nil {
-		f := model.(service.MissionPresentationModel)
-		uploadID(f.GetMission().GetNavigation().GetUploadID())
-	}
-	s.OriginalID = command.GetOriginalID()
-	s.NewID = command.GetNewID()
-	return ret.Error(1)
+	return ret.Error(0)
 }
 
 type missionModelMock struct {
@@ -273,4 +266,14 @@ func (v *waypointComponentMock) GetRelativeAltitudeM() float64 {
 
 func (v *waypointComponentMock) GetSpeedMS() float64 {
 	return v.SpeedMS
+}
+
+type serviceRegistrarMock struct {
+	descs []*grpc.ServiceDesc
+	impls []interface{}
+}
+
+func (s *serviceRegistrarMock) RegisterService(desc *grpc.ServiceDesc, impl interface{}) {
+	s.descs = append(s.descs, desc)
+	s.impls = append(s.impls, impl)
 }

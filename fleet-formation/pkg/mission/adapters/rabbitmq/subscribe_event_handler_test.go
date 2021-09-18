@@ -1,4 +1,4 @@
-package ports
+package rabbitmq
 
 import (
 	"fleet-formation/pkg/mission/app"
@@ -6,13 +6,13 @@ import (
 	"testing"
 
 	"github.com/Tomofiles/skysign_cloud_v2/skysign-proto/pkg/skysign_proto"
-
-	"github.com/golang/protobuf/proto"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
+	"google.golang.org/protobuf/proto"
 )
 
-func TestHandleMissionCopiedEvent(t *testing.T) {
+// TestSubscribeEventHandlerMissionCopiedEvent .
+func TestSubscribeEventHandlerMissionCopiedEvent(t *testing.T) {
 	a := assert.New(t)
 
 	var (
@@ -26,14 +26,7 @@ func TestHandleMissionCopiedEvent(t *testing.T) {
 		mission: m.AssembleFrom(
 			nil,
 			&missionComponentMock{
-				ID:   string(DefaultMissionID),
-				Name: DefaultMissionName,
-				Navigation: navigationComponentMock{
-					TakeoffPointGroundAltitudeM: DefaultMissionTakeoffPointGroundAltitudeM,
-					Waypoints:                   []waypointComponentMock{},
-					UploadID:                    string(DefaultMissionUploadID),
-				},
-				Version: string(DefaultMissionVersion),
+				ID: string(DefaultMissionID),
 			},
 		),
 	}
@@ -45,19 +38,27 @@ func TestHandleMissionCopiedEvent(t *testing.T) {
 		},
 	}
 
-	handler := NewEventHandler(app)
+	psm := &pubSubManagerMock{}
+	SubscribeEventHandler(nil, psm, app)
 
 	requestPb := &skysign_proto.MissionCopiedEvent{
-		OriginalMissionId: DefaultOriginalID,
-		NewMissionId:      DefaultNewID,
+		FleetId:           string(DefaultMissionID),
+		OriginalMissionId: string(DefaultOriginalID),
+		NewMissionId:      string(DefaultNewID),
 	}
 	requestBin, _ := proto.Marshal(requestPb)
-	err := handler.HandleMissionCopiedEvent(
-		nil,
-		requestBin,
+
+	var (
+		ExchangeName = "fleet.mission_copied_event"
+		QueueName    = "mission.mission_copied_event"
 	)
 
-	a.Nil(err)
-	a.Equal(service.OriginalID, DefaultOriginalID)
-	a.Equal(service.NewID, DefaultNewID)
+	for _, c := range psm.consumers {
+		if c.exchangeName == ExchangeName && c.queueName == QueueName {
+			c.handler(requestBin)
+		}
+	}
+
+	a.Equal(service.OriginalID, string(DefaultOriginalID))
+	a.Equal(service.NewID, string(DefaultNewID))
 }

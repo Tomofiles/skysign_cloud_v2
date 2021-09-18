@@ -1,4 +1,4 @@
-package ports
+package grpc
 
 import (
 	"fleet-formation/pkg/mission/service"

@@ -1,7 +1,7 @@
 package rabbitmq
 
 import (
-	"fleet-formation/pkg/vehicle/domain/vehicle"
+	"fleet-formation/pkg/mission/domain/mission"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -11,9 +11,9 @@ import (
 func TestSubscribeEventPublisher(t *testing.T) {
 	a := assert.New(t)
 
-	event1 := vehicle.CommunicationIDGaveEvent{}
-	event2 := vehicle.CommunicationIDRemovedEvent{}
-	event3 := vehicle.CopiedVehicleCreatedEvent{}
+	event1 := mission.CopiedMissionCreatedEvent{
+		Mission: &mission.Mission{},
+	}
 
 	psm := &pubSubManagerMock{}
 	SubscribeEventPublisher(psm)
@@ -25,12 +25,6 @@ func TestSubscribeEventPublisher(t *testing.T) {
 	for _, h := range psm.publishHandlers {
 		h(chMock, event1)
 	}
-	for _, h := range psm.publishHandlers {
-		h(chMock, event2)
-	}
-	for _, h := range psm.publishHandlers {
-		h(chMock, event3)
-	}
 
-	a.Equal(chMock.messageCallCount, 3)
+	a.Equal(chMock.messageCallCount, 1)
 }

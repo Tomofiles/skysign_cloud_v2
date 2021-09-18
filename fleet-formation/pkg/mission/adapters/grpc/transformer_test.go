@@ -1,4 +1,4 @@
-package ports
+package grpc
 
 import (
 	m "fleet-formation/pkg/mission/domain/mission"
