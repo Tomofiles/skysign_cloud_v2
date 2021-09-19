@@ -25,7 +25,7 @@ const EDIT_MISSION = "edit_mission"
 const DELETE_MISSION = "delete_mission"
 
 const MissionsDetail = (props) => {
-  const { editMission, dispatchEditMission, dispatchMapPosition } = useContext(AppContext);
+  const { editMission, dispatchEditMission, dispatchMapPosition, dispatchMessage } = useContext(AppContext);
   const [ openAction, setOpenAction ] = useState(false);
 
   useEffect(() => {
@@ -44,14 +44,13 @@ const MissionsDetail = (props) => {
           })
         }
       })
+      .catch(message => {
+        dispatchMessage({ type: 'NOTIFY_ERROR', message: message });
+      });
     return () => {
       dispatchEditMission({ type: "CLEAR"});
     }
-  }, [ props.id, dispatchEditMission, dispatchMapPosition ])
-
-  useEffect(() => {
-    console.log(editMission);
-  }, [ editMission ])
+  }, [ props.id, dispatchEditMission, dispatchMapPosition, dispatchMessage ])
 
   const onClickReturn = () => {
     props.openList();  
@@ -65,8 +64,12 @@ const MissionsDetail = (props) => {
       case DELETE_MISSION:
         deleteMission(props.id)
           .then(data => {
+            dispatchMessage({ type: 'NOTIFY_SUCCESS', message: `You have successfully deleted ${editMission.name}` });
             props.openList();
           })
+          .catch(message => {
+            dispatchMessage({ type: 'NOTIFY_ERROR', message: message });
+          });
         break;
       default:
         break;
