@@ -2,8 +2,9 @@ package rabbitmq
 
 import (
 	"context"
-	frep "flight-operation/pkg/flightreport/domain/flightreport"
-	"flight-operation/pkg/flightreport/service"
+
+	frep "github.com/Tomofiles/skysign_cloud_v2/flight-operation/pkg/flightreport/domain/flightreport"
+	"github.com/Tomofiles/skysign_cloud_v2/flight-operation/pkg/flightreport/service"
 
 	crm "github.com/Tomofiles/skysign_cloud_v2/skysign-common/pkg/common/adapters/rabbitmq"
 

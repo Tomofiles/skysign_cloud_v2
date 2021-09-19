@@ -1,6 +1,6 @@
 package postgresql
 
-import "collection-analysis/pkg/action/domain/action"
+import "github.com/Tomofiles/skysign_cloud_v2/collection-analysis/pkg/action/domain/action"
 
 // Action .
 type Action struct {

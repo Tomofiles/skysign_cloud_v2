@@ -1,8 +1,9 @@
 package service
 
 import (
-	m "remote-communication/pkg/mission/domain/mission"
 	"testing"
+
+	m "github.com/Tomofiles/skysign_cloud_v2/remote-communication/pkg/mission/domain/mission"
 
 	"github.com/stretchr/testify/assert"
 )

@@ -1,7 +1,7 @@
 package grpc
 
 import (
-	"fleet-formation/pkg/fleet/service"
+	"github.com/Tomofiles/skysign_cloud_v2/fleet-formation/pkg/fleet/service"
 
 	"github.com/stretchr/testify/mock"
 	"google.golang.org/grpc"

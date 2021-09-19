@@ -5,8 +5,8 @@ import (
 	"errors"
 	"fmt"
 
-	mavsdk_rpc_core "edge-px4/pkg/protos/core"
-	mavsdk_rpc_telemetry "edge-px4/pkg/protos/telemetry"
+	mavsdk_rpc_core "github.com/Tomofiles/skysign_cloud_v2/edge-px4/pkg/protos/core"
+	mavsdk_rpc_telemetry "github.com/Tomofiles/skysign_cloud_v2/edge-px4/pkg/protos/telemetry"
 
 	"github.com/stretchr/testify/mock"
 	"google.golang.org/grpc"

@@ -1,10 +1,11 @@
 package grpc
 
 import (
-	"fleet-formation/pkg/mission/app"
-	m "fleet-formation/pkg/mission/domain/mission"
-	s "fleet-formation/pkg/mission/service"
 	"testing"
+
+	"github.com/Tomofiles/skysign_cloud_v2/fleet-formation/pkg/mission/app"
+	m "github.com/Tomofiles/skysign_cloud_v2/fleet-formation/pkg/mission/domain/mission"
+	s "github.com/Tomofiles/skysign_cloud_v2/fleet-formation/pkg/mission/service"
 
 	proto "github.com/Tomofiles/skysign_cloud_v2/skysign-proto/pkg/skysign_proto"
 

@@ -5,7 +5,7 @@ import (
 	"errors"
 	"fmt"
 
-	mavsdk_rpc_action "edge-px4/pkg/protos/action"
+	mavsdk_rpc_action "github.com/Tomofiles/skysign_cloud_v2/edge-px4/pkg/protos/action"
 
 	"google.golang.org/grpc"
 )

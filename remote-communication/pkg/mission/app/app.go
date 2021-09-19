@@ -1,6 +1,6 @@
 package app
 
-import "remote-communication/pkg/mission/service"
+import "github.com/Tomofiles/skysign_cloud_v2/remote-communication/pkg/mission/service"
 
 // Application .
 type Application struct {

@@ -1,8 +1,9 @@
 package service
 
 import (
-	fpl "flight-operation/pkg/flightplan/domain/flightplan"
 	"testing"
+
+	fpl "github.com/Tomofiles/skysign_cloud_v2/flight-operation/pkg/flightplan/domain/flightplan"
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"

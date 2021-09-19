@@ -1,7 +1,7 @@
 package postgresql
 
 import (
-	c "remote-communication/pkg/communication/domain/communication"
+	c "github.com/Tomofiles/skysign_cloud_v2/remote-communication/pkg/communication/domain/communication"
 
 	"time"
 )

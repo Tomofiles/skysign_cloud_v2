@@ -1,8 +1,8 @@
 package grpc
 
 import (
-	m "fleet-formation/pkg/mission/domain/mission"
-	"fleet-formation/pkg/mission/service"
+	m "github.com/Tomofiles/skysign_cloud_v2/fleet-formation/pkg/mission/domain/mission"
+	"github.com/Tomofiles/skysign_cloud_v2/fleet-formation/pkg/mission/service"
 
 	"github.com/stretchr/testify/mock"
 	"google.golang.org/grpc"

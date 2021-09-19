@@ -1,8 +1,9 @@
 package grpc
 
 import (
-	"flight-operation/pkg/flightoperation/app"
 	"testing"
+
+	"github.com/Tomofiles/skysign_cloud_v2/flight-operation/pkg/flightoperation/app"
 
 	"github.com/stretchr/testify/assert"
 )

@@ -2,8 +2,9 @@ package builder
 
 import (
 	"context"
-	mavlink_command_adapter "edge-px4/pkg/edge/adapters/mavlink/command"
-	"edge-px4/pkg/edge/domain/model"
+
+	mavlink_command_adapter "github.com/Tomofiles/skysign_cloud_v2/edge-px4/pkg/edge/adapters/mavlink/command"
+	"github.com/Tomofiles/skysign_cloud_v2/edge-px4/pkg/edge/domain/model"
 
 	"google.golang.org/grpc"
 )

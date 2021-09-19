@@ -4,9 +4,9 @@ import (
 	"context"
 	"io"
 
-	"edge-px4/pkg/edge/domain/common"
-	"edge-px4/pkg/edge/domain/model"
-	mavsdk_rpc_telemetry "edge-px4/pkg/protos/telemetry"
+	"github.com/Tomofiles/skysign_cloud_v2/edge-px4/pkg/edge/domain/common"
+	"github.com/Tomofiles/skysign_cloud_v2/edge-px4/pkg/edge/domain/model"
+	mavsdk_rpc_telemetry "github.com/Tomofiles/skysign_cloud_v2/edge-px4/pkg/protos/telemetry"
 
 	"google.golang.org/grpc"
 )

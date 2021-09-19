@@ -1,8 +1,9 @@
 package rabbitmq
 
 import (
-	"remote-communication/pkg/mission/app"
 	"testing"
+
+	"github.com/Tomofiles/skysign_cloud_v2/remote-communication/pkg/mission/app"
 
 	"github.com/Tomofiles/skysign_cloud_v2/skysign-proto/pkg/skysign_proto"
 	"github.com/golang/protobuf/proto"

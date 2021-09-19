@@ -2,8 +2,9 @@ package command
 
 import (
 	"context"
-	"edge-px4/pkg/edge/domain/common"
-	"edge-px4/pkg/edge/domain/model"
+
+	"github.com/Tomofiles/skysign_cloud_v2/edge-px4/pkg/edge/domain/common"
+	"github.com/Tomofiles/skysign_cloud_v2/edge-px4/pkg/edge/domain/model"
 )
 
 // CommandSender .

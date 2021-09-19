@@ -3,8 +3,8 @@ package grpc
 import (
 	"context"
 
-	"collection-analysis/pkg/action/app"
-	"collection-analysis/pkg/action/domain/action"
+	"github.com/Tomofiles/skysign_cloud_v2/collection-analysis/pkg/action/app"
+	"github.com/Tomofiles/skysign_cloud_v2/collection-analysis/pkg/action/domain/action"
 
 	proto "github.com/Tomofiles/skysign_cloud_v2/skysign-proto/pkg/skysign_proto"
 )

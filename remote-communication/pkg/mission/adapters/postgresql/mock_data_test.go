@@ -1,7 +1,7 @@
 package postgresql
 
 import (
-	"remote-communication/pkg/mission/domain/mission"
+	"github.com/Tomofiles/skysign_cloud_v2/remote-communication/pkg/mission/domain/mission"
 )
 
 const DefaultMissionID = mission.ID("mission-id")

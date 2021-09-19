@@ -2,8 +2,9 @@ package rabbitmq
 
 import (
 	"errors"
-	fo "flight-operation/pkg/flightoperation/domain/flightoperation"
 	"testing"
+
+	fo "github.com/Tomofiles/skysign_cloud_v2/flight-operation/pkg/flightoperation/domain/flightoperation"
 
 	"github.com/Tomofiles/skysign_cloud_v2/skysign-proto/pkg/skysign_proto"
 

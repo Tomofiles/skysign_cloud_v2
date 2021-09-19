@@ -3,8 +3,8 @@ package grpc
 import (
 	"context"
 
-	"flight-operation/pkg/flightoperation/app"
-	"flight-operation/pkg/flightoperation/service"
+	"github.com/Tomofiles/skysign_cloud_v2/flight-operation/pkg/flightoperation/app"
+	"github.com/Tomofiles/skysign_cloud_v2/flight-operation/pkg/flightoperation/service"
 
 	proto "github.com/Tomofiles/skysign_cloud_v2/skysign-proto/pkg/skysign_proto"
 )

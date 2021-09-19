@@ -1,7 +1,7 @@
 package grpc
 
 import (
-	"flight-operation/pkg/flightreport/app"
+	"github.com/Tomofiles/skysign_cloud_v2/flight-operation/pkg/flightreport/app"
 
 	"github.com/Tomofiles/skysign_cloud_v2/skysign-proto/pkg/skysign_proto"
 	"google.golang.org/grpc"

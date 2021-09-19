@@ -1,10 +1,11 @@
 package grpc
 
 import (
-	"flight-operation/pkg/flightreport/app"
-	frep "flight-operation/pkg/flightreport/domain/flightreport"
-	s "flight-operation/pkg/flightreport/service"
 	"testing"
+
+	"github.com/Tomofiles/skysign_cloud_v2/flight-operation/pkg/flightreport/app"
+	frep "github.com/Tomofiles/skysign_cloud_v2/flight-operation/pkg/flightreport/domain/flightreport"
+	s "github.com/Tomofiles/skysign_cloud_v2/flight-operation/pkg/flightreport/service"
 
 	"github.com/Tomofiles/skysign_cloud_v2/skysign-proto/pkg/skysign_proto"
 

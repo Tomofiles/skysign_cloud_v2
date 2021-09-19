@@ -7,8 +7,8 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
 
-	"edge-px4/pkg/edge/domain/model"
-	mavsdk_rpc_mission "edge-px4/pkg/protos/mission"
+	"github.com/Tomofiles/skysign_cloud_v2/edge-px4/pkg/edge/domain/model"
+	mavsdk_rpc_mission "github.com/Tomofiles/skysign_cloud_v2/edge-px4/pkg/protos/mission"
 )
 
 // TestAdapterUploadNoItems .

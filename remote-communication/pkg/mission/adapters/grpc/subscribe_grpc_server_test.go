@@ -1,8 +1,9 @@
 package grpc
 
 import (
-	"remote-communication/pkg/mission/app"
 	"testing"
+
+	"github.com/Tomofiles/skysign_cloud_v2/remote-communication/pkg/mission/app"
 
 	"github.com/stretchr/testify/assert"
 )

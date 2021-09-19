@@ -2,7 +2,8 @@ package rabbitmq
 
 import (
 	"context"
-	"remote-communication/pkg/communication/app"
+
+	"github.com/Tomofiles/skysign_cloud_v2/remote-communication/pkg/communication/app"
 
 	"github.com/Tomofiles/skysign_cloud_v2/skysign-common/pkg/common/ports"
 

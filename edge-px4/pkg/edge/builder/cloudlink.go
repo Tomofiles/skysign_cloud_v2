@@ -2,9 +2,10 @@ package builder
 
 import (
 	"context"
-	cloudlink_adapter "edge-px4/pkg/edge/adapters/cloudlink"
-	"edge-px4/pkg/edge/domain/common"
-	"edge-px4/pkg/edge/domain/model"
+
+	cloudlink_adapter "github.com/Tomofiles/skysign_cloud_v2/edge-px4/pkg/edge/adapters/cloudlink"
+	"github.com/Tomofiles/skysign_cloud_v2/edge-px4/pkg/edge/domain/common"
+	"github.com/Tomofiles/skysign_cloud_v2/edge-px4/pkg/edge/domain/model"
 )
 
 // CloudlinkAdapter .

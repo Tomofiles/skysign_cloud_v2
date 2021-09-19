@@ -1,7 +1,7 @@
 package grpc
 
 import (
-	"collection-analysis/pkg/action/app"
+	"github.com/Tomofiles/skysign_cloud_v2/collection-analysis/pkg/action/app"
 
 	"github.com/Tomofiles/skysign_cloud_v2/skysign-proto/pkg/skysign_proto"
 	"google.golang.org/grpc"

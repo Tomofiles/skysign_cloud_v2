@@ -1,9 +1,10 @@
 package rabbitmq
 
 import (
-	act "collection-analysis/pkg/action/domain/action"
-	"collection-analysis/pkg/action/service"
 	"context"
+
+	act "github.com/Tomofiles/skysign_cloud_v2/collection-analysis/pkg/action/domain/action"
+	"github.com/Tomofiles/skysign_cloud_v2/collection-analysis/pkg/action/service"
 
 	crm "github.com/Tomofiles/skysign_cloud_v2/skysign-common/pkg/common/adapters/rabbitmq"
 

@@ -8,8 +8,8 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
 
-	"edge-px4/pkg/edge/domain/model"
-	mavsdk_rpc_telemetry "edge-px4/pkg/protos/telemetry"
+	"github.com/Tomofiles/skysign_cloud_v2/edge-px4/pkg/edge/domain/model"
+	mavsdk_rpc_telemetry "github.com/Tomofiles/skysign_cloud_v2/edge-px4/pkg/protos/telemetry"
 )
 
 // TestAdapterFlightMode .

@@ -1,7 +1,7 @@
 package postgresql
 
 import (
-	frep "flight-operation/pkg/flightreport/domain/flightreport"
+	frep "github.com/Tomofiles/skysign_cloud_v2/flight-operation/pkg/flightreport/domain/flightreport"
 )
 
 const DefaultID = frep.ID("flightreport-id")

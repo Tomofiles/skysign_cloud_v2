@@ -2,9 +2,10 @@ package app
 
 import (
 	"context"
-	"flight-operation/pkg/flightreport/adapters/postgresql"
-	"flight-operation/pkg/flightreport/adapters/uuid"
-	"flight-operation/pkg/flightreport/service"
+
+	"github.com/Tomofiles/skysign_cloud_v2/flight-operation/pkg/flightreport/adapters/postgresql"
+	"github.com/Tomofiles/skysign_cloud_v2/flight-operation/pkg/flightreport/adapters/uuid"
+	"github.com/Tomofiles/skysign_cloud_v2/flight-operation/pkg/flightreport/service"
 
 	"github.com/Tomofiles/skysign_cloud_v2/skysign-common/pkg/common/domain/event"
 	"github.com/Tomofiles/skysign_cloud_v2/skysign-common/pkg/common/domain/txmanager"

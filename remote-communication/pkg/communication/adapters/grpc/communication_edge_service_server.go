@@ -3,8 +3,8 @@ package grpc
 import (
 	"context"
 
-	"remote-communication/pkg/communication/app"
-	"remote-communication/pkg/communication/service"
+	"github.com/Tomofiles/skysign_cloud_v2/remote-communication/pkg/communication/app"
+	"github.com/Tomofiles/skysign_cloud_v2/remote-communication/pkg/communication/service"
 
 	proto "github.com/Tomofiles/skysign_cloud_v2/skysign-proto/pkg/skysign_proto"
 )

@@ -2,8 +2,9 @@ package rabbitmq
 
 import (
 	"errors"
-	"remote-communication/pkg/communication/domain/communication"
 	"testing"
+
+	"github.com/Tomofiles/skysign_cloud_v2/remote-communication/pkg/communication/domain/communication"
 
 	"github.com/Tomofiles/skysign_cloud_v2/skysign-proto/pkg/skysign_proto"
 

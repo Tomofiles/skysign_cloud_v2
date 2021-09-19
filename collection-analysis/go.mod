@@ -1,4 +1,4 @@
-module collection-analysis
+module github.com/Tomofiles/skysign_cloud_v2/collection-analysis
 
 go 1.13
 

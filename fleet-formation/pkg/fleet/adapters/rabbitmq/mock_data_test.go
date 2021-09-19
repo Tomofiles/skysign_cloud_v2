@@ -2,8 +2,9 @@ package rabbitmq
 
 import (
 	"context"
-	"fleet-formation/pkg/fleet/domain/fleet"
-	"fleet-formation/pkg/fleet/service"
+
+	"github.com/Tomofiles/skysign_cloud_v2/fleet-formation/pkg/fleet/domain/fleet"
+	"github.com/Tomofiles/skysign_cloud_v2/fleet-formation/pkg/fleet/service"
 
 	crm "github.com/Tomofiles/skysign_cloud_v2/skysign-common/pkg/common/adapters/rabbitmq"
 

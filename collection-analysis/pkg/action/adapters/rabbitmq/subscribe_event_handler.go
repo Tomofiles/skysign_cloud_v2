@@ -1,8 +1,9 @@
 package rabbitmq
 
 import (
-	"collection-analysis/pkg/action/app"
 	"context"
+
+	"github.com/Tomofiles/skysign_cloud_v2/collection-analysis/pkg/action/app"
 
 	"github.com/Tomofiles/skysign_cloud_v2/skysign-common/pkg/common/ports"
 

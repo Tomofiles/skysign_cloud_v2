@@ -5,7 +5,7 @@ import (
 	"net"
 	"os"
 
-	"helper-api/pkg/api"
+	"github.com/Tomofiles/skysign_cloud_v2/helper-api/pkg/api"
 
 	pb "github.com/Tomofiles/skysign_cloud_v2/skysign-proto/pkg/skysign_proto"
 

@@ -8,8 +8,8 @@ import (
 	"github.com/stretchr/testify/mock"
 	"google.golang.org/grpc"
 
-	mavsdk_rpc_action "edge-px4/pkg/protos/action"
-	mavsdk_rpc_mission "edge-px4/pkg/protos/mission"
+	mavsdk_rpc_action "github.com/Tomofiles/skysign_cloud_v2/edge-px4/pkg/protos/action"
+	mavsdk_rpc_mission "github.com/Tomofiles/skysign_cloud_v2/edge-px4/pkg/protos/mission"
 )
 
 var (

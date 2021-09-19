@@ -2,9 +2,10 @@ package telemetry
 
 import (
 	"context"
-	"edge-px4/pkg/edge/domain/model"
 	"math"
 	"testing"
+
+	"github.com/Tomofiles/skysign_cloud_v2/edge-px4/pkg/edge/domain/model"
 
 	"github.com/stretchr/testify/assert"
 )

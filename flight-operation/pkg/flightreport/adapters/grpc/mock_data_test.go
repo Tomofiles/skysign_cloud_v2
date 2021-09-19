@@ -1,8 +1,8 @@
 package grpc
 
 import (
-	frep "flight-operation/pkg/flightreport/domain/flightreport"
-	"flight-operation/pkg/flightreport/service"
+	frep "github.com/Tomofiles/skysign_cloud_v2/flight-operation/pkg/flightreport/domain/flightreport"
+	"github.com/Tomofiles/skysign_cloud_v2/flight-operation/pkg/flightreport/service"
 
 	"github.com/stretchr/testify/mock"
 	"google.golang.org/grpc"

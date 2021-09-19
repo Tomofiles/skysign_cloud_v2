@@ -1,4 +1,4 @@
-module edge-px4
+module github.com/Tomofiles/skysign_cloud_v2/edge-px4
 
 go 1.13
 

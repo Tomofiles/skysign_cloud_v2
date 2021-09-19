@@ -2,8 +2,9 @@ package postgresql
 
 import (
 	"regexp"
-	"remote-communication/pkg/mission/domain/mission"
 	"testing"
+
+	"github.com/Tomofiles/skysign_cloud_v2/remote-communication/pkg/mission/domain/mission"
 
 	"github.com/Tomofiles/skysign_cloud_v2/skysign-common/pkg/common/adapters/postgresql"
 

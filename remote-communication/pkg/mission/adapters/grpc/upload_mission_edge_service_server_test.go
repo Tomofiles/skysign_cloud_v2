@@ -1,9 +1,10 @@
 package grpc
 
 import (
-	"remote-communication/pkg/mission/app"
-	"remote-communication/pkg/mission/service"
 	"testing"
+
+	"github.com/Tomofiles/skysign_cloud_v2/remote-communication/pkg/mission/app"
+	"github.com/Tomofiles/skysign_cloud_v2/remote-communication/pkg/mission/service"
 
 	proto "github.com/Tomofiles/skysign_cloud_v2/skysign-proto/pkg/skysign_proto"
 

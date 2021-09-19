@@ -2,7 +2,8 @@ package rabbitmq
 
 import (
 	"context"
-	"flight-operation/pkg/flightreport/app"
+
+	"github.com/Tomofiles/skysign_cloud_v2/flight-operation/pkg/flightreport/app"
 
 	"github.com/Tomofiles/skysign_cloud_v2/skysign-common/pkg/common/ports"
 	"github.com/golang/glog"

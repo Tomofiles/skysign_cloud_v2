@@ -1,4 +1,4 @@
-module helper-api
+module github.com/Tomofiles/skysign_cloud_v2/helper-api
 
 go 1.13
 

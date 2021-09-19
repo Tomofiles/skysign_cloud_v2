@@ -1,7 +1,7 @@
 package grpc
 
 import (
-	"remote-communication/pkg/communication/service"
+	"github.com/Tomofiles/skysign_cloud_v2/remote-communication/pkg/communication/service"
 
 	"github.com/stretchr/testify/mock"
 	"google.golang.org/grpc"

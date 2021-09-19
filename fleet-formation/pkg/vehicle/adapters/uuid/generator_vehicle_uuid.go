@@ -1,7 +1,7 @@
 package uuid
 
 import (
-	"fleet-formation/pkg/vehicle/domain/vehicle"
+	"github.com/Tomofiles/skysign_cloud_v2/fleet-formation/pkg/vehicle/domain/vehicle"
 
 	"github.com/google/uuid"
 )
