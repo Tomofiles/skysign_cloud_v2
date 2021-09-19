@@ -33,7 +33,7 @@ const VehiclesList = (props) => {
           dispatchMessage({ type: 'NOTIFY_ERROR', message: message });
         });
     }
-  }, [ props.open, dispatchMessage ])
+  }, [ props.open, setRows, dispatchMessage ])
 
   const onClickNew = () => {
     props.openNew();
