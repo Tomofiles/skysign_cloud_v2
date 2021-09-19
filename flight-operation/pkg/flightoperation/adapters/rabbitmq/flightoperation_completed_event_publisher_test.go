@@ -2,7 +2,7 @@ package rabbitmq
 
 import (
 	"errors"
-	"flight-operation/pkg/flightoperation/domain/flightoperation"
+	fo "flight-operation/pkg/flightoperation/domain/flightoperation"
 	"testing"
 
 	"github.com/Tomofiles/skysign_cloud_v2/skysign-proto/pkg/skysign_proto"
@@ -15,7 +15,7 @@ import (
 func TestPublishFlightoperationCompletedEvent(t *testing.T) {
 	a := assert.New(t)
 
-	event := flightoperation.FlightoperationCompletedEvent{
+	event := fo.FlightoperationCompletedEvent{
 		ID:          DefaultFlightoperationID,
 		Name:        DefaultFlightoperationName,
 		Description: DefaultFlightoperationDescription,
@@ -47,7 +47,7 @@ func TestPublishFlightoperationCompletedEvent(t *testing.T) {
 func TestFanoutExchangeDeclareErrorWhenPublishFlightoperationCompletedEvent(t *testing.T) {
 	a := assert.New(t)
 
-	event := flightoperation.FlightoperationCompletedEvent{
+	event := fo.FlightoperationCompletedEvent{
 		ID:          DefaultFlightoperationID,
 		Name:        DefaultFlightoperationName,
 		Description: DefaultFlightoperationDescription,
@@ -69,7 +69,7 @@ func TestFanoutExchangeDeclareErrorWhenPublishFlightoperationCompletedEvent(t *t
 func TestPublishErrorWhenPublishFlightoperationCompletedEvent(t *testing.T) {
 	a := assert.New(t)
 
-	event := flightoperation.FlightoperationCompletedEvent{
+	event := fo.FlightoperationCompletedEvent{
 		ID:          DefaultFlightoperationID,
 		Name:        DefaultFlightoperationName,
 		Description: DefaultFlightoperationDescription,

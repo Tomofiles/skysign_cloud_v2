@@ -3,6 +3,7 @@ package rabbitmq
 import (
 	"context"
 	"remote-communication/pkg/communication/domain/communication"
+	"remote-communication/pkg/communication/service"
 
 	crm "github.com/Tomofiles/skysign_cloud_v2/skysign-common/pkg/common/adapters/rabbitmq"
 
@@ -10,6 +11,27 @@ import (
 )
 
 const DefaultCommunicationID = communication.ID("communication-id")
+
+type manageCommunicationServiceMock struct {
+	mock.Mock
+	ID string
+}
+
+func (s *manageCommunicationServiceMock) CreateCommunication(
+	command service.CreateCommunicationCommand,
+) error {
+	ret := s.Called()
+	s.ID = command.GetID()
+	return ret.Error(0)
+}
+
+func (s *manageCommunicationServiceMock) DeleteCommunication(
+	command service.DeleteCommunicationCommand,
+) error {
+	ret := s.Called()
+	s.ID = command.GetID()
+	return ret.Error(0)
+}
 
 type channelMockPublish struct {
 	mock.Mock
@@ -42,11 +64,28 @@ func (ch *channelMockPublish) Close() error {
 	panic("implement me")
 }
 
-type publishHandlerMock struct {
+type pubSubManagerMock struct {
+	consumers       []consumer
 	publishHandlers []func(ch crm.Channel, e interface{})
 }
 
-func (h *publishHandlerMock) SetPublishHandler(handler func(ch crm.Channel, e interface{})) error {
+func (h *pubSubManagerMock) SetConsumer(ctx context.Context, exchangeName, queueName string, handler func([]byte)) error {
+	h.consumers = append(
+		h.consumers,
+		consumer{
+			exchangeName: exchangeName,
+			queueName:    queueName,
+			handler:      handler,
+		})
+	return nil
+}
+
+func (h *pubSubManagerMock) SetPublishHandler(handler func(ch crm.Channel, e interface{})) error {
 	h.publishHandlers = append(h.publishHandlers, handler)
 	return nil
+}
+
+type consumer struct {
+	exchangeName, queueName string
+	handler                 func([]byte)
 }

@@ -6,17 +6,15 @@ import (
 	"net"
 	"os"
 
+	fgrpc "fleet-formation/pkg/fleet/adapters/grpc"
 	frm "fleet-formation/pkg/fleet/adapters/rabbitmq"
 	fapp "fleet-formation/pkg/fleet/app"
-	fports "fleet-formation/pkg/fleet/ports"
+	mgrpc "fleet-formation/pkg/mission/adapters/grpc"
 	mrm "fleet-formation/pkg/mission/adapters/rabbitmq"
 	mapp "fleet-formation/pkg/mission/app"
-	mports "fleet-formation/pkg/mission/ports"
+	vgrpc "fleet-formation/pkg/vehicle/adapters/grpc"
 	vrm "fleet-formation/pkg/vehicle/adapters/rabbitmq"
 	vapp "fleet-formation/pkg/vehicle/app"
-	vports "fleet-formation/pkg/vehicle/ports"
-
-	proto "github.com/Tomofiles/skysign_cloud_v2/skysign-proto/pkg/skysign_proto"
 
 	cpg "github.com/Tomofiles/skysign_cloud_v2/skysign-common/pkg/common/adapters/postgresql"
 	crm "github.com/Tomofiles/skysign_cloud_v2/skysign-common/pkg/common/adapters/rabbitmq"
@@ -63,25 +61,17 @@ func run() error {
 	vehilceApp := vapp.NewApplication(ctx, txm, psm)
 	missionApp := mapp.NewApplication(ctx, txm, psm)
 
-	fevt := fports.NewEventHandler(fleetApp)
-	vevt := vports.NewEventHandler(vehilceApp)
-	mevt := mports.NewEventHandler(missionApp)
+	frm.SubscribeEventHandler(ctx, psm, fleetApp)
+	vrm.SubscribeEventHandler(ctx, psm, vehilceApp)
+	mrm.SubscribeEventHandler(ctx, psm, missionApp)
 
-	fports.SubscribeEventHandler(ctx, psm, fevt)
-	vports.SubscribeEventHandler(ctx, psm, vevt)
-	mports.SubscribeEventHandler(ctx, psm, mevt)
+	frm.SubscribeEventPublisher(psm)
+	vrm.SubscribeEventPublisher(psm)
+	mrm.SubscribeEventPublisher(psm)
 
-	frm.SubscribePublishHandler(psm)
-	vrm.SubscribePublishHandler(psm)
-	mrm.SubscribePublishHandler(psm)
-
-	fsvc := fports.NewGrpcServer(fleetApp)
-	vsvc := vports.NewGrpcServer(vehilceApp)
-	msvc := mports.NewGrpcServer(missionApp)
-
-	proto.RegisterAssignAssetsToFleetServiceServer(s, &fsvc)
-	proto.RegisterManageVehicleServiceServer(s, &vsvc)
-	proto.RegisterManageMissionServiceServer(s, &msvc)
+	fgrpc.SubscribeGrpcServer(s, fleetApp)
+	vgrpc.SubscribeGrpcServer(s, vehilceApp)
+	mgrpc.SubscribeGrpcServer(s, missionApp)
 
 	glog.Info("start fleet-formation server")
 	return s.Serve(listen)

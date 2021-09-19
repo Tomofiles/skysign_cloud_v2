@@ -6,16 +6,15 @@ import (
 	"net"
 	"os"
 
+	fopegrpc "flight-operation/pkg/flightoperation/adapters/grpc"
 	foperm "flight-operation/pkg/flightoperation/adapters/rabbitmq"
 	fopeapp "flight-operation/pkg/flightoperation/app"
-	fopeports "flight-operation/pkg/flightoperation/ports"
+	fplgrpc "flight-operation/pkg/flightplan/adapters/grpc"
 	fplrm "flight-operation/pkg/flightplan/adapters/rabbitmq"
 	fplapp "flight-operation/pkg/flightplan/app"
-	fplports "flight-operation/pkg/flightplan/ports"
+	frepgrpc "flight-operation/pkg/flightreport/adapters/grpc"
+	freprm "flight-operation/pkg/flightreport/adapters/rabbitmq"
 	frepapp "flight-operation/pkg/flightreport/app"
-	frepports "flight-operation/pkg/flightreport/ports"
-
-	proto "github.com/Tomofiles/skysign_cloud_v2/skysign-proto/pkg/skysign_proto"
 
 	cpg "github.com/Tomofiles/skysign_cloud_v2/skysign-common/pkg/common/adapters/postgresql"
 	crm "github.com/Tomofiles/skysign_cloud_v2/skysign-common/pkg/common/adapters/rabbitmq"
@@ -62,24 +61,15 @@ func run() error {
 	fopeApp := fopeapp.NewApplication(ctx, txm, psm)
 	frepApp := frepapp.NewApplication(ctx, txm, psm)
 
-	fopeevt := fopeports.NewEventHandler(fopeApp)
-	frepevt := frepports.NewEventHandler(frepApp)
+	foperm.SubscribeEventHandler(ctx, psm, fopeApp)
+	freprm.SubscribeEventHandler(ctx, psm, frepApp)
 
-	fopeports.SubscribeEventHandler(ctx, psm, fopeevt)
-	frepports.SubscribeEventHandler(ctx, psm, frepevt)
+	fplrm.SubscribeEventPublisher(psm)
+	foperm.SubscribeEventPublisher(psm)
 
-	fplrm.SubscribePublishHandler(psm)
-	foperm.SubscribePublishHandler(psm)
-
-	fplsvc := fplports.NewGrpcServer(fplApp)
-	fopesvc := fopeports.NewGrpcServer(fopeApp)
-	frepsvc := frepports.NewGrpcServer(frepApp)
-
-	proto.RegisterManageFlightplanServiceServer(s, &fplsvc)
-	proto.RegisterChangeFlightplanServiceServer(s, &fplsvc)
-	proto.RegisterExecuteFlightplanServiceServer(s, &fplsvc)
-	proto.RegisterOperateFlightServiceServer(s, &fopesvc)
-	proto.RegisterReportFlightServiceServer(s, &frepsvc)
+	fplgrpc.SubscribeGrpcServer(s, fplApp)
+	fopegrpc.SubscribeGrpcServer(s, fopeApp)
+	frepgrpc.SubscribeGrpcServer(s, frepApp)
 
 	glog.Info("start flight-operation server")
 	return s.Serve(listen)

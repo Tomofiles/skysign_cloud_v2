@@ -8,20 +8,19 @@ import (
 	"gorm.io/gorm"
 )
 
-// FleetRepository .
-type FleetRepository struct {
+type fleetRepository struct {
 	gen fl.Generator
 }
 
 // NewFleetRepository .
-func NewFleetRepository(gen fl.Generator) *FleetRepository {
-	return &FleetRepository{
+func NewFleetRepository(gen fl.Generator) fl.Repository {
+	return &fleetRepository{
 		gen: gen,
 	}
 }
 
 // GetByID .
-func (r *FleetRepository) GetByID(
+func (r *fleetRepository) GetByID(
 	tx txmanager.Tx,
 	id fl.ID,
 ) (*fl.Fleet, error) {
@@ -56,7 +55,7 @@ func (r *FleetRepository) GetByID(
 }
 
 // Save .
-func (r *FleetRepository) Save(
+func (r *fleetRepository) Save(
 	tx txmanager.Tx,
 	fleet *fl.Fleet,
 ) error {
@@ -148,7 +147,7 @@ func (r *FleetRepository) Save(
 }
 
 // Delete .
-func (r *FleetRepository) Delete(
+func (r *fleetRepository) Delete(
 	tx txmanager.Tx,
 	id fl.ID,
 ) error {
