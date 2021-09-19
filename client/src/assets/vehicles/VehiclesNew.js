@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 
 import {
   Typography,
@@ -7,21 +7,27 @@ import {
   Grid,
   Box,
   Paper,
-  Divider
+  Divider,
 } from '@material-ui/core';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import { grey } from '@material-ui/core/colors';
 import { useForm } from 'react-hook-form';
 
 import { createVehicle } from './VehicleUtils'
+import { AppContext } from '../../context/Context';
 
 const VehiclesNew = (props) => {
   const { register, handleSubmit, errors } = useForm();
+  const { dispatchMessage } = useContext(AppContext);
 
   const onClickSave = (data) => {
     createVehicle(data)
       .then(ret => {
+        dispatchMessage({ type: 'NOTIFY_SUCCESS', message: `${ret.name} was created successfully` });
         props.openList();
+      })
+      .catch(message => {
+        dispatchMessage({ type: 'NOTIFY_ERROR', message: message });
       });
   }
 

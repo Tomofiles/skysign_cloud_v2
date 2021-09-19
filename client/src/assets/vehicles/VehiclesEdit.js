@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 
 import {
   Typography,
@@ -14,10 +14,12 @@ import { grey } from '@material-ui/core/colors';
 import { useForm, Controller } from 'react-hook-form';
 
 import { getVehicle, updateVehicle } from './VehicleUtils'
+import { AppContext } from '../../context/Context';
 
 const VehiclesEdit = (props) => {
   const [ id, setId ] = useState("");
   const { control, handleSubmit, setValue } = useForm();
+  const { dispatchMessage } = useContext(AppContext);
 
   useEffect(() => {
     getVehicle(props.id)
@@ -26,7 +28,10 @@ const VehiclesEdit = (props) => {
         setValue("name", data.name);
         setValue("communication_id", data.communication_id);
       })
-  }, [ props.id, setValue ])
+      .catch(message => {
+        dispatchMessage({ type: 'NOTIFY_ERROR', message: message });
+      });
+  }, [ props.id, setValue, dispatchMessage ])
 
   const onClickCancel = () => {
     props.openDetail(id);
@@ -35,7 +40,11 @@ const VehiclesEdit = (props) => {
   const onClickSave = (data) => {
     updateVehicle(id, data)
       .then(ret => {
+        dispatchMessage({ type: 'NOTIFY_SUCCESS', message: `You have successfully updated ${ret.name}` });
         props.openList();
+      })
+      .catch(message => {
+        dispatchMessage({ type: 'NOTIFY_ERROR', message: message });
       });
   }
 
