@@ -1,10 +1,11 @@
 package postgresql
 
 import (
-	"flight-operation/pkg/flightplan/adapters/uuid"
-	fpl "flight-operation/pkg/flightplan/domain/flightplan"
 	"regexp"
 	"testing"
+
+	"github.com/Tomofiles/skysign_cloud_v2/flight-operation/pkg/flightplan/adapters/uuid"
+	fpl "github.com/Tomofiles/skysign_cloud_v2/flight-operation/pkg/flightplan/domain/flightplan"
 
 	"github.com/Tomofiles/skysign_cloud_v2/skysign-common/pkg/common/adapters/postgresql"
 

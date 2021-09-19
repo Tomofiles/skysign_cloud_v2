@@ -2,8 +2,9 @@ package rabbitmq
 
 import (
 	"context"
-	"flight-operation/pkg/flightreport/app"
-	"flight-operation/pkg/flightreport/service"
+
+	"github.com/Tomofiles/skysign_cloud_v2/flight-operation/pkg/flightreport/app"
+	"github.com/Tomofiles/skysign_cloud_v2/flight-operation/pkg/flightreport/service"
 
 	"github.com/Tomofiles/skysign_cloud_v2/skysign-proto/pkg/skysign_proto"
 

@@ -1,8 +1,9 @@
 package grpc
 
 import (
-	"collection-analysis/pkg/action/app"
 	"testing"
+
+	"github.com/Tomofiles/skysign_cloud_v2/collection-analysis/pkg/action/app"
 
 	"github.com/stretchr/testify/assert"
 )

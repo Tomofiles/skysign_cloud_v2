@@ -1,7 +1,7 @@
 package rabbitmq
 
 import (
-	fope "flight-operation/pkg/flightoperation/domain/flightoperation"
+	fope "github.com/Tomofiles/skysign_cloud_v2/flight-operation/pkg/flightoperation/domain/flightoperation"
 
 	crm "github.com/Tomofiles/skysign_cloud_v2/skysign-common/pkg/common/adapters/rabbitmq"
 

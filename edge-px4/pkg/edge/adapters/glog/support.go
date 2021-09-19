@@ -1,7 +1,7 @@
 package glog
 
 import (
-	"edge-px4/pkg/edge/domain/common"
+	"github.com/Tomofiles/skysign_cloud_v2/edge-px4/pkg/edge/domain/common"
 
 	"github.com/golang/glog"
 )

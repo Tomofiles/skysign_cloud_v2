@@ -1,6 +1,6 @@
 package app
 
-import "flight-operation/pkg/flightoperation/service"
+import "github.com/Tomofiles/skysign_cloud_v2/flight-operation/pkg/flightoperation/service"
 
 // Application .
 type Application struct {

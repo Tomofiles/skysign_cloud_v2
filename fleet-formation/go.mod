@@ -1,4 +1,4 @@
-module fleet-formation
+module github.com/Tomofiles/skysign_cloud_v2/fleet-formation
 
 go 1.13
 

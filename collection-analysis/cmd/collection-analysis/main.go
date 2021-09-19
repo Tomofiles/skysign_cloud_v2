@@ -6,9 +6,9 @@ import (
 	"net"
 	"os"
 
-	agrpc "collection-analysis/pkg/action/adapters/grpc"
-	arm "collection-analysis/pkg/action/adapters/rabbitmq"
-	aapp "collection-analysis/pkg/action/app"
+	agrpc "github.com/Tomofiles/skysign_cloud_v2/collection-analysis/pkg/action/adapters/grpc"
+	arm "github.com/Tomofiles/skysign_cloud_v2/collection-analysis/pkg/action/adapters/rabbitmq"
+	aapp "github.com/Tomofiles/skysign_cloud_v2/collection-analysis/pkg/action/app"
 
 	cpg "github.com/Tomofiles/skysign_cloud_v2/skysign-common/pkg/common/adapters/postgresql"
 	crm "github.com/Tomofiles/skysign_cloud_v2/skysign-common/pkg/common/adapters/rabbitmq"

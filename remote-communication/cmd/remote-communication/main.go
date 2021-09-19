@@ -6,12 +6,12 @@ import (
 	"net"
 	"os"
 
-	rgrpc "remote-communication/pkg/communication/adapters/grpc"
-	rrm "remote-communication/pkg/communication/adapters/rabbitmq"
-	rapp "remote-communication/pkg/communication/app"
-	mgrpc "remote-communication/pkg/mission/adapters/grpc"
-	mrm "remote-communication/pkg/mission/adapters/rabbitmq"
-	mapp "remote-communication/pkg/mission/app"
+	rgrpc "github.com/Tomofiles/skysign_cloud_v2/remote-communication/pkg/communication/adapters/grpc"
+	rrm "github.com/Tomofiles/skysign_cloud_v2/remote-communication/pkg/communication/adapters/rabbitmq"
+	rapp "github.com/Tomofiles/skysign_cloud_v2/remote-communication/pkg/communication/app"
+	mgrpc "github.com/Tomofiles/skysign_cloud_v2/remote-communication/pkg/mission/adapters/grpc"
+	mrm "github.com/Tomofiles/skysign_cloud_v2/remote-communication/pkg/mission/adapters/rabbitmq"
+	mapp "github.com/Tomofiles/skysign_cloud_v2/remote-communication/pkg/mission/app"
 
 	cpg "github.com/Tomofiles/skysign_cloud_v2/skysign-common/pkg/common/adapters/postgresql"
 	crm "github.com/Tomofiles/skysign_cloud_v2/skysign-common/pkg/common/adapters/rabbitmq"

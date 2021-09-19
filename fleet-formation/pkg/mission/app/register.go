@@ -2,9 +2,10 @@ package app
 
 import (
 	"context"
-	"fleet-formation/pkg/mission/adapters/postgresql"
-	"fleet-formation/pkg/mission/adapters/uuid"
-	"fleet-formation/pkg/mission/service"
+
+	"github.com/Tomofiles/skysign_cloud_v2/fleet-formation/pkg/mission/adapters/postgresql"
+	"github.com/Tomofiles/skysign_cloud_v2/fleet-formation/pkg/mission/adapters/uuid"
+	"github.com/Tomofiles/skysign_cloud_v2/fleet-formation/pkg/mission/service"
 
 	"github.com/Tomofiles/skysign_cloud_v2/skysign-common/pkg/common/domain/event"
 	"github.com/Tomofiles/skysign_cloud_v2/skysign-common/pkg/common/domain/txmanager"

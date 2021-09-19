@@ -1,13 +1,14 @@
 package cloudlink
 
 import (
-	"edge-px4/pkg/edge/adapters/json"
-	"edge-px4/pkg/edge/domain/model"
 	"fmt"
 	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
 	"testing"
+
+	"github.com/Tomofiles/skysign_cloud_v2/edge-px4/pkg/edge/adapters/json"
+	"github.com/Tomofiles/skysign_cloud_v2/edge-px4/pkg/edge/domain/model"
 
 	"github.com/Tomofiles/skysign_cloud_v2/skysign-proto/pkg/skysign_proto"
 	"github.com/stretchr/testify/assert"

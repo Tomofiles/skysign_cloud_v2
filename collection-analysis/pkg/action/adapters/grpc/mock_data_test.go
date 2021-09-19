@@ -1,8 +1,8 @@
 package grpc
 
 import (
-	act "collection-analysis/pkg/action/domain/action"
-	"collection-analysis/pkg/action/service"
+	act "github.com/Tomofiles/skysign_cloud_v2/collection-analysis/pkg/action/domain/action"
+	"github.com/Tomofiles/skysign_cloud_v2/collection-analysis/pkg/action/service"
 
 	"github.com/stretchr/testify/mock"
 	"google.golang.org/grpc"

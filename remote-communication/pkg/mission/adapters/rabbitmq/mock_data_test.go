@@ -2,7 +2,8 @@ package rabbitmq
 
 import (
 	"context"
-	"remote-communication/pkg/mission/service"
+
+	"github.com/Tomofiles/skysign_cloud_v2/remote-communication/pkg/mission/service"
 
 	crm "github.com/Tomofiles/skysign_cloud_v2/skysign-common/pkg/common/adapters/rabbitmq"
 

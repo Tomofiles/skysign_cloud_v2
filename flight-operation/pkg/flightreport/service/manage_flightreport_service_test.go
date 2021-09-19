@@ -1,8 +1,9 @@
 package service
 
 import (
-	frep "flight-operation/pkg/flightreport/domain/flightreport"
 	"testing"
+
+	frep "github.com/Tomofiles/skysign_cloud_v2/flight-operation/pkg/flightreport/domain/flightreport"
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"

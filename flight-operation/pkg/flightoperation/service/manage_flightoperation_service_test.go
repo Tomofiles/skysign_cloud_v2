@@ -1,8 +1,9 @@
 package service
 
 import (
-	fope "flight-operation/pkg/flightoperation/domain/flightoperation"
 	"testing"
+
+	fope "github.com/Tomofiles/skysign_cloud_v2/flight-operation/pkg/flightoperation/domain/flightoperation"
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"

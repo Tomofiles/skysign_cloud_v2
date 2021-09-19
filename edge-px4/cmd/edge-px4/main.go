@@ -2,20 +2,21 @@ package main
 
 import (
 	"context"
-	glog_adapter "edge-px4/pkg/edge/adapters/glog"
-	grpc_adapter "edge-px4/pkg/edge/adapters/grpc"
-	time_adapter "edge-px4/pkg/edge/adapters/time"
-	"edge-px4/pkg/edge/builder"
-	"edge-px4/pkg/edge/domain/cloudlink"
-	mavlink_command "edge-px4/pkg/edge/domain/mavlink/command"
-	mavlink_telemetry "edge-px4/pkg/edge/domain/mavlink/telemetry"
-	"edge-px4/pkg/edge/domain/model"
 	"errors"
 	"flag"
 	"os"
 	"os/signal"
 	"sync"
 	"time"
+
+	glog_adapter "github.com/Tomofiles/skysign_cloud_v2/edge-px4/pkg/edge/adapters/glog"
+	grpc_adapter "github.com/Tomofiles/skysign_cloud_v2/edge-px4/pkg/edge/adapters/grpc"
+	time_adapter "github.com/Tomofiles/skysign_cloud_v2/edge-px4/pkg/edge/adapters/time"
+	"github.com/Tomofiles/skysign_cloud_v2/edge-px4/pkg/edge/builder"
+	"github.com/Tomofiles/skysign_cloud_v2/edge-px4/pkg/edge/domain/cloudlink"
+	mavlink_command "github.com/Tomofiles/skysign_cloud_v2/edge-px4/pkg/edge/domain/mavlink/command"
+	mavlink_telemetry "github.com/Tomofiles/skysign_cloud_v2/edge-px4/pkg/edge/domain/mavlink/telemetry"
+	"github.com/Tomofiles/skysign_cloud_v2/edge-px4/pkg/edge/domain/model"
 )
 
 var (

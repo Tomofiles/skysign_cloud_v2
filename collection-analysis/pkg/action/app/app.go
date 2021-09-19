@@ -1,6 +1,6 @@
 package app
 
-import "collection-analysis/pkg/action/service"
+import "github.com/Tomofiles/skysign_cloud_v2/collection-analysis/pkg/action/service"
 
 // Application .
 type Application struct {

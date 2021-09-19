@@ -1,7 +1,7 @@
 package postgresql
 
 import (
-	m "fleet-formation/pkg/mission/domain/mission"
+	m "github.com/Tomofiles/skysign_cloud_v2/fleet-formation/pkg/mission/domain/mission"
 
 	"github.com/Tomofiles/skysign_cloud_v2/skysign-common/pkg/common/domain/txmanager"
 

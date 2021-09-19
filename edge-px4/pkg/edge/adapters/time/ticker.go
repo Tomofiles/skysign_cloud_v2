@@ -1,8 +1,9 @@
 package time
 
 import (
-	"edge-px4/pkg/edge/domain/common"
 	"time"
+
+	"github.com/Tomofiles/skysign_cloud_v2/edge-px4/pkg/edge/domain/common"
 )
 
 // NewTicker .

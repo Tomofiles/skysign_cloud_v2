@@ -2,10 +2,11 @@ package postgresql
 
 import (
 	"regexp"
-	"remote-communication/pkg/communication/adapters/uuid"
-	c "remote-communication/pkg/communication/domain/communication"
 	"testing"
 	"time"
+
+	"github.com/Tomofiles/skysign_cloud_v2/remote-communication/pkg/communication/adapters/uuid"
+	c "github.com/Tomofiles/skysign_cloud_v2/remote-communication/pkg/communication/domain/communication"
 
 	"github.com/Tomofiles/skysign_cloud_v2/skysign-common/pkg/common/adapters/postgresql"
 

@@ -1,9 +1,10 @@
 package rabbitmq
 
 import (
-	"fleet-formation/pkg/mission/app"
-	m "fleet-formation/pkg/mission/domain/mission"
 	"testing"
+
+	"github.com/Tomofiles/skysign_cloud_v2/fleet-formation/pkg/mission/app"
+	m "github.com/Tomofiles/skysign_cloud_v2/fleet-formation/pkg/mission/domain/mission"
 
 	"github.com/Tomofiles/skysign_cloud_v2/skysign-proto/pkg/skysign_proto"
 	"github.com/stretchr/testify/assert"

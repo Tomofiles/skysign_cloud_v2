@@ -1,8 +1,9 @@
 package grpc
 
 import (
-	"fleet-formation/pkg/vehicle/app"
 	"testing"
+
+	"github.com/Tomofiles/skysign_cloud_v2/fleet-formation/pkg/vehicle/app"
 
 	"github.com/stretchr/testify/assert"
 )

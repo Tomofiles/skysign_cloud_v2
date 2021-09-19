@@ -2,7 +2,8 @@ package rabbitmq
 
 import (
 	"context"
-	"fleet-formation/pkg/fleet/app"
+
+	"github.com/Tomofiles/skysign_cloud_v2/fleet-formation/pkg/fleet/app"
 
 	"github.com/Tomofiles/skysign_cloud_v2/skysign-common/pkg/common/ports"
 

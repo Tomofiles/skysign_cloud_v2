@@ -1,7 +1,7 @@
 package uuid
 
 import (
-	"flight-operation/pkg/flightplan/domain/flightplan"
+	"github.com/Tomofiles/skysign_cloud_v2/flight-operation/pkg/flightplan/domain/flightplan"
 
 	"github.com/google/uuid"
 )

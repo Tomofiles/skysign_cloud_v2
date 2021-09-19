@@ -1,8 +1,9 @@
 package service
 
 import (
-	act "collection-analysis/pkg/action/domain/action"
 	"testing"
+
+	act "github.com/Tomofiles/skysign_cloud_v2/collection-analysis/pkg/action/domain/action"
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"

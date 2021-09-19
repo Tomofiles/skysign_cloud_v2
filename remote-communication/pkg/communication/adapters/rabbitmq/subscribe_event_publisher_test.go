@@ -1,8 +1,9 @@
 package rabbitmq
 
 import (
-	"remote-communication/pkg/communication/domain/communication"
 	"testing"
+
+	"github.com/Tomofiles/skysign_cloud_v2/remote-communication/pkg/communication/domain/communication"
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"

@@ -1,4 +1,4 @@
-module remote-communication
+module github.com/Tomofiles/skysign_cloud_v2/remote-communication
 
 go 1.13
 

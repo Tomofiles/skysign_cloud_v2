@@ -1,7 +1,7 @@
 package service
 
 import (
-	m "remote-communication/pkg/mission/domain/mission"
+	m "github.com/Tomofiles/skysign_cloud_v2/remote-communication/pkg/mission/domain/mission"
 
 	"github.com/Tomofiles/skysign_cloud_v2/skysign-common/pkg/common/domain/event"
 	"github.com/Tomofiles/skysign_cloud_v2/skysign-common/pkg/common/domain/txmanager"

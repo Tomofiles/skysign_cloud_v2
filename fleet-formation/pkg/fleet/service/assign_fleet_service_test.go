@@ -1,8 +1,9 @@
 package service
 
 import (
-	fl "fleet-formation/pkg/fleet/domain/fleet"
 	"testing"
+
+	fl "github.com/Tomofiles/skysign_cloud_v2/fleet-formation/pkg/fleet/domain/fleet"
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"

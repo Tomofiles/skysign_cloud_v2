@@ -1,7 +1,7 @@
 package postgresql
 
 import (
-	"collection-analysis/pkg/action/domain/action"
+	"github.com/Tomofiles/skysign_cloud_v2/collection-analysis/pkg/action/domain/action"
 )
 
 const DefaultActionID = action.ID("action-id")

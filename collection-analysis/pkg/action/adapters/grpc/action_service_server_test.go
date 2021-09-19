@@ -1,9 +1,10 @@
 package grpc
 
 import (
-	"collection-analysis/pkg/action/app"
-	act "collection-analysis/pkg/action/domain/action"
 	"testing"
+
+	"github.com/Tomofiles/skysign_cloud_v2/collection-analysis/pkg/action/app"
+	act "github.com/Tomofiles/skysign_cloud_v2/collection-analysis/pkg/action/domain/action"
 
 	"github.com/Tomofiles/skysign_cloud_v2/skysign-proto/pkg/skysign_proto"
 

@@ -1,7 +1,7 @@
 package app
 
 import (
-	"flight-operation/pkg/flightplan/service"
+	"github.com/Tomofiles/skysign_cloud_v2/flight-operation/pkg/flightplan/service"
 )
 
 // Application .

@@ -1,8 +1,9 @@
 package rabbitmq
 
 import (
-	"flight-operation/pkg/flightoperation/app"
 	"testing"
+
+	"github.com/Tomofiles/skysign_cloud_v2/flight-operation/pkg/flightoperation/app"
 
 	"github.com/Tomofiles/skysign_cloud_v2/skysign-proto/pkg/skysign_proto"
 	"github.com/stretchr/testify/assert"

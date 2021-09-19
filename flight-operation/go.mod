@@ -1,4 +1,4 @@
-module flight-operation
+module github.com/Tomofiles/skysign_cloud_v2/flight-operation
 
 go 1.13
 

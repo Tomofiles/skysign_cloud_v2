@@ -3,8 +3,8 @@ package grpc
 import (
 	"context"
 
-	"fleet-formation/pkg/vehicle/app"
-	"fleet-formation/pkg/vehicle/service"
+	"github.com/Tomofiles/skysign_cloud_v2/fleet-formation/pkg/vehicle/app"
+	"github.com/Tomofiles/skysign_cloud_v2/fleet-formation/pkg/vehicle/service"
 
 	proto "github.com/Tomofiles/skysign_cloud_v2/skysign-proto/pkg/skysign_proto"
 )

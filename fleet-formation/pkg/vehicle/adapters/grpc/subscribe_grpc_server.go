@@ -1,7 +1,7 @@
 package grpc
 
 import (
-	"fleet-formation/pkg/vehicle/app"
+	"github.com/Tomofiles/skysign_cloud_v2/fleet-formation/pkg/vehicle/app"
 
 	"github.com/Tomofiles/skysign_cloud_v2/skysign-proto/pkg/skysign_proto"
 	"google.golang.org/grpc"

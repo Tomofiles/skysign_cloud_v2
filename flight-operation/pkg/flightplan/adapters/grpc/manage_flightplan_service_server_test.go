@@ -1,10 +1,11 @@
 package grpc
 
 import (
-	"flight-operation/pkg/flightplan/app"
-	f "flight-operation/pkg/flightplan/domain/flightplan"
-	s "flight-operation/pkg/flightplan/service"
 	"testing"
+
+	"github.com/Tomofiles/skysign_cloud_v2/flight-operation/pkg/flightplan/app"
+	f "github.com/Tomofiles/skysign_cloud_v2/flight-operation/pkg/flightplan/domain/flightplan"
+	s "github.com/Tomofiles/skysign_cloud_v2/flight-operation/pkg/flightplan/service"
 
 	"github.com/Tomofiles/skysign_cloud_v2/skysign-proto/pkg/skysign_proto"
 

@@ -1,6 +1,6 @@
 package app
 
-import "fleet-formation/pkg/mission/service"
+import "github.com/Tomofiles/skysign_cloud_v2/fleet-formation/pkg/mission/service"
 
 // Application .
 type Application struct {

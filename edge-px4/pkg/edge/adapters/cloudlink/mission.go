@@ -1,11 +1,12 @@
 package cloudlink
 
 import (
-	"edge-px4/pkg/edge/adapters/http"
-	"edge-px4/pkg/edge/adapters/json"
-	"edge-px4/pkg/edge/domain/common"
-	"edge-px4/pkg/edge/domain/model"
 	"fmt"
+
+	"github.com/Tomofiles/skysign_cloud_v2/edge-px4/pkg/edge/adapters/http"
+	"github.com/Tomofiles/skysign_cloud_v2/edge-px4/pkg/edge/adapters/json"
+	"github.com/Tomofiles/skysign_cloud_v2/edge-px4/pkg/edge/domain/common"
+	"github.com/Tomofiles/skysign_cloud_v2/edge-px4/pkg/edge/domain/model"
 
 	"github.com/Tomofiles/skysign_cloud_v2/skysign-proto/pkg/skysign_proto"
 )

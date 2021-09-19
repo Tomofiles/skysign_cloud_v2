@@ -1,9 +1,10 @@
 package postgresql
 
 import (
-	act "collection-analysis/pkg/action/domain/action"
 	"regexp"
 	"testing"
+
+	act "github.com/Tomofiles/skysign_cloud_v2/collection-analysis/pkg/action/domain/action"
 
 	"github.com/Tomofiles/skysign_cloud_v2/skysign-common/pkg/common/adapters/postgresql"
 

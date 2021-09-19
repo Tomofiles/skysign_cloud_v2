@@ -1,10 +1,11 @@
 package postgresql
 
 import (
-	"fleet-formation/pkg/vehicle/adapters/uuid"
-	v "fleet-formation/pkg/vehicle/domain/vehicle"
 	"regexp"
 	"testing"
+
+	"github.com/Tomofiles/skysign_cloud_v2/fleet-formation/pkg/vehicle/adapters/uuid"
+	v "github.com/Tomofiles/skysign_cloud_v2/fleet-formation/pkg/vehicle/domain/vehicle"
 
 	"github.com/Tomofiles/skysign_cloud_v2/skysign-common/pkg/common/adapters/postgresql"
 
