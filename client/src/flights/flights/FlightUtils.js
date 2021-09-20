@@ -1,24 +1,12 @@
 import axios from 'axios';
 
-export async function createFlight(id) {
-  try {
-    const res = await axios
-      .post(`/api/v1/flightoperations`, {
-        flightplan_id: id
-      })
-    return res.data;
-  } catch(error) {
-    console.log(error);
-  }
-}
-
 export async function completeFlight(id) {
   try {
     const res = await axios
       .post(`/api/v1/flightoperations/${id}/complete`, {})
     return res.data;
   } catch(error) {
-    console.log(error);
+    throw error.response.data.message;
   }
 }
 
@@ -30,7 +18,7 @@ export async function getFlights() {
       })
     return res.data;
   } catch(error) {
-    console.log(error);
+    throw error.response.data.message;
   }
 }
 
@@ -42,6 +30,6 @@ export async function getFlight(id) {
       })
     return res.data;
   } catch(error) {
-    console.log(error);
+    throw error.response.data.message;
   }
 }

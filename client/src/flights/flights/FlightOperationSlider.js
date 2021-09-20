@@ -54,7 +54,7 @@ function ArrowThumbComponent(props) {
 }
 
 const FlightOperationSlider = (props) => {
-  const { operationMode, steps } = useContext(AppContext);
+  const { operationMode, steps, dispatchMessage } = useContext(AppContext);
   const [ value, setValue ] = useState(0);
   const [ progress, setProgress ] = useState(false);
 
@@ -83,7 +83,10 @@ const FlightOperationSlider = (props) => {
     Promise
       .all(controls)
       .then(data => {
-        console.log(data);
+        setProgress(false);
+      })
+      .catch(message => {
+        dispatchMessage({ type: 'NOTIFY_ERROR', message: message });
         setProgress(false);
       });
   }

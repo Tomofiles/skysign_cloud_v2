@@ -8,11 +8,11 @@ export async function getTelemetry(id) {
       })
     return res.data;
   } catch(error) {
-    console.log(error);
+    throw error.response.data.message;
   }
 }
   
-export async function getAltitude(latitude, longitude) {
+export async function getTakeoffHeight(latitude, longitude) {
   try {
     const res = await axios
       .get(`/api/v1/helper/ellipsoidheight`, {
@@ -23,6 +23,6 @@ export async function getAltitude(latitude, longitude) {
       })
     return res.data;
   } catch(error) {
-    console.log(error);
+    throw error.response.data.message;
   }
 }

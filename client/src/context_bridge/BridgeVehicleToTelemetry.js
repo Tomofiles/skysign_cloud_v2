@@ -12,7 +12,7 @@ import { AppContext } from '../context/Context';
 import { OPERATION_MODE } from '../context/OperationMode';
 
 const BridgeVehicleToTelemetry = () => {
-  const { vehicles, operationMode, dispatchTelemetries } = useContext(AppContext);
+  const { vehicles, operationMode, dispatchTelemetries, dispatchMessage } = useContext(AppContext);
   const [ isRender, setIsRender ] = useState(false);
 
   useEffect(() => {
@@ -54,6 +54,9 @@ const BridgeVehicleToTelemetry = () => {
           telemetry.telemetry.roll = Math.toDegrees(hpr.roll);
         }
         dispatchTelemetries({ type: 'ROWS', rows: data });
+      })
+      .catch(message => {
+        dispatchMessage({ type: 'NOTIFY_ERROR', message: message });
       });
   },
   1000);
