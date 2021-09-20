@@ -45,6 +45,10 @@ const MissionsList = (props) => {
       .then(data => {
         setRows(data.missions);
       })
+      .catch(message => {
+        setRows([]);
+        dispatchMessage({ type: 'NOTIFY_ERROR', message: message });
+      });
   }
 
   const onSelect = (id) => {

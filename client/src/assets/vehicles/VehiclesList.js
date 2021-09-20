@@ -45,6 +45,10 @@ const VehiclesList = (props) => {
       .then(data => {
         setRows(data.vehicles);
       })
+      .catch(message => {
+        setRows([]);
+        dispatchMessage({ type: 'NOTIFY_ERROR', message: message });
+      });
   }
 
   const onSelect = (id) => {
