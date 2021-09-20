@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 
 import {
   Typography,
@@ -23,33 +23,49 @@ import { grey } from '@material-ui/core/colors';
 import { getFlightplan, getAssignments, updateAssignments } from './FlightplansUtils';
 import { getVehicles } from '../../assets/vehicles/VehicleUtils';
 import { getMissions } from '../../missions/missions/MissionUtils';
+import { AppContext } from '../../context/Context';
 
 const AssignAssetsEdit = (props) => {
   const [ rows, setRows ] = useState([]);
+  const [ flightplanName, setFlightplanName ] = useState("");
   const [ fleetId, setFleetId ] = useState("");
   const [ vehicles, setVehicles ] = useState([]);
   const [ missions, setMissions ] = useState([]);
+  const { dispatchMessage } = useContext(AppContext);
 
   useEffect(() => {
     if (props.open) {
       getFlightplan(props.id)
         .then(data => {
+          setFlightplanName(data.name);
           setFleetId(data.fleet_id);
           getAssignments(data.fleet_id)
             .then(data => {
               setRows(data.assignments);
             })
+            .catch(message => {
+              dispatchMessage({ type: 'NOTIFY_ERROR', message: message });
+            });
         })
+        .catch(message => {
+          dispatchMessage({ type: 'NOTIFY_ERROR', message: message });
+        });
       getVehicles()
         .then(data => {
           setVehicles(data.vehicles);
         })
+        .catch(message => {
+          dispatchMessage({ type: 'NOTIFY_ERROR', message: message });
+        });
       getMissions()
         .then(data => {
           setMissions(data.missions);
         })
+        .catch(message => {
+          dispatchMessage({ type: 'NOTIFY_ERROR', message: message });
+        });
     }
-  }, [ props.open, props.id ])
+  }, [ props.open, props.id, setRows, setFlightplanName, setFleetId, setVehicles, setMissions, dispatchMessage ])
 
   const onClickCancel = () => {
     props.openAssignDetail(props.id);
@@ -58,9 +74,13 @@ const AssignAssetsEdit = (props) => {
   const onClickSave = () => {
     let assignments = { assignments: rows };
     updateAssignments(fleetId, assignments)
-    .then(ret => {
-      props.openList();
-    });
+      .then(ret => {
+        dispatchMessage({ type: 'NOTIFY_SUCCESS', message: `Updated assignments for ${flightplanName} successfully` });
+        props.openList();
+      })
+      .catch(message => {
+        dispatchMessage({ type: 'NOTIFY_ERROR', message: message });
+      });
   }
 
   const onClickReturn = () => {

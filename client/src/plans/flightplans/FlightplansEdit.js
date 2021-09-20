@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useContext, useEffect } from 'react';
 
 import {
   Typography,
@@ -14,9 +14,11 @@ import { grey } from '@material-ui/core/colors';
 import { Controller, useForm } from 'react-hook-form';
 
 import { getFlightplan, updateFlightplan } from './FlightplansUtils';
+import { AppContext } from '../../context/Context';
 
 const FlightplansEdit = (props) => {
   const { control, handleSubmit, setValue } = useForm();
+  const { dispatchMessage } = useContext(AppContext);
 
   useEffect(() => {
     getFlightplan(props.id)
@@ -24,7 +26,10 @@ const FlightplansEdit = (props) => {
         setValue("name", data.name);
         setValue("description", data.description);
       })
-  }, [ props.id, setValue ])
+      .catch(message => {
+        dispatchMessage({ type: 'NOTIFY_ERROR', message: message });
+      });
+  }, [ props.id, setValue, dispatchMessage ])
 
   const onClickCancel = () => {
     props.openDetail(props.id);
@@ -33,7 +38,11 @@ const FlightplansEdit = (props) => {
   const onClickSave = (data) => {
     updateFlightplan(props.id, data)
       .then(ret => {
+        dispatchMessage({ type: 'NOTIFY_SUCCESS', message: `You have successfully updated ${ret.name}` });
         props.openList();
+      })
+      .catch(message => {
+        dispatchMessage({ type: 'NOTIFY_ERROR', message: message });
       });
   }
 

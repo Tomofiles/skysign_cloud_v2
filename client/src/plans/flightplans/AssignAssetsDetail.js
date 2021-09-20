@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 
 import {
   Typography,
@@ -20,9 +20,11 @@ import { grey } from '@material-ui/core/colors';
 import { getFlightplan, getAssignments } from './FlightplansUtils';
 import { getVehicles } from '../../assets/vehicles/VehicleUtils';
 import { getMissions } from '../../missions/missions/MissionUtils';
+import { AppContext } from '../../context/Context';
 
 const AssignAssetsDetail = (props) => {
   const [ rows, setRows ] = useState([]);
+  const { dispatchMessage } = useContext(AppContext);
 
   useEffect(() => {
     if (props.open) {
@@ -43,10 +45,19 @@ const AssignAssetsDetail = (props) => {
                 });
                 setRows(data.assignments);
               })
+              .catch(message => {
+                dispatchMessage({ type: 'NOTIFY_ERROR', message: message });
+              });
           })
+          .catch(message => {
+            dispatchMessage({ type: 'NOTIFY_ERROR', message: message });
+          });
       })
+      .catch(message => {
+        dispatchMessage({ type: 'NOTIFY_ERROR', message: message });
+      });
     }
-  }, [ props.open, props.id ])
+  }, [ props.open, props.id, setRows, dispatchMessage ])
 
   const onClickEdit = () => {
     props.openAssignEdit(props.id);

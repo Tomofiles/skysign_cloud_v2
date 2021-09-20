@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 
 import {
   Typography,
@@ -14,14 +14,20 @@ import { grey } from '@material-ui/core/colors';
 import { useForm } from 'react-hook-form';
 
 import { createFlightplan } from './FlightplansUtils';
+import { AppContext } from '../../context/Context';
 
 const FlightplansNew = (props) => {
   const { register, handleSubmit, errors } = useForm();
+  const { dispatchMessage } = useContext(AppContext);
 
   const onClickSave = (data) => {
     createFlightplan(data)
       .then(ret => {
+        dispatchMessage({ type: 'NOTIFY_SUCCESS', message: `${ret.name} was created successfully` });
         props.openList();
+      })
+      .catch(message => {
+        dispatchMessage({ type: 'NOTIFY_ERROR', message: message });
       });
   }
 

@@ -25,7 +25,7 @@ const CHANGE_NUMBER_OF_VEHICLES = "change_number_of_vehicles"
 const ASSGN_ASSETS = "assign_assets"
 
 const FlightplansDetail = (props) => {
-  const { dispatchFuncMode } = useContext(AppContext);
+  const { dispatchFuncMode, dispatchMessage } = useContext(AppContext);
   const [ flightplan, setFlightplan ] = useState({id: "-", name: "-", description: "-", fleet_id: "-"});
   const [ numberOfVehicles, setNumberOfVehicles ] = useState("-");
   const [ openAction, setOpenAction ] = useState(false);
@@ -38,8 +38,14 @@ const FlightplansDetail = (props) => {
           .then(data => {
             setNumberOfVehicles(data.assignments.length);
           })
+          .catch(message => {
+            dispatchMessage({ type: 'NOTIFY_ERROR', message: message });
+          });
       })
-  }, [ props.id ])
+      .catch(message => {
+        dispatchMessage({ type: 'NOTIFY_ERROR', message: message });
+      });
+  }, [ props.id, setFlightplan, setNumberOfVehicles, dispatchMessage ])
 
   const onClickReturn = () => {
     props.openList();  
@@ -47,7 +53,13 @@ const FlightplansDetail = (props) => {
 
   const onClickFlight = () => {
     executeFlightplan(props.id)
-      .then(data => dispatchFuncMode({ type: 'FLIGHTS' }));
+      .then(ret => {
+        dispatchMessage({ type: 'NOTIFY_SUCCESS', message: `Executed ${flightplan.name} successfully` });
+        dispatchFuncMode({ type: 'FLIGHTS' });
+      })
+      .catch(message => {
+        dispatchMessage({ type: 'NOTIFY_ERROR', message: message });
+      });
   }
 
   const handleActionChange = e => {
@@ -64,8 +76,12 @@ const FlightplansDetail = (props) => {
       case DELETE_FLIGHTPLAN:
         deleteFlightplan(props.id)
           .then(data => {
+            dispatchMessage({ type: 'NOTIFY_SUCCESS', message: `You have successfully deleted ${flightplan.name}` });
             props.openList();
           })
+          .catch(message => {
+            dispatchMessage({ type: 'NOTIFY_ERROR', message: message });
+          });
         break;
       default:
         break;
