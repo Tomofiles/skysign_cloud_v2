@@ -8,7 +8,7 @@ export async function getReports() {
       })
     return res.data;
   } catch(error) {
-    console.log(error);
+    throw error.response.data.message;
   }
 }
 
@@ -20,7 +20,7 @@ export async function getReport(id) {
       })
     return res.data;
   } catch(error) {
-    console.log(error);
+    throw error.response.data.message;
   }
 }
 
@@ -32,6 +32,6 @@ export async function getTrajectory(id) {
       })
     return res.data;
   } catch(error) {
-    console.log(error);
+    throw error.response.data.message;
   }
 }

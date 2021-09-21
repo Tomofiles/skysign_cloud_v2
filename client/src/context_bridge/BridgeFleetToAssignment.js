@@ -4,7 +4,7 @@ import { AppContext } from '../context/Context';
 import { getAssignments } from '../plans/flightplans/FlightplansUtils';
 
 const BridgeFleetToAssignment = () => {
-  const { fleet, dispatchAssignments } = useContext(AppContext);
+  const { fleet, dispatchAssignments, dispatchMessage } = useContext(AppContext);
 
   useEffect(() => {
     if (fleet) {
@@ -12,10 +12,13 @@ const BridgeFleetToAssignment = () => {
         .then(data => {
           dispatchAssignments({ type: 'ROWS', rows: data.assignments });
         })
+        .catch(message => {
+          dispatchMessage({ type: 'NOTIFY_ERROR', message: message });
+        });
     } else {
       dispatchAssignments({ type: 'NONE' });
     }
-  }, [ fleet, dispatchAssignments ])
+  }, [ fleet, dispatchAssignments, dispatchMessage ])
 
   return (<></>)
 }

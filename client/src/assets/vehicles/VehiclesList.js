@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 
 import {
   Typography,
@@ -16,9 +16,11 @@ import {
 
 import { getVehicles } from './VehicleUtils'
 import { Refresh } from '@material-ui/icons';
+import { AppContext } from '../../context/Context';
 
 const VehiclesList = (props) => {
-  const [rows, setRows] = useState([]);
+  const [ rows, setRows ] = useState([]);
+  const { dispatchMessage } = useContext(AppContext);
 
   useEffect(() => {
     if (props.open) {
@@ -26,8 +28,12 @@ const VehiclesList = (props) => {
         .then(data => {
           setRows(data.vehicles);
         })
+        .catch(message => {
+          setRows([]);
+          dispatchMessage({ type: 'NOTIFY_ERROR', message: message });
+        });
     }
-  }, [ props.open ])
+  }, [ props.open, setRows, dispatchMessage ])
 
   const onClickNew = () => {
     props.openNew();
@@ -39,6 +45,10 @@ const VehiclesList = (props) => {
       .then(data => {
         setRows(data.vehicles);
       })
+      .catch(message => {
+        setRows([]);
+        dispatchMessage({ type: 'NOTIFY_ERROR', message: message });
+      });
   }
 
   const onSelect = (id) => {

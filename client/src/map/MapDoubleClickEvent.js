@@ -3,11 +3,11 @@ import { ScreenSpaceEvent, useCesium } from 'resium';
 import { ScreenSpaceEventType, defined, Cartographic, Math, SceneMode } from 'cesium';
 import { AppContext } from '../context/Context';
 import { EDIT_MODE } from '../context/EditMode';
-import { getTakeoffHeight } from '../missions/missions/MissionUtils';
+import { getTakeoffHeight } from './MapUtils';
 
 const MapDoubleClickEvent = () => {
   const context = useCesium();
-  const { editMission, dispatchEditMission } = useContext(AppContext);
+  const { editMission, dispatchEditMission, dispatchMessage } = useContext(AppContext);
   const { editMode } = useContext(AppContext);
 
   const onDoubleClick = async (event) => {
@@ -21,17 +21,28 @@ const MapDoubleClickEvent = () => {
 
         if (editMode === EDIT_MODE.MISSION) {
           if (editMission.navigation.waypoints.length === 0) {
-            let height = await getTakeoffHeight(latitude, longitude);
+            getTakeoffHeight(latitude, longitude)
+              .then(height => {
+                dispatchEditMission({
+                  type: 'CHANGE_TAKEOFF_POINT_GROUND_HEIGHT',
+                  height: height.height,
+                });
+                dispatchEditMission({
+                  type: 'ADD_WAYPOINT',
+                  latitude: latitude,
+                  longitude: longitude,
+                });
+              })
+              .catch(message => {
+                dispatchMessage({ type: 'NOTIFY_ERROR', message: message });
+              });
+          } else {
             dispatchEditMission({
-              type: 'CHANGE_TAKEOFF_POINT_GROUND_HEIGHT',
-              height: height.height,
+              type: 'ADD_WAYPOINT',
+              latitude: latitude,
+              longitude: longitude,
             });
           }
-          dispatchEditMission({
-            type: 'ADD_WAYPOINT',
-            latitude: latitude,
-            longitude: longitude,
-          });
         }
       }
     }

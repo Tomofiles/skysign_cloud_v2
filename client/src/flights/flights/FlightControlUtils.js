@@ -18,7 +18,7 @@ export async function command(type, id) {
       })
     return res.data;
   } catch(error) {
-    console.log(error);
+    throw error.response.data.message;
   }
 }
 
@@ -30,6 +30,6 @@ export async function upload(mission, id) {
       })
     return res.data;
   } catch(error) {
-    console.log(error);
+    throw error.response.data.message;
   }
 }

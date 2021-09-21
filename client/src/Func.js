@@ -6,10 +6,12 @@ import Assets from './assets/Assets'
 import Missions from './missions/Missions';
 import Flights from './flights/Flights';
 import Reports from './reports/Reports';
+import MessageNotify from './MessageNotify';
 
 const Func = (props) => {
   return (
     <div className={props.classes.root}>
+      <MessageNotify />
       <Menu classes={props.classes}/>
       <Reports classes={props.classes} />
       <Flights classes={props.classes} />

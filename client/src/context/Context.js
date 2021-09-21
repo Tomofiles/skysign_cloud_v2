@@ -13,6 +13,7 @@ import { initialFleet, fleetReducer } from './Fleet';
 import { initialAssignments, assignmentsReducer } from './Assignments';
 import { initialSteps, stepsReducer } from './Steps';
 import { initialTrajectories, trajectoriesReducer } from './Trajectories';
+import { initialMessage, messageReducer } from './Message';
 
 import BridgeFleetToAssignment from '../context_bridge/BridgeFleetToAssignment';
 import BridgeAssignmentToMission from '../context_bridge/BridgeAssignmentToMission';
@@ -38,6 +39,7 @@ const AppContextProvider = ({children}) => {
   const [ mapMode, dispatchMapMode ] = useReducer(mapModeReducer, initialMapMode);
   const [ funcMode, dispatchFuncMode ] = useReducer(funcModeReducer, initialFuncMode);
   const [ mapPosition, dispatchMapPosition ] = useReducer(mapPositionReducer, initialMapPosition);
+  const [ message, dispatchMessage ] = useReducer(messageReducer, initialMessage);
 
   return (
     <AppContext.Provider
@@ -68,6 +70,8 @@ const AppContextProvider = ({children}) => {
         dispatchFuncMode,
         mapPosition,
         dispatchMapPosition,
+        message,
+        dispatchMessage,
         }}>
       {children}
       <BridgeFleetToAssignment />

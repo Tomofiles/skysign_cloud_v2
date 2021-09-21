@@ -18,7 +18,7 @@ import WaypointItem from './WaypointItem';
 import { AppContext } from '../../context/Context';
 
 const MissionsEdit = (props) => {
-  const { editMission, dispatchEditMission, dispatchEditMode, dispatchMapPosition } = useContext(AppContext);
+  const { editMission, dispatchEditMission, dispatchEditMode, dispatchMapPosition, dispatchMessage } = useContext(AppContext);
   const [ missionName, setMissionName ] = useState("");
 
   useEffect(() => {
@@ -39,15 +39,14 @@ const MissionsEdit = (props) => {
           })
         }
       })
+      .catch(message => {
+        dispatchMessage({ type: 'NOTIFY_ERROR', message: message });
+      });
     return () => {
       dispatchEditMode({ type: 'NONE' });
       dispatchEditMission({ type: "CLEAR"});
     }
-  }, [ props.id, setMissionName, dispatchEditMode, dispatchEditMission, dispatchMapPosition ])
-
-  useEffect(() => {
-    console.log(editMission);
-  }, [ editMission ])
+  }, [ props.id, setMissionName, dispatchEditMode, dispatchEditMission, dispatchMapPosition, dispatchMessage ])
 
   const onClickCancel = () => {
     props.openDetail(props.id);
@@ -56,7 +55,11 @@ const MissionsEdit = (props) => {
   const onClickSave = () => {
     updateMission(props.id, editMission)
       .then(ret => {
+        dispatchMessage({ type: 'NOTIFY_SUCCESS', message: `You have successfully updated ${ret.name}` });
         props.openList();
+      })
+      .catch(message => {
+        dispatchMessage({ type: 'NOTIFY_ERROR', message: message });
       });
   }
 

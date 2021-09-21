@@ -4,7 +4,7 @@ import { getVehicle } from '../assets/vehicles/VehicleUtils';
 import { AppContext } from '../context/Context';
 
 const BridgeAssignmentToVehicle = () => {
-  const { assignments, dispatchVehicles } = useContext(AppContext);
+  const { assignments, dispatchVehicles, dispatchMessage } = useContext(AppContext);
 
   useEffect(() => {
     if (assignments.length === 0) {
@@ -22,8 +22,11 @@ const BridgeAssignmentToVehicle = () => {
       .all(vehicles)
       .then(data => {
         dispatchVehicles({ type: 'ROWS', rows: data });
+      })
+      .catch(message => {
+        dispatchMessage({ type: 'NOTIFY_ERROR', message: message });
       });
-  }, [ assignments, dispatchVehicles ])
+  }, [ assignments, dispatchVehicles, dispatchMessage ])
 
   return (<></>)
 }

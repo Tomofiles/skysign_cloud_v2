@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 
 import {
   Typography,
@@ -16,9 +16,11 @@ import {
 
 import { getReports } from './ReportUtils'
 import Refresh from '@material-ui/icons/Refresh';
+import { AppContext } from '../../context/Context';
 
 const ReportsList = (props) => {
   const [ rows, setRows ] = useState([]);
+  const { dispatchMessage } = useContext(AppContext);
 
   useEffect(() => {
     if (props.open) {
@@ -26,8 +28,12 @@ const ReportsList = (props) => {
         .then(data => {
           setRows(data.flightreports);
         })
+        .catch(message => {
+          setRows([]);
+          dispatchMessage({ type: 'NOTIFY_ERROR', message: message });
+        });
     }
-  }, [ props.open ])
+  }, [ props.open, setRows, dispatchMessage ])
 
   const onClickRefresh = () => {
     setRows([]);
@@ -35,6 +41,10 @@ const ReportsList = (props) => {
       .then(data => {
         setRows(data.flightreports);
       })
+      .catch(message => {
+        setRows([]);
+        dispatchMessage({ type: 'NOTIFY_ERROR', message: message });
+      });
   }
 
   const onSelect = (id) => {

@@ -8,7 +8,7 @@ export async function getFlightplans() {
       })
     return res.data;
   } catch(error) {
-    console.log(error);
+    throw error.response.data.message;
   }
 }
 
@@ -20,7 +20,7 @@ export async function getFlightplan(id) {
       })
     return res.data;
   } catch(error) {
-    console.log(error);
+    throw error.response.data.message;
   }
 }
 
@@ -30,7 +30,7 @@ export async function createFlightplan(data) {
       .post(`/api/v1/flightplans`, data)
     return res.data;
   } catch(error) {
-    console.log(error);
+    throw error.response.data.message;
   }
 }
 
@@ -40,7 +40,7 @@ export async function updateFlightplan(id, data) {
       .put(`/api/v1/flightplans/${id}`, data)
     return res.data;
   } catch(error) {
-    console.log(error);
+    throw error.response.data.message;
   }
 }
 
@@ -50,7 +50,7 @@ export async function deleteFlightplan(id) {
       .delete(`/api/v1/flightplans/${id}`, {})
     return res.data;
   } catch(error) {
-    console.log(error);
+    throw error.response.data.message;
   }
 }
 
@@ -60,7 +60,7 @@ export async function changeNumberOfVehicles(id, data) {
       .put(`/api/v1/flightplans/${id}/numberofvehicles`, data)
     return res.data;
   } catch(error) {
-    console.log(error);
+    throw error.response.data.message;
   }
 }
 
@@ -70,7 +70,7 @@ export async function executeFlightplan(id) {
       .post(`/api/v1/flightplans/${id}/execute`, {})
     return res.data;
   } catch(error) {
-    console.log(error);
+    throw error.response.data.message;
   }
 }
 
@@ -82,7 +82,7 @@ export async function getAssignments(id) {
       })
     return res.data;
   } catch(error) {
-    console.log(error);
+    throw error.response.data.message;
   }
 }
 
@@ -92,6 +92,6 @@ export async function updateAssignments(id, data) {
       .put(`/api/v1/fleets/${id}/assignments`, data)
     return res.data;
   } catch(error) {
-    console.log(error);
+    throw error.response.data.message;
   }
 }

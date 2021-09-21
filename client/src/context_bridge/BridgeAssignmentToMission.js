@@ -4,7 +4,7 @@ import { AppContext } from '../context/Context';
 import { getMission } from '../missions/missions/MissionUtils';
 
 const BridgeAssignmentToMission = () => {
-  const { assignments, dispatchMissions } = useContext(AppContext);
+  const { assignments, dispatchMissions, dispatchMessage } = useContext(AppContext);
 
   useEffect(() => {
     if (assignments.length === 0) {
@@ -22,8 +22,11 @@ const BridgeAssignmentToMission = () => {
       .all(missions)
       .then(data => {
         dispatchMissions({ type: 'ROWS', rows: data });
+      })
+      .catch(message => {
+        dispatchMessage({ type: 'NOTIFY_ERROR', message: message });
       });
-  }, [ assignments, dispatchMissions ])
+  }, [ assignments, dispatchMissions, dispatchMessage ])
 
   return (<></>)
 }

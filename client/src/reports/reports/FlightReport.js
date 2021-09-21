@@ -14,7 +14,7 @@ import FlightReportAssignment from './FlightReportAssignment';
 import { getReport } from './ReportUtils';
 
 const FlightReport = (props) => {
-  const { dispatchOperationMode, assignments, dispatchFleet } = useContext(AppContext);
+  const { dispatchOperationMode, assignments, dispatchFleet, dispatchMessage } = useContext(AppContext);
   const [ name, setName ] = useState("-");
   const [ listsize, setListsize ] = useState("0vh");
 
@@ -25,11 +25,14 @@ const FlightReport = (props) => {
         dispatchFleet({ type: 'ID', id: data.fleet_id });
         dispatchOperationMode({ type: 'REPORT' });
       })
+      .catch(message => {
+        dispatchMessage({ type: 'NOTIFY_ERROR', message: message });
+      });
     return () => {
       dispatchFleet({ type: 'NONE' });
       dispatchOperationMode({ type: 'NONE' });
     }
-  }, [ props.id, dispatchOperationMode, dispatchFleet ])
+  }, [ props.id, setName, dispatchOperationMode, dispatchFleet, dispatchMessage ])
 
   useLayoutEffect(() => {
     // 仮画面サイズ調整

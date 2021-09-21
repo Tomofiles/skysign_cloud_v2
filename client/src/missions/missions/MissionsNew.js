@@ -18,7 +18,7 @@ import WaypointItem from './WaypointItem';
 import { AppContext } from '../../context/Context';
 
 const MissionsNew = (props) => {
-  const { editMission, dispatchEditMission, dispatchEditMode } = useContext(AppContext);
+  const { editMission, dispatchEditMission, dispatchEditMode, dispatchMessage } = useContext(AppContext);
   const [ missionName, setMissionName ] = useState("");
 
   useEffect(() => {
@@ -30,14 +30,14 @@ const MissionsNew = (props) => {
     }
   }, [ dispatchEditMode, dispatchEditMission ])
 
-  useEffect(() => {
-    console.log(editMission);
-  }, [ editMission ])
-
   const onClickSave = () => {
     createMission(editMission)
       .then(ret => {
+        dispatchMessage({ type: 'NOTIFY_SUCCESS', message: `${ret.name} was created successfully` });
         props.openList();
+      })
+      .catch(message => {
+        dispatchMessage({ type: 'NOTIFY_ERROR', message: message });
       });
   }
 

@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 
 import {
   Typography,
@@ -14,21 +14,31 @@ import { grey } from '@material-ui/core/colors';
 import { Controller, useForm } from 'react-hook-form';
 
 import { getFlightplan, changeNumberOfVehicles, getAssignments } from './FlightplansUtils';
+import { AppContext } from '../../context/Context';
 
 const ChangeNumberOfVehicles = (props) => {
   const { control, handleSubmit, setValue } = useForm();
+  const [ flightplanName, setFlightplanName ] = useState("");
+  const { dispatchMessage } = useContext(AppContext);
 
   useEffect(() => {
     if (props.open) {
       getFlightplan(props.id)
         .then(data => {
+          setFlightplanName(data.name);
           getAssignments(data.fleet_id)
             .then(data => {
               setValue("number_of_vehicles", data.assignments.length);
             })
+            .catch(message => {
+              dispatchMessage({ type: 'NOTIFY_ERROR', message: message });
+            });
         })
+        .catch(message => {
+          dispatchMessage({ type: 'NOTIFY_ERROR', message: message });
+        });
     }
-  }, [ props.open, props.id, setValue ])
+  }, [ props.open, props.id, setFlightplanName, setValue, dispatchMessage ])
 
   const onClickCancel = () => {
     props.openDetail(props.id);
@@ -37,7 +47,11 @@ const ChangeNumberOfVehicles = (props) => {
   const onClickSave = (data) => {
     changeNumberOfVehicles(props.id, data)
       .then(ret => {
+        dispatchMessage({ type: 'NOTIFY_SUCCESS', message: `Updated number_of_vehicles for ${flightplanName} successfully` });
         props.openList();
+      })
+      .catch(message => {
+        dispatchMessage({ type: 'NOTIFY_ERROR', message: message });
       });
   }
 

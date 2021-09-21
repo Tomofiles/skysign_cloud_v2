@@ -8,7 +8,7 @@ export async function getMissions() {
       })
     return res.data;
   } catch(error) {
-    console.log(error);
+    throw error.response.data.message;
   }
 }
 
@@ -20,7 +20,7 @@ export async function getMission(id) {
       })
     return res.data;
   } catch(error) {
-    console.log(error);
+    throw error.response.data.message;
   }
 }
 
@@ -30,7 +30,7 @@ export async function createMission(data) {
       .post(`/api/v1/missions`, data)
     return res.data;
   } catch(error) {
-    console.log(error);
+    throw error.response.data.message;
   }
 }
 
@@ -40,7 +40,7 @@ export async function updateMission(id, data) {
       .put(`/api/v1/missions/${id}`, data)
     return res.data;
   } catch(error) {
-    console.log(error);
+    throw error.response.data.message;
   }
 }
 
@@ -50,21 +50,6 @@ export async function deleteMission(id) {
       .delete(`/api/v1/missions/${id}`, {})
     return res.data;
   } catch(error) {
-    console.log(error);
-  }
-}
-
-export async function getTakeoffHeight(latitude, longitude) {
-  try {
-    const res = await axios
-      .get(`/api/v1/helper/ellipsoidheight`, {
-        params: {
-            latitude: latitude,
-            longitude: longitude
-        }
-      })
-    return res.data;
-  } catch(error) {
-    console.log(error);
+    throw error.response.data.message;
   }
 }

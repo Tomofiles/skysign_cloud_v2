@@ -14,7 +14,7 @@ import FlightOperationAssignment from './FlightOperationAssignment';
 import { getFlight, completeFlight } from './FlightUtils';
 
 const FlightOperation = (props) => {
-  const { dispatchOperationMode, assignments, dispatchFleet, dispatchFuncMode } = useContext(AppContext);
+  const { dispatchOperationMode, assignments, dispatchFleet, dispatchFuncMode, dispatchMessage } = useContext(AppContext);
   const [ name, setName ] = useState("-");
   const [ listsize, setListsize ] = useState("0vh");
 
@@ -25,11 +25,14 @@ const FlightOperation = (props) => {
         dispatchFleet({ type: 'ID', id: data.fleet_id });
         dispatchOperationMode({ type: 'OPERATION' });
       })
+      .catch(message => {
+        dispatchMessage({ type: 'NOTIFY_ERROR', message: message });
+      });
     return () => {
       dispatchFleet({ type: 'NONE' });
       dispatchOperationMode({ type: 'NONE' });
     }
-  }, [ props.id, dispatchOperationMode, dispatchFleet, setName ])
+  }, [ props.id, dispatchOperationMode, dispatchFleet, setName, dispatchMessage ])
 
   useLayoutEffect(() => {
     // 仮画面サイズ調整
@@ -43,7 +46,13 @@ const FlightOperation = (props) => {
 
   const onClickComplete = () => {
     completeFlight(props.id)
-      .then(data => dispatchFuncMode({ type: 'REPORTS' }));
+      .then(data => {
+        dispatchMessage({ type: 'NOTIFY_SUCCESS', message: `Completed ${name} successfully` });
+        dispatchFuncMode({ type: 'REPORTS' });
+      })
+      .catch(message => {
+        dispatchMessage({ type: 'NOTIFY_ERROR', message: message });
+      });
   }
 
   return (

@@ -8,7 +8,7 @@ export async function getVehicles() {
       })
     return res.data;
   } catch(error) {
-    console.log(error);
+    throw error.response.data.message;
   }
 }
 
@@ -20,7 +20,7 @@ export async function getVehicle(id) {
       })
     return res.data;
   } catch(error) {
-    console.log(error);
+    throw error.response.data.message;
   }
 }
 
@@ -33,7 +33,7 @@ export async function createVehicle(data) {
       })
     return res.data;
   } catch(error) {
-    console.log(error);
+    throw error.response.data.message;
   }
 }
 
@@ -46,7 +46,7 @@ export async function updateVehicle(id, data) {
       })
     return res.data;
   } catch(error) {
-    console.log(error);
+    throw error.response.data.message;
   }
 }
 
@@ -56,6 +56,6 @@ export async function deleteVehicle(id) {
       .delete(`/api/v1/vehicles/${id}`, {})
     return res.data;
   } catch(error) {
-    console.log(error);
+    throw error.response.data.message;
   }
 }

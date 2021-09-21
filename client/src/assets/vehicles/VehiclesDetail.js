@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 
 import {
   Typography,
@@ -17,13 +17,15 @@ import ArrowDropUp from '@material-ui/icons/ArrowDropUp';
 import { grey } from '@material-ui/core/colors';
 
 import { deleteVehicle, getVehicle } from './VehicleUtils'
+import { AppContext } from '../../context/Context';
 
 const EDIT_VEHICLE = "edit_vehicle"
 const DELETE_VEHICLE = "delete_vehicle"
 
 const VehiclesDetail = (props) => {
-  const [vehicle, setVehicle] = useState({id: "-", name: "-", communication_id: "-"});
+  const [ vehicle, setVehicle ] = useState({id: "-", name: "-", communication_id: "-"});
   const [ openAction, setOpenAction ] = useState(false);
+  const { dispatchMessage } = useContext(AppContext);
 
   useEffect(() => {
     getVehicle(props.id)
@@ -34,7 +36,10 @@ const VehiclesDetail = (props) => {
           communication_id: data.communication_id
         });
       })
-  }, [ props.id ])
+      .catch(message => {
+        dispatchMessage({ type: 'NOTIFY_ERROR', message: message });
+      });
+  }, [ props.id, dispatchMessage ])
 
   const onClickReturn = () => {
     props.openList();  
@@ -48,8 +53,12 @@ const VehiclesDetail = (props) => {
       case DELETE_VEHICLE:
         deleteVehicle(vehicle.id)
           .then(data => {
+            dispatchMessage({ type: 'NOTIFY_SUCCESS', message: `You have successfully deleted ${vehicle.name}` });
             props.openList();
           })
+          .catch(message => {
+            dispatchMessage({ type: 'NOTIFY_ERROR', message: message });
+          });
         break;
       default:
         break;
