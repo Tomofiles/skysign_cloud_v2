@@ -11,7 +11,6 @@ type PublishHandler = func(Channel, interface{})
 
 // PubSubManagerSetter .
 type PubSubManagerSetter interface {
-	SetConsumer(ctx context.Context, exchangeName, queueName string, handler func([]byte)) error
 	SetPublishHandler(handler PublishHandler) error
 }
 
