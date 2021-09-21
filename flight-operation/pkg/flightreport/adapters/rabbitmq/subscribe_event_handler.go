@@ -5,14 +5,15 @@ import (
 
 	"github.com/Tomofiles/skysign_cloud_v2/flight-operation/pkg/flightreport/app"
 
-	"github.com/Tomofiles/skysign_cloud_v2/skysign-common/pkg/common/ports"
+	crm "github.com/Tomofiles/skysign_cloud_v2/skysign-common/pkg/common/adapters/rabbitmq"
+
 	"github.com/golang/glog"
 )
 
 // SubscribeEventHandler .
 func SubscribeEventHandler(
 	ctx context.Context,
-	psm ports.PubSubManagerSetter,
+	psm crm.PubSubManagerSetter,
 	app app.Application,
 ) {
 	evt := NewFlightoperationCompletedEventHandler(app)
