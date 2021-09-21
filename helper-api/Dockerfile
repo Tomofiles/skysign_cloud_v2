@@ -5,6 +5,8 @@ FROM base AS dependency-base
 WORKDIR /go/src/app
 COPY helper-api/go.* ./helper-api/
 COPY helper-api/Makefile ./helper-api/
+COPY skysign-common/go.* ./skysign-common/
+COPY skysign-common/Makefile ./skysign-common/
 COPY skysign-proto/go.* ./skysign-proto/
 COPY skysign-proto/Makefile ./skysign-proto/
 
@@ -15,6 +17,7 @@ RUN make dependency
 FROM dependency AS build-base
 WORKDIR /go/src/app
 COPY helper-api ./helper-api
+COPY skysign-common ./skysign-common
 COPY skysign-proto ./skysign-proto
 
 # FROM build-base AS test

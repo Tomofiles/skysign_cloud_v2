@@ -10,9 +10,9 @@ import (
 	arm "github.com/Tomofiles/skysign_cloud_v2/collection-analysis/pkg/action/adapters/rabbitmq"
 	aapp "github.com/Tomofiles/skysign_cloud_v2/collection-analysis/pkg/action/app"
 
+	cgrpc "github.com/Tomofiles/skysign_cloud_v2/skysign-common/pkg/common/adapters/grpc"
 	cpg "github.com/Tomofiles/skysign_cloud_v2/skysign-common/pkg/common/adapters/postgresql"
 	crm "github.com/Tomofiles/skysign_cloud_v2/skysign-common/pkg/common/adapters/rabbitmq"
-	cports "github.com/Tomofiles/skysign_cloud_v2/skysign-common/pkg/common/ports"
 
 	"github.com/golang/glog"
 	"google.golang.org/grpc"
@@ -36,7 +36,7 @@ func run() error {
 		return err
 	}
 	defer listen.Close()
-	s := grpc.NewServer(grpc.UnaryInterceptor(cports.LogBodyInterceptor()))
+	s := grpc.NewServer(grpc.UnaryInterceptor(cgrpc.LogBodyInterceptor()))
 
 	db, err := cpg.NewPostgresqlConnection("collection-analysis")
 	if err != nil {

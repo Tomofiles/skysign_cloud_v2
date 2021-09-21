@@ -13,9 +13,9 @@ import (
 	mrm "github.com/Tomofiles/skysign_cloud_v2/remote-communication/pkg/mission/adapters/rabbitmq"
 	mapp "github.com/Tomofiles/skysign_cloud_v2/remote-communication/pkg/mission/app"
 
+	cgrpc "github.com/Tomofiles/skysign_cloud_v2/skysign-common/pkg/common/adapters/grpc"
 	cpg "github.com/Tomofiles/skysign_cloud_v2/skysign-common/pkg/common/adapters/postgresql"
 	crm "github.com/Tomofiles/skysign_cloud_v2/skysign-common/pkg/common/adapters/rabbitmq"
-	cports "github.com/Tomofiles/skysign_cloud_v2/skysign-common/pkg/common/ports"
 
 	"github.com/golang/glog"
 	"google.golang.org/grpc"
@@ -39,7 +39,7 @@ func run() error {
 		return err
 	}
 	defer listen.Close()
-	s := grpc.NewServer(grpc.UnaryInterceptor(cports.LogBodyInterceptor()))
+	s := grpc.NewServer(grpc.UnaryInterceptor(cgrpc.LogBodyInterceptor()))
 
 	db, err := cpg.NewPostgresqlConnection("remote-communication")
 	if err != nil {

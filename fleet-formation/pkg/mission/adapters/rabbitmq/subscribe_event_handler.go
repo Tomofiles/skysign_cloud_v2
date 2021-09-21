@@ -5,7 +5,7 @@ import (
 
 	"github.com/Tomofiles/skysign_cloud_v2/fleet-formation/pkg/mission/app"
 
-	"github.com/Tomofiles/skysign_cloud_v2/skysign-common/pkg/common/ports"
+	crm "github.com/Tomofiles/skysign_cloud_v2/skysign-common/pkg/common/adapters/rabbitmq"
 
 	"github.com/golang/glog"
 )
@@ -13,7 +13,7 @@ import (
 // SubscribeEventHandler .
 func SubscribeEventHandler(
 	ctx context.Context,
-	psm ports.PubSubManagerSetter,
+	psm crm.PubSubManagerSetter,
 	app app.Application,
 ) {
 	evt := NewMissionCopiedEventHandler(app)
