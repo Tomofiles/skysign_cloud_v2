@@ -5,7 +5,7 @@ import { OPERATION_MODE } from '../context/OperationMode';
 import { getTrajectory } from '../reports/reports/ReportUtils';
 
 const BridgeVehicleToReportsTrajectory = () => {
-  const { vehicles, operationMode, dispatchTrajectories } = useContext(AppContext);
+  const { vehicles, operationMode, dispatchTrajectories, dispatchMessage } = useContext(AppContext);
 
   useEffect(() => {
     if (operationMode !== OPERATION_MODE.REPORT) {
@@ -28,8 +28,11 @@ const BridgeVehicleToReportsTrajectory = () => {
       .then(data => {
         console.log(data);
         dispatchTrajectories({ type: 'ROWS', rows: data });
+      })
+      .catch(message => {
+        dispatchMessage({ type: 'NOTIFY_ERROR', message: message });
       });
-  }, [ vehicles, operationMode, dispatchTrajectories ])
+  }, [ vehicles, operationMode, dispatchTrajectories, dispatchMessage ])
 
   return (<></>)
 }

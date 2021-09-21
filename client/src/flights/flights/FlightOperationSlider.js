@@ -82,7 +82,14 @@ const FlightOperationSlider = (props) => {
       });
     Promise
       .all(controls)
-      .then(data => {
+      .then(datas => {
+        datas.forEach(data => {
+          if (data.type) {
+            dispatchMessage({ type: 'NOTIFY_SUCCESS', message: `Sent ${data.type} successfully` });
+          } else {
+            dispatchMessage({ type: 'NOTIFY_SUCCESS', message: `Sent ${COMMAND_TYPE.UPLOAD} successfully` });
+          }
+        })
         setProgress(false);
       })
       .catch(message => {

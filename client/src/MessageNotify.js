@@ -18,13 +18,13 @@ const MessageNotify = () => {
     }
   }, [ message, setOpen ]);
 
-  const pnClickClose = () => {
+  const onClickClose = () => {
     setOpen(false);
   }
 
   return (
-    <Snackbar open={open} anchorOrigin={{ vertical: 'top', horizontal: 'center' }} onClose={pnClickClose}>
-      <MuiAlert elevation={6} variant="filled" severity={message.severity} onClose={pnClickClose} >
+    <Snackbar open={open} anchorOrigin={{ vertical: 'top', horizontal: 'center' }} onClose={onClickClose}>
+      <MuiAlert elevation={6} variant="filled" severity={message.severity} onClose={onClickClose} >
         {message.message}
       </MuiAlert>
     </Snackbar>
