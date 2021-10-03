@@ -16,9 +16,11 @@ import { useForm, Controller } from 'react-hook-form';
 import { getVehicle, updateVehicle } from './VehicleUtils'
 import { AppContext } from '../../context/Context';
 
+const default_vehicle = {name: "", communication_id: ""};
+
 const VehiclesEdit = (props) => {
   const [ id, setId ] = useState("");
-  const { control, handleSubmit, setValue } = useForm();
+  const { control, errors, handleSubmit, setValue } = useForm({defaultValues: default_vehicle});
   const { dispatchMessage } = useContext(AppContext);
 
   useEffect(() => {
@@ -75,24 +77,40 @@ const VehiclesEdit = (props) => {
                   <Box className={props.classes.textInput}
                       p={1} m={1} borderRadius={7} >
                     <Controller
-                      as={TextField}
-                      label="Name"
+                      as={<TextField
+                          label="Name"
+                          type="text"
+                          fullWidth
+                          error={Boolean(errors.name)}
+                          helperText={errors.name?.message}
+                          />}
                       name="name"
                       control={control}
-                      defaultValue=""
-                      fullWidth />
+                      rules={{
+                        required: { value: true, message: "cannot be blank" },
+                        maxLength: { value: 200, message: "the length must be no more than 200" },
+                       }}
+                      />
                   </Box>
                 </Grid>
                 <Grid item xs={12}>
                   <Box className={props.classes.textInput}
                       p={1} m={1} borderRadius={7} >
                     <Controller
-                      as={TextField}
-                      label="Communication ID"
+                      as={<TextField
+                        label="Communication ID"
+                        type="text"
+                        fullWidth
+                        error={Boolean(errors.communication_id)}
+                        helperText={errors.communication_id?.message}
+                        />}
                       name="communication_id"
                       control={control}
-                      defaultValue=""
-                      fullWidth />
+                      rules={{
+                        required: { value: true, message: "cannot be blank" },
+                        maxLength: { value: 36, message: "the length must be no more than 36" },
+                       }}
+                      />
                   </Box>
                 </Grid>
               </Grid>

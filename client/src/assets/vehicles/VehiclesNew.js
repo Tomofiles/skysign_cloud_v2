@@ -16,8 +16,10 @@ import { useForm } from 'react-hook-form';
 import { createVehicle } from './VehicleUtils'
 import { AppContext } from '../../context/Context';
 
+const default_vehicle = {name: "", communication_id: ""};
+
 const VehiclesNew = (props) => {
-  const { register, handleSubmit, errors } = useForm();
+  const { register, handleSubmit, errors } = useForm({defaultValues: default_vehicle});
   const { dispatchMessage } = useContext(AppContext);
 
   const onClickSave = (data) => {
@@ -66,9 +68,13 @@ const VehiclesNew = (props) => {
                       type="text"
                       name="name"
                       fullWidth
-                      inputRef={register({ required: true, maxLength: 50 })}
+                      inputRef={register({
+                        required: { value: true, message: "cannot be blank" },
+                        maxLength: { value: 200, message: "the length must be no more than 200" },
+                       })}
                       error={Boolean(errors.name)}
-                      helperText={errors.name} />
+                      helperText={errors.name?.message}
+                      />
                   </Box>
                 </Grid>
                 <Grid item xs={12}>
@@ -79,9 +85,13 @@ const VehiclesNew = (props) => {
                       type="text"
                       name="communication_id"
                       fullWidth
-                      inputRef={register({ required: true, maxLength: 50 })}
+                      inputRef={register({
+                        required: { value: true, message: "cannot be blank" },
+                        maxLength: { value: 36, message: "the length must be no more than 36" },
+                       })}
                       error={Boolean(errors.communication_id)}
-                      helperText={errors.communication_id} />
+                      helperText={errors.communication_id?.message}
+                      />
                   </Box>
                 </Grid>
               </Grid>
