@@ -2,6 +2,7 @@ package service
 
 import (
 	v "github.com/Tomofiles/skysign_cloud_v2/fleet-formation/pkg/vehicle/domain/vehicle"
+	"github.com/google/uuid"
 
 	"github.com/Tomofiles/skysign_cloud_v2/skysign-common/pkg/common/domain/event"
 	"github.com/Tomofiles/skysign_cloud_v2/skysign-common/pkg/common/domain/txmanager"
@@ -9,11 +10,24 @@ import (
 	"github.com/stretchr/testify/mock"
 )
 
-const DefaultVehicleID = v.ID("vehicle-id")
-const DefaultVehicleVersion = v.Version("version")
+var NewVehicleID = func() v.ID {
+	id, _ := uuid.NewRandom()
+	return v.ID(id.String())
+}
+var NewVehicleVersion = func() v.Version {
+	id, _ := uuid.NewRandom()
+	return v.Version(id.String())
+}
+var NewVehicleCommunicationID = func() v.CommunicationID {
+	id, _ := uuid.NewRandom()
+	return v.CommunicationID(id.String())
+}
+var NewFleetID = func() v.FleetID {
+	id, _ := uuid.NewRandom()
+	return v.FleetID(id.String())
+}
+
 const DefaultVehicleName = "vehicle-name"
-const DefaultVehicleCommunicationID = v.CommunicationID("communication-id")
-const DefaultFleetID = v.FleetID("fleet-id")
 
 type vehicleRepositoryMock struct {
 	mock.Mock

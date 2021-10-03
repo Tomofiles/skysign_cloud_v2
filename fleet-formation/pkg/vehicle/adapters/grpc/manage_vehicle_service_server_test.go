@@ -5,7 +5,7 @@ import (
 
 	"github.com/Tomofiles/skysign_cloud_v2/fleet-formation/pkg/vehicle/app"
 
-	proto "github.com/Tomofiles/skysign_cloud_v2/skysign-proto/pkg/skysign_proto"
+	"github.com/Tomofiles/skysign_cloud_v2/skysign-proto/pkg/skysign_proto"
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
@@ -14,13 +14,18 @@ import (
 func TestSingleVehiclesListVehicles(t *testing.T) {
 	a := assert.New(t)
 
+	var (
+		DefaultVehicleID              = NewVehicleID()
+		DefaultVehicleCommunicationID = NewVehicleCommunicationID()
+	)
+
 	service := manageVehicleServiceMock{}
 
 	vehicles := []vehicleMock{
 		{
 			ID:              DefaultVehicleID,
 			Name:            DefaultVehicleName,
-			CommunicationID: DefaultCommunicationID,
+			CommunicationID: DefaultVehicleCommunicationID,
 		},
 	}
 	service.On("ListVehicles", mock.Anything).Return(vehicles, nil)
@@ -33,18 +38,18 @@ func TestSingleVehiclesListVehicles(t *testing.T) {
 
 	grpc := NewManageVehicleServiceServer(app)
 
-	request := &proto.Empty{}
+	request := &skysign_proto.Empty{}
 	response, err := grpc.ListVehicles(
 		nil,
 		request,
 	)
 
-	expectResponse := &proto.ListVehiclesResponses{
-		Vehicles: []*proto.Vehicle{
+	expectResponse := &skysign_proto.ListVehiclesResponses{
+		Vehicles: []*skysign_proto.Vehicle{
 			{
 				Id:              DefaultVehicleID,
 				Name:            DefaultVehicleName,
-				CommunicationId: DefaultCommunicationID,
+				CommunicationId: DefaultVehicleCommunicationID,
 			},
 		},
 	}
@@ -57,15 +62,15 @@ func TestMultipleVehiclesListVehicles(t *testing.T) {
 	a := assert.New(t)
 
 	var (
-		DefaultVehicleID1       = DefaultVehicleID + "-1"
-		DefaultVehicleName1     = DefaultVehicleName + "-1"
-		DefaultCommunicationID1 = DefaultCommunicationID + "-1"
-		DefaultVehicleID2       = DefaultVehicleID + "-2"
-		DefaultVehicleName2     = DefaultVehicleName + "-2"
-		DefaultCommunicationID2 = DefaultCommunicationID + "-2"
-		DefaultVehicleID3       = DefaultVehicleID + "-3"
-		DefaultVehicleName3     = DefaultVehicleName + "-3"
-		DefaultCommunicationID3 = DefaultCommunicationID + "-3"
+		DefaultVehicleID1              = NewVehicleID()
+		DefaultVehicleName1            = DefaultVehicleName + "-1"
+		DefaultVehicleCommunicationID1 = NewVehicleCommunicationID()
+		DefaultVehicleID2              = NewVehicleID()
+		DefaultVehicleName2            = DefaultVehicleName + "-2"
+		DefaultVehicleCommunicationID2 = NewVehicleCommunicationID()
+		DefaultVehicleID3              = NewVehicleID()
+		DefaultVehicleName3            = DefaultVehicleName + "-3"
+		DefaultVehicleCommunicationID3 = NewVehicleCommunicationID()
 	)
 
 	service := manageVehicleServiceMock{}
@@ -74,17 +79,17 @@ func TestMultipleVehiclesListVehicles(t *testing.T) {
 		{
 			ID:              DefaultVehicleID1,
 			Name:            DefaultVehicleName1,
-			CommunicationID: DefaultCommunicationID1,
+			CommunicationID: DefaultVehicleCommunicationID1,
 		},
 		{
 			ID:              DefaultVehicleID2,
 			Name:            DefaultVehicleName2,
-			CommunicationID: DefaultCommunicationID2,
+			CommunicationID: DefaultVehicleCommunicationID2,
 		},
 		{
 			ID:              DefaultVehicleID3,
 			Name:            DefaultVehicleName3,
-			CommunicationID: DefaultCommunicationID3,
+			CommunicationID: DefaultVehicleCommunicationID3,
 		},
 	}
 	service.On("ListVehicles", mock.Anything).Return(vehicles, nil)
@@ -97,28 +102,28 @@ func TestMultipleVehiclesListVehicles(t *testing.T) {
 
 	grpc := NewManageVehicleServiceServer(app)
 
-	request := &proto.Empty{}
+	request := &skysign_proto.Empty{}
 	response, err := grpc.ListVehicles(
 		nil,
 		request,
 	)
 
-	expectResponse := &proto.ListVehiclesResponses{
-		Vehicles: []*proto.Vehicle{
+	expectResponse := &skysign_proto.ListVehiclesResponses{
+		Vehicles: []*skysign_proto.Vehicle{
 			{
 				Id:              DefaultVehicleID1,
 				Name:            DefaultVehicleName1,
-				CommunicationId: DefaultCommunicationID1,
+				CommunicationId: DefaultVehicleCommunicationID1,
 			},
 			{
 				Id:              DefaultVehicleID2,
 				Name:            DefaultVehicleName2,
-				CommunicationId: DefaultCommunicationID2,
+				CommunicationId: DefaultVehicleCommunicationID2,
 			},
 			{
 				Id:              DefaultVehicleID3,
 				Name:            DefaultVehicleName3,
-				CommunicationId: DefaultCommunicationID3,
+				CommunicationId: DefaultVehicleCommunicationID3,
 			},
 		},
 	}
@@ -143,13 +148,13 @@ func TestNoneVehiclesListVehicles(t *testing.T) {
 
 	grpc := NewManageVehicleServiceServer(app)
 
-	request := &proto.Empty{}
+	request := &skysign_proto.Empty{}
 	response, err := grpc.ListVehicles(
 		nil,
 		request,
 	)
 
-	expectResponse := &proto.ListVehiclesResponses{}
+	expectResponse := &skysign_proto.ListVehiclesResponses{}
 
 	a.Nil(err)
 	a.Equal(response, expectResponse)
@@ -158,12 +163,17 @@ func TestNoneVehiclesListVehicles(t *testing.T) {
 func TestGetVehicle(t *testing.T) {
 	a := assert.New(t)
 
+	var (
+		DefaultVehicleID              = NewVehicleID()
+		DefaultVehicleCommunicationID = NewVehicleCommunicationID()
+	)
+
 	service := manageVehicleServiceMock{}
 
 	vehicle := vehicleMock{
 		ID:              DefaultVehicleID,
 		Name:            DefaultVehicleName,
-		CommunicationID: DefaultCommunicationID,
+		CommunicationID: DefaultVehicleCommunicationID,
 	}
 	service.On("GetVehicle", mock.Anything, mock.Anything).Return(vehicle, nil)
 
@@ -175,7 +185,7 @@ func TestGetVehicle(t *testing.T) {
 
 	grpc := NewManageVehicleServiceServer(app)
 
-	request := &proto.GetVehicleRequest{
+	request := &skysign_proto.GetVehicleRequest{
 		Id: DefaultVehicleID,
 	}
 	response, err := grpc.GetVehicle(
@@ -183,10 +193,10 @@ func TestGetVehicle(t *testing.T) {
 		request,
 	)
 
-	expectResponse := &proto.Vehicle{
+	expectResponse := &skysign_proto.Vehicle{
 		Id:              DefaultVehicleID,
 		Name:            DefaultVehicleName,
-		CommunicationId: DefaultCommunicationID,
+		CommunicationId: DefaultVehicleCommunicationID,
 	}
 
 	a.Nil(err)
@@ -196,12 +206,17 @@ func TestGetVehicle(t *testing.T) {
 func TestCreateVehicle(t *testing.T) {
 	a := assert.New(t)
 
+	var (
+		DefaultVehicleID              = NewVehicleID()
+		DefaultVehicleCommunicationID = NewVehicleCommunicationID()
+	)
+
 	service := manageVehicleServiceMock{}
 
 	vehicle := vehicleMock{
 		ID:              DefaultVehicleID,
 		Name:            DefaultVehicleName,
-		CommunicationID: DefaultCommunicationID,
+		CommunicationID: DefaultVehicleCommunicationID,
 	}
 	service.On("CreateVehicle", mock.Anything, mock.Anything).Return(vehicle, nil)
 
@@ -213,19 +228,19 @@ func TestCreateVehicle(t *testing.T) {
 
 	grpc := NewManageVehicleServiceServer(app)
 
-	request := &proto.Vehicle{
+	request := &skysign_proto.Vehicle{
 		Name:            DefaultVehicleName,
-		CommunicationId: DefaultCommunicationID,
+		CommunicationId: DefaultVehicleCommunicationID,
 	}
 	response, err := grpc.CreateVehicle(
 		nil,
 		request,
 	)
 
-	expectResponse := &proto.Vehicle{
+	expectResponse := &skysign_proto.Vehicle{
 		Id:              DefaultVehicleID,
 		Name:            DefaultVehicleName,
-		CommunicationId: DefaultCommunicationID,
+		CommunicationId: DefaultVehicleCommunicationID,
 	}
 
 	a.Nil(err)
@@ -234,6 +249,11 @@ func TestCreateVehicle(t *testing.T) {
 
 func TestUpdateVehicle(t *testing.T) {
 	a := assert.New(t)
+
+	var (
+		DefaultVehicleID              = NewVehicleID()
+		DefaultVehicleCommunicationID = NewVehicleCommunicationID()
+	)
 
 	service := manageVehicleServiceMock{}
 
@@ -247,20 +267,20 @@ func TestUpdateVehicle(t *testing.T) {
 
 	grpc := NewManageVehicleServiceServer(app)
 
-	request := &proto.Vehicle{
+	request := &skysign_proto.Vehicle{
 		Id:              DefaultVehicleID,
 		Name:            DefaultVehicleName,
-		CommunicationId: DefaultCommunicationID,
+		CommunicationId: DefaultVehicleCommunicationID,
 	}
 	response, err := grpc.UpdateVehicle(
 		nil,
 		request,
 	)
 
-	expectResponse := &proto.Vehicle{
+	expectResponse := &skysign_proto.Vehicle{
 		Id:              DefaultVehicleID,
 		Name:            DefaultVehicleName,
-		CommunicationId: DefaultCommunicationID,
+		CommunicationId: DefaultVehicleCommunicationID,
 	}
 
 	a.Nil(err)
@@ -269,6 +289,10 @@ func TestUpdateVehicle(t *testing.T) {
 
 func TestDeleteVehicle(t *testing.T) {
 	a := assert.New(t)
+
+	var (
+		DefaultVehicleID = NewVehicleID()
+	)
 
 	service := manageVehicleServiceMock{}
 
@@ -282,7 +306,7 @@ func TestDeleteVehicle(t *testing.T) {
 
 	grpc := NewManageVehicleServiceServer(app)
 
-	request := &proto.DeleteVehicleRequest{
+	request := &skysign_proto.DeleteVehicleRequest{
 		Id: DefaultVehicleID,
 	}
 	response, err := grpc.DeleteVehicle(
@@ -290,7 +314,7 @@ func TestDeleteVehicle(t *testing.T) {
 		request,
 	)
 
-	expectResponse := &proto.Empty{}
+	expectResponse := &skysign_proto.Empty{}
 
 	a.Nil(err)
 	a.Equal(response, expectResponse)

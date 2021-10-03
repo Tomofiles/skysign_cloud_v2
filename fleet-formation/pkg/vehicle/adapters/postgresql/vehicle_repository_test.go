@@ -16,6 +16,12 @@ import (
 func TestVehicleRepositoryGetSingleWhenGetAll(t *testing.T) {
 	a := assert.New(t)
 
+	var (
+		DefaultVehicleID              = NewVehicleID()
+		DefaultVehicleCommunicationID = NewVehicleCommunicationID()
+		DefaultVehicleVersion         = NewVehicleVersion()
+	)
+
 	db, mock, err := postgresql.GetNewDbMock()
 	if err != nil {
 		t.Errorf("failed to initialize mock DB: %v", err)
@@ -62,19 +68,19 @@ func TestVehicleRepositoryGetMultipleWhenGetAll(t *testing.T) {
 		return
 	}
 
-	const (
-		DefaultVehicleID1              = DefaultVehicleID + "-1"
+	var (
+		DefaultVehicleID1              = NewVehicleID()
 		DefaultVehicleName1            = DefaultVehicleName + "-1"
-		DefaultVehicleCommunicationID1 = DefaultVehicleCommunicationID + "-1"
-		DefaultVehicleVersion1         = DefaultVehicleVersion + "-1"
-		DefaultVehicleID2              = DefaultVehicleID + "-2"
+		DefaultVehicleCommunicationID1 = NewVehicleCommunicationID()
+		DefaultVehicleVersion1         = NewVehicleVersion()
+		DefaultVehicleID2              = NewVehicleID()
 		DefaultVehicleName2            = DefaultVehicleName + "-2"
-		DefaultVehicleCommunicationID2 = DefaultVehicleCommunicationID + "-2"
-		DefaultVehicleVersion2         = DefaultVehicleVersion + "-2"
-		DefaultVehicleID3              = DefaultVehicleID + "-3"
+		DefaultVehicleCommunicationID2 = NewVehicleCommunicationID()
+		DefaultVehicleVersion2         = NewVehicleVersion()
+		DefaultVehicleID3              = NewVehicleID()
 		DefaultVehicleName3            = DefaultVehicleName + "-3"
-		DefaultVehicleCommunicationID3 = DefaultVehicleCommunicationID + "-3"
-		DefaultVehicleVersion3         = DefaultVehicleVersion + "-3"
+		DefaultVehicleCommunicationID3 = NewVehicleCommunicationID()
+		DefaultVehicleVersion3         = NewVehicleVersion()
 	)
 
 	mock.
@@ -161,6 +167,12 @@ func TestVehicleRepositoryGetNoneWhenGetAll(t *testing.T) {
 func TestVehicleRepositoryGetSingleWhenGetAllOrigin(t *testing.T) {
 	a := assert.New(t)
 
+	var (
+		DefaultVehicleID              = NewVehicleID()
+		DefaultVehicleCommunicationID = NewVehicleCommunicationID()
+		DefaultVehicleVersion         = NewVehicleVersion()
+	)
+
 	db, mock, err := postgresql.GetNewDbMock()
 	if err != nil {
 		t.Errorf("failed to initialize mock DB: %v", err)
@@ -207,19 +219,19 @@ func TestVehicleRepositoryGetMultipleWhenGetAllOrigin(t *testing.T) {
 		return
 	}
 
-	const (
-		DefaultVehicleID1              = DefaultVehicleID + "-1"
+	var (
+		DefaultVehicleID1              = NewVehicleID()
 		DefaultVehicleName1            = DefaultVehicleName + "-1"
-		DefaultVehicleCommunicationID1 = DefaultVehicleCommunicationID + "-1"
-		DefaultVehicleVersion1         = DefaultVehicleVersion + "-1"
-		DefaultVehicleID2              = DefaultVehicleID + "-2"
+		DefaultVehicleCommunicationID1 = NewVehicleCommunicationID()
+		DefaultVehicleVersion1         = NewVehicleVersion()
+		DefaultVehicleID2              = NewVehicleID()
 		DefaultVehicleName2            = DefaultVehicleName + "-2"
-		DefaultVehicleCommunicationID2 = DefaultVehicleCommunicationID + "-2"
-		DefaultVehicleVersion2         = DefaultVehicleVersion + "-2"
-		DefaultVehicleID3              = DefaultVehicleID + "-3"
+		DefaultVehicleCommunicationID2 = NewVehicleCommunicationID()
+		DefaultVehicleVersion2         = NewVehicleVersion()
+		DefaultVehicleID3              = NewVehicleID()
 		DefaultVehicleName3            = DefaultVehicleName + "-3"
-		DefaultVehicleCommunicationID3 = DefaultVehicleCommunicationID + "-3"
-		DefaultVehicleVersion3         = DefaultVehicleVersion + "-3"
+		DefaultVehicleCommunicationID3 = NewVehicleCommunicationID()
+		DefaultVehicleVersion3         = NewVehicleVersion()
 	)
 
 	mock.
@@ -306,6 +318,12 @@ func TestVehicleRepositoryGetNoneWhenGetAllOrigin(t *testing.T) {
 func TestVehicleRepositoryGetByID(t *testing.T) {
 	a := assert.New(t)
 
+	var (
+		DefaultVehicleID              = NewVehicleID()
+		DefaultVehicleCommunicationID = NewVehicleCommunicationID()
+		DefaultVehicleVersion         = NewVehicleVersion()
+	)
+
 	db, mock, err := postgresql.GetNewDbMock()
 	if err != nil {
 		t.Errorf("failed to initialize mock DB: %v", err)
@@ -324,7 +342,7 @@ func TestVehicleRepositoryGetByID(t *testing.T) {
 	gen := uuid.NewVehicleUUID()
 	repository := NewVehicleRepository(gen)
 
-	vehicle, err := repository.GetByID(db, DefaultVehicleID)
+	vehicle, err := repository.GetByID(db, v.ID(DefaultVehicleID))
 
 	expectVehicle := v.AssembleFrom(
 		gen,
@@ -344,6 +362,10 @@ func TestVehicleRepositoryGetByID(t *testing.T) {
 func TestVehicleRepositoryNotFoundWhenGetByID(t *testing.T) {
 	a := assert.New(t)
 
+	var (
+		DefaultVehicleID = NewVehicleID()
+	)
+
 	db, mock, err := postgresql.GetNewDbMock()
 	if err != nil {
 		t.Errorf("failed to initialize mock DB: %v", err)
@@ -361,7 +383,7 @@ func TestVehicleRepositoryNotFoundWhenGetByID(t *testing.T) {
 	gen := uuid.NewVehicleUUID()
 	repository := NewVehicleRepository(gen)
 
-	vehicle, err := repository.GetByID(db, DefaultVehicleID)
+	vehicle, err := repository.GetByID(db, v.ID(DefaultVehicleID))
 
 	a.Nil(vehicle)
 	a.Equal(err, v.ErrNotFound)
@@ -369,6 +391,12 @@ func TestVehicleRepositoryNotFoundWhenGetByID(t *testing.T) {
 
 func TestVehicleRepositoryCreateSave(t *testing.T) {
 	a := assert.New(t)
+
+	var (
+		DefaultVehicleID              = NewVehicleID()
+		DefaultVehicleCommunicationID = NewVehicleCommunicationID()
+		DefaultVehicleVersion         = NewVehicleVersion()
+	)
 
 	db, mock, err := postgresql.GetNewDbMock()
 	if err != nil {
@@ -414,16 +442,22 @@ func TestVehicleRepositoryCreateSave(t *testing.T) {
 func TestVehicleRepositoryUpdateSave(t *testing.T) {
 	a := assert.New(t)
 
+	var (
+		DefaultVehicleID              = NewVehicleID()
+		DefaultVehicleCommunicationID = NewVehicleCommunicationID()
+		DefaultVehicleVersion         = NewVehicleVersion()
+	)
+
 	db, mock, err := postgresql.GetNewDbMock()
 	if err != nil {
 		t.Errorf("failed to initialize mock DB: %v", err)
 		return
 	}
 
-	const (
+	var (
 		AfterName            = DefaultVehicleName + "-after"
-		AfterCommunicationID = DefaultVehicleCommunicationID + "-after"
-		AfterVersion         = DefaultVehicleVersion + "-after"
+		AfterCommunicationID = NewVehicleCommunicationID()
+		AfterVersion         = NewVehicleVersion()
 	)
 
 	mock.
@@ -465,6 +499,12 @@ func TestVehicleRepositoryUpdateSave(t *testing.T) {
 func TestVehicleRepositoryDelete(t *testing.T) {
 	a := assert.New(t)
 
+	var (
+		DefaultVehicleID              = NewVehicleID()
+		DefaultVehicleCommunicationID = NewVehicleCommunicationID()
+		DefaultVehicleVersion         = NewVehicleVersion()
+	)
+
 	db, mock, err := postgresql.GetNewDbMock()
 	if err != nil {
 		t.Errorf("failed to initialize mock DB: %v", err)
@@ -491,7 +531,7 @@ func TestVehicleRepositoryDelete(t *testing.T) {
 	gen := uuid.NewVehicleUUID()
 	repository := NewVehicleRepository(gen)
 
-	err = repository.Delete(db, DefaultVehicleID)
+	err = repository.Delete(db, v.ID(DefaultVehicleID))
 
 	a.Nil(err)
 }

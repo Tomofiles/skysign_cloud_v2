@@ -1,12 +1,29 @@
 package vehicle
 
-import "errors"
+import (
+	"errors"
 
-const DefaultID = ID("vehicle-id")
-const DefaultVersion = Version("version")
+	"github.com/google/uuid"
+)
+
+var NewID = func() ID {
+	id, _ := uuid.NewRandom()
+	return ID(id.String())
+}
+var NewVersion = func() Version {
+	id, _ := uuid.NewRandom()
+	return Version(id.String())
+}
+var NewCommunicationID = func() CommunicationID {
+	id, _ := uuid.NewRandom()
+	return CommunicationID(id.String())
+}
+var NewFleetID = func() FleetID {
+	id, _ := uuid.NewRandom()
+	return FleetID(id.String())
+}
+
 const DefaultName = "vehicle-name"
-const DefaultCommunicationID = CommunicationID("communication-id")
-const DefaultFleetID = FleetID("fleet-id")
 
 var (
 	ErrSave   = errors.New("save error")

@@ -16,8 +16,12 @@ import (
 func TestPublishCommunicationIDRemovedEvent(t *testing.T) {
 	a := assert.New(t)
 
+	var (
+		DefaultVehicleCommunicationID = NewVehicleCommunicationID()
+	)
+
 	event := vehicle.CommunicationIDRemovedEvent{
-		CommunicationID: DefaultVehicleCommunicationID,
+		CommunicationID: vehicle.CommunicationID(DefaultVehicleCommunicationID),
 	}
 
 	chMock := &channelMockPublish{}
@@ -39,8 +43,12 @@ func TestPublishCommunicationIDRemovedEvent(t *testing.T) {
 func TestFanoutExchangeDeclareErrorWhenPublishCommunicationIDRemovedEvent(t *testing.T) {
 	a := assert.New(t)
 
+	var (
+		DefaultVehicleCommunicationID = NewVehicleCommunicationID()
+	)
+
 	event := vehicle.CommunicationIDRemovedEvent{
-		CommunicationID: DefaultVehicleCommunicationID,
+		CommunicationID: vehicle.CommunicationID(DefaultVehicleCommunicationID),
 	}
 
 	errPub := errors.New("publish error")
@@ -58,8 +66,12 @@ func TestFanoutExchangeDeclareErrorWhenPublishCommunicationIDRemovedEvent(t *tes
 func TestPublishErrorWhenPublishCommunicationIDRemovedEvent(t *testing.T) {
 	a := assert.New(t)
 
+	var (
+		DefaultVehicleCommunicationID = NewVehicleCommunicationID()
+	)
+
 	event := vehicle.CommunicationIDRemovedEvent{
-		CommunicationID: DefaultVehicleCommunicationID,
+		CommunicationID: vehicle.CommunicationID(DefaultVehicleCommunicationID),
 	}
 
 	errPub := errors.New("publish error")

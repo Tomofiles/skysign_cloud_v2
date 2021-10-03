@@ -17,11 +17,15 @@ import (
 func TestCarbonCopyVehicleService(t *testing.T) {
 	a := assert.New(t)
 
-	ctx := context.Background()
-
 	var (
-		NewID = DefaultID + "-new"
+		DefaultID              = NewID()
+		NewID                  = NewID()
+		DefaultCommunicationID = NewCommunicationID()
+		DefaultVersion         = NewVersion()
+		DefaultFleetID         = NewFleetID()
 	)
+
+	ctx := context.Background()
 
 	testVehicle := Vehicle{
 		id:              DefaultID,
@@ -71,11 +75,15 @@ func TestCarbonCopyVehicleService(t *testing.T) {
 func TestCopySuccessWhenAlreadyExistsVehicleWhenCarbonCopyVehicleService(t *testing.T) {
 	a := assert.New(t)
 
-	ctx := context.Background()
-
 	var (
-		NewID = DefaultID + "-new"
+		DefaultID              = NewID()
+		NewID                  = NewID()
+		DefaultCommunicationID = NewCommunicationID()
+		DefaultVersion         = NewVersion()
+		DefaultFleetID         = NewFleetID()
 	)
+
+	ctx := context.Background()
 
 	testVehicle := Vehicle{
 		id:              DefaultID,
@@ -106,11 +114,13 @@ func TestCopySuccessWhenAlreadyExistsVehicleWhenCarbonCopyVehicleService(t *test
 func TestGetErrorWhenCarbonCopyVehicleService(t *testing.T) {
 	a := assert.New(t)
 
-	ctx := context.Background()
-
 	var (
-		NewID = DefaultID + "-new"
+		DefaultID      = NewID()
+		NewID          = NewID()
+		DefaultFleetID = NewFleetID()
 	)
+
+	ctx := context.Background()
 
 	gen := &generatorMock{}
 	repo := &repositoryMockCopyService{}
@@ -133,11 +143,13 @@ func TestGetErrorWhenCarbonCopyVehicleService(t *testing.T) {
 func TestGetError2WhenCarbonCopyVehicleService(t *testing.T) {
 	a := assert.New(t)
 
-	ctx := context.Background()
-
 	var (
-		NewID = DefaultID + "-new"
+		DefaultID      = NewID()
+		NewID          = NewID()
+		DefaultFleetID = NewFleetID()
 	)
+
+	ctx := context.Background()
 
 	gen := &generatorMock{}
 	repo := &repositoryMockCopyService{}
@@ -160,11 +172,15 @@ func TestGetError2WhenCarbonCopyVehicleService(t *testing.T) {
 func TestSaveErrorWhenCarbonCopyVehicleService(t *testing.T) {
 	a := assert.New(t)
 
-	ctx := context.Background()
-
 	var (
-		NewID = DefaultID + "-new"
+		DefaultID              = NewID()
+		NewID                  = NewID()
+		DefaultCommunicationID = NewCommunicationID()
+		DefaultVersion         = NewVersion()
+		DefaultFleetID         = NewFleetID()
 	)
+
+	ctx := context.Background()
 
 	testVehicle := Vehicle{
 		id:              DefaultID,

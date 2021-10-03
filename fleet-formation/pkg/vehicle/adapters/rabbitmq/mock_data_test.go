@@ -3,17 +3,26 @@ package rabbitmq
 import (
 	"context"
 
-	v "github.com/Tomofiles/skysign_cloud_v2/fleet-formation/pkg/vehicle/domain/vehicle"
 	"github.com/Tomofiles/skysign_cloud_v2/fleet-formation/pkg/vehicle/service"
+	"github.com/google/uuid"
 
 	crm "github.com/Tomofiles/skysign_cloud_v2/skysign-common/pkg/common/adapters/rabbitmq"
 
 	"github.com/stretchr/testify/mock"
 )
 
-const DefaultVehicleID = v.ID("vehicle-id")
-const DefaultVehicleCommunicationID = v.CommunicationID("communication-id")
-const DefaultFleetID = v.FleetID("fleet-id")
+var NewVehicleID = func() string {
+	id, _ := uuid.NewRandom()
+	return id.String()
+}
+var NewVehicleCommunicationID = func() string {
+	id, _ := uuid.NewRandom()
+	return id.String()
+}
+var NewFleetID = func() string {
+	id, _ := uuid.NewRandom()
+	return id.String()
+}
 
 type manageVehicleServiceMock struct {
 	mock.Mock

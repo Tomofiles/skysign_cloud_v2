@@ -12,8 +12,9 @@ func TestChangeVehiclesName(t *testing.T) {
 	a := assert.New(t)
 
 	var (
-		DefaultVersion1 = DefaultVersion + "-1"
-		DefaultVersion2 = DefaultVersion + "-2"
+		DefaultID       = NewID()
+		DefaultVersion1 = NewVersion()
+		DefaultVersion2 = NewVersion()
 	)
 
 	gen := &generatorMock{
@@ -38,8 +39,10 @@ func TestChangeNewVehiclesCommunicationIdAndPublishEvent(t *testing.T) {
 	a := assert.New(t)
 
 	var (
-		DefaultVersion1 = DefaultVersion + "-1"
-		DefaultVersion2 = DefaultVersion + "-2"
+		DefaultID              = NewID()
+		DefaultCommunicationID = NewCommunicationID()
+		DefaultVersion1        = NewVersion()
+		DefaultVersion2        = NewVersion()
 	)
 
 	gen := &generatorMock{
@@ -72,9 +75,11 @@ func TestChangePreExistVehiclesCommunicationIdAndPublishEvent(t *testing.T) {
 	a := assert.New(t)
 
 	var (
-		DefaultVersion1    = DefaultVersion + "-1"
-		DefaultVersion2    = DefaultVersion + "-2"
-		NewCommunicationID = DefaultCommunicationID + "-new"
+		DefaultID              = NewID()
+		DefaultCommunicationID = NewCommunicationID()
+		NewCommunicationID     = NewCommunicationID()
+		DefaultVersion1        = NewVersion()
+		DefaultVersion2        = NewVersion()
 	)
 
 	gen := &generatorMock{
@@ -113,8 +118,10 @@ func TestRemovePreExistVehiclesCommunicationIdAndPublishEvent(t *testing.T) {
 	a := assert.New(t)
 
 	var (
-		DefaultVersion1 = DefaultVersion + "-1"
-		DefaultVersion2 = DefaultVersion + "-2"
+		DefaultID              = NewID()
+		DefaultCommunicationID = NewCommunicationID()
+		DefaultVersion1        = NewVersion()
+		DefaultVersion2        = NewVersion()
 	)
 
 	gen := &generatorMock{
@@ -147,11 +154,13 @@ func TestCannotChangeErrorWhenChangeVehiclesName(t *testing.T) {
 	a := assert.New(t)
 
 	var (
-		CopiedID        = DefaultID + "-copied"
-		DefaultName1    = DefaultName + "-1"
-		DefaultName2    = DefaultName + "-2"
-		DefaultVersion1 = DefaultVersion + "-1"
-		DefaultVersion2 = DefaultVersion + "-2"
+		DefaultID              = NewID()
+		CopiedID               = NewID()
+		DefaultCommunicationID = NewCommunicationID()
+		DefaultName1           = DefaultName + "-1"
+		DefaultName2           = DefaultName + "-2"
+		DefaultVersion1        = NewVersion()
+		DefaultVersion2        = NewVersion()
 	)
 
 	gen := &generatorMock{
@@ -182,9 +191,11 @@ func TestCannotChangeErrorWhenChangeCarbonCopiedVehiclesCommunicationId(t *testi
 	a := assert.New(t)
 
 	var (
-		CopiedID        = DefaultID + "-copied"
-		DefaultVersion1 = DefaultVersion + "-1"
-		DefaultVersion2 = DefaultVersion + "-2"
+		DefaultID              = NewID()
+		CopiedID               = NewID()
+		DefaultCommunicationID = NewCommunicationID()
+		DefaultVersion1        = NewVersion()
+		DefaultVersion2        = NewVersion()
 	)
 
 	gen := &generatorMock{
@@ -216,9 +227,11 @@ func TestCannotChangeErrorWhenRemoveCarbonCopiedVehiclesCommunicationId(t *testi
 	a := assert.New(t)
 
 	var (
-		CopiedID        = DefaultID + "-copied"
-		DefaultVersion1 = DefaultVersion + "-1"
-		DefaultVersion2 = DefaultVersion + "-2"
+		DefaultID              = NewID()
+		CopiedID               = NewID()
+		DefaultCommunicationID = NewCommunicationID()
+		DefaultVersion1        = NewVersion()
+		DefaultVersion2        = NewVersion()
 	)
 
 	gen := &generatorMock{

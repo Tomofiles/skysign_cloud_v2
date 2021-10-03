@@ -3,34 +3,35 @@ package grpc
 import (
 	"context"
 
+	"github.com/Tomofiles/skysign_cloud_v2/fleet-formation/pkg/vehicle/adapters/proto"
 	"github.com/Tomofiles/skysign_cloud_v2/fleet-formation/pkg/vehicle/app"
 	"github.com/Tomofiles/skysign_cloud_v2/fleet-formation/pkg/vehicle/service"
 
-	proto "github.com/Tomofiles/skysign_cloud_v2/skysign-proto/pkg/skysign_proto"
+	"github.com/Tomofiles/skysign_cloud_v2/skysign-proto/pkg/skysign_proto"
 )
 
 // manageVehicleServiceServer .
 type manageVehicleServiceServer struct {
-	proto.UnimplementedManageVehicleServiceServer
+	skysign_proto.UnimplementedManageVehicleServiceServer
 	app app.Application
 }
 
 // NewManageVehicleServiceServer .
-func NewManageVehicleServiceServer(application app.Application) proto.ManageVehicleServiceServer {
+func NewManageVehicleServiceServer(application app.Application) skysign_proto.ManageVehicleServiceServer {
 	return &manageVehicleServiceServer{app: application}
 }
 
 // ListVehicles .
 func (s *manageVehicleServiceServer) ListVehicles(
 	ctx context.Context,
-	request *proto.Empty,
-) (*proto.ListVehiclesResponses, error) {
-	response := &proto.ListVehiclesResponses{}
+	request *skysign_proto.Empty,
+) (*skysign_proto.ListVehiclesResponses, error) {
+	response := &skysign_proto.ListVehiclesResponses{}
 	if ret := s.app.Services.ManageVehicle.ListVehicles(
 		func(model service.VehiclePresentationModel) {
 			response.Vehicles = append(
 				response.Vehicles,
-				&proto.Vehicle{
+				&skysign_proto.Vehicle{
 					Id:              model.GetVehicle().GetID(),
 					Name:            model.GetVehicle().GetName(),
 					CommunicationId: model.GetVehicle().GetCommunicationID(),
@@ -46,9 +47,12 @@ func (s *manageVehicleServiceServer) ListVehicles(
 // GetVehicle .
 func (s *manageVehicleServiceServer) GetVehicle(
 	ctx context.Context,
-	request *proto.GetVehicleRequest,
-) (*proto.Vehicle, error) {
-	response := &proto.Vehicle{}
+	request *skysign_proto.GetVehicleRequest,
+) (*skysign_proto.Vehicle, error) {
+	if ret := proto.ValidateGetVehicleRequest(request); ret != nil {
+		return nil, ret
+	}
+	response := &skysign_proto.Vehicle{}
 	command := &vehicleIDCommand{
 		id: request.Id,
 	}
@@ -68,9 +72,12 @@ func (s *manageVehicleServiceServer) GetVehicle(
 // CreateVehicle .
 func (s *manageVehicleServiceServer) CreateVehicle(
 	ctx context.Context,
-	request *proto.Vehicle,
-) (*proto.Vehicle, error) {
-	response := &proto.Vehicle{}
+	request *skysign_proto.Vehicle,
+) (*skysign_proto.Vehicle, error) {
+	if ret := proto.ValidateCreateVehicleRequest(request); ret != nil {
+		return nil, ret
+	}
+	response := &skysign_proto.Vehicle{}
 	command := &createCommand{
 		request: request,
 	}
@@ -90,9 +97,12 @@ func (s *manageVehicleServiceServer) CreateVehicle(
 // UpdateVehicle .
 func (s *manageVehicleServiceServer) UpdateVehicle(
 	ctx context.Context,
-	request *proto.Vehicle,
-) (*proto.Vehicle, error) {
-	response := &proto.Vehicle{
+	request *skysign_proto.Vehicle,
+) (*skysign_proto.Vehicle, error) {
+	if ret := proto.ValidateUpdateVehicleRequest(request); ret != nil {
+		return nil, ret
+	}
+	response := &skysign_proto.Vehicle{
 		Id:              request.Id,
 		Name:            request.Name,
 		CommunicationId: request.CommunicationId,
@@ -109,9 +119,12 @@ func (s *manageVehicleServiceServer) UpdateVehicle(
 // DeleteVehicle .
 func (s *manageVehicleServiceServer) DeleteVehicle(
 	ctx context.Context,
-	request *proto.DeleteVehicleRequest,
-) (*proto.Empty, error) {
-	response := &proto.Empty{}
+	request *skysign_proto.DeleteVehicleRequest,
+) (*skysign_proto.Empty, error) {
+	if ret := proto.ValidateDeleteVehicleRequest(request); ret != nil {
+		return nil, ret
+	}
+	response := &skysign_proto.Empty{}
 	command := &vehicleIDCommand{
 		id: request.Id,
 	}
@@ -130,7 +143,7 @@ func (f *vehicleIDCommand) GetID() string {
 }
 
 type createCommand struct {
-	request *proto.Vehicle
+	request *skysign_proto.Vehicle
 }
 
 func (f *createCommand) GetVehicle() service.Vehicle {
@@ -140,7 +153,7 @@ func (f *createCommand) GetVehicle() service.Vehicle {
 }
 
 type updateCommand struct {
-	request *proto.Vehicle
+	request *skysign_proto.Vehicle
 }
 
 func (f *updateCommand) GetID() string {
@@ -154,7 +167,7 @@ func (f *updateCommand) GetVehicle() service.Vehicle {
 }
 
 type vehicle struct {
-	request *proto.Vehicle
+	request *skysign_proto.Vehicle
 }
 
 func (f *vehicle) GetID() string {

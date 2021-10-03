@@ -16,10 +16,16 @@ import (
 func TestPublishCopiedVehicleCreatedEvent(t *testing.T) {
 	a := assert.New(t)
 
+	var (
+		DefaultVehicleID              = NewVehicleID()
+		DefaultVehicleCommunicationID = NewVehicleCommunicationID()
+		DefaultFleetID                = NewFleetID()
+	)
+
 	event := vehicle.CopiedVehicleCreatedEvent{
-		ID:              DefaultVehicleID,
-		CommunicationID: DefaultVehicleCommunicationID,
-		FleetID:         DefaultFleetID,
+		ID:              vehicle.ID(DefaultVehicleID),
+		CommunicationID: vehicle.CommunicationID(DefaultVehicleCommunicationID),
+		FleetID:         vehicle.FleetID(DefaultFleetID),
 	}
 
 	chMock := &channelMockPublish{}
@@ -43,10 +49,16 @@ func TestPublishCopiedVehicleCreatedEvent(t *testing.T) {
 func TestFanoutExchangeDeclareErrorWhenPublishCopiedVehicleCreatedEvent(t *testing.T) {
 	a := assert.New(t)
 
+	var (
+		DefaultVehicleID              = NewVehicleID()
+		DefaultVehicleCommunicationID = NewVehicleCommunicationID()
+		DefaultFleetID                = NewFleetID()
+	)
+
 	event := vehicle.CopiedVehicleCreatedEvent{
-		ID:              DefaultVehicleID,
-		CommunicationID: DefaultVehicleCommunicationID,
-		FleetID:         DefaultFleetID,
+		ID:              vehicle.ID(DefaultVehicleID),
+		CommunicationID: vehicle.CommunicationID(DefaultVehicleCommunicationID),
+		FleetID:         vehicle.FleetID(DefaultFleetID),
 	}
 
 	errPub := errors.New("publish error")
@@ -64,10 +76,16 @@ func TestFanoutExchangeDeclareErrorWhenPublishCopiedVehicleCreatedEvent(t *testi
 func TestPublishErrorWhenPublishCopiedVehicleCreatedEvent(t *testing.T) {
 	a := assert.New(t)
 
+	var (
+		DefaultVehicleID              = NewVehicleID()
+		DefaultVehicleCommunicationID = NewVehicleCommunicationID()
+		DefaultFleetID                = NewFleetID()
+	)
+
 	event := vehicle.CopiedVehicleCreatedEvent{
-		ID:              DefaultVehicleID,
-		CommunicationID: DefaultVehicleCommunicationID,
-		FleetID:         DefaultFleetID,
+		ID:              vehicle.ID(DefaultVehicleID),
+		CommunicationID: vehicle.CommunicationID(DefaultVehicleCommunicationID),
+		FleetID:         vehicle.FleetID(DefaultFleetID),
 	}
 
 	errPub := errors.New("publish error")

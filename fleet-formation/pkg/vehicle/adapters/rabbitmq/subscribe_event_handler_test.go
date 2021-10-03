@@ -16,8 +16,9 @@ func TestSubscribeEventHandlerVehicleCopiedEvent(t *testing.T) {
 	a := assert.New(t)
 
 	var (
-		DefaultOriginalID = DefaultVehicleID + "-original"
-		DefaultNewID      = DefaultVehicleID + "-new"
+		DefaultFleetID    = NewFleetID()
+		DefaultOriginalID = NewVehicleID()
+		DefaultNewID      = NewVehicleID()
 	)
 
 	service := manageVehicleServiceMock{}
@@ -33,9 +34,9 @@ func TestSubscribeEventHandlerVehicleCopiedEvent(t *testing.T) {
 	SubscribeEventHandler(nil, psm, app)
 
 	requestPb := &skysign_proto.VehicleCopiedEvent{
-		FleetId:           string(DefaultFleetID),
-		OriginalVehicleId: string(DefaultOriginalID),
-		NewVehicleId:      string(DefaultNewID),
+		FleetId:           DefaultFleetID,
+		OriginalVehicleId: DefaultOriginalID,
+		NewVehicleId:      DefaultNewID,
 	}
 	requestBin, _ := proto.Marshal(requestPb)
 
@@ -50,7 +51,7 @@ func TestSubscribeEventHandlerVehicleCopiedEvent(t *testing.T) {
 		}
 	}
 
-	a.Equal(service.FleetID, string(DefaultFleetID))
-	a.Equal(service.OriginalID, string(DefaultOriginalID))
-	a.Equal(service.NewID, string(DefaultNewID))
+	a.Equal(service.FleetID, DefaultFleetID)
+	a.Equal(service.OriginalID, DefaultOriginalID)
+	a.Equal(service.NewID, DefaultNewID)
 }

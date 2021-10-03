@@ -1,14 +1,21 @@
 package postgresql
 
-import (
-	v "github.com/Tomofiles/skysign_cloud_v2/fleet-formation/pkg/vehicle/domain/vehicle"
-)
+import "github.com/google/uuid"
 
-const DefaultVehicleID = v.ID("vehicle-id")
-const DefaultVehicleVersion = v.Version("version")
+var NewVehicleID = func() string {
+	id, _ := uuid.NewRandom()
+	return id.String()
+}
+var NewVehicleVersion = func() string {
+	id, _ := uuid.NewRandom()
+	return id.String()
+}
+var NewVehicleCommunicationID = func() string {
+	id, _ := uuid.NewRandom()
+	return id.String()
+}
+
 const DefaultVehicleName = "vehicle-name"
-const DefaultVehicleCommunicationID = v.CommunicationID("communication-id")
-const DefaultFleetID = v.FleetID("fleet-id")
 
 type vehicleComponentMock struct {
 	ID              string

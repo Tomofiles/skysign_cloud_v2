@@ -12,6 +12,12 @@ import (
 func TestGetVehicleTransaction(t *testing.T) {
 	a := assert.New(t)
 
+	var (
+		DefaultVehicleID              = NewVehicleID()
+		DefaultVehicleCommunicationID = NewVehicleCommunicationID()
+		DefaultVehicleVersion         = NewVehicleVersion()
+	)
+
 	vehicle := v.AssembleFrom(
 		nil,
 		&vehicleComponentMock{
@@ -52,6 +58,12 @@ func TestGetVehicleTransaction(t *testing.T) {
 
 func TestGetVehicleOperation(t *testing.T) {
 	a := assert.New(t)
+
+	var (
+		DefaultVehicleID              = NewVehicleID()
+		DefaultVehicleCommunicationID = NewVehicleCommunicationID()
+		DefaultVehicleVersion         = NewVehicleVersion()
+	)
 
 	vehicle := v.AssembleFrom(
 		nil,
@@ -96,6 +108,12 @@ func TestGetVehicleOperation(t *testing.T) {
 func TestListVehiclesTransaction(t *testing.T) {
 	a := assert.New(t)
 
+	var (
+		DefaultVehicleID              = NewVehicleID()
+		DefaultVehicleCommunicationID = NewVehicleCommunicationID()
+		DefaultVehicleVersion         = NewVehicleVersion()
+	)
+
 	vehicles := []*v.Vehicle{
 		v.AssembleFrom(
 			nil,
@@ -135,46 +153,46 @@ func TestListVehiclesOperation(t *testing.T) {
 	a := assert.New(t)
 
 	var (
-		DefaultVehicleID1              = string(DefaultVehicleID) + "-1"
+		DefaultVehicleID1              = NewVehicleID()
 		DefaultVehicleName1            = DefaultVehicleName + "-1"
-		DefaultVehicleCommunicationID1 = string(DefaultVehicleCommunicationID) + "-1"
-		DefaultVehicleVersion1         = string(DefaultVehicleVersion) + "-1"
-		DefaultVehicleID2              = string(DefaultVehicleID) + "-2"
+		DefaultVehicleCommunicationID1 = NewVehicleCommunicationID()
+		DefaultVehicleVersion1         = NewVehicleVersion()
+		DefaultVehicleID2              = NewVehicleID()
 		DefaultVehicleName2            = DefaultVehicleName + "-2"
-		DefaultVehicleCommunicationID2 = string(DefaultVehicleCommunicationID) + "-2"
-		DefaultVehicleVersion2         = string(DefaultVehicleVersion) + "-2"
-		DefaultVehicleID3              = string(DefaultVehicleID) + "-3"
+		DefaultVehicleCommunicationID2 = NewVehicleCommunicationID()
+		DefaultVehicleVersion2         = NewVehicleVersion()
+		DefaultVehicleID3              = NewVehicleID()
 		DefaultVehicleName3            = DefaultVehicleName + "-3"
-		DefaultVehicleCommunicationID3 = string(DefaultVehicleCommunicationID) + "-3"
-		DefaultVehicleVersion3         = string(DefaultVehicleVersion) + "-3"
+		DefaultVehicleCommunicationID3 = NewVehicleCommunicationID()
+		DefaultVehicleVersion3         = NewVehicleVersion()
 	)
 
 	vehicles := []*v.Vehicle{
 		v.AssembleFrom(
 			nil,
 			&vehicleComponentMock{
-				ID:              DefaultVehicleID1,
+				ID:              string(DefaultVehicleID1),
 				Name:            DefaultVehicleName1,
-				CommunicationID: DefaultVehicleCommunicationID1,
-				Version:         DefaultVehicleVersion1,
+				CommunicationID: string(DefaultVehicleCommunicationID1),
+				Version:         string(DefaultVehicleVersion1),
 			},
 		),
 		v.AssembleFrom(
 			nil,
 			&vehicleComponentMock{
-				ID:              DefaultVehicleID2,
+				ID:              string(DefaultVehicleID2),
 				Name:            DefaultVehicleName2,
-				CommunicationID: DefaultVehicleCommunicationID2,
-				Version:         DefaultVehicleVersion2,
+				CommunicationID: string(DefaultVehicleCommunicationID2),
+				Version:         string(DefaultVehicleVersion2),
 			},
 		),
 		v.AssembleFrom(
 			nil,
 			&vehicleComponentMock{
-				ID:              DefaultVehicleID3,
+				ID:              string(DefaultVehicleID3),
 				Name:            DefaultVehicleName3,
-				CommunicationID: DefaultVehicleCommunicationID3,
-				Version:         DefaultVehicleVersion3,
+				CommunicationID: string(DefaultVehicleCommunicationID3),
+				Version:         string(DefaultVehicleVersion3),
 			},
 		),
 	}
@@ -200,18 +218,20 @@ func TestListVehiclesOperation(t *testing.T) {
 	)
 
 	a.Nil(ret)
-	a.Equal(resID, []string{DefaultVehicleID1, DefaultVehicleID2, DefaultVehicleID3})
+	a.Equal(resID, []string{string(DefaultVehicleID1), string(DefaultVehicleID2), string(DefaultVehicleID3)})
 	a.Equal(resName, []string{DefaultVehicleName1, DefaultVehicleName2, DefaultVehicleName3})
-	a.Equal(resCommunicationID, []string{DefaultVehicleCommunicationID1, DefaultVehicleCommunicationID2, DefaultVehicleCommunicationID3})
+	a.Equal(resCommunicationID, []string{string(DefaultVehicleCommunicationID1), string(DefaultVehicleCommunicationID2), string(DefaultVehicleCommunicationID3)})
 }
 
 func TestCreateVehicleTransaction(t *testing.T) {
 	a := assert.New(t)
 
 	var (
-		DefaultVehicleVersion1 = DefaultVehicleVersion + "-1"
-		DefaultVehicleVersion2 = DefaultVehicleVersion + "-2"
-		DefaultVehicleVersion3 = DefaultVehicleVersion + "-3"
+		DefaultVehicleID              = NewVehicleID()
+		DefaultVehicleCommunicationID = NewVehicleCommunicationID()
+		DefaultVehicleVersion1        = NewVehicleVersion()
+		DefaultVehicleVersion2        = NewVehicleVersion()
+		DefaultVehicleVersion3        = NewVehicleVersion()
 	)
 
 	gen := &generatorMock{
@@ -266,9 +286,11 @@ func TestCreateVehicleOperation(t *testing.T) {
 	a := assert.New(t)
 
 	var (
-		DefaultVehicleVersion1 = DefaultVehicleVersion + "-1"
-		DefaultVehicleVersion2 = DefaultVehicleVersion + "-2"
-		DefaultVehicleVersion3 = DefaultVehicleVersion + "-3"
+		DefaultVehicleID              = NewVehicleID()
+		DefaultVehicleCommunicationID = NewVehicleCommunicationID()
+		DefaultVehicleVersion1        = NewVehicleVersion()
+		DefaultVehicleVersion2        = NewVehicleVersion()
+		DefaultVehicleVersion3        = NewVehicleVersion()
 	)
 
 	gen := &generatorMock{
@@ -314,10 +336,12 @@ func TestUpdateVehicleTransaction(t *testing.T) {
 	a := assert.New(t)
 
 	var (
-		AfterVehicleName            = DefaultVehicleName + "-after"
-		AfterVehicleCommunicationID = DefaultVehicleCommunicationID + "-after"
-		DefaultVehicleVersion1      = DefaultVehicleVersion + "-1"
-		DefaultVehicleVersion2      = DefaultVehicleVersion + "-2"
+		DefaultVehicleID              = NewVehicleID()
+		DefaultVehicleCommunicationID = NewVehicleCommunicationID()
+		AfterVehicleName              = DefaultVehicleName + "-after"
+		AfterVehicleCommunicationID   = NewVehicleCommunicationID()
+		DefaultVehicleVersion1        = NewVehicleVersion()
+		DefaultVehicleVersion2        = NewVehicleVersion()
 	)
 
 	gen := &generatorMock{
@@ -331,7 +355,7 @@ func TestUpdateVehicleTransaction(t *testing.T) {
 			ID:              string(DefaultVehicleID),
 			Name:            DefaultVehicleName,
 			CommunicationID: string(DefaultVehicleCommunicationID),
-			Version:         string(DefaultVehicleVersion),
+			Version:         string(DefaultVehicleVersion1),
 		},
 	)
 
@@ -378,10 +402,12 @@ func TestUpdateVehicleOperation(t *testing.T) {
 	a := assert.New(t)
 
 	var (
-		AfterVehicleName            = DefaultVehicleName + "-after"
-		AfterVehicleCommunicationID = DefaultVehicleCommunicationID + "-after"
-		DefaultVehicleVersion1      = DefaultVehicleVersion + "-1"
-		DefaultVehicleVersion2      = DefaultVehicleVersion + "-2"
+		DefaultVehicleID              = NewVehicleID()
+		DefaultVehicleCommunicationID = NewVehicleCommunicationID()
+		AfterVehicleName              = DefaultVehicleName + "-after"
+		AfterVehicleCommunicationID   = NewVehicleCommunicationID()
+		DefaultVehicleVersion1        = NewVehicleVersion()
+		DefaultVehicleVersion2        = NewVehicleVersion()
 	)
 
 	gen := &generatorMock{
@@ -395,7 +421,7 @@ func TestUpdateVehicleOperation(t *testing.T) {
 			ID:              string(DefaultVehicleID),
 			Name:            DefaultVehicleName,
 			CommunicationID: string(DefaultVehicleCommunicationID),
-			Version:         string(DefaultVehicleVersion),
+			Version:         string(DefaultVehicleVersion1),
 		},
 	)
 
@@ -434,6 +460,12 @@ func TestUpdateVehicleOperation(t *testing.T) {
 
 func TestDeleteVehicleTransaction(t *testing.T) {
 	a := assert.New(t)
+
+	var (
+		DefaultVehicleID              = NewVehicleID()
+		DefaultVehicleCommunicationID = NewVehicleCommunicationID()
+		DefaultVehicleVersion         = NewVehicleVersion()
+	)
 
 	gen := &generatorMock{
 		versions: []v.Version{DefaultVehicleVersion},
@@ -487,6 +519,12 @@ func TestDeleteVehicleTransaction(t *testing.T) {
 func TestDeleteVehicleOperation(t *testing.T) {
 	a := assert.New(t)
 
+	var (
+		DefaultVehicleID              = NewVehicleID()
+		DefaultVehicleCommunicationID = NewVehicleCommunicationID()
+		DefaultVehicleVersion         = NewVehicleVersion()
+	)
+
 	gen := &generatorMock{
 		versions: []v.Version{DefaultVehicleVersion},
 	}
@@ -535,8 +573,11 @@ func TestCarbonCopyVehicleTransaction(t *testing.T) {
 	a := assert.New(t)
 
 	var (
-		DefaultOriginalID = DefaultVehicleID + "-original"
-		DefaultNewID      = DefaultVehicleID + "-new"
+		DefaultOriginalID             = NewVehicleID()
+		DefaultNewID                  = NewVehicleID()
+		DefaultVehicleCommunicationID = NewVehicleCommunicationID()
+		DefaultVehicleVersion         = NewVehicleVersion()
+		DefaultFleetID                = NewFleetID()
 	)
 
 	gen := &generatorMock{}
@@ -544,7 +585,7 @@ func TestCarbonCopyVehicleTransaction(t *testing.T) {
 	vehicle := v.AssembleFrom(
 		gen,
 		&vehicleComponentMock{
-			ID:              string(DefaultVehicleID),
+			ID:              string(DefaultOriginalID),
 			Name:            DefaultVehicleName,
 			CommunicationID: string(DefaultVehicleCommunicationID),
 			Version:         string(DefaultVehicleVersion),
@@ -593,8 +634,11 @@ func TestCarbonCopyVehicleOperation(t *testing.T) {
 	a := assert.New(t)
 
 	var (
-		DefaultOriginalID = DefaultVehicleID + "-original"
-		DefaultNewID      = DefaultVehicleID + "-new"
+		DefaultOriginalID             = NewVehicleID()
+		DefaultNewID                  = NewVehicleID()
+		DefaultVehicleCommunicationID = NewVehicleCommunicationID()
+		DefaultVehicleVersion         = NewVehicleVersion()
+		DefaultFleetID                = NewFleetID()
 	)
 
 	gen := &generatorMock{}
@@ -602,7 +646,7 @@ func TestCarbonCopyVehicleOperation(t *testing.T) {
 	vehicle := v.AssembleFrom(
 		gen,
 		&vehicleComponentMock{
-			ID:              string(DefaultVehicleID),
+			ID:              string(DefaultOriginalID),
 			Name:            DefaultVehicleName,
 			CommunicationID: string(DefaultVehicleCommunicationID),
 			Version:         string(DefaultVehicleVersion),

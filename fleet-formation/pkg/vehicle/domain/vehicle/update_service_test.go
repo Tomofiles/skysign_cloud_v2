@@ -17,15 +17,17 @@ import (
 func TestUpdateVehicleService(t *testing.T) {
 	a := assert.New(t)
 
-	ctx := context.Background()
-
 	var (
-		DefaultVersion1    = DefaultVersion + "-1"
-		DefaultVersion2    = DefaultVersion + "-2"
-		DefaultVersion3    = DefaultVersion + "-3"
-		NewName            = DefaultName + "-new"
-		NewCommunicationID = DefaultCommunicationID + "-new"
+		DefaultID              = NewID()
+		NewName                = DefaultName + "-new"
+		DefaultCommunicationID = NewCommunicationID()
+		NewCommunicationID     = DefaultCommunicationID + "-new"
+		DefaultVersion1        = NewVersion()
+		DefaultVersion2        = NewVersion()
+		DefaultVersion3        = NewVersion()
 	)
+
+	ctx := context.Background()
 
 	gen := &generatorMock{
 		id:       DefaultID,
@@ -75,6 +77,11 @@ func TestUpdateVehicleService(t *testing.T) {
 func TestGetErrorWhenUpdateVehicleService(t *testing.T) {
 	a := assert.New(t)
 
+	var (
+		DefaultID              = NewID()
+		DefaultCommunicationID = NewCommunicationID()
+	)
+
 	ctx := context.Background()
 
 	var (
@@ -105,15 +112,17 @@ func TestGetErrorWhenUpdateVehicleService(t *testing.T) {
 func TestSaveErrorWhenUpdateVehicleService(t *testing.T) {
 	a := assert.New(t)
 
-	ctx := context.Background()
-
 	var (
-		DefaultVersion1    = DefaultVersion + "-1"
-		DefaultVersion2    = DefaultVersion + "-2"
-		DefaultVersion3    = DefaultVersion + "-3"
-		NewName            = DefaultName + "-new"
-		NewCommunicationID = DefaultCommunicationID + "-new"
+		DefaultID              = NewID()
+		NewName                = DefaultName + "-new"
+		DefaultCommunicationID = NewCommunicationID()
+		NewCommunicationID     = DefaultCommunicationID + "-new"
+		DefaultVersion1        = NewVersion()
+		DefaultVersion2        = NewVersion()
+		DefaultVersion3        = NewVersion()
 	)
+
+	ctx := context.Background()
 
 	gen := &generatorMock{
 		id:       DefaultID,
@@ -147,12 +156,15 @@ func TestSaveErrorWhenUpdateVehicleService(t *testing.T) {
 func TestCannnotUpdateErrorWhenUpdateVehicleService(t *testing.T) {
 	a := assert.New(t)
 
-	ctx := context.Background()
-
 	var (
-		NewName            = DefaultName + "-new"
-		NewCommunicationID = DefaultCommunicationID + "-new"
+		DefaultID              = NewID()
+		NewName                = DefaultName + "-new"
+		DefaultCommunicationID = NewCommunicationID()
+		NewCommunicationID     = DefaultCommunicationID + "-new"
+		DefaultVersion         = NewVersion()
 	)
+
+	ctx := context.Background()
 
 	gen := &generatorMock{}
 

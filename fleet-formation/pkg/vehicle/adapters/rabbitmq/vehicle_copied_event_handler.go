@@ -3,12 +3,13 @@ package rabbitmq
 import (
 	"context"
 
+	"github.com/Tomofiles/skysign_cloud_v2/fleet-formation/pkg/vehicle/adapters/proto"
 	"github.com/Tomofiles/skysign_cloud_v2/fleet-formation/pkg/vehicle/app"
 
 	"github.com/Tomofiles/skysign_cloud_v2/skysign-proto/pkg/skysign_proto"
 
 	"github.com/golang/glog"
-	"google.golang.org/protobuf/proto"
+	proto_lib "google.golang.org/protobuf/proto"
 )
 
 const (
@@ -39,35 +40,35 @@ func (h *vehicleCopiedEventHandler) HandleVehicleCopiedEvent(
 	event []byte,
 ) error {
 	eventPb := skysign_proto.VehicleCopiedEvent{}
-	if err := proto.Unmarshal(event, &eventPb); err != nil {
+	if err := proto_lib.Unmarshal(event, &eventPb); err != nil {
 		return err
 	}
 
 	glog.Infof("RECEIVE , Event: %s, Message: %s", VehicleCopiedEventQueueName, eventPb.String())
 
-	requestDpo := copyRequestDpoHolder{
-		originalID: eventPb.GetOriginalVehicleId(),
-		newID:      eventPb.GetNewVehicleId(),
-		fleetID:    eventPb.GetFleetId(),
+	if ret := proto.ValidateVehicleCopiedEvent(&eventPb); ret != nil {
+		return ret
 	}
-	if ret := h.app.Services.ManageVehicle.CarbonCopyVehicle(&requestDpo); ret != nil {
+
+	command := copyCommand{
+		event: &eventPb,
+	}
+	if ret := h.app.Services.ManageVehicle.CarbonCopyVehicle(&command); ret != nil {
 		return ret
 	}
 	return nil
 }
 
-type copyRequestDpoHolder struct {
-	originalID string
-	newID      string
-	fleetID    string
+type copyCommand struct {
+	event *skysign_proto.VehicleCopiedEvent
 }
 
-func (h *copyRequestDpoHolder) GetOriginalID() string {
-	return h.originalID
+func (h *copyCommand) GetOriginalID() string {
+	return h.event.GetOriginalVehicleId()
 }
-func (h *copyRequestDpoHolder) GetNewID() string {
-	return h.newID
+func (h *copyCommand) GetNewID() string {
+	return h.event.GetNewVehicleId()
 }
-func (h *copyRequestDpoHolder) GetFleetID() string {
-	return h.fleetID
+func (h *copyCommand) GetFleetID() string {
+	return h.event.GetFleetId()
 }

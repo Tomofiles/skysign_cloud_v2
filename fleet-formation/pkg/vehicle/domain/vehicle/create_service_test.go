@@ -17,6 +17,12 @@ import (
 func TestCreateNewVehicleService(t *testing.T) {
 	a := assert.New(t)
 
+	var (
+		DefaultID              = NewID()
+		DefaultCommunicationID = NewCommunicationID()
+		DefaultVersion         = NewVersion()
+	)
+
 	ctx := context.Background()
 
 	var (
@@ -62,6 +68,12 @@ func TestCreateNewVehicleService(t *testing.T) {
 // また、ドメインイベントは発行されないことを検証する。
 func TestSaveErrorWhenCreateNewVehicleService(t *testing.T) {
 	a := assert.New(t)
+
+	var (
+		DefaultID              = NewID()
+		DefaultCommunicationID = NewCommunicationID()
+		DefaultVersion         = NewVersion()
+	)
 
 	ctx := context.Background()
 

@@ -17,6 +17,12 @@ import (
 func TestDeleteVehicleService(t *testing.T) {
 	a := assert.New(t)
 
+	var (
+		DefaultID              = NewID()
+		DefaultCommunicationID = NewCommunicationID()
+		DefaultVersion         = NewVersion()
+	)
+
 	ctx := context.Background()
 
 	gen := &generatorMock{
@@ -58,6 +64,10 @@ func TestDeleteVehicleService(t *testing.T) {
 func TestGetErrorWhenDeleteVehicleService(t *testing.T) {
 	a := assert.New(t)
 
+	var (
+		DefaultID = NewID()
+	)
+
 	ctx := context.Background()
 
 	repo := &repositoryMockDeleteService{}
@@ -80,6 +90,12 @@ func TestGetErrorWhenDeleteVehicleService(t *testing.T) {
 // また、ドメインイベントは発行されないことを検証する。
 func TestDeleteErrorWhenDeleteVehicleService(t *testing.T) {
 	a := assert.New(t)
+
+	var (
+		DefaultID              = NewID()
+		DefaultCommunicationID = NewCommunicationID()
+		DefaultVersion         = NewVersion()
+	)
 
 	ctx := context.Background()
 
@@ -115,6 +131,12 @@ func TestDeleteErrorWhenDeleteVehicleService(t *testing.T) {
 // また、ドメインイベントは発行されないことを検証する。
 func TestCannnotDeleteErrorWhenDeleteVehicleService(t *testing.T) {
 	a := assert.New(t)
+
+	var (
+		DefaultID              = NewID()
+		DefaultCommunicationID = NewCommunicationID()
+		DefaultVersion         = NewVersion()
+	)
 
 	ctx := context.Background()
 

@@ -10,6 +10,11 @@ import (
 func TestCreateNewVehicle(t *testing.T) {
 	a := assert.New(t)
 
+	var (
+		DefaultID      = NewID()
+		DefaultVersion = NewVersion()
+	)
+
 	gen := &generatorMock{
 		id:       DefaultID,
 		versions: []Version{DefaultVersion},
@@ -29,6 +34,12 @@ func TestCreateNewVehicle(t *testing.T) {
 // Vehicleのカーボンコピーを作成し、初期状態を検証する。
 func TestCopyVehicle(t *testing.T) {
 	a := assert.New(t)
+
+	var (
+		DefaultID              = NewID()
+		DefaultCommunicationID = NewCommunicationID()
+		DefaultVersion         = NewVersion()
+	)
 
 	gen := &generatorMock{}
 	id := DefaultID + "-copied"
@@ -58,6 +69,12 @@ func TestCopyVehicle(t *testing.T) {
 func TestVehicleAssembleFromComponent(t *testing.T) {
 	a := assert.New(t)
 
+	var (
+		DefaultID              = NewID()
+		DefaultCommunicationID = NewCommunicationID()
+		DefaultVersion         = NewVersion()
+	)
+
 	comp := &vehicleComponentMock{
 		id:              string(DefaultID),
 		name:            DefaultName,
@@ -85,6 +102,12 @@ func TestVehicleAssembleFromComponent(t *testing.T) {
 // 内部状態を検証する。
 func TestTakeApartVehicle(t *testing.T) {
 	a := assert.New(t)
+
+	var (
+		DefaultID              = NewID()
+		DefaultCommunicationID = NewCommunicationID()
+		DefaultVersion         = NewVersion()
+	)
 
 	vehicle := &Vehicle{
 		id:              DefaultID,

@@ -2,15 +2,22 @@ package grpc
 
 import (
 	"github.com/Tomofiles/skysign_cloud_v2/fleet-formation/pkg/vehicle/service"
+	"github.com/google/uuid"
 
 	"github.com/stretchr/testify/mock"
 	"google.golang.org/grpc"
 )
 
-const DefaultVehicleID = "vehicle-id"
+var NewVehicleID = func() string {
+	id, _ := uuid.NewRandom()
+	return id.String()
+}
+var NewVehicleCommunicationID = func() string {
+	id, _ := uuid.NewRandom()
+	return id.String()
+}
+
 const DefaultVehicleName = "vehicle-name"
-const DefaultCommunicationID = "communication-id"
-const DefaultFleetID = "fleet-id"
 
 type manageVehicleServiceMock struct {
 	mock.Mock
