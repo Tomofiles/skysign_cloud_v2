@@ -3,29 +3,30 @@ package grpc
 import (
 	"context"
 
+	"github.com/Tomofiles/skysign_cloud_v2/fleet-formation/pkg/mission/adapters/proto"
 	"github.com/Tomofiles/skysign_cloud_v2/fleet-formation/pkg/mission/app"
 	"github.com/Tomofiles/skysign_cloud_v2/fleet-formation/pkg/mission/service"
 
-	proto "github.com/Tomofiles/skysign_cloud_v2/skysign-proto/pkg/skysign_proto"
+	"github.com/Tomofiles/skysign_cloud_v2/skysign-proto/pkg/skysign_proto"
 )
 
 // manageMissionServiceServer .
 type manageMissionServiceServer struct {
-	proto.UnimplementedManageMissionServiceServer
+	skysign_proto.UnimplementedManageMissionServiceServer
 	app app.Application
 }
 
 // NewManageMissionServiceServer .
-func NewManageMissionServiceServer(application app.Application) proto.ManageMissionServiceServer {
+func NewManageMissionServiceServer(application app.Application) skysign_proto.ManageMissionServiceServer {
 	return &manageMissionServiceServer{app: application}
 }
 
 // ListMissions .
 func (s *manageMissionServiceServer) ListMissions(
 	ctx context.Context,
-	request *proto.Empty,
-) (*proto.ListMissionsResponses, error) {
-	response := &proto.ListMissionsResponses{}
+	request *skysign_proto.Empty,
+) (*skysign_proto.ListMissionsResponses, error) {
+	response := &skysign_proto.ListMissionsResponses{}
 	if ret := s.app.Services.ManageMission.ListMissions(
 		func(model service.MissionPresentationModel) {
 			mission := MissionProtoTransformerFromModel(model)
@@ -43,9 +44,9 @@ func (s *manageMissionServiceServer) ListMissions(
 // GetMission .
 func (s *manageMissionServiceServer) GetMission(
 	ctx context.Context,
-	request *proto.GetMissionRequest,
-) (*proto.Mission, error) {
-	var response *proto.Mission
+	request *skysign_proto.GetMissionRequest,
+) (*skysign_proto.Mission, error) {
+	var response *skysign_proto.Mission
 	command := &missionIDCommand{
 		id: request.Id,
 	}
@@ -63,9 +64,12 @@ func (s *manageMissionServiceServer) GetMission(
 // CreateMission .
 func (s *manageMissionServiceServer) CreateMission(
 	ctx context.Context,
-	request *proto.Mission,
-) (*proto.Mission, error) {
-	response := &proto.Mission{}
+	request *skysign_proto.Mission,
+) (*skysign_proto.Mission, error) {
+	if ret := proto.ValidateCreateMissionRequest(request); ret != nil {
+		return nil, ret
+	}
+	response := &skysign_proto.Mission{}
 	command := &createCommand{
 		request: request,
 	}
@@ -88,9 +92,9 @@ func (s *manageMissionServiceServer) CreateMission(
 // UpdateMission .
 func (s *manageMissionServiceServer) UpdateMission(
 	ctx context.Context,
-	request *proto.Mission,
-) (*proto.Mission, error) {
-	response := &proto.Mission{}
+	request *skysign_proto.Mission,
+) (*skysign_proto.Mission, error) {
+	response := &skysign_proto.Mission{}
 	command := &updateCommand{
 		request: request,
 	}
@@ -111,9 +115,9 @@ func (s *manageMissionServiceServer) UpdateMission(
 // DeleteMission .
 func (s *manageMissionServiceServer) DeleteMission(
 	ctx context.Context,
-	request *proto.DeleteMissionRequest,
-) (*proto.Empty, error) {
-	response := &proto.Empty{}
+	request *skysign_proto.DeleteMissionRequest,
+) (*skysign_proto.Empty, error) {
+	response := &skysign_proto.Empty{}
 	command := &missionIDCommand{
 		id: request.Id,
 	}
@@ -124,7 +128,7 @@ func (s *manageMissionServiceServer) DeleteMission(
 }
 
 type createCommand struct {
-	request *proto.Mission
+	request *skysign_proto.Mission
 }
 
 func (f *createCommand) GetMission() service.Mission {
@@ -134,7 +138,7 @@ func (f *createCommand) GetMission() service.Mission {
 }
 
 type updateCommand struct {
-	request *proto.Mission
+	request *skysign_proto.Mission
 }
 
 func (f *updateCommand) GetID() string {
@@ -148,7 +152,7 @@ func (f *updateCommand) GetMission() service.Mission {
 }
 
 type mission struct {
-	request *proto.Mission
+	request *skysign_proto.Mission
 }
 
 func (f *mission) GetID() string {
