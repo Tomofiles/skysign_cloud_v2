@@ -12,11 +12,3 @@ func ValidateGetVehicleRequest(request *skysign_proto.GetVehicleRequest) error {
 		validation.Field(&request.Id, validation.Required, validation.Length(36, 36), is.UUID),
 	)
 }
-
-// func (f *updateCommand) Validation() error {
-// 	return validation.ValidateStruct(f.request,
-// 		validation.Field(&f.request.Id, validation.Required, validation.Length(36, 36), is.UUID),
-// 		validation.Field(&f.request.Name, validation.Required, validation.Length(1, 200)),
-// 		validation.Field(&f.request.CommunicationId, validation.Required, validation.Length(1, 36)),
-// 	)
-// }
