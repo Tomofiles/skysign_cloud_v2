@@ -8,27 +8,29 @@ import (
 
 // ValidateCreateMissionRequest .
 func ValidateCreateMissionRequest(request *skysign_proto.Mission) error {
-	return validation.ValidateStruct(request,
+	if err := validation.ValidateStruct(request,
 		validation.Field(&request.Name, validation.Required, validation.Length(0, 200)),
-		validation.Field(&request.Navigation, validation.Required,
-			ValidateNavigation("upload_id", getUploadIdValue, validation.Required, validation.Length(36, 36), is.UUID),
-			ValidateNavigation("takeoff_point_ground_altitude", getTakeoffPointGroundAltitudeValue, validation.Required, validation.Min(1.0)),
-		),
-	)
-}
-
-func getUploadIdValue(value interface{}) interface{} {
-	nav, ok := value.(*skysign_proto.Navigation)
-	if !ok {
-		panic("developer error")
+		validation.Field(&request.Navigation, validation.Required),
+	); err != nil {
+		return err
 	}
-	return nav.UploadId
-}
-
-func getTakeoffPointGroundAltitudeValue(value interface{}) interface{} {
-	nav, ok := value.(*skysign_proto.Navigation)
-	if !ok {
-		panic("developer error")
+	navigation := request.Navigation
+	if err := validation.ValidateStruct(navigation,
+		validation.Field(&navigation.UploadId, validation.Required, validation.Length(36, 36), is.UUID),
+		validation.Field(&navigation.TakeoffPointGroundAltitude),
+		validation.Field(&navigation.Waypoints, validation.Required),
+	); err != nil {
+		return err
 	}
-	return nav.TakeoffPointGroundAltitude
+	for _, waypoint := range navigation.Waypoints {
+		if err := validation.ValidateStruct(waypoint,
+			validation.Field(&waypoint.Latitude, validation.Min(-90.0), validation.Max(90.0)),
+			validation.Field(&waypoint.Longitude, validation.Min(-180.0), validation.Max(180.0)),
+			validation.Field(&waypoint.RelativeAltitude),
+			validation.Field(&waypoint.Speed, validation.Min(0.1)),
+		); err != nil {
+			return err
+		}
+	}
+	return nil
 }
