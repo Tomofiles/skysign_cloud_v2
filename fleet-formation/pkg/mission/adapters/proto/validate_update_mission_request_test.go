@@ -1,100 +1,217 @@
 package proto
 
-// import (
-// 	"errors"
-// 	"strings"
-// 	"testing"
+import (
+	"errors"
+	"strings"
+	"testing"
 
-// 	"github.com/Tomofiles/skysign_cloud_v2/skysign-proto/pkg/skysign_proto"
-// 	validation "github.com/go-ozzo/ozzo-validation"
-// 	"github.com/google/uuid"
-// 	"github.com/stretchr/testify/assert"
-// )
+	"github.com/Tomofiles/skysign_cloud_v2/skysign-proto/pkg/skysign_proto"
+	validation "github.com/go-ozzo/ozzo-validation"
+	"github.com/google/uuid"
+	"github.com/stretchr/testify/assert"
+)
 
-// // TestValidateUpdateVehicleRequest_Success .
-// func TestValidateUpdateVehicleRequest_Success(t *testing.T) {
-// 	a := assert.New(t)
+// TestValidateUpdateMissionRequest_Success .
+func TestValidateUpdateMissionRequest_Success(t *testing.T) {
+	a := assert.New(t)
 
-// 	id, _ := uuid.NewRandom()
-// 	name := strings.Repeat("X", 200)
-// 	communicationID := strings.Repeat("X", 36)
+	uuid, _ := uuid.NewRandom()
 
-// 	req := &skysign_proto.Vehicle{
-// 		Id:              id.String(),
-// 		Name:            name,
-// 		CommunicationId: communicationID,
-// 	}
-// 	ret := ValidateUpdateVehicleRequest(req)
+	id := uuid.String()
+	name := strings.Repeat("X", 200)
+	uploadID := uuid.String()
 
-// 	a.Nil(ret)
-// }
+	req := &skysign_proto.Mission{
+		Id:   id,
+		Name: name,
+		Navigation: &skysign_proto.Navigation{
+			UploadId:                   uploadID,
+			TakeoffPointGroundAltitude: 10,
+			Waypoints: []*skysign_proto.Waypoint{
+				{
+					Latitude:         -90.0,
+					Longitude:        -180.0,
+					RelativeAltitude: 30,
+					Speed:            0.1,
+				},
+				{
+					Latitude:         90.0,
+					Longitude:        180.0,
+					RelativeAltitude: 30,
+					Speed:            1,
+				},
+			},
+		},
+	}
+	ret := ValidateUpdateMissionRequest(req)
 
-// // TestValidateUpdateVehicleRequest_Failure_Blank .
-// func TestValidateUpdateVehicleRequest_Failure_Blank(t *testing.T) {
-// 	a := assert.New(t)
+	a.Nil(ret)
+}
 
-// 	id := strings.Repeat("X", 0)
-// 	name := strings.Repeat("X", 0)
-// 	communicationID := strings.Repeat("X", 0)
+// TestValidateUpdateMissionRequest_Failure_Blank_FirstLayer .
+func TestValidateUpdateMissionRequest_Failure_Blank_FirstLayer(t *testing.T) {
+	a := assert.New(t)
 
-// 	req := &skysign_proto.Vehicle{
-// 		Id:              id,
-// 		Name:            name,
-// 		CommunicationId: communicationID,
-// 	}
-// 	ret := ValidateUpdateVehicleRequest(req)
+	id := strings.Repeat("X", 0)
+	name := strings.Repeat("X", 0)
 
-// 	var errs validation.Errors
-// 	errors.As(ret, &errs)
+	req := &skysign_proto.Mission{
+		Id:   id,
+		Name: name,
+	}
+	ret := ValidateUpdateMissionRequest(req)
 
-// 	a.Len(errs, 3)
-// 	a.Equal("cannot be blank", errs["id"].Error())
-// 	a.Equal("cannot be blank", errs["name"].Error())
-// 	a.Equal("cannot be blank", errs["communication_id"].Error())
-// }
+	var errs validation.Errors
+	errors.As(ret, &errs)
 
-// // TestValidateUpdateVehicleRequest_Failure_Length .
-// func TestValidateUpdateVehicleRequest_Failure_Length(t *testing.T) {
-// 	a := assert.New(t)
+	a.Len(errs, 3)
+	a.Equal("cannot be blank", errs["id"].Error())
+	a.Equal("cannot be blank", errs["name"].Error())
+	a.Equal("cannot be blank", errs["navigation"].Error())
+}
 
-// 	id := strings.Repeat("X", 37)
-// 	name := strings.Repeat("X", 201)
-// 	communicationID := strings.Repeat("X", 37)
+// TestValidateUpdateMissionRequest_Failure_Blank_SecondLayer .
+func TestValidateUpdateMissionRequest_Failure_Blank_SecondLayer(t *testing.T) {
+	a := assert.New(t)
 
-// 	req := &skysign_proto.Vehicle{
-// 		Id:              id,
-// 		Name:            name,
-// 		CommunicationId: communicationID,
-// 	}
-// 	ret := ValidateUpdateVehicleRequest(req)
+	uuid, _ := uuid.NewRandom()
 
-// 	var errs validation.Errors
-// 	errors.As(ret, &errs)
+	id := uuid.String()
+	name := strings.Repeat("X", 200)
 
-// 	a.Len(errs, 3)
-// 	a.Equal("the length must be exactly 36", errs["id"].Error())
-// 	a.Equal("the length must be no more than 200", errs["name"].Error())
-// 	a.Equal("the length must be no more than 36", errs["communication_id"].Error())
-// }
+	req := &skysign_proto.Mission{
+		Id:         id,
+		Name:       name,
+		Navigation: &skysign_proto.Navigation{},
+	}
+	ret := ValidateUpdateMissionRequest(req)
 
-// // TestValidateUpdateVehicleRequest_Failure_IllegalFormat .
-// func TestValidateUpdateVehicleRequest_Failure_IllegalFormat(t *testing.T) {
-// 	a := assert.New(t)
+	var errs validation.Errors
+	errors.As(ret, &errs)
 
-// 	id := strings.Repeat("X", 36)
-// 	name := strings.Repeat("X", 200)
-// 	communicationID := strings.Repeat("X", 36)
+	a.Len(errs, 2)
+	a.Equal("cannot be blank", errs["upload_id"].Error())
+	a.Equal("cannot be blank", errs["waypoints"].Error())
+}
 
-// 	req := &skysign_proto.Vehicle{
-// 		Id:              id,
-// 		Name:            name,
-// 		CommunicationId: communicationID,
-// 	}
-// 	ret := ValidateUpdateVehicleRequest(req)
+// TestValidateUpdateMissionRequest_Failure_Length_FirstLayer .
+func TestValidateUpdateMissionRequest_Failure_Length_FirstLayer(t *testing.T) {
+	a := assert.New(t)
 
-// 	var errs validation.Errors
-// 	errors.As(ret, &errs)
+	id := strings.Repeat("X", 37)
+	name := strings.Repeat("X", 201)
 
-// 	a.Len(errs, 1)
-// 	a.Equal("must be a valid UUID", errs["id"].Error())
-// }
+	req := &skysign_proto.Mission{
+		Id:         id,
+		Name:       name,
+		Navigation: &skysign_proto.Navigation{},
+	}
+	ret := ValidateUpdateMissionRequest(req)
+
+	var errs validation.Errors
+	errors.As(ret, &errs)
+
+	a.Len(errs, 2)
+	a.Equal("the length must be exactly 36", errs["id"].Error())
+	a.Equal("the length must be no more than 200", errs["name"].Error())
+}
+
+// TestValidateUpdateMissionRequest_Failure_Length_SecondLayer .
+func TestValidateUpdateMissionRequest_Failure_Length_SecondLayer(t *testing.T) {
+	a := assert.New(t)
+
+	uuid, _ := uuid.NewRandom()
+
+	id := uuid.String()
+	name := strings.Repeat("X", 200)
+	uploadID := strings.Repeat("X", 37)
+
+	req := &skysign_proto.Mission{
+		Id:   id,
+		Name: name,
+		Navigation: &skysign_proto.Navigation{
+			UploadId: uploadID,
+		},
+	}
+	ret := ValidateUpdateMissionRequest(req)
+
+	var errs validation.Errors
+	errors.As(ret, &errs)
+
+	a.Len(errs, 2)
+	a.Equal("the length must be exactly 36", errs["upload_id"].Error())
+	a.Equal("cannot be blank", errs["waypoints"].Error())
+}
+
+// TestValidateUpdateMissionRequest_Failure_Min .
+func TestValidateUpdateMissionRequest_Failure_Min(t *testing.T) {
+	a := assert.New(t)
+
+	uuid, _ := uuid.NewRandom()
+
+	id := uuid.String()
+	name := strings.Repeat("X", 200)
+	uploadID := uuid.String()
+
+	req := &skysign_proto.Mission{
+		Id:   id,
+		Name: name,
+		Navigation: &skysign_proto.Navigation{
+			UploadId:                   uploadID,
+			TakeoffPointGroundAltitude: 10,
+			Waypoints: []*skysign_proto.Waypoint{
+				{
+					Latitude:         -90.1,
+					Longitude:        -180.1,
+					RelativeAltitude: 10,
+					Speed:            0.01,
+				},
+			},
+		},
+	}
+	ret := ValidateUpdateMissionRequest(req)
+
+	var errs validation.Errors
+	errors.As(ret, &errs)
+
+	a.Len(errs, 3)
+	a.Equal("must be no less than -90", errs["latitude"].Error())
+	a.Equal("must be no less than -180", errs["longitude"].Error())
+	a.Equal("must be no less than 0.1", errs["speed"].Error())
+}
+
+// TestValidateUpdateMissionRequest_Failure_Max .
+func TestValidateUpdateMissionRequest_Failure_Max(t *testing.T) {
+	a := assert.New(t)
+
+	uuid, _ := uuid.NewRandom()
+
+	id := uuid.String()
+	name := strings.Repeat("X", 200)
+	uploadID := uuid.String()
+
+	req := &skysign_proto.Mission{
+		Id:   id,
+		Name: name,
+		Navigation: &skysign_proto.Navigation{
+			UploadId:                   uploadID,
+			TakeoffPointGroundAltitude: 10,
+			Waypoints: []*skysign_proto.Waypoint{
+				{
+					Latitude:         90.1,
+					Longitude:        180.1,
+					RelativeAltitude: 10,
+					Speed:            10,
+				},
+			},
+		},
+	}
+	ret := ValidateUpdateMissionRequest(req)
+
+	var errs validation.Errors
+	errors.As(ret, &errs)
+
+	a.Len(errs, 2)
+	a.Equal("must be no greater than 90", errs["latitude"].Error())
+	a.Equal("must be no greater than 180", errs["longitude"].Error())
+}

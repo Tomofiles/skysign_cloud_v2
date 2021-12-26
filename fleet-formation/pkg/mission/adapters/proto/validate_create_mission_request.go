@@ -27,7 +27,7 @@ func ValidateCreateMissionRequest(request *skysign_proto.Mission) error {
 			validation.Field(&waypoint.Latitude, validation.Min(-90.0), validation.Max(90.0)),
 			validation.Field(&waypoint.Longitude, validation.Min(-180.0), validation.Max(180.0)),
 			validation.Field(&waypoint.RelativeAltitude),
-			validation.Field(&waypoint.Speed, validation.Min(0.1)),
+			validation.Field(&waypoint.Speed, validation.Required, validation.Min(0.1)),
 		); err != nil {
 			return err
 		}
