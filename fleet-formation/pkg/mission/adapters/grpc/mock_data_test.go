@@ -3,16 +3,24 @@ package grpc
 import (
 	m "github.com/Tomofiles/skysign_cloud_v2/fleet-formation/pkg/mission/domain/mission"
 	"github.com/Tomofiles/skysign_cloud_v2/fleet-formation/pkg/mission/service"
+	"github.com/google/uuid"
 
 	"github.com/stretchr/testify/mock"
 	"google.golang.org/grpc"
 )
 
-const DefaultMissionID = "mission-id"
+var NewMissionID = func() string {
+	id, _ := uuid.NewRandom()
+	return id.String()
+}
+var NewMissionUploadID = func() string {
+	id, _ := uuid.NewRandom()
+	return id.String()
+}
+
 const DefaultMissionName = "mission-name"
 const DefaultMissionTakeoffPointGroundAltitudeM float64 = 10
 const DefaultMissionVersion = m.Version("version")
-const DefaultMissionUploadID = m.UploadID("upload-id")
 
 type manageMissionServiceMock struct {
 	mock.Mock

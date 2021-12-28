@@ -16,6 +16,11 @@ import (
 func TestSingleMissionsListMissions(t *testing.T) {
 	a := assert.New(t)
 
+	var (
+		DefaultMissionID       = NewMissionID()
+		DefaultMissionUploadID = NewMissionUploadID()
+	)
+
 	service := manageMissionServiceMock{}
 
 	missionModels := []s.MissionPresentationModel{
@@ -73,20 +78,20 @@ func TestMultipleMissionsListMissions(t *testing.T) {
 	a := assert.New(t)
 
 	var (
-		DefaultMissionID1                          = DefaultMissionID + "-1"
+		DefaultMissionID1                          = NewMissionID()
 		DefaultMissionName1                        = DefaultMissionName + "-1"
 		DefaultMissionTakeoffPointGroundAltitudeM1 = DefaultMissionTakeoffPointGroundAltitudeM + 1
-		DefaultMissionUploadID1                    = DefaultMissionUploadID + "-1"
+		DefaultMissionUploadID1                    = NewMissionUploadID()
 		DefaultMissionVersion1                     = DefaultMissionVersion + "-1"
-		DefaultMissionID2                          = DefaultMissionID + "-2"
+		DefaultMissionID2                          = NewMissionID()
 		DefaultMissionName2                        = DefaultMissionName + "-2"
 		DefaultMissionTakeoffPointGroundAltitudeM2 = DefaultMissionTakeoffPointGroundAltitudeM + 2
-		DefaultMissionUploadID2                    = DefaultMissionUploadID + "-2"
+		DefaultMissionUploadID2                    = NewMissionUploadID()
 		DefaultMissionVersion2                     = DefaultMissionVersion + "-2"
-		DefaultMissionID3                          = DefaultMissionID + "-3"
+		DefaultMissionID3                          = NewMissionID()
 		DefaultMissionName3                        = DefaultMissionName + "-3"
 		DefaultMissionTakeoffPointGroundAltitudeM3 = DefaultMissionTakeoffPointGroundAltitudeM + 3
-		DefaultMissionUploadID3                    = DefaultMissionUploadID + "-3"
+		DefaultMissionUploadID3                    = NewMissionUploadID()
 		DefaultMissionVersion3                     = DefaultMissionVersion + "-3"
 	)
 
@@ -222,6 +227,11 @@ func TestNoneMissionsListMissions(t *testing.T) {
 func TestGetMission(t *testing.T) {
 	a := assert.New(t)
 
+	var (
+		DefaultMissionID       = NewMissionID()
+		DefaultMissionUploadID = NewMissionUploadID()
+	)
+
 	service := manageMissionServiceMock{}
 
 	missionModel := &missionModelMock{
@@ -274,6 +284,11 @@ func TestGetMission(t *testing.T) {
 func TestCreateMission(t *testing.T) {
 	a := assert.New(t)
 
+	var (
+		DefaultMissionID       = NewMissionID()
+		DefaultMissionUploadID = NewMissionUploadID()
+	)
+
 	service := manageMissionServiceMock{}
 
 	missionModel := &missionModelMock{
@@ -284,8 +299,15 @@ func TestCreateMission(t *testing.T) {
 				Name: DefaultMissionName,
 				Navigation: navigationComponentMock{
 					TakeoffPointGroundAltitudeM: DefaultMissionTakeoffPointGroundAltitudeM,
-					Waypoints:                   []waypointComponentMock{},
-					UploadID:                    string(DefaultMissionUploadID),
+					Waypoints: []waypointComponentMock{
+						{
+							LatitudeDegree:    10,
+							LongitudeDegree:   20,
+							RelativeAltitudeM: 30,
+							SpeedMS:           40,
+						},
+					},
+					UploadID: string(DefaultMissionUploadID),
 				},
 				Version: string(DefaultMissionVersion),
 			},
@@ -305,7 +327,14 @@ func TestCreateMission(t *testing.T) {
 		Name: DefaultMissionName,
 		Navigation: &proto.Navigation{
 			TakeoffPointGroundAltitude: DefaultMissionTakeoffPointGroundAltitudeM,
-			Waypoints:                  []*proto.Waypoint{},
+			Waypoints: []*proto.Waypoint{
+				{
+					Latitude:         10,
+					Longitude:        20,
+					RelativeAltitude: 30,
+					Speed:            40,
+				},
+			},
 		},
 	}
 	response, err := grpc.CreateMission(
@@ -318,8 +347,15 @@ func TestCreateMission(t *testing.T) {
 		Name: DefaultMissionName,
 		Navigation: &proto.Navigation{
 			TakeoffPointGroundAltitude: DefaultMissionTakeoffPointGroundAltitudeM,
-			Waypoints:                  []*proto.Waypoint{},
-			UploadId:                   string(DefaultMissionUploadID),
+			Waypoints: []*proto.Waypoint{
+				{
+					Latitude:         10,
+					Longitude:        20,
+					RelativeAltitude: 30,
+					Speed:            40,
+				},
+			},
+			UploadId: string(DefaultMissionUploadID),
 		},
 	}
 
@@ -329,6 +365,12 @@ func TestCreateMission(t *testing.T) {
 
 func TestUpdateMission(t *testing.T) {
 	a := assert.New(t)
+
+	var (
+		DefaultMissionID       = NewMissionID()
+		DefaultMissionUploadID = NewMissionUploadID()
+		NewMissionName         = DefaultMissionName + "-new"
+	)
 
 	service := manageMissionServiceMock{}
 
@@ -340,8 +382,15 @@ func TestUpdateMission(t *testing.T) {
 				Name: DefaultMissionName,
 				Navigation: navigationComponentMock{
 					TakeoffPointGroundAltitudeM: DefaultMissionTakeoffPointGroundAltitudeM,
-					Waypoints:                   []waypointComponentMock{},
-					UploadID:                    string(DefaultMissionUploadID),
+					Waypoints: []waypointComponentMock{
+						{
+							LatitudeDegree:    10,
+							LongitudeDegree:   20,
+							RelativeAltitudeM: 30,
+							SpeedMS:           40,
+						},
+					},
+					UploadID: string(DefaultMissionUploadID),
 				},
 				Version: string(DefaultMissionVersion),
 			},
@@ -359,10 +408,17 @@ func TestUpdateMission(t *testing.T) {
 
 	request := &proto.Mission{
 		Id:   DefaultMissionID,
-		Name: DefaultMissionID,
+		Name: NewMissionName,
 		Navigation: &proto.Navigation{
 			TakeoffPointGroundAltitude: DefaultMissionTakeoffPointGroundAltitudeM,
-			Waypoints:                  []*proto.Waypoint{},
+			Waypoints: []*proto.Waypoint{
+				{
+					Latitude:         10,
+					Longitude:        20,
+					RelativeAltitude: 30,
+					Speed:            40,
+				},
+			},
 		},
 	}
 	response, err := grpc.UpdateMission(
@@ -372,11 +428,18 @@ func TestUpdateMission(t *testing.T) {
 
 	expectResponse := &proto.Mission{
 		Id:   DefaultMissionID,
-		Name: DefaultMissionID,
+		Name: NewMissionName,
 		Navigation: &proto.Navigation{
 			TakeoffPointGroundAltitude: DefaultMissionTakeoffPointGroundAltitudeM,
-			Waypoints:                  []*proto.Waypoint{},
-			UploadId:                   string(DefaultMissionUploadID),
+			Waypoints: []*proto.Waypoint{
+				{
+					Latitude:         10,
+					Longitude:        20,
+					RelativeAltitude: 30,
+					Speed:            40,
+				},
+			},
+			UploadId: string(DefaultMissionUploadID),
 		},
 	}
 
@@ -386,6 +449,10 @@ func TestUpdateMission(t *testing.T) {
 
 func TestDeleteMission(t *testing.T) {
 	a := assert.New(t)
+
+	var (
+		DefaultMissionID = NewMissionID()
+	)
 
 	service := manageMissionServiceMock{}
 

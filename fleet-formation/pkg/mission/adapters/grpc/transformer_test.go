@@ -13,6 +13,10 @@ import (
 func TestNoWaypointMissionProtoTransformerFromModel(t *testing.T) {
 	a := assert.New(t)
 
+	var (
+		DefaultMissionID = NewMissionID()
+	)
+
 	missionModel := &missionModelMock{
 		mission: m.AssembleFrom(
 			nil,
@@ -43,6 +47,10 @@ func TestNoWaypointMissionProtoTransformerFromModel(t *testing.T) {
 
 func TestSingleWaypointMissionProtoTransformerFromModel(t *testing.T) {
 	a := assert.New(t)
+
+	var (
+		DefaultMissionID = NewMissionID()
+	)
 
 	missionModel := &missionModelMock{
 		mission: m.AssembleFrom(
@@ -89,6 +97,10 @@ func TestSingleWaypointMissionProtoTransformerFromModel(t *testing.T) {
 
 func TestMultipleWaypointsMissionProtoTransformerFromModel(t *testing.T) {
 	a := assert.New(t)
+
+	var (
+		DefaultMissionID = NewMissionID()
+	)
 
 	missionModel := &missionModelMock{
 		mission: m.AssembleFrom(

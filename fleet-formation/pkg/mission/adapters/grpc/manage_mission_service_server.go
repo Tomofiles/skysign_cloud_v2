@@ -46,6 +46,9 @@ func (s *manageMissionServiceServer) GetMission(
 	ctx context.Context,
 	request *skysign_proto.GetMissionRequest,
 ) (*skysign_proto.Mission, error) {
+	if ret := proto.ValidateGetMissionRequest(request); ret != nil {
+		return nil, ret
+	}
 	var response *skysign_proto.Mission
 	command := &missionIDCommand{
 		id: request.Id,
@@ -94,6 +97,9 @@ func (s *manageMissionServiceServer) UpdateMission(
 	ctx context.Context,
 	request *skysign_proto.Mission,
 ) (*skysign_proto.Mission, error) {
+	if ret := proto.ValidateUpdateMissionRequest(request); ret != nil {
+		return nil, ret
+	}
 	response := &skysign_proto.Mission{}
 	command := &updateCommand{
 		request: request,
@@ -117,6 +123,9 @@ func (s *manageMissionServiceServer) DeleteMission(
 	ctx context.Context,
 	request *skysign_proto.DeleteMissionRequest,
 ) (*skysign_proto.Empty, error) {
+	if ret := proto.ValidateDeleteMissionRequest(request); ret != nil {
+		return nil, ret
+	}
 	response := &skysign_proto.Empty{}
 	command := &missionIDCommand{
 		id: request.Id,

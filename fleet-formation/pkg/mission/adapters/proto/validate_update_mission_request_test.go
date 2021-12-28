@@ -19,13 +19,11 @@ func TestValidateUpdateMissionRequest_Success(t *testing.T) {
 
 	id := uuid.String()
 	name := strings.Repeat("X", 200)
-	uploadID := uuid.String()
 
 	req := &skysign_proto.Mission{
 		Id:   id,
 		Name: name,
 		Navigation: &skysign_proto.Navigation{
-			UploadId:                   uploadID,
 			TakeoffPointGroundAltitude: 10,
 			Waypoints: []*skysign_proto.Waypoint{
 				{
@@ -89,13 +87,12 @@ func TestValidateUpdateMissionRequest_Failure_Blank_SecondLayer(t *testing.T) {
 	var errs validation.Errors
 	errors.As(ret, &errs)
 
-	a.Len(errs, 2)
-	a.Equal("cannot be blank", errs["upload_id"].Error())
+	a.Len(errs, 1)
 	a.Equal("cannot be blank", errs["waypoints"].Error())
 }
 
-// TestValidateUpdateMissionRequest_Failure_Length_FirstLayer .
-func TestValidateUpdateMissionRequest_Failure_Length_FirstLayer(t *testing.T) {
+// TestValidateUpdateMissionRequest_Failure_Length .
+func TestValidateUpdateMissionRequest_Failure_Length(t *testing.T) {
 	a := assert.New(t)
 
 	id := strings.Repeat("X", 37)
@@ -116,33 +113,6 @@ func TestValidateUpdateMissionRequest_Failure_Length_FirstLayer(t *testing.T) {
 	a.Equal("the length must be no more than 200", errs["name"].Error())
 }
 
-// TestValidateUpdateMissionRequest_Failure_Length_SecondLayer .
-func TestValidateUpdateMissionRequest_Failure_Length_SecondLayer(t *testing.T) {
-	a := assert.New(t)
-
-	uuid, _ := uuid.NewRandom()
-
-	id := uuid.String()
-	name := strings.Repeat("X", 200)
-	uploadID := strings.Repeat("X", 37)
-
-	req := &skysign_proto.Mission{
-		Id:   id,
-		Name: name,
-		Navigation: &skysign_proto.Navigation{
-			UploadId: uploadID,
-		},
-	}
-	ret := ValidateUpdateMissionRequest(req)
-
-	var errs validation.Errors
-	errors.As(ret, &errs)
-
-	a.Len(errs, 2)
-	a.Equal("the length must be exactly 36", errs["upload_id"].Error())
-	a.Equal("cannot be blank", errs["waypoints"].Error())
-}
-
 // TestValidateUpdateMissionRequest_Failure_Min .
 func TestValidateUpdateMissionRequest_Failure_Min(t *testing.T) {
 	a := assert.New(t)
@@ -151,13 +121,11 @@ func TestValidateUpdateMissionRequest_Failure_Min(t *testing.T) {
 
 	id := uuid.String()
 	name := strings.Repeat("X", 200)
-	uploadID := uuid.String()
 
 	req := &skysign_proto.Mission{
 		Id:   id,
 		Name: name,
 		Navigation: &skysign_proto.Navigation{
-			UploadId:                   uploadID,
 			TakeoffPointGroundAltitude: 10,
 			Waypoints: []*skysign_proto.Waypoint{
 				{
@@ -188,13 +156,11 @@ func TestValidateUpdateMissionRequest_Failure_Max(t *testing.T) {
 
 	id := uuid.String()
 	name := strings.Repeat("X", 200)
-	uploadID := uuid.String()
 
 	req := &skysign_proto.Mission{
 		Id:   id,
 		Name: name,
 		Navigation: &skysign_proto.Navigation{
-			UploadId:                   uploadID,
 			TakeoffPointGroundAltitude: 10,
 			Waypoints: []*skysign_proto.Waypoint{
 				{

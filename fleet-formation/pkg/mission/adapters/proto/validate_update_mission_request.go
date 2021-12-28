@@ -17,7 +17,6 @@ func ValidateUpdateMissionRequest(request *skysign_proto.Mission) error {
 	}
 	navigation := request.Navigation
 	if err := validation.ValidateStruct(navigation,
-		validation.Field(&navigation.UploadId, validation.Required, validation.Length(36, 36), is.UUID),
 		validation.Field(&navigation.TakeoffPointGroundAltitude),
 		validation.Field(&navigation.Waypoints, validation.Required),
 	); err != nil {
